@@ -1,0 +1,136 @@
+// 所有路由信息的配置
+import layout from 'views/layout'
+
+/**
+ * meta.title : 导航显示的中文名称
+ * showParent : 无论子节量，都会显示为二级菜单（默认一个子节点只显示一级菜单）点数
+ */
+
+// 权限相关路由
+export const mainRouter = [
+  {
+    path: '/',
+    component: layout,
+    redirect: 'home',
+    children: [{
+      path: 'home',
+      component: require('views/home/index'),
+      name: 'home',
+      meta: {
+        title: '首页',
+        noCache: true,
+        icon: 'md-home',
+        roles: ['admin']
+      }
+    }]
+  },
+  {
+    path: '/tabledemo',
+    component: layout,
+    redirect: 'index',
+    name: 'tabledemo',
+    showParent: true,
+    meta: {
+      title: '月报表',
+      icon: 'md-paper'
+    },
+    children: [
+      {
+        path: 'index',
+        component: require('views/table/index'),
+        name: 'index',
+        meta: {
+          title: '发行费分配概览表',
+          noCache: true,
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },]
+  },
+  {
+    path: '/report',
+    component: layout,
+    redirect: 'index',
+    name: 'repor',
+    showParent: true,
+    meta: {
+      title: 'werwerwerwerwrwe',
+      icon: 'md-paper'
+    },
+    children: [
+      {
+        path: '/overviewMonth/fxfOverviewMonth',
+        component: require('views/report/overviewMonth/fxfOverviewMonth'),
+        name: 'fxfOverviewMonth',
+        meta: {
+          title: '发行费分配概览表',
+          noCache: true,
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },]
+  },
+  {
+    path: '/user',
+    component: layout,
+    redirect: 'index',
+    name: 'user',
+    showParent: true,
+    meta: {
+      title: '用户',
+      icon: 'md-person'
+    },
+    children: [
+      {
+        path: 'users',
+        component: require('views/user/users'),
+        name: 'users',
+        meta: {
+          title: '用户管理',
+          noCache: true,
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'groups',
+        component: require('views/user/groups'),
+        name: 'groups',
+        meta: {
+          title: '角色管理',
+          noCache: true,
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+          path: 'roles',
+          component: require('views/user/roles'),
+          name: 'roles',
+          meta: {
+              title: '权限管理',
+              noCache: true,
+              roles: ['admin'] // or you can only set roles in sub nav
+          }
+      },
+      {
+          path: 'departments',
+          component: require('views/user/departments'),
+          name: 'departments',
+          meta: {
+              title: '组织机构',
+              noCache: true,
+              roles: ['admin'] // or you can only set roles in sub nav
+          }
+      }]
+  },
+];
+
+// 无权限相关的路由
+export const constantRouterMap = [
+  { path: '/login', component: require('views/login/index') },
+  { path: '/password/send', component: require('views/login/password/email') },
+  { path: '/password/reset/:token', component: require('views/login/password/reset') },
+];
+
+// 导出所有的路由配置
+export const routes = [
+  ...mainRouter,
+  ...constantRouterMap
+];

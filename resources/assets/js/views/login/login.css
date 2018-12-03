@@ -1,0 +1,97 @@
+.user-layout-title {
+    font-size: 21px;
+    color: rgba(0, 0, 0, 0.85);
+    font-family: Avenir, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    position: relative;
+    top: 2px;
+    text-align: center;
+    padding-top: 80px;
+}
+
+.ivu-input-group-large .ivu-input {
+    font-size: 14px !important;
+    padding: 6px 11px !important;
+    height: 40px !important;
+}
+
+#background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url(https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg);
+    background-repeat: no-repeat;
+    background-position: center 110px;
+    background-size: 100%;
+}
+
+.content {
+    background-color: #f0f2f5;
+}
+
+.ivu-input-group-large > .ivu-input-group-prepend {
+    width: 40px;
+}
+
+.ivu-form-item-content {
+    font-size: 14px !important;
+}
+
+.ivu-tabs {
+    margin-bottom: 7px;
+}
+
+.tabTitle {
+    padding-bottom: 20px;
+    text-align: center;
+    color: #1890FF;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+#loginButton {
+    height: 40px !important;
+}
+
+.loginFrom .ivu-tabs-nav-scroll {
+    padding-left: 126px;
+}
+
+.loginFrom .ivu-tabs-bar {
+    border-bottom: none;
+}
+
+.vaptcha-init-main {
+    display: table;
+    width: 100%;
+    height: 100%;
+    background-color: #EEEEEE;
+}
+
+.vaptcha-init-loading {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center
+}
+
+.vaptcha-init-loading > a {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+}
+
+.vaptcha-init-loading > a img {
+    vertical-align: middle
+}
+
+.vaptcha-init-loading .vaptcha-text {
+    font-family: sans-serif;
+    font-size: 12px;
+    color: #CCCCCC;
+    vertical-align: middle
+}
+
+.vp-vertical-cont i {
+    display: none;
+}

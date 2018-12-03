@@ -1,0 +1,53 @@
+/***********修改table表格样式--深色系**********/
+/* .ivu-table-wrapper.default {
+    border: 1px solid #455b7d;
+    border-bottom: 0;
+    border-right: 0; */
+/*background: none!important;*/
+/* }
+  .default .ivu-table-border {
+    background: none;
+    color: inherit;
+  } */
+/* .default .ivu-table-header{
+    border: 1px solid #3A7CA0;
+    border-bottom: 2px solid #3A7CA0;
+  } */
+/* .default .ivu-table-border td, .default .ivu-table-border th {
+    border-color: #455b7d;
+    background: none;
+    color: inherit;
+  }
+  .default .ivu-table-row-hover {
+    background: #191f27;
+  }
+  .default .ivu-table:before, .default .ivu-table:after {
+    background-color: #455b7d;
+  }
+  .default .ivu-form-item:not(.ivu-form-item-error) {
+    margin-bottom: 7px;
+  } */
+
+.ivu-table-cell {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+
+.ivu-table-small td {
+  height: 25px !important;
+}
+
+.ivu-table-small th {
+  height: 25px !important;
+  text-align: center !important;
+}
+
+.ivu-table td,
+.ivu-table th {
+  border-bottom: 1px solid #ddd !important;
+}
+
+.ivu-table-border td,
+.ivu-table-border th {
+  border-right: 1px solid #ddd !important;
+}

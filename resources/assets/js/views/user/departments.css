@@ -1,0 +1,11 @@
+.ant-table-tbody {
+    background-color: #fff;
+}
+
+.ant-table-tbody > tr.ant-table-row-selected td {
+    background-color: #fff !important;
+}
+
+.ant-table-pagination {
+    display: none;
+}
