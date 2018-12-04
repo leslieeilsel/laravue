@@ -25,28 +25,6 @@ export const mainRouter = [
     }]
   },
   {
-    path: '/tabledemo',
-    component: layout,
-    redirect: 'index',
-    name: 'tabledemo',
-    showParent: true,
-    meta: {
-      title: '月报表',
-      icon: 'md-paper'
-    },
-    children: [
-      {
-        path: 'index',
-        component: require('views/table/index'),
-        name: 'index',
-        meta: {
-          title: '发行费分配概览表',
-          noCache: true,
-          roles: ['admin'] // or you can only set roles in sub nav
-        }
-      },]
-  },
-  {
     path: '/report',
     component: layout,
     redirect: 'index',
@@ -58,11 +36,41 @@ export const mainRouter = [
     },
     children: [
       {
-        path: '/overviewMonth/fxfOverviewMonth',
-        component: require('views/report/overviewMonth/fxfOverviewMonth'),
+        path: '/overviewMonth/fxf',
+        component: require('views/report/overviewMonth/fxf'),
         name: 'fxfOverviewMonth',
         meta: {
           title: '发行费分配概览表',
+          noCache: true,
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: '/overviewMonth/gyj',
+        component: require('views/report/overviewMonth/gyj'),
+        name: 'gyjOverviewMonth',
+        meta: {
+          title: '公益金分配概览表',
+          noCache: true,
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: '/overviewMonth/yj',
+        component: require('views/report/overviewMonth/yj'),
+        name: 'yjOverviewMonth',
+        meta: {
+          title: '佣金分配概览表',
+          noCache: true,
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: '/overviewMonth/fj',
+        component: require('views/report/overviewMonth/fj'),
+        name: 'fjOverviewMonth',
+        meta: {
+          title: '返奖分配概览表',
           noCache: true,
           roles: ['admin'] // or you can only set roles in sub nav
         }

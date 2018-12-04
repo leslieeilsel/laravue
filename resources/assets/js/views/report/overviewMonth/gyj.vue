@@ -12,7 +12,7 @@
     </div>
 </template>
 <script>
-    import { getFxfOverviewMonthData } from 'api/report';
+    import { getOverviewMonthData } from 'api/report';
     import './table.css';
     export default {
         data () {
@@ -81,7 +81,7 @@
                         ]
                     },
                     {
-                        title: '月分配彩票发行费',
+                        title: '月分配彩票公益金',
                         align: 'center',
                         children: [
                             {
@@ -127,7 +127,7 @@
                                 width: 100
                             },
                             {
-                                title: '总销量',
+                                title: '公益金合计',
                                 key: 'fee7',
                                 align: 'right',
                                 width: 120
@@ -181,8 +181,7 @@
                 if (endArray[0] > startArray[0] || (endArray[0] === startArray[0] && endArray[1] >= startArray[1])) {
                     this.loading = true;
                     let _this = this;
-                    getFxfOverviewMonthData(this.startValue, this.endValue).then(function(result) {
-                        console.log(result.result);
+                    getOverviewMonthData(this.startValue, this.endValue, 'gyj').then(function(result) {
                         _this.data = result.result;
                         _this.loading = false;
                     }).catch(function(){

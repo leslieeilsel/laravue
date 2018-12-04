@@ -14,9 +14,40 @@ class FeeOverviewMonthReport
     }
 
     /**
+     * 入口函数
+     *
+     * @param array $params
+     * @return array
+     */
+    public function getOverviewMonthData ($params)
+    {
+        $body = [];
+        $reportType = $params['reportType'];
+        unset($params['reportType']);
+        $date = $params;
+
+        switch ($reportType) {
+            case 'fxf':
+                $body = $this->getFxfOverviewMonthData($date);
+                break;
+            case 'gyj':
+                $body = $this->getGyjOverviewMonthData($date);
+                break;
+            case 'yj':
+                $body = $this->getYjOverviewMonthData($date);
+                break;
+            case 'fj':
+                $body = $this->getFjOverviewMonthData($date);
+                break;
+        }
+
+        return $body;
+    }
+
+    /**
      * 发行分配概览表
      *
-     * @param string $date
+     * @param array $date
      * @return array
      */
     public function getFxfOverviewMonthData ($date)
@@ -31,13 +62,14 @@ class FeeOverviewMonthReport
     /**
      * 公益金分配概览表
      *
-     * @param string $date
+     * @param array $date
      * @return array
      */
-    public function getmb02MonthReportData ($date)
+    public function getGyjOverviewMonthData ($date)
     {
         $fee = ['0.0925', '0.09', '0.085', '0.07', '0.045', '0.055', '0.05'];
         $body = $this->getMonthFeeData($date, $fee);
+        $body = $this->bodyFormat($body);
 
         return $body;
     }
@@ -45,13 +77,14 @@ class FeeOverviewMonthReport
     /**
      * 佣金分配概览表
      *
-     * @param string $date
+     * @param array $date
      * @return array
      */
-    public function getmb03MonthReportData ($date)
+    public function getYjOverviewMonthData ($date)
     {
         $fee = ['0.08', '0.08', '0.08', '0.08', '0.08', '0.08', '0.1'];
         $body = $this->getMonthFeeData($date, $fee);
+        $body = $this->bodyFormat($body);
 
         return $body;
     }
@@ -59,13 +92,14 @@ class FeeOverviewMonthReport
     /**
      * 返奖分配概览表
      *
-     * @param string $date
+     * @param array $date
      * @return array
      */
-    public function getmb04MonthReportData ($date)
+    public function getFjOverviewMonthData ($date)
     {
         $fee = ['0.5', '0.51', '0.53', '0.59', '0.73', '0.65', '0.65'];
         $body = $this->getMonthFeeData($date, $fee);
+        $body = $this->bodyFormat($body);
 
         return $body;
     }
@@ -73,7 +107,7 @@ class FeeOverviewMonthReport
     /**
      * 组织报表体数据
      *
-     * @param string $date
+     * @param array $date
      * @param array $fee
      * @return array
      */
@@ -120,7 +154,7 @@ class FeeOverviewMonthReport
     }
 
     /**
-     * @param string $date
+     * @param array $date
      * @return array
      */
     public function getFeeMonthReportData ($date)
@@ -171,6 +205,12 @@ class FeeOverviewMonthReport
         return $body;
     }
 
+    /**
+     * 组装所有的月
+     *
+     * @param array $date
+     * @return array
+     */
     public function buildMonthList ($date)
     {
         $dates = [];
@@ -187,7 +227,7 @@ class FeeOverviewMonthReport
     }
 
     /**
-     * 组合所有的月
+     * 数字格式化
      *
      * @param $body
      * @return array
