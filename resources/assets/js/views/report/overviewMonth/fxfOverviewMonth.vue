@@ -12,7 +12,7 @@
     </div>
 </template>
 <script>
-    import { getTableData } from 'api/table';
+    import { getFxfOverviewMonthData } from 'api/report';
     import './table.css';
     export default {
         data () {
@@ -128,7 +128,7 @@
                             },
                             {
                                 title: '总销量',
-                                key: 'fee8',
+                                key: 'fee7',
                                 align: 'right',
                                 width: 120
                             }
@@ -177,12 +177,11 @@
                 //     // continue;
                 // }
                 const startArray = this.startValue.split('-');
-                console.log(startArray);
                 const endArray = this.endValue.split('-');
                 if (endArray[0] > startArray[0] || (endArray[0] === startArray[0] && endArray[1] >= startArray[1])) {
                     this.loading = true;
                     let _this = this;
-                    getTableData(this.startValue, this.endValue).then(function(result) {
+                    getFxfOverviewMonthData(this.startValue, this.endValue).then(function(result) {
                         console.log(result.result);
                         _this.data = result.result;
                         _this.loading = false;

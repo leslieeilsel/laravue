@@ -34,4 +34,4 @@ Route::get('department/depts', 'Department\DepartmentController@getDepts');
 Route::get('department/deptselecter', 'Department\DepartmentController@getDeptSelecter');
 Route::post('department/add', 'Department\DepartmentController@add');
 
-// Route::post('fxfoverviewmonth', 'Report\FSaleMonthController@getSaleDayData');
+Route::post('fxfoverviewmonth', 'Api\ApiController@getFxfOverviewMonthData');

@@ -53,7 +53,7 @@ export const mainRouter = [
     name: 'repor',
     showParent: true,
     meta: {
-      title: 'werwerwerwerwrwe',
+      title: '月报表',
       icon: 'md-paper'
     },
     children: [
