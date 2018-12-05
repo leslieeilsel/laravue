@@ -29,25 +29,29 @@
   } */
 
 .ivu-table-cell {
-  padding-left: 5px !important;
-  padding-right: 5px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
 }
 
 .ivu-table-small td {
-  height: 25px !important;
+    height: 25px !important;
 }
 
 .ivu-table-small th {
-  height: 25px !important;
-  text-align: center !important;
+    height: 25px !important;
+    text-align: center !important;
 }
 
 .ivu-table td,
 .ivu-table th {
-  border-bottom: 1px solid #ddd !important;
+    border-bottom: 1px solid #ddd !important;
 }
 
 .ivu-table-border td,
 .ivu-table-border th {
-  border-right: 1px solid #ddd !important;
+    border-right: 1px solid #ddd !important;
+}
+
+.ivu-row {
+    margin-bottom: 15px;
 }

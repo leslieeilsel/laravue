@@ -1,15 +1,14 @@
 <template>
-    <div>
+    <Card>
         <Row>
             <Col span="12">
                 <DatePicker id="startMonth" type="month" placeholder="开始时间" style="width: 200px" :editable=false @on-change="startChange"></DatePicker>
                 <DatePicker id="endMonth" type="month" placeholder="结束时间" style="width: 200px" :editable=false @on-change="endChange"></DatePicker>
-                <Button type="primary" @click="filterData" icon="ios-search">查询</Button>
+                <Button type="primary" @click="filterData" :disabled="disable" icon="ios-search">查询</Button>
             </Col>
         </Row>
-        <br>
         <Table :columns="columns" :loading="loading" :data="data" border class="default" stripe size="small" ref="table"></Table>
-    </div>
+    </Card>
 </template>
 <script>
     import { getOverviewMonthData } from 'api/report';
@@ -17,6 +16,7 @@
     export default {
         data () {
             return {
+                disable: true,
                 loading: false,
                 columns: [
                     {
@@ -147,35 +147,13 @@
         methods: {
             startChange (daterange) {
                 this.startValue = daterange;
+                this.disable = !(this.startValue && this.endValue);
             },
             endChange (daterange) {
                 this.endValue = daterange;
+                this.disable = !(this.startValue && this.endValue);
             },
             filterData () {
-                // if (!this.startValue && !this.endValue) {
-                //     this.$Message.info({
-                //         content: '请选择时间区间！',
-                //         duration: 5,
-                //         closable: true
-                //     });
-                //     // continue;
-                // }
-                // if (!this.startValue) {
-                //     this.$Message.info({
-                //         content: '请选择开始时间！',
-                //         duration: 5,
-                //         closable: true
-                //     });
-                //     // continue;
-                // }
-                // if (!this.endValue) {
-                //     this.$Message.info({
-                //         content: '请选择结束时间！',
-                //         duration: 5,
-                //         closable: true
-                //     });
-                //     // continue;
-                // }
                 const startArray = this.startValue.split('-');
                 const endArray = this.endValue.split('-');
                 if (endArray[0] > startArray[0] || (endArray[0] === startArray[0] && endArray[1] >= startArray[1])) {
