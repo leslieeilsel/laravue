@@ -7,17 +7,20 @@
                     <DatePicker id="endMonth" type="month" placeholder="结束时间" style="width: 200px" :editable=false @on-change="endChange"></DatePicker>
                     <Button type="primary" @click="filterData" :disabled="disable" icon="ios-search">查询</Button>
                 </Col>
+                <Button class="exportReport" :loading="expLoading" @click="exportData" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出报表</Button>
             </Row>
             <Table :columns="columns" :loading="loading" :data="data" border class="default" stripe size="small" ref="table"></Table>
         </Card>
     </div>
 </template>
 <script>
-    import { getOverviewMonthData } from 'api/report';
+    import { getOverviewMonthData, exportOverviewMonthData } from 'api/report';
     import './table.css';
     export default {
         data () {
             return {
+                expLoading: false,
+                btnDisable: true,
                 disable: true,
                 loading: false,
                 columns: [
@@ -165,6 +168,7 @@
                     getOverviewMonthData(this.startValue, this.endValue, 'fxf').then(function(result) {
                         _this.data = result.result;
                         _this.loading = false;
+                        _this.btnDisable = false;
                     }).catch(function(){
                         alert("出错了");
                     });
@@ -175,6 +179,21 @@
                         closable: true
                     });
                 }
+            },
+            exportData () {
+                    // this.$message.loading('Action in progress..', 2.5)
+                    //     .then(() => this.$message.success('Loading finished', 2.5))
+                    //     .then(() => this.$message.info('Loading finished is finished', 2.5));
+                // this.$Message.info('执行到这里了！');
+                this.expLoading = true;
+                let _this = this;
+                exportOverviewMonthData(this.startValue, this.endValue, 'fxf').then(function(result) {
+                    console.log(result.result)
+                    _this.expLoading = false;
+                    _this.$Message.info('导出成功！');
+                }).catch(function(){
+                    _this.$Message.info('导出失败！');
+                });
             }
         }
     }

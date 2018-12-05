@@ -33,3 +33,7 @@
 .main .single-page-con {
     background-color: #f5f7f9 !important;
 }
+
+.exportReport {
+    float: right;
+}

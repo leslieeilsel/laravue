@@ -35,3 +35,4 @@ Route::get('department/deptselecter', 'Department\DepartmentController@getDeptSe
 Route::post('department/add', 'Department\DepartmentController@add');
 
 Route::post('overviewmonth', 'Api\ApiController@getOverviewMonthData');
+Route::post('exportoverviewmonth', 'Api\ApiController@exportOverviewMonthData');
