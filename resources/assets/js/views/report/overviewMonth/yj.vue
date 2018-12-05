@@ -1,14 +1,16 @@
 <template>
-    <Card>
-        <Row>
-            <Col span="12">
-                <DatePicker id="startMonth" type="month" placeholder="开始时间" style="width: 200px" :editable=false @on-change="startChange"></DatePicker>
-                <DatePicker id="endMonth" type="month" placeholder="结束时间" style="width: 200px" :editable=false @on-change="endChange"></DatePicker>
-                <Button type="primary" @click="filterData" :disabled="disable" icon="ios-search">查询</Button>
-            </Col>
-        </Row>
-        <Table :columns="columns" :loading="loading" :data="data" border class="default" stripe size="small" ref="table"></Table>
-    </Card>
+    <div>
+        <Card>
+            <Row>
+                <Col span="12">
+                    <DatePicker id="startMonth" type="month" placeholder="开始时间" style="width: 200px" :editable=false @on-change="startChange"></DatePicker>
+                    <DatePicker id="endMonth" type="month" placeholder="结束时间" style="width: 200px" :editable=false @on-change="endChange"></DatePicker>
+                    <Button type="primary" @click="filterData" :disabled="disable" icon="ios-search">查询</Button>
+                </Col>
+            </Row>
+            <Table :columns="columns" :loading="loading" :data="data" border class="default" stripe size="small" ref="table"></Table>
+        </Card>
+    </div>
 </template>
 <script>
     import { getOverviewMonthData } from 'api/report';
@@ -55,7 +57,7 @@
                                 width: 100
                             },
                             {
-                                title: '竞猜',
+                                title: '竞彩',
                                 key: 'tc5',
                                 align: 'right',
                                 width: 120
@@ -109,7 +111,7 @@
                                 width: 100
                             },
                             {
-                                title: '竞猜',
+                                title: '竞彩',
                                 key: 'fee4',
                                 align: 'right',
                                 width: 100
@@ -125,15 +127,16 @@
                                 key: 'fee6',
                                 align: 'right',
                                 width: 100
-                            },
-                            {
-                                title: '佣金合计',
-                                key: 'fee7',
-                                align: 'right',
-                                width: 120
                             }
                         ]
                     },
+                    {
+                        title: '佣金合计',
+                        key: 'fee7',
+                        align: 'right',
+                        width: 120,
+                        fixed: 'right'
+                    }
                 ],
                 data: [],
                 startValue: null,
