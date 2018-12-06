@@ -14,11 +14,11 @@
     <!-- sidebar end -->
 
     <!-- header start -->
-    <div class="main-header-con" :style="{paddingLeft: '250px'}">
+    <div class="main-header-con">
       <div class="main-header">
         <div class="header-middle-con">
           <div class="main-breadcrumb">
-            <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
+            陕西体育彩票财务数据综合管理系统
           </div>
         </div>
         <div class="header-avator-con">
@@ -36,7 +36,7 @@
                   <DropdownItem name="logout" divided>退出登录</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-              <Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+              <Avatar :src="avatorPath" style="background: #d3eaec;margin-left: 10px;"></Avatar>
             </Row>
           </div>
           <!-- dropdown end -->

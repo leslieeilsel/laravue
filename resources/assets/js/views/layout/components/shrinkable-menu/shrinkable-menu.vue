@@ -53,7 +53,7 @@
   .menu {
     width: 100%;
     height: 100%;
-    background-color: #495060;
+    background-color: #fff;
   }
 </style>
 

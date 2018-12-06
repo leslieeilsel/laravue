@@ -1,7 +1,7 @@
 <template>
   <!-- active-name: 激活菜单的name -->
   <!-- open-names: 展开的 Submenu 的 name 集合 -->
-  <Menu ref="sideMenu" :active-name="$route.name" :open-names="openNames" theme="dark" width="auto" @on-select="changeMenu">
+  <Menu ref="sideMenu" :active-name="$route.name" :open-names="openNames" theme="light" width="auto" @on-select="changeMenu">
     <!-- 属性不为隐藏且存在孩子节点 -->
     <template v-for="item in menuList" v-if="!item.hidden && item.children">
       <!-- menu-item 没有子页面 -->
