@@ -1,11 +1,9 @@
 <template>
   <div ref="scrollCon" @DOMMouseScroll="handlescroll" @mousewheel="handlescroll" class="tags-outer-scroll-con">
-
     <div class="close-all-tag-con">
       <Dropdown transfer @on-click="clearTags">
-        <Button size="small" type="primary">
-          标签选项
-          <Icon type="arrow-down-b"></Icon>
+        <Button size="small" type="text">
+          <Icon :size="18" type="ios-close-circle-outline" />
         </Button>
         <DropdownMenu slot="list">
           <DropdownItem name="clearAll">关闭所有</DropdownItem>
