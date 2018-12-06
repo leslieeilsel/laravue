@@ -181,19 +181,7 @@
                 }
             },
             exportData () {
-                    // this.$message.loading('Action in progress..', 2.5)
-                    //     .then(() => this.$message.success('Loading finished', 2.5))
-                    //     .then(() => this.$message.info('Loading finished is finished', 2.5));
-                // this.$Message.info('执行到这里了！');
-                this.expLoading = true;
-                let _this = this;
-                exportOverviewMonthData(this.startValue, this.endValue, 'fxf').then(function(result) {
-                    console.log(result.result)
-                    _this.expLoading = false;
-                    _this.$Message.info('导出成功！');
-                }).catch(function(){
-                    _this.$Message.info('导出失败！');
-                });
+                window.location.href = 'http://localhost:3114/api/exportoverviewmonth/' + this.startValue + '/' + this.endValue + '/' + 'fxf';
             }
         }
     }

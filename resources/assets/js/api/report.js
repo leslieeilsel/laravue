@@ -19,23 +19,3 @@ export function getOverviewMonthData(startMonth, endMonth, reportType) {
     }
   })
 }
-
-/**
- * 导出概览表 - 月报
- *
- * @param startMonth 开始时间
- * @param endMonth 结束时间
- * @param reportType 报表类型
- * @returns {*}
- */
-export function exportOverviewMonthData(startMonth, endMonth, reportType) {
-  return request({
-    url: '/api/exportoverviewmonth',
-    method: 'post',
-    data: {
-      startMonth,
-      endMonth,
-      reportType
-    }
-  })
-}

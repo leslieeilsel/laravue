@@ -4,17 +4,14 @@ namespace App\Repositories;
 
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FeeOverviewMonthReport
 {
     public $choose_year;
     public $last_year;
 
-    public function __construct()
+    public function __construct ()
     {
     }
 
@@ -25,8 +22,136 @@ class FeeOverviewMonthReport
      * @return void
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function exportOverviewMonthData($params)
+    public function export ($params)
     {
+        $data = $this->getOverviewMonthData($params);
+        // 创建一个Spreadsheet对象
+        $spreadsheet = new Spreadsheet();
+        // 设置文档属性
+        $spreadsheet->getProperties()->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        // 添加表头
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('A1', '发行费分配概览-月报')
+            ->setCellValue('A2', '单位：元')
+            ->setCellValue('A3', '市区')
+            ->setCellValue('B3', '月体育彩票销量')
+            ->setCellValue('J3', '月分配体彩发行费')
+            ->setCellValue('Q3', '发行费合计')
+            ->setCellValue('B4', '概率游戏')
+            ->setCellValue('C4', '大乐透')
+            ->setCellValue('D4', '排三')
+            ->setCellValue('E4', '11选5')
+            ->setCellValue('F4', '竞彩')
+            ->setCellValue('G4', '足彩')
+            ->setCellValue('H4', '即开型')
+            ->setCellValue('I4', '总销量')
+            ->setCellValue('J4', '概率游戏')
+            ->setCellValue('K4', '大乐透')
+            ->setCellValue('L4', '排三')
+            ->setCellValue('M4', '11选5')
+            ->setCellValue('N4', '竞彩')
+            ->setCellValue('O4', '足彩')
+            ->setCellValue('P4', '即开型');
+        // 合并行、列
+        $spreadsheet->getActiveSheet()
+            ->mergeCells('A1:Q1')
+            ->mergeCells('A2:P2')
+            ->mergeCells('A3:A4')
+            ->mergeCells('B3:I3')
+            ->mergeCells('J3:P3')
+            ->mergeCells('Q3:Q4');
+        // 添加动态数据
+        $i = 5;
+        foreach ($data as $rs) {
+            $spreadsheet->getActiveSheet()
+                ->setCellValue('A' . $i, $rs[0])
+                ->setCellValue('B' . $i, $rs['tc1'])
+                ->setCellValue('C' . $i, $rs['tc2'])
+                ->setCellValue('D' . $i, $rs['tc3'])
+                ->setCellValue('E' . $i, $rs['tc4'])
+                ->setCellValue('F' . $i, $rs['tc5'])
+                ->setCellValue('G' . $i, $rs['tc6'])
+                ->setCellValue('H' . $i, $rs['tc7'])
+                ->setCellValue('I' . $i, $rs['tc8'])
+                ->setCellValue('J' . $i, $rs['fee0'])
+                ->setCellValue('K' . $i, $rs['fee1'])
+                ->setCellValue('L' . $i, $rs['fee2'])
+                ->setCellValue('M' . $i, $rs['fee3'])
+                ->setCellValue('N' . $i, $rs['fee4'])
+                ->setCellValue('O' . $i, $rs['fee5'])
+                ->setCellValue('P' . $i, $rs['fee6'])
+                ->setCellValue('Q' . $i, $rs['fee7']);
+            $i++;
+        }
+        //  设置宽度
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('L')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('M')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('N')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('O')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('P')->setWidth(16);
+        $spreadsheet->getActiveSheet()->getColumnDimension('Q')->setWidth(16);
+        // 设置高度
+        $spreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(25);
+        // 设置字体大小
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+        // 设置对齐方式
+        $numberStyleArray = [
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+            ]
+        ];
+        $spreadsheet->getActiveSheet()->getStyle('A2')->applyFromArray($numberStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('B5:Q20')->applyFromArray($numberStyleArray);
+        $centerStyleArray = [
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+            ]
+        ];
+        $spreadsheet->getActiveSheet()->getStyle('A1')->applyFromArray($centerStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A3:A20')->applyFromArray($centerStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('B3:Q4')->applyFromArray($centerStyleArray);
+        // 设置千分位
+        $spreadsheet->getActiveSheet()->getStyle('B5:Q18')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
+        // 重命名 worksheet
+        $spreadsheet->getActiveSheet()->setTitle('sheet');
+        // 将活动工作表索引设置为第一个工作表，以便Excel将其作为第一个工作表打开
+        $spreadsheet->setActiveSheetIndex(0);
+
+        // 将输出重定向到客户端的Web浏览器 (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="发行费分配概览-月报.xlsx"');
+        header('Cache-Control: max-age=0');
+        // 如果正在使用IE 9
+        header('Cache-Control: max-age=1');
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+
+        exit;
     }
 
     /**
@@ -35,7 +160,7 @@ class FeeOverviewMonthReport
      * @param array $params
      * @return array
      */
-    public function getOverviewMonthData($params)
+    public function getOverviewMonthData ($params)
     {
         $body = [];
         $reportType = $params['reportType'];
@@ -66,7 +191,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getFxfOverviewMonthData($date)
+    public function getFxfOverviewMonthData ($date)
     {
         $fee = ['0.04', '0.04', '0.04', '0.03', '0.005', '0.03', '0.015'];
         $body = $this->getMonthFeeData($date, $fee);
@@ -81,7 +206,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getGyjOverviewMonthData($date)
+    public function getGyjOverviewMonthData ($date)
     {
         $fee = ['0.0925', '0.09', '0.085', '0.07', '0.045', '0.055', '0.05'];
         $body = $this->getMonthFeeData($date, $fee);
@@ -96,7 +221,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getYjOverviewMonthData($date)
+    public function getYjOverviewMonthData ($date)
     {
         $fee = ['0.08', '0.08', '0.08', '0.08', '0.08', '0.08', '0.1'];
         $body = $this->getMonthFeeData($date, $fee);
@@ -111,7 +236,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getFjOverviewMonthData($date)
+    public function getFjOverviewMonthData ($date)
     {
         $fee = ['0.5', '0.51', '0.53', '0.59', '0.73', '0.65', '0.65'];
         $body = $this->getMonthFeeData($date, $fee);
@@ -127,7 +252,7 @@ class FeeOverviewMonthReport
      * @param array $fee
      * @return array
      */
-    protected function getMonthFeeData($date, $fee)
+    protected function getMonthFeeData ($date, $fee)
     {
         $body = [];
         $jin = [];
@@ -173,7 +298,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getFeeMonthReportData($date)
+    public function getFeeMonthReportData ($date)
     {
         $query = DB::table('ibiart_slms_sale_m_summary')->select('year', 'region_id', 'game_type', 'game_num', DB::raw("sum(sale_amt) as sale"));
         $query->whereIn('sale_at', $this->buildMonthList($date));
@@ -227,7 +352,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function buildMonthList($date)
+    public function buildMonthList ($date)
     {
         $dates = [];
         $startDate = explode('-', $date['startMonth']);
@@ -248,7 +373,7 @@ class FeeOverviewMonthReport
      * @param $body
      * @return array
      */
-    public function bodyFormat($body)
+    public function bodyFormat ($body)
     {
         $newBody = [];
         foreach ($body as $key => $rows) {

@@ -26,16 +26,20 @@ class ApiController extends Controller
     /**
      * 导出概览表（月报）数据
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param string $startMonth
+     * @param string $endMonth
+     * @param string $reportType
+     * @return void
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function exportOverviewMonthData(Request $request)
+    public function exportOverviewMonthData($startMonth, $endMonth, $reportType)
     {
-        $param = $request->input();
+        $params = [
+            'startMonth' => $startMonth,
+            'endMonth' => $endMonth,
+            'reportType' => $reportType
+        ];
         $report = new FeeOverviewMonthReport();
-        $data = $report->exportOverviewMonthData($param);
-
-        return response()->json(['result' => $data], 200);
+        $data = $report->export($params);
     }
 }
