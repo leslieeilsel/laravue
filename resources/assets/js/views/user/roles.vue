@@ -42,7 +42,7 @@
             <template slot-scope="text, record">
         <span>
           <a href="javascript:;">Action 一 {{record.firstName}}</a>
-          <a-divider type="vertical" />
+          <a-divider type="vertical"/>
           <a href="javascript:;">Delete</a>
         </span>
             </template>

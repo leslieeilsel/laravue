@@ -128,6 +128,29 @@ export const mainRouter = [
           }
       }]
   },
+  {
+    path: '/system',
+    component: layout,
+    redirect: 'index',
+    name: 'system',
+    showParent: true,
+    meta: {
+      title: '系统管理',
+      icon: 'md-cog'
+    },
+    children: [
+      {
+        path: 'menus',
+        component: require('views/system/menus'),
+        name: 'menus',
+        meta: {
+          title: '菜单管理',
+          noCache: true,
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
 ];
 
 // 无权限相关的路由

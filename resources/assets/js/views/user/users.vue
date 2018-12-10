@@ -1,64 +1,67 @@
 <template>
     <div>
-        <p class="btnGroup">
-            <Button type="primary" @click="modal1 = true" icon="md-add">创建</Button>
-            <Button type="error" disabled icon="md-trash">删除</Button>
-            <Modal
-                v-model="modal1"
-                @on-cancel="cancel"
-                title="创建新用户">
-                <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
-                    <FormItem label="用户名" prop="username">
-                        <Input v-model="form.username" placeholder="必填项"></Input>
-                    </FormItem>
-                    <FormItem label="姓名" prop="name">
-                        <Input v-model="form.name" placeholder="可选项"></Input>
-                    </FormItem>
-                    <FormItem label="邮箱" prop="email">
-                        <Input v-model="form.email" placeholder="可选项"></Input>
-                    </FormItem>
-                    <FormItem label="联系电话" prop="phone">
-                        <Input v-model="form.phone" placeholder="可选项"></Input>
-                    </FormItem>
-                    <FormItem label="所属部门" prop="department_id">
-                        <a-tree-select
-                            :treeData="treeData"
-                            :showSearch="showSearch"
-                            :value="form.department_id"
-                            @change="onChange"
-                            :showCheckedStrategy="SHOW_PARENT"
-                            treeNodeFilterProp='label'
-                            placeholder='必填项'
-                        />
-                    </FormItem>
-                    <FormItem label="密码" prop="password">
-                        <Input v-model="form.password" type="password" placeholder="必填项"/>
-                    </FormItem>
-                    <FormItem label="确认密码" prop="pwdCheck">
-                        <Input v-model="form.pwdCheck" type="password" placeholder="必填项"/>
-                    </FormItem>
-                    <FormItem label="备注" prop="desc">
-                        <Input v-model="form.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
-                    </FormItem>
-                    <FormItem>
-                        <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
-                        <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-                    </FormItem>
-                </Form>
-                <div slot="footer">
-                </div>
-            </Modal>
-        </p>
-        <Table border :columns="columns7" :data="nowData" :loading="loadingTable"></Table>
-        <Page :total="dataCount" class-name="page-align" :page-size="pageSize" @on-change="changepage" @on-page-size-change="_nowPageSize" show-total show-sizer show-elevator/>
+        <Card>
+            <p class="btnGroup">
+                <Button type="primary" @click="modal1 = true" icon="md-add">创建</Button>
+                <Button type="error" disabled icon="md-trash">删除</Button>
+                <Modal
+                        v-model="modal1"
+                        @on-cancel="cancel"
+                        title="创建新用户">
+                    <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
+                        <FormItem label="用户名" prop="username">
+                            <Input v-model="form.username" placeholder="必填项"></Input>
+                        </FormItem>
+                        <FormItem label="姓名" prop="name">
+                            <Input v-model="form.name" placeholder="可选项"></Input>
+                        </FormItem>
+                        <FormItem label="邮箱" prop="email">
+                            <Input v-model="form.email" placeholder="可选项"></Input>
+                        </FormItem>
+                        <FormItem label="联系电话" prop="phone">
+                            <Input v-model="form.phone" placeholder="可选项"></Input>
+                        </FormItem>
+                        <FormItem label="所属部门" prop="department_id">
+                            <a-tree-select
+                                    :treeData="treeData"
+                                    :showSearch="showSearch"
+                                    :value="form.department_id"
+                                    @change="onChange"
+                                    :showCheckedStrategy="SHOW_PARENT"
+                                    treeNodeFilterProp='label'
+                                    placeholder='必填项'
+                            />
+                        </FormItem>
+                        <FormItem label="密码" prop="password">
+                            <Input v-model="form.password" type="password" placeholder="必填项"/>
+                        </FormItem>
+                        <FormItem label="确认密码" prop="pwdCheck">
+                            <Input v-model="form.pwdCheck" type="password" placeholder="必填项"/>
+                        </FormItem>
+                        <FormItem label="备注" prop="desc">
+                            <Input v-model="form.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
+                                   placeholder="可选项"></Input>
+                        </FormItem>
+                        <FormItem>
+                            <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
+                            <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+                        </FormItem>
+                    </Form>
+                    <div slot="footer">
+                    </div>
+                </Modal>
+            </p>
+            <Table border :columns="columns7" :data="nowData" :loading="loadingTable"></Table>
+            <Page :total="dataCount" class-name="page-align" :page-size="pageSize" @on-change="changepage"
+                  @on-page-size-change="_nowPageSize" show-total show-sizer show-elevator/>
+        </Card>
     </div>
 </template>
 <script>
-    
-    import { registUser, getUsers } from 'api/user';
-    import { getDeptSelecter } from 'api/department';
+    import {registUser, getUsers} from 'api/user';
+    import {getDeptSelecter} from 'api/department';
     import './users.css';
-    import { TreeSelect } from 'ant-design-vue'
+    import {TreeSelect} from 'ant-design-vue'
 
     const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 
@@ -74,7 +77,7 @@
         },
     };
     export default {
-        data () {
+        data() {
             const pwdValidate = (rule, value, callback) => {
                 this.$refs.formValidate.validateField('pwdCheck');
                 callback();
@@ -110,10 +113,10 @@
                 },
                 ruleValidate: {
                     username: [
-                        { required: true, message: '用户名不能为空', trigger: 'blur' }
+                        {required: true, message: '用户名不能为空', trigger: 'blur'}
                     ],
                     email: [
-                        { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+                        {type: 'email', message: '邮箱格式不正确', trigger: 'blur'}
                     ],
                     password: [
                         {required: true, validator: pwdValidate, trigger: 'blur'}
@@ -121,8 +124,8 @@
                     pwdCheck: [
                         {required: true, validator: pwdCheckValidate, trigger: 'blur'}
                     ],
-                    department_id : [
-                        { required: true, message: '所属部门不能为空', trigger: 'blur' }
+                    department_id: [
+                        {required: true, message: '所属部门不能为空', trigger: 'blur'}
                     ]
                 },
                 columns7: [
@@ -200,7 +203,7 @@
                 rowSelection,
             }
         },
-        mounted () {
+        mounted() {
             getUsers().then((data) => {
                 this.data6 = data.result;
                 this.loadingTable = false;
@@ -217,16 +220,16 @@
             });
         },
         methods: {
-            show (index) {
+            show(index) {
                 this.$Modal.info({
                     title: 'User Info',
                     content: `Name：${this.data6[index].name}<br>username：${this.data6[index].age}<br>Address：${this.data6[index].address}`
                 })
             },
-            remove (index) {
+            remove(index) {
                 this.data6.splice(index, 1);
             },
-            handleSubmit (name) {
+            handleSubmit(name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         this.loading = true;
@@ -253,13 +256,13 @@
                     }
                 })
             },
-            handleReset (name) {
+            handleReset(name) {
                 this.$refs[name].resetFields();
             },
-            cancel () {
+            cancel() {
                 this.$refs.formValidate.resetFields();
             },
-            onChange (value) {
+            onChange(value) {
                 this.form.department_id = value;
             },
             changepage(index) {

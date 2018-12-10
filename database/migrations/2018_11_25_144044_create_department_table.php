@@ -15,9 +15,9 @@ class CreateDepartmentTable extends Migration
     {
         Schema::create('department', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->text('desc')->nullable();
-            $table->integer('parent_id')->nullable()->unsigned();
+            $table->string('name');                                 // 名称
+            $table->text('desc')->nullable();                       // 描述
+            $table->integer('parent_id')->nullable()->unsigned();   // 父级ID
             $table->timestamps();
         });
     }

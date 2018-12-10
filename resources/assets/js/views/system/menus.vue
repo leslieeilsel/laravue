@@ -9,10 +9,10 @@
                         @on-cancel="cancel"
                         title="创建 组织机构">
                     <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
-                        <FormItem label="名称" prop="name">
-                            <Input v-model="form.name" placeholder="必填项"></Input>
+                        <FormItem label="名称" prop="title">
+                            <Input v-model="form.title" placeholder="必填项"></Input>
                         </FormItem>
-                        <FormItem label="所属部门" prop="parent_id">
+                        <FormItem label="菜单层级" prop="parent_id">
                             <a-tree-select
                                 :treeData="treeData"
                                 :showSearch="showSearch"
@@ -23,8 +23,11 @@
                                 placeholder='必填项'
                             />
                         </FormItem>
-                        <FormItem label="备注" prop="desc">
-                            <Input v-model="form.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
+                        <FormItem label="链接地址" prop="url">
+                            <Input v-model="form.url" placeholder="可选项"></Input>
+                        </FormItem>
+                        <FormItem label="备注" prop="description">
+                            <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
                         </FormItem>
                         <FormItem>
                             <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
@@ -41,19 +44,23 @@
     </div>
 </template>
 <script>
-    import {getDeptlist, getDeptSelecter, add} from 'api/department';
+    import {getmenus, getMenuSelecter, add} from 'api/system';
     import './departments.css';
     import {TreeSelect} from 'ant-design-vue'
 
     const SHOW_PARENT = TreeSelect.SHOW_PARENT;
     const columns = [{
         title: '名称',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'title',
+        key: 'title',
+    }, {
+        title: '地址',
+        dataIndex: 'url',
+        key: 'url',
     }, {
         title: '备注',
-        dataIndex: 'desc',
-        key: 'desc',
+        dataIndex: 'description',
+        key: 'description',
         width: '12%',
     }, {
         title: '创建时间',
@@ -85,12 +92,13 @@
                 treeData: [],
                 SHOW_PARENT,
                 form: {
-                    name: '',
+                    title: '',
+                    url: '',
                     parent_id: '0',
-                    desc: ''
+                    description: ''
                 },
                 ruleValidate: {
-                    name: [
+                    title: [
                         {required: true, message: '名称不能为空', trigger: 'blur'}
                     ],
                     parent_id: [
@@ -102,12 +110,13 @@
             }
         },
         mounted() {
-            getDeptlist().then((data) => {
+            getmenus().then((data) => {
                 this.data = data.result;
                 this.loadingTable = false;
             });
-            getDeptSelecter().then((data) => {
+            getMenuSelecter().then((data) => {
                 this.treeData = data.result;
+                console.log(this.treeData)
             });
         },
         methods: {
@@ -122,11 +131,11 @@
                                 this.$refs[name].resetFields();
                                 this.modal1 = false;
                                 this.loadingTable = true;
-                                getDeptlist().then((data) => {
+                                getmenus().then((data) => {
                                     this.data = data.result;
                                     this.loadingTable = false;
                                 });
-                                getDeptSelecter().then((data) => {
+                                getMenuSelecter().then((data) => {
                                     this.treeData = data.result;
                                 });
                             } else {
