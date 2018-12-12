@@ -5,9 +5,9 @@
                 <Button type="primary" @click="modal1 = true" icon="md-add">创建</Button>
                 <Button type="error" disabled icon="md-trash">删除</Button>
                 <Modal
-                        v-model="modal1"
-                        @on-cancel="cancel"
-                        title="创建 组织机构">
+                    v-model="modal1"
+                    @on-cancel="cancel"
+                    title="创建 组织机构">
                     <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
                         <FormItem label="名称" prop="name">
                             <Input v-model="form.name" placeholder="必填项"></Input>

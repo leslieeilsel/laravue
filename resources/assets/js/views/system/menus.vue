@@ -5,9 +5,9 @@
                 <Button type="primary" @click="modal1 = true" icon="md-add">创建</Button>
                 <Button type="error" disabled icon="md-trash">删除</Button>
                 <Modal
-                        v-model="modal1"
-                        @on-cancel="cancel"
-                        title="创建 组织机构">
+                    v-model="modal1"
+                    @on-cancel="cancel"
+                    title="创建 组织机构">
                     <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
                         <FormItem label="名称" prop="title">
                             <Input v-model="form.title" placeholder="必填项"></Input>
@@ -38,8 +38,7 @@
                     </div>
                 </Modal>
             </p>
-            <a-table :columns="columns" :dataSource="data" :loading="loadingTable" bordered :rowSelection="rowSelection"
-                     size="middle"/>
+            <a-table :columns="columns" defaultExpandAllRows :dataSource="data" :loading="loadingTable" bordered :rowSelection="rowSelection" size="middle"/>
         </Card>
     </div>
 </template>
