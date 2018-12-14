@@ -98,24 +98,14 @@ export const mainRouter = [
         }
       },
       {
-        path: 'groups',
-        component: require('views/user/groups'),
-        name: 'groups',
+        path: 'role-manage',
+        component: require('views/user/role-manage'),
+        name: 'role-manage',
         meta: {
-          title: '角色管理',
+          title: '角色权限管理',
           noCache: true,
           roles: ['admin'] // or you can only set roles in sub nav
         }
-      },
-      {
-          path: 'roles',
-          component: require('views/user/roles'),
-          name: 'roles',
-          meta: {
-              title: '权限管理',
-              noCache: true,
-              roles: ['admin'] // or you can only set roles in sub nav
-          }
       },
       {
           path: 'departments',
