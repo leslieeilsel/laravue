@@ -69,28 +69,13 @@ class FeeOverviewMonthReport
             ->mergeCells('J3:P3')
             ->mergeCells('Q3:Q4');
         // 添加动态数据
-        $i = 5;
-        foreach ($data as $rs) {
-            $spreadsheet->getActiveSheet()
-                ->setCellValue('A' . $i, $rs[0])
-                ->setCellValue('B' . $i, $rs['tc1'])
-                ->setCellValue('C' . $i, $rs['tc2'])
-                ->setCellValue('D' . $i, $rs['tc3'])
-                ->setCellValue('E' . $i, $rs['tc4'])
-                ->setCellValue('F' . $i, $rs['tc5'])
-                ->setCellValue('G' . $i, $rs['tc6'])
-                ->setCellValue('H' . $i, $rs['tc7'])
-                ->setCellValue('I' . $i, $rs['tc8'])
-                ->setCellValue('J' . $i, $rs['fee0'])
-                ->setCellValue('K' . $i, $rs['fee1'])
-                ->setCellValue('L' . $i, $rs['fee2'])
-                ->setCellValue('M' . $i, $rs['fee3'])
-                ->setCellValue('N' . $i, $rs['fee4'])
-                ->setCellValue('O' . $i, $rs['fee5'])
-                ->setCellValue('P' . $i, $rs['fee6'])
-                ->setCellValue('Q' . $i, $rs['fee7']);
-            $i++;
-        }
+        $spreadsheet->getActiveSheet()
+            ->fromArray(
+                $data,      // The data to set
+                NULL,       // Array values with this value will not be set
+                'A5'        // Top left coordinate of the worksheet range where
+                            // we want to set these values (default is A1)
+            );
         //  设置宽度
         $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(16);
         $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(16);
@@ -131,6 +116,15 @@ class FeeOverviewMonthReport
         $spreadsheet->getActiveSheet()->getStyle('A1')->applyFromArray($centerStyleArray);
         $spreadsheet->getActiveSheet()->getStyle('A3:A20')->applyFromArray($centerStyleArray);
         $spreadsheet->getActiveSheet()->getStyle('B3:Q4')->applyFromArray($centerStyleArray);
+        // 设置边框
+        $borderStyleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                ],
+            ],
+        ];
+        $spreadsheet->getActiveSheet()->getStyle('A1:Q20')->applyFromArray($borderStyleArray);
         // 设置千分位
         $spreadsheet->getActiveSheet()->getStyle('B5:Q18')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
         // 重命名 worksheet
