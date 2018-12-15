@@ -23,6 +23,7 @@
                 btnDisable: true,
                 disable: true,
                 loading: false,
+                baseUrl: '',
                 columns: [
                     {
                         title: '市区',
@@ -167,6 +168,7 @@
                     let _this = this;
                     getOverviewMonthData(this.startValue, this.endValue, 'fxf').then(function(result) {
                         _this.data = result.result;
+                        _this.baseUrl = result.baseUrl;
                         _this.loading = false;
                         _this.btnDisable = false;
                     }).catch(function(){
@@ -181,7 +183,7 @@
                 }
             },
             exportData () {
-                window.location.href = 'http://localhost:3114/api/exportoverviewmonth/' + this.startValue + '/' + this.endValue + '/' + 'fxf';
+                window.location.href = this.baseUrl + '/api/exportoverviewmonth/' + this.startValue + '/' + this.endValue + '/' + 'fxf';
             }
         }
     }
