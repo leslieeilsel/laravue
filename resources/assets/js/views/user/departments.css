@@ -9,3 +9,8 @@
 .ant-table-pagination {
     display: none;
 }
+
+.page {
+    margin-top: 15px;
+    height: 35px;
+}

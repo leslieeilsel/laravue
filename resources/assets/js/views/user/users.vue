@@ -39,8 +39,7 @@
                             <Input v-model="form.pwdCheck" type="password" placeholder="必填项"/>
                         </FormItem>
                         <FormItem label="备注" prop="desc">
-                            <Input v-model="form.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                                   placeholder="可选项"></Input>
+                            <Input v-model="form.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
                         </FormItem>
                         <FormItem>
                             <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
@@ -52,8 +51,9 @@
                 </Modal>
             </p>
             <Table border :columns="columns7" :data="nowData" :loading="loadingTable"></Table>
-            <Page :total="dataCount" class-name="page-align" :page-size="pageSize" @on-change="changepage"
-                  @on-page-size-change="_nowPageSize" show-total show-sizer show-elevator/>
+            <div class="page">
+                <Page :total="dataCount" class-name="page-align" :page-size="pageSize" @on-change="changepage" @on-page-size-change="_nowPageSize" show-total show-sizer show-elevator/>
+            </div>
         </Card>
     </div>
 </template>
