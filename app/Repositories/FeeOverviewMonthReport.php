@@ -25,6 +25,8 @@ class FeeOverviewMonthReport
     public function export ($params)
     {
         $data = $this->getOverviewMonthData($params);
+        $startMonth = str_replace('-', '.', $params['startMonth']);
+        $endMonth = str_replace('-', '.', $params['endMonth']);
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性
@@ -37,7 +39,7 @@ class FeeOverviewMonthReport
             ->setCategory('Test result file');
         // 添加表头
         $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('A1', '发行费分配概览-月报')
+            ->setCellValue('A1', $startMonth . '-' . $endMonth . '发行费分配概览（月报）')
             ->setCellValue('A2', '单位：元')
             ->setCellValue('A3', '市区')
             ->setCellValue('B3', '月体育彩票销量')
