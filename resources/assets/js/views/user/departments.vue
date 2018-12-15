@@ -2,12 +2,12 @@
     <div>
         <Card>
             <p class="btnGroup">
-                <Button type="primary" @click="modal1 = true" icon="md-add">创建</Button>
+                <Button type="primary" @click="modal1 = true" icon="md-add">添加</Button>
                 <Button type="error" disabled icon="md-trash">删除</Button>
                 <Modal
                     v-model="modal1"
                     @on-cancel="cancel"
-                    title="创建 组织机构">
+                    title="添加组织机构">
                     <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
                         <FormItem label="名称" prop="name">
                             <Input v-model="form.name" placeholder="必填项"></Input>
@@ -26,12 +26,10 @@
                         <FormItem label="备注" prop="desc">
                             <Input v-model="form.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
                         </FormItem>
-                        <FormItem>
-                            <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
-                            <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-                        </FormItem>
                     </Form>
                     <div slot="footer">
+                        <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+                        <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
                     </div>
                 </Modal>
             </p>
