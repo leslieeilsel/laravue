@@ -11,7 +11,7 @@ class FeeOverviewMonthReport
     public $choose_year;
     public $last_year;
 
-    public function __construct ()
+    public function __construct()
     {
     }
 
@@ -22,7 +22,7 @@ class FeeOverviewMonthReport
      * @return void
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function export ($params)
+    public function export($params)
     {
         $data = $this->getOverviewMonthData($params);
         $startMonth = str_replace('-', '.', $params['startMonth']);
@@ -72,7 +72,7 @@ class FeeOverviewMonthReport
         $spreadsheet->getActiveSheet()
             ->fromArray(
                 $data,      // The data to set
-                NULL,       // Array values with this value will not be set
+                null,       // Array values with this value will not be set
                 'A5'        // Top left coordinate of the worksheet range where
                             // we want to set these values (default is A1)
             );
@@ -156,7 +156,7 @@ class FeeOverviewMonthReport
      * @param array $params
      * @return array
      */
-    public function getOverviewMonthData ($params)
+    public function getOverviewMonthData($params)
     {
         $body = [];
         $reportType = $params['reportType'];
@@ -187,7 +187,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getFxfOverviewMonthData ($date)
+    public function getFxfOverviewMonthData($date)
     {
         $fee = ['0.04', '0.04', '0.04', '0.03', '0.005', '0.03', '0.015'];
         $body = $this->getMonthFeeData($date, $fee);
@@ -202,7 +202,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getGyjOverviewMonthData ($date)
+    public function getGyjOverviewMonthData($date)
     {
         $fee = ['0.0925', '0.09', '0.085', '0.07', '0.045', '0.055', '0.05'];
         $body = $this->getMonthFeeData($date, $fee);
@@ -217,7 +217,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getYjOverviewMonthData ($date)
+    public function getYjOverviewMonthData($date)
     {
         $fee = ['0.08', '0.08', '0.08', '0.08', '0.08', '0.08', '0.1'];
         $body = $this->getMonthFeeData($date, $fee);
@@ -232,7 +232,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getFjOverviewMonthData ($date)
+    public function getFjOverviewMonthData($date)
     {
         $fee = ['0.5', '0.51', '0.53', '0.59', '0.73', '0.65', '0.65'];
         $body = $this->getMonthFeeData($date, $fee);
@@ -248,7 +248,7 @@ class FeeOverviewMonthReport
      * @param array $fee
      * @return array
      */
-    protected function getMonthFeeData ($date, $fee)
+    protected function getMonthFeeData($date, $fee)
     {
         $body = [];
         $jin = [];
@@ -294,7 +294,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function getFeeMonthReportData ($date)
+    public function getFeeMonthReportData($date)
     {
         $query = DB::table('ibiart_slms_sale_m_summary')->select('year', 'region_id', 'game_type', 'game_num', DB::raw("sum(sale_amt) as sale"));
         $query->whereIn('sale_at', $this->buildMonthList($date));
@@ -348,7 +348,7 @@ class FeeOverviewMonthReport
      * @param array $date
      * @return array
      */
-    public function buildMonthList ($date)
+    public function buildMonthList($date)
     {
         $dates = [];
         $startDate = explode('-', $date['startMonth']);
@@ -369,7 +369,7 @@ class FeeOverviewMonthReport
      * @param $body
      * @return array
      */
-    public function bodyFormat ($body)
+    public function bodyFormat($body)
     {
         $newBody = [];
         foreach ($body as $key => $rows) {

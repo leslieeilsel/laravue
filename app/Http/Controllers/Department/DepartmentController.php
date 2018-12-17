@@ -28,7 +28,8 @@ class DepartmentController extends Controller
         return response()->json(['result' => $data], 200);
     }
 
-    public function getChild ($pid, $depts) {
+    public function getChild($pid, $depts)
+    {
         $tree = [];
         foreach ($depts as $k => $v) {
             if ($v['parent_id'] === $pid) {                     //匹配子记录
@@ -47,7 +48,8 @@ class DepartmentController extends Controller
         return $tree;
     }
 
-    public function getDeptSelecter() {
+    public function getDeptSelecter()
+    {
         $depts = DB::table('department')->select('id', 'name', 'parent_id')->get()->map(function ($value) {
             return (array)$value;
         })->toArray();
@@ -74,7 +76,8 @@ class DepartmentController extends Controller
         return response()->json(['result' => $data], 200);
     }
 
-    public function getChildSelecter ($pid, $depts) {
+    public function getChildSelecter($pid, $depts)
+    {
         $tree = [];
         foreach ($depts as $k => $v) {
             if ($v['parent_id'] === $pid) {                     //匹配子记录

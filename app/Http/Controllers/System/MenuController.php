@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\System;
+
 use App\Models\Menu;
 use Illuminate\Http\Request;
-
 
 class MenuController
 {
@@ -24,7 +24,8 @@ class MenuController
         return response()->json(['result' => $data], 200);
     }
 
-    public function getChild ($pid, $menus) {
+    public function getChild($pid, $menus)
+    {
         $tree = [];
         foreach ($menus as $k => $v) {
             if ($v['parent_id'] === $pid) {                     //匹配子记录
@@ -42,7 +43,8 @@ class MenuController
         return $tree;
     }
 
-    public function getMenuSelecter() {
+    public function getMenuSelecter()
+    {
         $menus = Menu::select('id', 'title', 'parent_id')->get()->toArray();
         $deptArr = [];
         foreach ($menus as $k => $v) {
@@ -67,7 +69,8 @@ class MenuController
         return response()->json(['result' => $data], 200);
     }
 
-    public function getChildSelecter ($pid, $menus) {
+    public function getChildSelecter($pid, $menus)
+    {
         $tree = [];
         foreach ($menus as $k => $v) {
             if ($v['parent_id'] === $pid) {                     //匹配子记录

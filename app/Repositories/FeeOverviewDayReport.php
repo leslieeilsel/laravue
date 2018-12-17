@@ -13,7 +13,7 @@ class FeeOverviewDayReport
      * @param string $date
      * @return array
      */
-    public function getmb01ReportData ($date)
+    public function getmb01ReportData($date)
     {
         $fee = ['0.04', '0.04', '0.04', '0.03', '0.005', '0.03', '0.015'];
         $body = $this->getFeeData($date, $fee);
@@ -27,7 +27,7 @@ class FeeOverviewDayReport
      * @param string $date
      * @return array
      */
-    public function getmb02ReportData ($date)
+    public function getmb02ReportData($date)
     {
         $fee = ['0.0925', '0.09', '0.085', '0.07', '0.045', '0.055', '0.05'];
         $body = $this->getFeeData($date, $fee);
@@ -41,7 +41,7 @@ class FeeOverviewDayReport
      * @param string $date
      * @return array
      */
-    public function getmb03ReportData ($date)
+    public function getmb03ReportData($date)
     {
         $fee = ['0.08', '0.08', '0.08', '0.08', '0.08', '0.08', '0.1'];
         $body = $this->getFeeData($date, $fee);
@@ -55,7 +55,7 @@ class FeeOverviewDayReport
      * @param string $date
      * @return array
      */
-    public function getmb04ReportData ($date)
+    public function getmb04ReportData($date)
     {
         $fee = ['0.5', '0.51', '0.53', '0.59', '0.73', '0.65', '0.65'];
         $body = $this->getFeeData($date, $fee);
@@ -70,7 +70,7 @@ class FeeOverviewDayReport
      * @param array $fee
      * @return array
      */
-    protected function getFeeData ($date, $fee)
+    protected function getFeeData($date, $fee)
     {
         $body = [];
         $sale_jin = [];
@@ -115,7 +115,7 @@ class FeeOverviewDayReport
      * @param string $date
      * @return array
      */
-    public function getFeeReportData ($date)
+    public function getFeeReportData($date)
     {
         $date = explode(",", $date);
         $start_year = date_format(date_create($date[0]), 'Y');
