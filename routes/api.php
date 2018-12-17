@@ -37,5 +37,8 @@ Route::get('menu/getmenus', 'System\MenuController@getMenus');
 Route::get('menu/menuselecter', 'System\MenuController@getMenuSelecter');
 Route::post('menu/add', 'System\MenuController@add');
 
+Route::get('role/roles', 'System\RoleController@getRoles');
+Route::post('role/add', 'System\RoleController@add');
+
 Route::post('overviewmonth', 'Api\ApiController@getOverviewMonthData');
 Route::get('exportoverviewmonth/{startMonth}/{endMonth}/{type}', 'Api\ApiController@exportOverviewMonthData');

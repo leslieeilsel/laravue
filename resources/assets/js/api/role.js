@@ -1,26 +1,15 @@
 import request from '../utils/request'
 
-// /**
-//  * 获取部门
-//  * @returns {*}
-//  */
-// export function getDeptlist() {
-//     return request({
-//         url: '/api/department/depts',
-//         method: 'get'
-//     });
-// }
-
-// /**
-//  * 获取部门选择器
-//  * @returns {*}
-//  */
-// export function getDeptSelecter() {
-//     return request({
-//         url: '/api/department/deptselecter',
-//         method: 'get'
-//     });
-// }
+/**
+ * 获取角色列表
+ * @returns {*}
+ */
+export function getRoles() {
+    return request({
+        url: '/api/role/roles',
+        method: 'get'
+    });
+}
 
 /**
  * 创建角色
