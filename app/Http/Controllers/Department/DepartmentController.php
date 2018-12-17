@@ -67,7 +67,7 @@ class DepartmentController extends Controller
             }
         }
         $data[] = [
-            'label' => '根部门',
+            'label' => '一级部门',
             'key' => 0,
             'value' => (string)0,
             'children' => $deptArr

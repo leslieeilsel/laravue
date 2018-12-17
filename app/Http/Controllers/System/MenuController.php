@@ -60,7 +60,7 @@ class MenuController
             }
         }
         $data[] = [
-            'label' => '根菜单',
+            'label' => '一级菜单',
             'key' => 0,
             'value' => (string)0,
             'children' => $deptArr
