@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Department;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Department;
 
 class DepartmentController extends Controller
 {
     public function getDepts()
     {
-        $depts = DB::table('department')->get()->map(function ($value) {
-            return (array)$value;
-        })->toArray();
+        $depts = Department::all();
         $data = [];
         foreach ($depts as $k => $v) {
             if ($v['parent_id'] === 0) {
@@ -50,9 +49,7 @@ class DepartmentController extends Controller
 
     public function getDeptSelecter()
     {
-        $depts = DB::table('department')->select('id', 'name', 'parent_id')->get()->map(function ($value) {
-            return (array)$value;
-        })->toArray();
+        $depts = Department::select('id', 'name', 'parent_id')->get()->toArray();
         $deptArr = [];
         foreach ($depts as $k => $v) {
             if ($v['parent_id'] === 0) {
@@ -66,14 +63,8 @@ class DepartmentController extends Controller
                 $deptArr[] = $v;
             }
         }
-        $data[] = [
-            'label' => '一级部门',
-            'key' => 0,
-            'value' => (string)0,
-            'children' => $deptArr
-        ];
 
-        return response()->json(['result' => $data], 200);
+        return response()->json(['result' => $deptArr], 200);
     }
 
     public function getChildSelecter($pid, $depts)

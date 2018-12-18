@@ -29,7 +29,7 @@ class RoleController
      */
     public function getRoles()
     {
-        $roles = Role::select('name', 'description', 'created_at')->get()->toArray();
+        $roles = Role::select('id', 'name', 'description', 'created_at')->get()->toArray();
 
         return response()->json(['result' => $roles], 200);
     }

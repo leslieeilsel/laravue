@@ -2,17 +2,17 @@
     <div>
         <Card>
             <p class="btnGroup">
-                <Button type="primary" @click="modal1 = true" icon="md-add">添加</Button>
+                <Button type="primary" @click="modal1 = true" icon="md-add">添加部门</Button>
                 <Button type="error" disabled icon="md-trash">删除</Button>
                 <Modal
                     v-model="modal1"
                     @on-cancel="cancel"
-                    title="添加组织机构">
+                    title="添加部门">
                     <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
                         <FormItem label="名称" prop="name">
                             <Input v-model="form.name" placeholder="必填项"></Input>
                         </FormItem>
-                        <FormItem label="所属部门" prop="parent_id">
+                        <FormItem label="上级部门" prop="parent_id">
                             <a-tree-select
                                 :treeData="treeData"
                                 :showSearch="showSearch"

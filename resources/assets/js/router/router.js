@@ -112,7 +112,7 @@ export const mainRouter = [
           component: require('views/user/departments'),
           name: 'departments',
           meta: {
-              title: '组织机构',
+              title: '部门管理',
               noCache: true,
               roles: ['admin'] // or you can only set roles in sub nav
           }

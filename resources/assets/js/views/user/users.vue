@@ -2,10 +2,10 @@
     <div>
         <Card>
             <p class="btnGroup">
-                <Button type="primary" @click="modal1 = true" icon="md-add">添加</Button>
+                <Button type="primary" @click="modal = true" icon="md-add">添加用户</Button>
                 <Button type="error" disabled icon="md-trash">删除</Button>
                 <Modal
-                    v-model="modal1"
+                    v-model="modal"
                     @on-cancel="cancel"
                     title="添加用户">
                     <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
@@ -32,6 +32,14 @@
                                 placeholder='必填项'
                             />
                         </FormItem>
+                        <FormItem label="角色分配" prop="group_id">
+                            <Select v-model="form.group_id">
+                                <Option v-for="item in roleList" :value="item.id" :label="item.name" :key="item.id">
+                                    <span>{{ item.name }}</span>
+                                    <span style="float:right;padding-right:15px;color:#ccc">{{ item.description }}</span>
+                                </Option>
+                            </Select>
+                        </FormItem>
                         <FormItem label="密码" prop="password">
                             <Input v-model="form.password" type="password" placeholder="必填项"/>
                         </FormItem>
@@ -48,15 +56,13 @@
                     </div>
                 </Modal>
             </p>
-            <Table border :columns="columns7" :data="nowData" :loading="loadingTable"></Table>
-            <div class="page">
-                <Page :total="dataCount" class-name="page-align" :page-size="pageSize" @on-change="changepage" @on-page-size-change="_nowPageSize" show-total show-sizer show-elevator/>
-            </div>
+            <Table border :columns="columns" :data="data" :loading="loadingTable"></Table>
         </Card>
     </div>
 </template>
 <script>
     import {registUser, getUsers} from 'api/user';
+    import {getRoles} from 'api/role';
     import {getDeptSelecter} from 'api/department';
     import './users.css';
     import {TreeSelect} from 'ant-design-vue'
@@ -93,18 +99,15 @@
                 showSearch: true,
                 loadingTable: true,
                 loading: false,
-                modal1: false,
+                modal: false,
                 SHOW_PARENT,
-                //分页
-                pageSize: 10,//每页显示多少条
-                dataCount: 0,//总条数
-                pageCurrent: 1,//当前页
                 form: {
                     username: '',
                     name: '',
                     email: '',
                     phone: '',
-                    department_id: '0',
+                    department_id: '',
+                    group_id: '',
                     password: '',
                     pwdCheck: '',
                     desc: ''
@@ -126,7 +129,7 @@
                         {required: true, message: '所属部门不能为空', trigger: 'blur'}
                     ]
                 },
-                columns7: [
+                columns: [
                     {
                         type: 'selection',
                         width: 60,
@@ -151,6 +154,14 @@
                         key: 'username'
                     },
                     {
+                        title: '所属部门',
+                        key: 'department'
+                    },
+                    {
+                        title: '角色',
+                        key: 'group'
+                    },
+                    {
                         title: '邮箱',
                         key: 'email'
                     },
@@ -160,72 +171,32 @@
                         sortable: true,
                     },
                     {
-                        title: '操作',
-                        key: 'action',
-                        width: 150,
-                        align: 'center',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.show(params.index)
-                                        }
-                                    }
-                                }, 'View'),
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.remove(params.index)
-                                        }
-                                    }
-                                }, 'Delete')
-                            ]);
-                        }
+                        title: '最近登录时间',
+                        key: 'last_login',
+                        sortable: true,
                     }
                 ],
-                data6: [],
+                data: [],
                 treeData: [],
-                nowData: [],
                 rowSelection,
+                roleList: []
             }
         },
         mounted() {
             getUsers().then((data) => {
-                this.data6 = data.result;
+                this.data = data.result;
                 this.loadingTable = false;
-                //分页显示所有数据总数
-                this.dataCount = this.data6.length;
-                //循环展示页面刚加载时需要的数据条数
-                this.nowData = [];
-                for (let i = 0; i < this.pageSize; i++) {
-                    this.nowData.push(this.data6[i]);
-                }
             });
             getDeptSelecter().then((data) => {
                 this.treeData = data.result;
             });
+            getRoles().then((data) => {
+                this.roleList = data.result;
+            });
         },
         methods: {
-            show(index) {
-                this.$Modal.info({
-                    title: 'User Info',
-                    content: `Name：${this.data6[index].name}<br>username：${this.data6[index].age}<br>Address：${this.data6[index].address}`
-                })
-            },
             remove(index) {
-                this.data6.splice(index, 1);
+                this.data.splice(index, 1);
             },
             handleSubmit(name) {
                 this.$refs[name].validate((valid) => {
@@ -235,18 +206,11 @@
                             this.loading = false;
                             this.$Message.success('创建成功');
                             this.$refs[name].resetFields();
-                            this.modal1 = false;
+                            this.modal = false;
                             this.loadingTable = true;
                             getUsers().then((data) => {
-                                this.data6 = data.result;
+                                this.data = data.result;
                                 this.loadingTable = false;
-                                //分页显示所有数据总数
-                                this.dataCount = this.data6.length;
-                                //循环展示页面刚加载时需要的数据条数
-                                this.nowData = [];
-                                for (let i = 0; i < this.pageSize; i++) {
-                                    this.nowData.push(this.data6[i]);
-                                }
                             });
                         });
                     } else {
@@ -262,22 +226,7 @@
             },
             onChange(value) {
                 this.form.department_id = value;
-            },
-            changepage(index) {
-                //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
-                let _start = (index - 1) * this.pageSize;
-                //需要显示结束数据的index
-                let _end = index * this.pageSize;
-                //截取需要显示的数据
-                this.nowData = this.data6.slice(_start, _end);
-                //储存当前页
-                this.pageCurrent = index;
-            },
-            //每页显示的数据条数
-            _nowPageSize(index) {
-                //实时获取当前需要显示的条数
-                this.pageSize = index;
-            },
+            }
         }
     }
 </script>

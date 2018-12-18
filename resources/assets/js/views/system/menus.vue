@@ -2,7 +2,7 @@
     <div>
         <Card>
             <p class="btnGroup">
-                <Button type="primary" @click="modal1 = true" icon="md-add">添加</Button>
+                <Button type="primary" @click="modal1 = true" icon="md-add">添加菜单</Button>
                 <Button type="error" disabled icon="md-trash">删除</Button>
                 <Modal
                     v-model="modal1"

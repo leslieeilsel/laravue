@@ -31,6 +31,11 @@ class AuthController extends Controller
             return response()->json(['error' => '登录失败，用户名或密码错误！'], 200);
         }
 
+        // 记录最近登录时间
+        $user = Auth::user();
+        $user->last_login = date('Y-m-d H:i:s');
+        $user->save();
+
         return $this->respondWithToken($token);
     }
 
