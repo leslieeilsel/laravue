@@ -59,14 +59,8 @@ class MenuController
                 $deptArr[] = $v;
             }
         }
-        $data[] = [
-            'label' => '一级菜单',
-            'key' => 0,
-            'value' => (string)0,
-            'children' => $deptArr
-        ];
 
-        return response()->json(['result' => $data], 200);
+        return response()->json(['result' => $deptArr], 200);
     }
 
     public function getChildSelecter($pid, $menus)

@@ -104,6 +104,12 @@
                 },
                 columns,
                 rowSelection,
+                tree: {
+                    label: '一级菜单',
+                    'key': 0,
+                    'value': '0',
+                    'children': []
+                }
             }
         },
         mounted() {
@@ -112,8 +118,8 @@
                 this.loadingTable = false;
             });
             getMenuSelecter().then((data) => {
-                this.treeData = data.result;
-                console.log(this.treeData)
+                this.tree.children = data.result;
+                this.treeData = [this.tree];
             });
         },
         methods: {
@@ -133,7 +139,8 @@
                                     this.loadingTable = false;
                                 });
                                 getMenuSelecter().then((data) => {
-                                    this.treeData = data.result;
+                                    this.tree.children = data.result;
+                                    this.treeData = [this.tree];
                                 });
                             } else {
                                 this.loading = false;

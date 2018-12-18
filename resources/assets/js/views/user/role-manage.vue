@@ -2,7 +2,7 @@
     <div>
         <Card>
             <p class="btnGroup">
-                <Button type="primary" @click="modal = true" icon="md-add">添加</Button>
+                <Button type="primary" @click="modal = true" icon="md-add">添加角色</Button>
                 <Button type="error" disabled icon="md-trash">删除</Button>
                 <Modal
                     v-model="modal"
@@ -27,6 +27,15 @@
                         <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
                     </div>
                 </Modal>
+                <Modal
+                    v-model="treeModal"
+                    :width="500"
+                    title="设置菜单权限">
+                    <Tree :data="treeData" show-checkbox multiple></Tree>
+                    <div slot="footer">
+                        <Button type="primary" @click="treeSubmit()" :loading="loading">提交</Button>
+                    </div>
+                </Modal>
             </p>
             <Table border :columns="columns" :data="data" :loading="loadingTable"></Table>
         </Card>
@@ -41,6 +50,7 @@
                 loading: false,
                 loadingTable: true,
                 modal: false,
+                treeModal: false,
                 form: {
                     name: '',
                     description: '',
@@ -96,7 +106,8 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.show(params.index)
+                                            console.log(params);
+                                            this.treeModal = true;
                                         }
                                     }
                                 }, '菜单权限')
@@ -104,7 +115,42 @@
                         }
                     }
                 ],
-                data: []
+                data: [],
+                treeData: [
+                    {
+                        title: 'parent 1',
+                        expand: true,
+                        selected: true,
+                        children: [
+                            {
+                                title: 'parent 1-1',
+                                expand: true,
+                                children: [
+                                    {
+                                        title: 'leaf 1-1-1',
+                                        disabled: true
+                                    },
+                                    {
+                                        title: 'leaf 1-1-2'
+                                    }
+                                ]
+                            },
+                            {
+                                title: 'parent 1-2',
+                                expand: true,
+                                children: [
+                                    {
+                                        title: 'leaf 1-2-1',
+                                        checked: true
+                                    },
+                                    {
+                                        title: 'leaf 1-2-1'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         mounted() {
@@ -143,6 +189,9 @@
             onChange(value) {
                 this.form.department_id = value;
             },
+            treeSubmit() {
+
+            }
         }
     }
 </script>

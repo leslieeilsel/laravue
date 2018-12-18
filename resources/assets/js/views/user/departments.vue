@@ -97,6 +97,12 @@
                 },
                 columns,
                 rowSelection,
+                tree: {
+                    label: '一级部门',
+                    'key': 0,
+                    'value': '0',
+                    'children': []
+                }
             }
         },
         mounted() {
@@ -105,7 +111,8 @@
                 this.loadingTable = false;
             });
             getDeptSelecter().then((data) => {
-                this.treeData = data.result;
+                this.tree.children = data.result;
+                this.treeData = [this.tree];
             });
         },
         methods: {
@@ -125,7 +132,8 @@
                                     this.loadingTable = false;
                                 });
                                 getDeptSelecter().then((data) => {
-                                    this.treeData = data.result;
+                                    this.tree.children = data.result;
+                                    this.treeData = [this.tree];
                                 });
                             } else {
                                 this.loading = false;
