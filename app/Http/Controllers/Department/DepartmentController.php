@@ -31,10 +31,10 @@ class DepartmentController extends Controller
     {
         $tree = [];
         foreach ($depts as $k => $v) {
-            if ($v['parent_id'] === $pid) {                     //匹配子记录
-                $v['children'] = $this->getChild($v['id'], $depts); //递归获取子记录
+            if ($v['parent_id'] === $pid) {                         // 匹配子记录
+                $v['children'] = $this->getChild($v['id'], $depts); // 递归获取子记录
                 if ($v['children'] == null) {
-                    unset($v['children']);             //如果子元素为空则unset()
+                    unset($v['children']);                          // 如果子元素为空则unset()
                 }
                 $v['key'] = $v['id'];
                 unset($v['id']);
@@ -71,10 +71,10 @@ class DepartmentController extends Controller
     {
         $tree = [];
         foreach ($depts as $k => $v) {
-            if ($v['parent_id'] === $pid) {                     //匹配子记录
-                $v['children'] = $this->getChildSelecter($v['id'], $depts); //递归获取子记录
+            if ($v['parent_id'] === $pid) {                                 // 匹配子记录
+                $v['children'] = $this->getChildSelecter($v['id'], $depts); // 递归获取子记录
                 if ($v['children'] == null) {
-                    unset($v['children']);             //如果子元素为空则unset()
+                    unset($v['children']);                                  // 如果子元素为空则unset()
                 }
                 $v['label'] = $v['name'];
                 $v['key'] = $v['id'];
@@ -94,10 +94,7 @@ class DepartmentController extends Controller
         $data = $request->input();
         $data['created_at'] = date('Y-m-d H:i:s');
         $result = DB::table('department')->insert($data);
-        if ($result) {
-            return response()->json(['result' => true], 200);
-        } else {
-            return response()->json(['result' => false], 200);
-        }
+
+        return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
     }
 }

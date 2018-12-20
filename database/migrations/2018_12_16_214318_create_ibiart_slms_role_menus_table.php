@@ -17,6 +17,7 @@ class CreateIbiartSlmsRoleMenusTable extends Migration
             $table->increments('id')->unsigned();
             $table->integer('role_id')->unsigned();
             $table->integer('menu_id')->unsigned();
+            $table->integer('checked')->unsigned();
         });
     }
 

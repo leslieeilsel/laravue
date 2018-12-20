@@ -23,6 +23,18 @@ export function getMenuSelecter() {
 }
 
 /**
+ * 获取树状菜单选择器
+ * @returns {*}
+ */
+export function getMenuTree(id) {
+    return request({
+        url: '/api/menu/menutree',
+        method: 'post',
+        data: { id }
+    });
+}
+
+/**
  * 创建组织机构
  * @returns {*}
  */

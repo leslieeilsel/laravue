@@ -22,3 +22,15 @@ export function add(form) {
         data: { ...form }
     });
 }
+
+/**
+ * 设置菜单权限
+ * @returns {*}
+ */
+export function setRoleMenus(selected, roleid) {
+    return request({
+        url: '/api/role/setrolemenus',
+        method: 'post',
+        data: { selected, roleid }
+    });
+}

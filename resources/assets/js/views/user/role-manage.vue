@@ -31,9 +31,9 @@
                     v-model="treeModal"
                     :width="500"
                     title="设置菜单权限">
-                    <Tree :data="treeData" show-checkbox multiple></Tree>
+                    <Tree ref="tree" :data="treeData" show-checkbox multiple></Tree>
                     <div slot="footer">
-                        <Button type="primary" @click="treeSubmit()" :loading="loading">提交</Button>
+                        <Button type="primary" @click="treeSubmit()" :loading="treeSubmitLoading">提交</Button>
                     </div>
                 </Modal>
             </p>
@@ -43,12 +43,15 @@
 </template>
 <script>
     import './users.css';
-    import { add, getRoles } from 'api/role';
+    import { add, getRoles,setRoleMenus } from 'api/role';
+    import { getMenuTree } from 'api/system';
     export default {
         data() {
             return {
                 loading: false,
                 loadingTable: true,
+                treeLoading: false,
+                treeSubmitLoading: false,
                 modal: false,
                 treeModal: false,
                 form: {
@@ -99,15 +102,21 @@
                                 h('Button', {
                                     props: {
                                         type: 'warning',
-                                        size: 'small'
+                                        size: 'small',
+                                        loading: params.row.is_loading
                                     },
                                     style: {
                                         marginRight: '5px'
                                     },
                                     on: {
                                         click: () => {
-                                            console.log(params);
-                                            this.treeModal = true;
+                                            this.rowId = params.row.id;
+                                            this.data[params.index].is_loading = true;
+                                            getMenuTree(params.row.id).then((data) => {
+                                                this.treeData = data.result;
+                                                this.treeModal = true;
+                                                this.data[params.index].is_loading = false;
+                                            });
                                         }
                                     }
                                 }, '菜单权限')
@@ -116,41 +125,8 @@
                     }
                 ],
                 data: [],
-                treeData: [
-                    {
-                        title: 'parent 1',
-                        expand: true,
-                        selected: true,
-                        children: [
-                            {
-                                title: 'parent 1-1',
-                                expand: true,
-                                children: [
-                                    {
-                                        title: 'leaf 1-1-1',
-                                        disabled: true
-                                    },
-                                    {
-                                        title: 'leaf 1-1-2'
-                                    }
-                                ]
-                            },
-                            {
-                                title: 'parent 1-2',
-                                expand: true,
-                                children: [
-                                    {
-                                        title: 'leaf 1-2-1',
-                                        checked: true
-                                    },
-                                    {
-                                        title: 'leaf 1-2-1'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+                treeData: [],
+                rowId: ''
             }
         },
         mounted() {
@@ -190,7 +166,17 @@
                 this.form.department_id = value;
             },
             treeSubmit() {
-
+                this.treeSubmitLoading = true;
+                let selectedNodes = this.$refs.tree.getCheckedAndIndeterminateNodes();
+                setRoleMenus(selectedNodes, this.rowId).then((data) => {
+                    this.treeSubmitLoading = false;
+                    if (data.result) {
+                        this.$Message.success('设置成功');
+                        this.treeModal = false;
+                    } else {
+                        this.$Message.error('设置失败');
+                    }
+                });
             }
         }
     }

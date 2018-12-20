@@ -35,10 +35,12 @@ Route::post('department/add', 'Department\DepartmentController@add');
 
 Route::get('menu/getmenus', 'System\MenuController@getMenus');
 Route::get('menu/menuselecter', 'System\MenuController@getMenuSelecter');
+Route::post('menu/menutree', 'System\MenuController@getMenuTree');
 Route::post('menu/add', 'System\MenuController@add');
 
 Route::get('role/roles', 'System\RoleController@getRoles');
 Route::post('role/add', 'System\RoleController@add');
+Route::post('role/setrolemenus', 'System\RoleController@setRoleMenus');
 
 Route::post('overviewmonth', 'Api\ApiController@getOverviewMonthData');
 Route::get('exportoverviewmonth/{startMonth}/{endMonth}/{type}', 'Api\ApiController@exportOverviewMonthData');

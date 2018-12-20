@@ -4,6 +4,7 @@ namespace App\Http\Controllers\System;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoleController
 {
@@ -30,7 +31,34 @@ class RoleController
     public function getRoles()
     {
         $roles = Role::select('id', 'name', 'description', 'created_at')->get()->toArray();
+        $is_loading = [
+            'is_loading' => false
+        ];
+
+        array_walk($roles, function (&$value, $key, $is_loading) {
+            $value = array_merge($value, $is_loading);
+        }, $is_loading);
 
         return response()->json(['result' => $roles], 200);
+    }
+
+    public function setRoleMenus(Request $request)
+    {
+        $insertArr = [];
+        $roleId = $request->input('roleid');
+
+        $selected = $request->input('selected');
+        foreach ($selected as $k => $row) {
+            $insertArr[] = [
+                'role_id' => $roleId,
+                'menu_id' => $row['id'],
+                'checked' => $row['checked']
+            ];
+        }
+
+        DB::table('ibiart_slms_role_menus')->where('role_id', $roleId)->delete();
+        $result = DB::table('ibiart_slms_role_menus')->insert($insertArr);
+
+        return response()->json(['result' => $result], 200);
     }
 }

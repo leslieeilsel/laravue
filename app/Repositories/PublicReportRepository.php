@@ -28,7 +28,7 @@ class PublicReportRepository
         $days = ($eTimeStamp - $sTimeStamp) / 86400 + 1;
 
         // 保存每天日期
-        $date = array();
+        $date = [];
 
         for ($i = 0; $i < $days; $i++) {
             $date[] = date('Y-m-d', $sTimeStamp + (86400 * $i));
