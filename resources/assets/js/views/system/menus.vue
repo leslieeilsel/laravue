@@ -12,6 +12,9 @@
                         <FormItem label="名称" prop="title">
                             <Input v-model="form.title" placeholder="必填项"></Input>
                         </FormItem>
+                        <FormItem label="英文名称" prop="en_title">
+                            <Input v-model="form.en_title" placeholder="必填项"></Input>
+                        </FormItem>
                         <FormItem label="菜单层级" prop="parent_id">
                             <a-tree-select
                                 :treeData="treeData"
@@ -25,6 +28,12 @@
                         </FormItem>
                         <FormItem label="链接地址" prop="url">
                             <Input v-model="form.url" placeholder="可选项"></Input>
+                        </FormItem>
+                        <FormItem label="前端组件" prop="frontend_component">
+                            <Input v-model="form.frontend_component" placeholder="可选项"></Input>
+                        </FormItem>
+                        <FormItem label="头像" prop="vector_icon">
+                            <Input v-model="form.vector_icon" placeholder="可选项"></Input>
                         </FormItem>
                         <FormItem label="备注" prop="description">
                             <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
@@ -90,6 +99,9 @@
                 SHOW_PARENT,
                 form: {
                     title: '',
+                    en_title: '',
+                    vector_icon: '',
+                    frontend_component: '',
                     url: '',
                     parent_id: '0',
                     description: ''
@@ -97,6 +109,9 @@
                 ruleValidate: {
                     title: [
                         {required: true, message: '名称不能为空', trigger: 'blur'}
+                    ],
+                    en_title: [
+                        {required: true, message: '英文名称不能为空', trigger: 'blur'}
                     ],
                     parent_id: [
                         {required: true, message: '所属部门不能为空', trigger: 'blur'}

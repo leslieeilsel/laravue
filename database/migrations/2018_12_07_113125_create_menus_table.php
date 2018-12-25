@@ -16,6 +16,9 @@ class CreateMenusTable extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');                                // 标题
+            $table->string('en_title');                             // 英文标题
+            $table->string('frontend_component');                   // 前端组件
+            $table->string('title');                                // 标题
             $table->integer('parent_id')->nullable()->unsigned();   // 父级ID
             $table->string('description')->nullable();              // 描述
             $table->string('url')->nullable();                      // 地址
