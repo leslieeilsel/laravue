@@ -1,9 +1,7 @@
 import request from '../utils/request'
 
 /**
- * 获取table数据
- * @param startMonth 开始时间
- * @param endMonth 结束时间
+ * 获取用户列表
  * @returns {*}
  */
 export function getUsers() {

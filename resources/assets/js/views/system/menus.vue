@@ -12,8 +12,8 @@
                         <FormItem label="名称" prop="title">
                             <Input v-model="form.title" placeholder="必填项"></Input>
                         </FormItem>
-                        <FormItem label="英文名称" prop="en_title">
-                            <Input v-model="form.en_title" placeholder="必填项"></Input>
+                        <FormItem label="英文名称" prop="name">
+                            <Input v-model="form.name" placeholder="必填项"></Input>
                         </FormItem>
                         <FormItem label="菜单层级" prop="parent_id">
                             <a-tree-select
@@ -26,14 +26,14 @@
                                 placeholder='必填项'
                             />
                         </FormItem>
-                        <FormItem label="链接地址" prop="url">
-                            <Input v-model="form.url" placeholder="可选项"></Input>
+                        <FormItem label="链接地址" prop="path">
+                            <Input v-model="form.path" placeholder="可选项"></Input>
                         </FormItem>
-                        <FormItem label="前端组件" prop="frontend_component">
-                            <Input v-model="form.frontend_component" placeholder="可选项"></Input>
+                        <FormItem label="前端组件" prop="component">
+                            <Input v-model="form.component" placeholder="可选项"></Input>
                         </FormItem>
-                        <FormItem label="头像" prop="vector_icon">
-                            <Input v-model="form.vector_icon" placeholder="可选项"></Input>
+                        <FormItem label="头像" prop="icon">
+                            <Input v-model="form.icon" placeholder="可选项"></Input>
                         </FormItem>
                         <FormItem label="备注" prop="description">
                             <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
@@ -61,8 +61,8 @@
         key: 'title',
     }, {
         title: '地址',
-        dataIndex: 'url',
-        key: 'url',
+        dataIndex: 'path',
+        key: 'path',
     }, {
         title: '备注',
         dataIndex: 'description',
@@ -99,10 +99,10 @@
                 SHOW_PARENT,
                 form: {
                     title: '',
-                    en_title: '',
-                    vector_icon: '',
-                    frontend_component: '',
-                    url: '',
+                    name: '',
+                    icon: '',
+                    component: '',
+                    path: '',
                     parent_id: '0',
                     description: ''
                 },
@@ -110,7 +110,7 @@
                     title: [
                         {required: true, message: '名称不能为空', trigger: 'blur'}
                     ],
-                    en_title: [
+                    name: [
                         {required: true, message: '英文名称不能为空', trigger: 'blur'}
                     ],
                     parent_id: [
