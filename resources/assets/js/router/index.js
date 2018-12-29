@@ -3,6 +3,8 @@ import Vue from 'vue';
 import iView from 'iview';
 import store from '../store'
 import VueRouter from 'vue-router';
+import { getRouter } from 'api/system';
+import layout from 'views/layout';
 
 import { constantRouterMap } from './router';
 import { getToken } from "utils/storage";
@@ -15,6 +17,7 @@ export const router = new VueRouter({
 });
 
 const whiteList = ['/login', '/password/send', '/password/reset'];
+export let getRouters; //用来获取后台拿到的路由
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start();
@@ -27,10 +30,16 @@ router.beforeEach((to, from, next) => {
       if (store.getters.roles.length === 0) {
         store.dispatch('getUserInfo').then(user => {
           const roles = user.roles || ['admin'];
-          store.dispatch('generateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
-            router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
-            // next();
-            next({ ...to, replace: true }); // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+          store.dispatch('generateRoutes', {
+            roles
+          }).then(() => { // 根据roles权限生成可访问的路由表
+            getRouter().then(data => {
+              getRouters = data.result; //后台拿到路由
+              routerGo(to, next) //执行路由跳转方法
+            });
+            next({ ...to,
+              replace: true
+            }); // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           });
         });
       } else {
@@ -47,6 +56,32 @@ router.beforeEach((to, from, next) => {
     }
   }
 });
+
+function routerGo(to, next) {
+  getRouters = filterAsyncRouter(getRouters); //过滤路由
+  router.addRoutes(getRouters); //动态添加路由
+  next({ ...to,
+    replace: true
+  })
+}
+
+function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符串，转换为组件对象
+  const accessedRouters = asyncRouterMap.filter(route => {
+    if (route.component) {
+      if (route.component === 'layout') { //Layout组件特殊处理
+        route.component = layout;
+      } else {
+        route.component = require('@/' + route.component + '.vue');
+      }
+    }
+    if (route.children && route.children.length) {
+      route.children = filterAsyncRouter(route.children)
+    }
+    return true
+  });
+
+  return accessedRouters;
+}
 
 router.afterEach(() => {
   iView.LoadingBar.finish();

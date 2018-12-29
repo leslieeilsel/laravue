@@ -34,6 +34,7 @@ Route::get('department/deptselecter', 'Department\DepartmentController@getDeptSe
 Route::post('department/add', 'Department\DepartmentController@add');
 
 Route::get('menu/getmenus', 'System\MenuController@getMenus');
+Route::get('menu/getrouter', 'System\MenuController@getRouter');
 Route::get('menu/menuselecter', 'System\MenuController@getMenuSelecter');
 Route::post('menu/menutree', 'System\MenuController@getMenuTree');
 Route::post('menu/add', 'System\MenuController@add');

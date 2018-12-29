@@ -45,3 +45,14 @@ export function add(form) {
         data: { ...form }
     });
 }
+
+/**
+ * 获取权限数据
+ * @returns {*}
+ */
+export function getRouter () {
+    return request({
+        url: '/api/menu/getrouter',
+        method: 'get'
+    });
+}

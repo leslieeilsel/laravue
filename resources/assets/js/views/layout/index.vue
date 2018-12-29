@@ -67,6 +67,8 @@
   import messageTip from './components/message-tip.vue';
   import Cookies from 'js-cookie';
   import util from '@/libs/util.js';
+  import { getRouter } from 'api/system';
+  import layout from 'views/layout';
 
   export default {
     components: {
@@ -77,13 +79,14 @@
     },
     data () {
       return {
+        menus: [],
         userName: '',
         openedSubmenuArr: this.$store.state.app.openedSubmenuArr
       };
     },
     computed: {
       menuList () {
-        return this.$store.getters.routers;
+        return this.menus;
       },
       pageTagsList () {
         return this.$store.state.app.pageOpenedList; // 打开的页面的页面对象
@@ -106,10 +109,24 @@
     },
     methods: {
       init () {
+        if (!this.getObjArr('router')) {
+          getRouter().then(data => {
+            this.menus = this.filterAsyncRouter(data.result);
+            this.saveObjArr('router', this.menus); //存储路由到localStorage
+          })
+        } else {//从localStorage拿到了路由
+          this.menus = this.getObjArr('router');//拿到路由
+        }
         this.userName = this.$store.getters.user.name;
 
         let messageCount = 3;
         this.messageCount = messageCount.toString();
+      },
+      getObjArr(name) { //localStorage 获取数组对象的方法
+        return JSON.parse(window.localStorage.getItem(name));
+      },
+      saveObjArr(name, data) { //localStorage 存储数组对象的方法
+        localStorage.setItem(name, JSON.stringify(data))
       },
       toggleClick () {
         this.shrink = !this.shrink;
@@ -126,6 +143,23 @@
           this.$store.dispatch('logout').then(() => this.$router.push('login'));
           //this.$store.commit('clearOpenedSubmenu');
         }
+      },
+      filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符串，转换为组件对象
+        const accessedRouters = asyncRouterMap.filter(route => {
+          if (route.component) {
+            if (route.component === 'layout') { //Layout组件特殊处理
+              route.component = layout;
+            } else {
+              route.component = require('@/' + route.component + '.vue');
+            }
+          }
+          if (route.children && route.children.length) {
+            route.children = this.filterAsyncRouter(route.children)
+          }
+          return true
+        });
+
+        return accessedRouters;
       },
       checkTag (name) {
         let openpageHasTag = this.pageTagsList.some(item => {

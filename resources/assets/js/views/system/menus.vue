@@ -160,8 +160,8 @@
                             } else {
                                 this.loading = false;
                                 this.$Message.success('创建失败');
-                                this.$refs[name].resetFields();
-                                this.modal1 = false;
+                                // this.$refs[name].resetFields();
+                                // this.modal1 = false;
                             }
                         });
                     } else {

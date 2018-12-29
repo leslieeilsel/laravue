@@ -1,4 +1,4 @@
-import { mainRouter, constantRouterMap } from '@/router/router'
+import { mainRouter, constantRouterMap } from '@/router/router';
 
 /**
  * 通过meta.role判断是否与当前用户权限匹配
@@ -7,9 +7,9 @@ import { mainRouter, constantRouterMap } from '@/router/router'
  */
 function hasPermission(roles, route) {
   if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.indexOf(role) >= 0)
+    return roles.some(role => route.meta.roles.indexOf(role) >= 0);
   } else {
-    return true
+    return true;
   }
 }
 
@@ -22,13 +22,13 @@ function filterAsyncRouter(asyncRouterMap, roles) {
   const accessedRouters = asyncRouterMap.filter(route => {
     if (hasPermission(roles, route)) {
       if (route.children && route.children.length) {
-        route.children = filterAsyncRouter(route.children, roles)
+        route.children = filterAsyncRouter(route.children, roles);
       }
-      return true
+      return true;
     }
-    return false
+    return false;
   });
-  return accessedRouters
+  return accessedRouters;
 }
 
 const route = {
@@ -47,9 +47,9 @@ const route = {
       const { roles } = data;
       let accessedRouters;
       if (roles.includes('admin')) {
-        accessedRouters = mainRouter
+        accessedRouters = mainRouter;
       } else {
-        accessedRouters = filterAsyncRouter(mainRouter, roles)
+        accessedRouters = filterAsyncRouter(mainRouter, roles);
       }
       commit('setRoutes', accessedRouters)
     }
