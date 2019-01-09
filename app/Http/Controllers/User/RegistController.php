@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Departments;
 use App\Models\Role;
+use App\Models\OperationLog;
 
 class RegistController extends Controller
 {
@@ -40,6 +41,12 @@ class RegistController extends Controller
         return response()->json(['result' => $data], 200);
     }
 
+    /**
+     * 创建用户
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function registUser(Request $request)
     {
         $data = $request->input();
@@ -47,6 +54,11 @@ class RegistController extends Controller
         $data['password'] = bcrypt($data['password']);
         $data['created_at'] = date('Y-m-d H:i:s');
         $result = DB::table('users')->insert($data);
+        
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '创建用户');
+        }
 
         return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
     }

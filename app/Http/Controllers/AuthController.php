@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\OperationLog;
 
 class AuthController extends Controller
 {
@@ -35,6 +36,9 @@ class AuthController extends Controller
         $user = Auth::user();
         $user->last_login = date('Y-m-d H:i:s');
         $user->save();
+
+        $log = new OperationLog();
+        $log->eventLog($request, '用户登录');
 
         return $this->respondWithToken($token);
     }

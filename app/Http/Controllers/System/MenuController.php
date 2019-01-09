@@ -6,6 +6,7 @@ use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\OperationLog;
 
 class MenuController
 {
@@ -105,7 +106,7 @@ class MenuController
     }
 
     /**
-     * 添加菜单
+     * 创建菜单
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -115,6 +116,10 @@ class MenuController
         $data = $request->input();
         $data['created_at'] = date('Y-m-d H:i:s');
         $result = Menu::insert($data);
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '创建菜单');
+        }
 
         return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
     }

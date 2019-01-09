@@ -5,11 +5,12 @@ namespace App\Http\Controllers\System;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\OperationLog;
 
 class RoleController
 {
     /**
-     * 添加角色
+     * 创建角色
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -19,6 +20,11 @@ class RoleController
         $data = $request->input();
         $data['created_at'] = date('Y-m-d H:i:s');
         $result = Role::insert($data);
+
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '创建角色');
+        }
 
         return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
     }
@@ -59,6 +65,10 @@ class RoleController
         DB::table('ibiart_slms_role_menus')->where('role_id', $roleId)->delete();
         $result = DB::table('ibiart_slms_role_menus')->insert($insertArr);
 
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '设置菜单权限');
+        }
         return response()->json(['result' => $result], 200);
     }
 }

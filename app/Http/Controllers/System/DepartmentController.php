@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Departments;
 use Illuminate\Support\Facades\Auth;
+use App\Models\OperationLog;
 
 class DepartmentController extends Controller
 {
@@ -42,6 +43,10 @@ class DepartmentController extends Controller
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['create_by'] = Auth::user()->name;
         $result = Departments::insert($data);
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '创建部门');
+        }
 
         return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
     }
@@ -63,6 +68,11 @@ class DepartmentController extends Controller
         unset($data['id'], $data['updated_at'], $data['parent_title'], $data['is_parent'], $data['nodeKey'], $data['selected']);
 
         $result = Departments::where('id', $id)->update($data);
+
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '修改部门');
+        }
 
         return response()->json(['result' => $result], 200);
     }
