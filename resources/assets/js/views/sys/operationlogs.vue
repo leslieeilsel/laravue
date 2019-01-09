@@ -1,5 +1,7 @@
 <template>
-    <Table stripe :columns="columns" :data="data" :loading="loading"></Table>
+    <Card>
+        <Table border stripe :columns="columns" :data="data" :loading="loading"></Table>
+    </Card>
 </template>
 <script>
 import { getOperationlogs } from "api/log";
