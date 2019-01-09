@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Models\Department;
+use App\Models\Departments;
 use App\Models\Role;
 
 class RegistController extends Controller
@@ -23,7 +23,7 @@ class RegistController extends Controller
             if (!($row['department_id'])) {
                 $data[$k]['department'] = '无';
             } else {
-                $department = Department::where('id', $row['department_id'])->first()->name;
+                $department = Departments::where('id', $row['department_id'])->first()->title;
                 $data[$k]['department'] = $department;
             }
             unset($data[$k]['department_id']);
@@ -43,7 +43,7 @@ class RegistController extends Controller
     public function registUser(Request $request)
     {
         $data = $request->input();
-        unset($data['pwdCheck']);
+        unset($data['pwdCheck'], $data['department_title']);
         $data['password'] = bcrypt($data['password']);
         $data['created_at'] = date('Y-m-d H:i:s');
         $result = DB::table('users')->insert($data);

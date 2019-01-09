@@ -21,17 +21,18 @@
                         <FormItem label="联系电话" prop="phone">
                             <Input v-model="form.phone" placeholder="可选项"></Input>
                         </FormItem>
-                        <FormItem label="所属部门" prop="department_id">
-                            <a-tree-select
-                                :treeData="treeData"
-                                :showSearch="showSearch"
-                                :value="form.department_id"
-                                @change="onChange"
-                                :showCheckedStrategy="SHOW_PARENT"
-                                treeNodeFilterProp='label'
-                                placeholder='必填项'
-                            />
-                        </FormItem>
+                        <Form-item label="所属部门" prop="department_title">
+                        <Poptip trigger="click" placement="right" title="选择部门" width="250">
+                            <div style="display:flex;">
+                            <Input v-model="form.department_title" readonly style="margin-right:10px;"/>
+                            <Button icon="md-trash" @click="clearSelectDep">清空已选</Button>
+                            </div>
+                            <div slot="content" class="tree-bar">
+                            <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTree"></Tree>
+                            <Spin size="large" fix v-if="dpLoading"></Spin>
+                            </div>
+                        </Poptip>
+                        </Form-item>
                         <FormItem label="角色分配" prop="group_id">
                             <Select v-model="form.group_id">
                                 <Option v-for="item in roleList" :value="item.id" :label="item.name" :key="item.id">
@@ -62,12 +63,10 @@
 </template>
 <script>
     import {registUser, getUsers} from 'api/user';
+    import {initDepartment, loadDepartment} from 'api/system';
     import {getRoles} from 'api/role';
     import {getDeptSelecter} from 'api/department';
     import './users.css';
-    import {TreeSelect} from 'ant-design-vue'
-
-    const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -96,17 +95,19 @@
                 }
             };
             return {
-                showSearch: true,
                 loadingTable: true,
                 loading: false,
+                dpLoading: false,
                 modal: false,
-                SHOW_PARENT,
+                selectDep: [],
+                dataDep: [],
                 form: {
                     username: '',
                     name: '',
                     email: '',
                     phone: '',
                     department_id: '',
+                    department_title: '',
                     group_id: '',
                     password: '',
                     pwdCheck: '',
@@ -125,7 +126,7 @@
                     pwdCheck: [
                         {required: true, validator: pwdCheckValidate, trigger: 'blur'}
                     ],
-                    department_id: [
+                    department_title: [
                         {required: true, message: '所属部门不能为空', trigger: 'blur'}
                     ]
                 },
@@ -177,24 +178,27 @@
                     }
                 ],
                 data: [],
-                treeData: [],
                 rowSelection,
-                roleList: []
+                roleList: [],
+                drop: false,
+                dropDownContent: "展开",
+                dropDownIcon: "ios-arrow-down",
             }
         },
         mounted() {
+            this.init();
             getUsers().then((data) => {
                 this.data = data.result;
                 this.loadingTable = false;
-            });
-            getDeptSelecter().then((data) => {
-                this.treeData = data.result;
             });
             getRoles().then((data) => {
                 this.roleList = data.result;
             });
         },
         methods: {
+            init() {
+                this.initDepartmentTreeData();
+            },
             remove(index) {
                 this.data.splice(index, 1);
             },
@@ -224,9 +228,54 @@
             cancel() {
                 this.$refs.formValidate.resetFields();
             },
-            onChange(value) {
-                this.form.department_id = value;
-            }
+            clearSelectDep() {
+                this.form.department_id = "";
+                this.form.department_title = "";
+            },
+            initDepartmentTreeData() {
+                initDepartment().then(res => {
+                    res.result.forEach(function(e) {
+                        if (e.is_parent) {
+                            e.loading = false;
+                            e.children = [];
+                        }
+                        if (e.status === 0) {
+                            e.title = "[已禁用] " + e.title;
+                            e.disabled = true;
+                        }
+                    });
+                    this.dataDep = res.result;
+                });
+            },
+            loadDataTree(item, callback) {
+                loadDepartment(item.id).then(res => {
+                    res.result.forEach(function(e) {
+                        if (e.is_parent) {
+                            e.loading = false;
+                            e.children = [];
+                        }
+                        if (e.status === 0) {
+                            e.title = "[已禁用] " + e.title;
+                            e.disabled = true;
+                        }
+                    });
+                    callback(res.result);
+                });
+            },
+            selectTree(v) {
+                if (v.length > 0) {
+                    // 转换null为""
+                    for (let attr in v[0]) {
+                    if (v[0][attr] === null) {
+                        v[0][attr] = "";
+                    }
+                    }
+                    let str = JSON.stringify(v[0]);
+                    let data = JSON.parse(str);
+                    this.form.department_id = data.id;
+                    this.form.department_title = data.title;
+                }
+            },
         }
     }
 </script>

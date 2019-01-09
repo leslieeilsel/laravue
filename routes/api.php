@@ -30,8 +30,10 @@ Route::group(['middleware' => 'api'], function ($router) {
 Route::post('user/regist', 'User\RegistController@registUser');
 Route::get('user/users', 'User\RegistController@getUsers');
 Route::get('department/depts', 'Department\DepartmentController@getDepts');
-Route::get('department/deptselecter', 'Department\DepartmentController@getDeptSelecter');
-Route::post('department/add', 'Department\DepartmentController@add');
+
+Route::get('department/getByParentId/{id}', 'System\DepartmentController@getByParentId');
+Route::post('department/addDepartment', 'System\DepartmentController@add');
+Route::post('department/editDepartment', 'System\DepartmentController@edit');
 
 Route::get('menu/getmenus', 'System\MenuController@getMenus');
 Route::get('menu/getrouter', 'System\MenuController@getRouter');

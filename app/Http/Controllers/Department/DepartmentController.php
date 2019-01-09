@@ -47,26 +47,6 @@ class DepartmentController extends Controller
         return $tree;
     }
 
-    public function getDeptSelecter()
-    {
-        $depts = Department::select('id', 'name', 'parent_id')->get()->toArray();
-        $deptArr = [];
-        foreach ($depts as $k => $v) {
-            if ($v['parent_id'] === 0) {
-                $v['children'] = $this->getChildSelecter($v['id'], $depts);
-                $v['key'] = $v['id'];
-                $v['value'] = (string)$v['id'];
-                $v['label'] = $v['name'];
-                unset($v['id']);
-                unset($v['name']);
-                unset($v['parent_id']);
-                $deptArr[] = $v;
-            }
-        }
-
-        return response()->json(['result' => $deptArr], 200);
-    }
-
     public function getChildSelecter($pid, $depts)
     {
         $tree = [];

@@ -56,3 +56,50 @@ export function getRouter () {
         method: 'get'
     });
 }
+
+/**
+ * 获取一级部门
+ * @returns {*}
+ */
+export function initDepartment() {
+    return request({
+        url: '/api/department/getByParentId/0',
+        method: 'get'
+    });
+}
+
+/**
+ * 获取子部门
+ * @returns {*}
+ */
+export function loadDepartment(id) {
+    return request({
+        url: `/api/department/getByParentId/${id}`,
+        method: 'get',
+        data: { id }
+    });
+}
+
+/**
+ * 创建组织机构
+ * @returns {*}
+ */
+export function addDepartment(form) {
+    return request({
+        url: '/api/department/addDepartment',
+        method: 'post',
+        data: { ...form }
+    });
+}
+
+/**
+ * 修改组织机构信息
+ * @returns {*}
+ */
+export function editDepartment(form) {
+    return request({
+        url: '/api/department/editDepartment',
+        method: 'post',
+        data: { ...form }
+    });
+}
