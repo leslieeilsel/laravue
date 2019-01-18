@@ -15,7 +15,7 @@ const modules = requireContext.keys()
   .reduce((modules, [name, module]) => {
     // generate name:module object
     return { ...modules, [name]: module }
-  }, {})
+  }, {});
 
 const store = new Vuex.Store({
   modules,

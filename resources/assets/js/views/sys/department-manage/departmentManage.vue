@@ -13,22 +13,24 @@
           <span class="select-title">{{editTitle}}</span>
           <a class="select-clear" v-if="form.id" @click="cancelEdit">取消选择</a>
         </Alert>
-        <Tree
-          ref="tree"
-          :data="treeData"
-          :load-data="loadData"
-          empty-text=""
-          @on-check-change="changeSelect"
-          @on-select-change="selectTree"
-          show-checkbox
-        ></Tree>
+        <div class="tree-bar">
+          <Tree
+            ref="tree"
+            :data="treeData"
+            :load-data="loadData"
+            empty-text=""
+            @on-check-change="changeSelect"
+            @on-select-change="selectTree"
+            show-checkbox
+          ></Tree>
+        </div>
         <Spin size="large" fix v-if="loading"></Spin>
       </Col>
       <Col span="9">
         <Form ref="form" :model="form" :label-width="85" :rules="menuFormValidate">
           <FormItem label="上级部门" prop="parent_title">
             <Poptip trigger="click" placement="right-start" title="选择上级部门" width="250">
-              <Input v-model="form.parent_title" readonly/>
+              <Input v-model="form.parent_title" readonly placeholder=""/>
               <div slot="content" style="position:relative;min-height:5vh">
                 <Tree :data="dataEdit" :load-data="loadData" @on-select-change="selectTreeEdit"></Tree>
                 <Spin size="large" fix v-if="loadingEdit"></Spin>
@@ -36,7 +38,7 @@
             </Poptip>
           </FormItem>
           <FormItem label="部门名称" prop="title">
-            <Input v-model="form.title"/>
+            <Input v-model="form.title" placeholder=""/>
           </FormItem>
           <FormItem label="排序值" prop="sort">
             <InputNumber :max="1000" :min="0" v-model="form.sort"></InputNumber>
@@ -49,7 +51,7 @@
             </i-switch>
           </FormItem>
           <FormItem label="备注" prop="description">
-              <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="输入内容"></Input>
+              <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="输入内容"/>
           </FormItem>
           <Form-item>
             <Button
@@ -73,7 +75,7 @@
           </FormItem>
         </div>
         <FormItem label="部门名称" prop="title">
-          <Input v-model="formAdd.title"/>
+          <Input v-model="formAdd.title" placeholder=""/>
         </FormItem>
         <FormItem label="排序值" prop="sort">
           <InputNumber :max="1000" :min="0" v-model="formAdd.sort"></InputNumber>

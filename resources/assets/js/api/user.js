@@ -6,8 +6,8 @@ import request from '../utils/request'
  */
 export function getUsers() {
     return request({
-    url: '/api/user/users',
-    method: 'get'
+        url: '/api/user/users',
+        method: 'get'
     });
 }
 
