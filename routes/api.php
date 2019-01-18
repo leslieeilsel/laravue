@@ -29,11 +29,20 @@ Route::group(['middleware' => 'api'], function ($router) {
 
 Route::post('user/regist', 'User\RegistController@registUser');
 Route::get('user/users', 'User\RegistController@getUsers');
-Route::get('department/depts', 'Department\DepartmentController@getDepts');
 
 Route::get('department/getByParentId/{id}', 'System\DepartmentController@getByParentId');
 Route::post('department/addDepartment', 'System\DepartmentController@add');
 Route::post('department/editDepartment', 'System\DepartmentController@edit');
+
+Route::get('dict/dicts', 'System\DictController@dicts');
+Route::post('dict/addDict', 'System\DictController@addDict');
+Route::post('dict/editDict', 'System\DictController@editDict');
+Route::post('dict/deleteDict', 'System\DictController@deleteDict');
+
+Route::post('dict/dictDataList', 'System\DictController@dictDataList');
+Route::post('dict/addDictData', 'System\DictController@addDictData');
+Route::post('dict/editDictData', 'System\DictController@editDictData');
+Route::post('dict/deleteDictData', 'System\DictController@deleteDictData');
 
 Route::get('menu/getmenus', 'System\MenuController@getMenus');
 Route::get('menu/getrouter', 'System\MenuController@getRouter');
