@@ -72,6 +72,17 @@ export function initDepartment() {
 }
 
 /**
+ * 获取所有部门
+ * @returns {*}
+ */
+export function getAllDepartment() {
+    return request({
+        url: '/api/department/getAllDepartment',
+        method: 'get'
+    });
+}
+
+/**
  * 获取子部门
  * @returns {*}
  */

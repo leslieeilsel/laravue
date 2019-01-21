@@ -23,3 +23,15 @@ export function registUser(form) {
     });
 }
 
+/**
+ * 修改密码
+ * @returns {*}
+ */
+export function resetPassword(form) {
+    return request({
+        url: '/api/user/resetPassword',
+        method: 'post',
+        data: { ...form }
+    });
+}
+

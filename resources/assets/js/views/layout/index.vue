@@ -134,9 +134,9 @@
       clickDropdown (name) {
         if (name === 'userCenter') {
           // 用户中心
-          util.openNewPage(this, 'ownspace_index');
+          // util.openNewPage(this, 'home');
           this.$router.push({
-            name: 'ownspace_index'
+            name: 'profile'
           });
         } else if (name === 'logout') {
           // 退出登录
@@ -156,7 +156,7 @@
           if (route.children && route.children.length) {
             route.children = this.filterAsyncRouter(route.children)
           }
-          return true
+          return true;
         });
 
         return accessedRouters;

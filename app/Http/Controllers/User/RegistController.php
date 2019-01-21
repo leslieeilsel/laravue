@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Departments;
 use App\Models\Role;
 use App\Models\OperationLog;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class RegistController extends Controller
 {
@@ -61,5 +63,32 @@ class RegistController extends Controller
         }
 
         return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resetPassword(Request $request)
+    {
+        $oldPassword = $request->get('oldPassword');
+
+        $user = Auth::user();
+        if (Hash::check($oldPassword, $user->password)) {
+            $newPassword = $request->get('newPassword');
+            $result = DB::table('users')->where('id', $user->id)->update(['password' => bcrypt($newPassword)]);
+            $result = $result ? true : false;
+        } else {
+            $result = false;
+        }
+
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '修改密码');
+        }
+
+        return response()->json(['result' => $result], 200);
     }
 }

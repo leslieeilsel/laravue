@@ -76,4 +76,11 @@ class DepartmentController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+
+    public function getAllDepartment()
+    {
+        $departments = Departments::all()->pluck('title', 'id')->toArray();
+
+        return response()->json(['result' => $departments], 200);
+    }
 }

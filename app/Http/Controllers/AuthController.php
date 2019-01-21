@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\OperationLog;
 
@@ -22,6 +21,7 @@ class AuthController extends Controller
     /**
      * Get a JWT via given credentials.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)

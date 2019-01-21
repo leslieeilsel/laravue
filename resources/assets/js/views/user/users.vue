@@ -24,7 +24,7 @@
                         <Form-item label="所属部门" prop="department_title">
                         <Poptip trigger="click" placement="right" title="选择部门" width="250">
                             <div style="display:flex;">
-                            <Input v-model="form.department_title" readonly style="margin-right:10px;"/>
+                            <Input v-model="form.department_title" readonly style="margin-right:10px;" placeholder=""/>
                             <Button icon="md-trash" @click="clearSelectDep">清空已选</Button>
                             </div>
                             <div slot="content" class="tree-bar">
@@ -34,7 +34,7 @@
                         </Poptip>
                         </Form-item>
                         <FormItem label="角色分配" prop="group_id">
-                            <Select v-model="form.group_id">
+                            <Select v-model="form.group_id" aria-label="">
                                 <Option v-for="item in roleList" :value="item.id" :label="item.name" :key="item.id">
                                     <span>{{ item.name }}</span>
                                     <span style="float:right;padding-right:15px;color:#ccc">{{ item.description }}</span>
