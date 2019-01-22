@@ -20,7 +20,7 @@
       }
     },
     methods: {
-      itemTitle (item) {
+      itemTitle(item) {
         if (typeof item.title === 'object') {
           return this.$t(item.title.i18n);
         } else {
@@ -31,7 +31,7 @@
         let matched = this.$route.matched.filter(item => item.name);
         const root = matched[0];
         if (root && root.name !== 'home') {
-          matched = [{ path: '/home', meta: { title: '首页' }}].concat(matched)
+          matched = [{path: '/home', meta: {title: '首页'}}].concat(matched)
         }
         this.currentPath = matched;
       }

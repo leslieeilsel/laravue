@@ -3,37 +3,37 @@
     <div id="particles-js"></div>
     <Row type="flex" justify="center" class-name="row">
       <Col span="6">
-      <Card>
-        <p slot="title">重置密码</p>
-        <Alert type="success" show-icon closable v-show="showAlert">
-          密码已经被重置！
-        </Alert>
-        <Form ref="form" :model="form" :rules="rules">
-          <FormItem label="邮箱" prop="email" class="bottom">
-            <Input v-model="form.email" disabled></Input>
-          </FormItem>
-          <FormItem label="新密码" prop="password" class="bottom">
-            <Input type="password" v-model="form.password"></Input>
-          </FormItem>
-          <FormItem label="确认密码" prop="password_confirmation">
-            <Input type="password" v-model="form.password_confirmation"></Input>
-          </FormItem>
-          <FormItem class="bottom">
-            <Button type="primary" @click="submit('form')" long>重置密码</Button>
-          </FormItem>
-        </Form>
-      </Card>
+        <Card>
+          <p slot="title">重置密码</p>
+          <Alert type="success" show-icon closable v-show="showAlert">
+            密码已经被重置！
+          </Alert>
+          <Form ref="form" :model="form" :rules="rules">
+            <FormItem label="邮箱" prop="email" class="bottom">
+              <Input v-model="form.email" disabled></Input>
+            </FormItem>
+            <FormItem label="新密码" prop="password" class="bottom">
+              <Input type="password" v-model="form.password"></Input>
+            </FormItem>
+            <FormItem label="确认密码" prop="password_confirmation">
+              <Input type="password" v-model="form.password_confirmation"></Input>
+            </FormItem>
+            <FormItem class="bottom">
+              <Button type="primary" @click="submit('form')" long>重置密码</Button>
+            </FormItem>
+          </Form>
+        </Card>
       </Col>
     </Row>
   </div>
 </template>
 
 <script>
-  import { resetPassword } from "api/login";
+  import {resetPassword} from "api/login";
 
   export default {
     name: "reset",
-    data () {
+    data() {
       const validatePassCheck = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入新密码'));
@@ -54,13 +54,13 @@
         rules: {
           password: [],
           password_confirmation: [
-            { validator: validatePassCheck, trigger: 'blur' }
+            {validator: validatePassCheck, trigger: 'blur'}
           ],
         },
       }
     },
     methods: {
-      submit (name) {
+      submit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             resetPassword(this.form).then((response) => {
@@ -71,11 +71,11 @@
         })
       }
     },
-    created () {
+    created() {
       this.form.email = this.$route.query.email;
       this.form.token = this.$route.params.token;
     },
-    mounted () {
+    mounted() {
       particlesJS.load('particles-js', 'particles.json');
     }
   }
@@ -84,11 +84,12 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
   .row {
     padding-top: 160px;
+    
     .bottom {
       margin-bottom: 0px;
     }
   }
-
+  
   #particles-js {
     position: absolute;
     width: 100%;

@@ -3,9 +3,9 @@
   <div class="menu">
     <slot name="top"></slot>
     <sidebar-menu
-        :menu-list="menuList"
-        :open-names="openNames"
-        @on-change="handleChange"
+      :menu-list="menuList"
+      :open-names="openNames"
+      @on-change="handleChange"
     ></sidebar-menu>
   </div>
 </template>
@@ -30,7 +30,7 @@
     },
     methods: {
       // name 是路由名，此方法为子组件 emit 的方法
-      handleChange (name) {
+      handleChange(name) {
         let willpush = true;
         if (this.beforePush !== undefined) {
           if (!this.beforePush(name)) {
