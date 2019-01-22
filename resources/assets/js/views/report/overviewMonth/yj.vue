@@ -163,12 +163,11 @@
       filterData() {
         const startArray = this.startValue.split('-');
         const endArray = this.endValue.split('-');
-        if (endArray[0] > startArray[0] || (endArray[0] === startArray[0] && endArray[1] >= startArray[1])) {
+        if ((endArray[0] === startArray[0] && endArray[1] >= startArray[1])) {
           this.loading = true;
-          let _this = this;
-          getOverviewMonthData(this.startValue, this.endValue, 'yj').then(function (result) {
-            _this.data = result.result;
-            _this.loading = false;
+          getOverviewMonthData(this.startValue, this.endValue, 'yj').then(res => {
+            this.data = res.result;
+            this.loading = false;
           }).catch(function () {
             alert("出错了");
           });
