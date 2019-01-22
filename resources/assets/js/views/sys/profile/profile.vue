@@ -25,6 +25,7 @@
                         <span>{{userForm.desc}}</span>
                     </FormItem>
                 </Form>
+                <Spin size="large" fix v-if="infoLoading"></Spin>
             </TabPane>
             <TabPane label="安全设置" name="safeSetting">
                 <Col span="20">
@@ -77,6 +78,7 @@
                 }
             };
             return {
+                infoLoading: false,
                 loading: false,
                 accessToken: {},
                 userForm: {
@@ -113,12 +115,14 @@
                 this.getDepartments();
             },
             getDepartments() {
+                this.infoLoading = true;
                 getAllDepartment().then(res => {
                     if (res.result) {
                         this.departments = res.result;
                         let departmentId = this.$store.getters.user.department_id;
                         this.$store.getters.user.department_id = this.departments[departmentId];
                         this.userForm = this.$store.getters.user;
+                        this.infoLoading = false;
                     }
                 });
             },
@@ -142,7 +146,7 @@
                             }
                         });
                     } else {
-                        this.$Message.error('发生错误!');
+                        this.$Message.error('发生错误！');
                     }
                 })
             },
