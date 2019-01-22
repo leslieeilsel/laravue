@@ -182,12 +182,10 @@ export default {
       });
     },
     selectTree(v) {
-      if (v.length > 0) {
-        if (Number(v[0].status) === 0) {
-          this.editStatus = true;
-        } else {
-          this.editStatus = false;
-        }
+      if (v.length <= 0) {
+        this.cancelEdit();
+      } else {
+        this.editStatus = Number(v[0].status) === 0;
         // 转换null为""
         for (let attr in v[0]) {
           if (v[0][attr] === null) {
@@ -198,12 +196,13 @@ export default {
         let data = JSON.parse(str);
         this.form = data;
         this.editTitle = data.title;
-      } else {
-        this.cancelEdit();
       }
     },
     cancelEdit() {
-      this.$refs.tree.getSelectedNodes()[0].selected = false;
+      let data = this.$refs.tree.getSelectedNodes()[0];
+      if (data) {
+        data.selected = false;
+      }
       this.isMenu = false;
       this.isButton = false;
       this.$refs.form.resetFields();
