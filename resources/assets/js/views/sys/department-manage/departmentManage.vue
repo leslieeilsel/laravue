@@ -42,7 +42,7 @@
           </FormItem>
           <FormItem label="排序值" prop="sort">
             <InputNumber :max="1000" :min="0" v-model="form.sort"></InputNumber>
-            <span style="margin-left:5px">值越小越靠前，支持小数</span>
+            <span style="margin-left:5px">数值越小越靠前</span>
           </FormItem>
           <FormItem label="是否启用" prop="status">
             <i-switch size="large" v-model="form.status" :true-value="1" :false-value="0">
@@ -79,7 +79,7 @@
         </FormItem>
         <FormItem label="排序值" prop="sort">
           <InputNumber :max="1000" :min="0" v-model="formAdd.sort"></InputNumber>
-          <span style="margin-left:5px">值越小越靠前，支持小数</span>
+          <span style="margin-left:5px">数值越小越靠前</span>
         </FormItem>
         <FormItem label="是否启用" prop="status">
           <i-switch size="large" v-model="formAdd.status" :true-value="1" :false-value="0">
