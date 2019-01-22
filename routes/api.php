@@ -54,6 +54,7 @@ Route::post('menu/add', 'System\MenuController@add');
 
 Route::get('role/roles', 'System\RoleController@getRoles');
 Route::post('role/add', 'System\RoleController@add');
+Route::post('role/setDefaultRole', 'System\RoleController@setDefaultRole');
 Route::post('role/setrolemenus', 'System\RoleController@setRoleMenus');
 
 Route::post('overviewmonth', 'Api\ApiController@getOverviewMonthData');

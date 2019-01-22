@@ -101,6 +101,7 @@
         modal: false,
         selectDep: [],
         dataDep: [],
+        checkedDefaultRole: '',
         form: {
           username: '',
           name: '',
@@ -193,6 +194,13 @@
       });
       getRoles().then((data) => {
         this.roleList = data.result;
+        this.roleList.forEach(e => {
+          console.log(e)
+          if (e.is_default == 1) {
+            this.checkedDefaultRole = e.id;
+            this.form.group_id = this.checkedDefaultRole;
+          }
+        });
       });
     },
     methods: {
@@ -227,6 +235,7 @@
       },
       cancel() {
         this.$refs.formValidate.resetFields();
+        this.form.group_id = this.checkedDefaultRole;
       },
       clearSelectDep() {
         this.form.department_id = "";

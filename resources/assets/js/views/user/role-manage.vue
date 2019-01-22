@@ -13,13 +13,13 @@
               <Input v-model="form.name" placeholder="必填项"></Input>
             </FormItem>
             <FormItem label="是否设置为默认角色" prop="is_default">
-              <i-switch v-model="form.is_default" size="large">
+              <i-switch v-model="form.is_default" size="large" :trueValue="1" :falseValue="0">
                 <span slot="open">是</span>
                 <span slot="close">否</span>
               </i-switch>
             </FormItem>
             <FormItem label="备注" prop="description">
-              <Input v-model="form.description" placeholder="可选项"></Input>
+              <Input type="textarea" v-model="form.description" placeholder="可选项"></Input>
             </FormItem>
           </Form>
           <div slot="footer">
@@ -43,7 +43,7 @@
 </template>
 <script>
   import './users.css';
-  import {add, getRoles, setRoleMenus} from 'api/role';
+  import {add, getRoles, setRoleMenus, setDefaultRole} from 'api/role';
   import {getMenuTree} from 'api/system';
 
   export default {
@@ -53,12 +53,13 @@
         loadingTable: true,
         treeLoading: false,
         treeSubmitLoading: false,
+        operationLoading: false,
         modal: false,
         treeModal: false,
         form: {
           name: '',
           description: '',
-          is_default: false,
+          is_default: 0,
         },
         ruleValidate: {
           name: [
@@ -92,6 +93,52 @@
           {
             title: '创建时间',
             key: 'created_at'
+          },
+          {
+            title: "设置为默认角色",
+            key: "defaultRole",
+            align: "center",
+            width: 180,
+            render: (h, params) => {
+              if (params.row.is_default) {
+                return h("div", [
+                  h(
+                    "Button",
+                    {
+                      props: {
+                        type: "success",
+                        size: "small"
+                      },
+                      style: {
+                        marginRight: "5px"
+                      },
+                    },
+                    "默认角色"
+                  )
+                ]);
+              } else {
+                return h("div", [
+                  h(
+                    "Button",
+                    {
+                      props: {
+                        type: "info",
+                        size: "small"
+                      },
+                      style: {
+                        marginRight: "5px"
+                      },
+                      on: {
+                        click: () => {
+                          this.setDefault(params.row);
+                        }
+                      }
+                    },
+                    "设为默认"
+                  )
+                ]);
+              }
+            }
           },
           {
             title: '操作',
@@ -131,31 +178,62 @@
       }
     },
     mounted() {
-      getRoles().then((data) => {
-        this.data = data.result;
-        this.loadingTable = false;
-      });
+      this.init();
     },
     methods: {
+      init() {
+        this.getRoleList();
+      },
+      getRoleList() {
+        this.loadingTable = true;
+        getRoles().then((data) => {
+          this.data = data.result;
+          this.loadingTable = false;
+        });
+      },
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.loading = true;
-            add(this.form).then((response) => {
-              this.loading = false;
-              this.$Message.success('创建成功');
-              this.$refs[name].resetFields();
-              this.modal = false;
-              this.loadingTable = true;
-              getRoles().then((data) => {
-                this.data = data.result;
-                this.loadingTable = false;
-              });
+            add(this.form).then(res => {
+              if (res.result) {
+                this.loading = false;
+                this.$Message.success('创建成功');
+                this.$refs[name].resetFields();
+                this.modal = false;
+                this.loadingTable = true;
+                getRoles().then((data) => {
+                  this.data = data.result;
+                  this.loadingTable = false;
+                });
+              } else {
+                this.$Message.error('创建失败');
+              }
             });
           } else {
-            this.$Message.error('发生错误!');
+            this.$Message.error('发生错误！');
           }
         })
+      },
+      setDefault(v) {
+        this.$Modal.confirm({
+          title: "确认设置",
+          loading: true,
+          content: "您确认要设置 【" + v.name + "】 为注册用户默认角色?",
+          onOk: () => {
+            let params = {
+              id: v.id,
+              is_default: 1
+            };
+            setDefaultRole(params).then(res => {
+              this.$Modal.remove();
+              if (res.result === true) {
+                this.$Message.success("操作成功");
+                this.getRoleList();
+              }
+            });
+          }
+        });
       },
       handleReset(name) {
         this.$refs[name].resetFields();

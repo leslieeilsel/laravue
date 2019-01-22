@@ -19,7 +19,9 @@ class RoleController
     {
         $data = $request->input();
         $data['created_at'] = date('Y-m-d H:i:s');
-        $result = Role::insert($data);
+        $id = DB::table('ibiart_slms_roles')->insertGetId($data);
+
+        $result = $id ? Role::where('id', '!=', $id)->update(['is_default' => 0]) : false;
 
         if ($result) {
             $log = new OperationLog();
@@ -36,7 +38,7 @@ class RoleController
      */
     public function getRoles()
     {
-        $roles = Role::select('id', 'name', 'description', 'created_at')->get()->toArray();
+        $roles = Role::all()->toArray();
         $is_loading = [
             'is_loading' => false
         ];
@@ -69,6 +71,29 @@ class RoleController
             $log = new OperationLog();
             $log->eventLog($request, '设置菜单权限');
         }
+
+        return response()->json(['result' => $result], 200);
+    }
+
+    /**
+     * 设置默认角色
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function setDefaultRole(Request $request)
+    {
+        $data = $request->input();
+
+        $setDefaultRes = Role::where('id', $data['id'])->update(['is_default' => $data['is_default']]);
+
+        if (!$setDefaultRes) {
+            $result = false;
+        } else {
+            $result = Role::where('id', '!=', $data['id'])->update(['is_default' => 0]);
+            $result = $result ? true : false;
+        }
+
         return response()->json(['result' => $result], 200);
     }
 }

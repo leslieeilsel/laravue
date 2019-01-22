@@ -34,3 +34,15 @@ export function setRoleMenus(selected, roleid) {
         data: { selected, roleid }
     });
 }
+
+/**
+ * 设置默认角色
+ * @returns {*}
+ */
+export function setDefaultRole(params) {
+    return request({
+        url: '/api/role/setDefaultRole',
+        method: 'post',
+        data: { ...params }
+    });
+}
