@@ -5,10 +5,10 @@ import request from '../utils/request'
  * @returns {*}
  */
 export function getRoles() {
-    return request({
-        url: '/api/role/roles',
-        method: 'get'
-    });
+  return request({
+    url: '/api/role/roles',
+    method: 'get'
+  });
 }
 
 /**
@@ -16,11 +16,11 @@ export function getRoles() {
  * @returns {*}
  */
 export function add(form) {
-    return request({
-        url: '/api/role/add',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/role/add',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**
@@ -28,11 +28,11 @@ export function add(form) {
  * @returns {*}
  */
 export function setRoleMenus(selected, roleid) {
-    return request({
-        url: '/api/role/setrolemenus',
-        method: 'post',
-        data: { selected, roleid }
-    });
+  return request({
+    url: '/api/role/setrolemenus',
+    method: 'post',
+    data: { selected, roleid }
+  });
 }
 
 /**
@@ -40,9 +40,9 @@ export function setRoleMenus(selected, roleid) {
  * @returns {*}
  */
 export function setDefaultRole(params) {
-    return request({
-        url: '/api/role/setDefaultRole',
-        method: 'post',
-        data: { ...params }
-    });
+  return request({
+    url: '/api/role/setDefaultRole',
+    method: 'post',
+    data: { ...params }
+  });
 }

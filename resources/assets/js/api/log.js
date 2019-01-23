@@ -5,8 +5,8 @@ import request from '../utils/request'
  * @returns {*}
  */
 export function getOperationlogs() {
-    return request({
-        url: '/api/log/operationlogs',
-        method: 'get'
-    });
+  return request({
+    url: '/api/log/operationlogs',
+    method: 'get'
+  });
 }

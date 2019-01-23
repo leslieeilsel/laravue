@@ -6,10 +6,10 @@ import request from '../utils/request'
  * @returns {*}
  */
 export function getmenus() {
-    return request({
-        url: '/api/menu/getmenus',
-        method: 'get'
-    });
+  return request({
+    url: '/api/menu/getmenus',
+    method: 'get'
+  });
 }
 
 /**
@@ -17,10 +17,10 @@ export function getmenus() {
  * @returns {*}
  */
 export function getMenuSelecter() {
-    return request({
-        url: '/api/menu/menuselecter',
-        method: 'get'
-    });
+  return request({
+    url: '/api/menu/menuselecter',
+    method: 'get'
+  });
 }
 
 /**
@@ -28,11 +28,11 @@ export function getMenuSelecter() {
  * @returns {*}
  */
 export function getMenuTree(id) {
-    return request({
-        url: '/api/menu/menutree',
-        method: 'post',
-        data: { id }
-    });
+  return request({
+    url: '/api/menu/menutree',
+    method: 'post',
+    data: { id }
+  });
 }
 
 /**
@@ -40,11 +40,11 @@ export function getMenuTree(id) {
  * @returns {*}
  */
 export function add(form) {
-    return request({
-        url: '/api/menu/add',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/menu/add',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**
@@ -52,10 +52,10 @@ export function add(form) {
  * @returns {*}
  */
 export function getRouter () {
-    return request({
-        url: '/api/menu/getrouter',
-        method: 'get'
-    });
+  return request({
+    url: '/api/menu/getrouter',
+    method: 'get'
+  });
 }
 
 /**############################### 部门管理 ###############################*/
@@ -65,10 +65,10 @@ export function getRouter () {
  * @returns {*}
  */
 export function initDepartment() {
-    return request({
-        url: '/api/department/getByParentId/0',
-        method: 'get'
-    });
+  return request({
+    url: '/api/department/getByParentId/0',
+    method: 'get'
+  });
 }
 
 /**
@@ -76,10 +76,10 @@ export function initDepartment() {
  * @returns {*}
  */
 export function getAllDepartment() {
-    return request({
-        url: '/api/department/getAllDepartment',
-        method: 'get'
-    });
+  return request({
+    url: '/api/department/getAllDepartment',
+    method: 'get'
+  });
 }
 
 /**
@@ -87,11 +87,11 @@ export function getAllDepartment() {
  * @returns {*}
  */
 export function loadDepartment(id) {
-    return request({
-        url: `/api/department/getByParentId/${id}`,
-        method: 'get',
-        data: { id }
-    });
+  return request({
+    url: `/api/department/getByParentId/${id}`,
+    method: 'get',
+    data: { id }
+  });
 }
 
 /**
@@ -99,11 +99,11 @@ export function loadDepartment(id) {
  * @returns {*}
  */
 export function addDepartment(form) {
-    return request({
-        url: '/api/department/addDepartment',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/department/addDepartment',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**
@@ -111,11 +111,11 @@ export function addDepartment(form) {
  * @returns {*}
  */
 export function editDepartment(form) {
-    return request({
-        url: '/api/department/editDepartment',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/department/editDepartment',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**############################### 数据字典 ###############################*/
@@ -125,10 +125,10 @@ export function editDepartment(form) {
  * @returns {*}
  */
 export function getAllDictList() {
-    return request({
-        url: '/api/dict/dicts',
-        method: 'get'
-    });
+  return request({
+    url: '/api/dict/dicts',
+    method: 'get'
+  });
 }
 
 /**
@@ -136,11 +136,11 @@ export function getAllDictList() {
  * @returns {*}
  */
 export function addDict(form) {
-    return request({
-        url: '/api/dict/addDict',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/dict/addDict',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**
@@ -148,11 +148,11 @@ export function addDict(form) {
  * @returns {*}
  */
 export function editDict(form) {
-    return request({
-        url: '/api/dict/editDict',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/dict/editDict',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**
@@ -160,11 +160,11 @@ export function editDict(form) {
  * @returns {*}
  */
 export function deleteDict(id) {
-    return request({
-        url: '/api/dict/deleteDict',
-        method: 'post',
-        data: { id }
-    });
+  return request({
+    url: '/api/dict/deleteDict',
+    method: 'post',
+    data: { id }
+  });
 }
 
 /**
@@ -172,11 +172,11 @@ export function deleteDict(id) {
  * @returns {*}
  */
 export function getAllDictDataList(form) {
-    return request({
-        url: `/api/dict/dictDataList`,
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: `/api/dict/dictDataList`,
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**
@@ -184,11 +184,11 @@ export function getAllDictDataList(form) {
  * @returns {*}
  */
 export function addDictData(form) {
-    return request({
-        url: '/api/dict/addDictData',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/dict/addDictData',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**
@@ -196,11 +196,11 @@ export function addDictData(form) {
  * @returns {*}
  */
 export function editDictData(form) {
-    return request({
-        url: '/api/dict/editDictData',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/dict/editDictData',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**
@@ -208,9 +208,9 @@ export function editDictData(form) {
  * @returns {*}
  */
 export function deleteDictData(id) {
-    return request({
-        url: '/api/dict/deleteDictData',
-        method: 'post',
-        data: { id }
-    });
+  return request({
+    url: '/api/dict/deleteDictData',
+    method: 'post',
+    data: { id }
+  });
 }

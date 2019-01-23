@@ -5,10 +5,10 @@ import request from '../utils/request'
  * @returns {*}
  */
 export function getDeptlist() {
-    return request({
-        url: '/api/department/depts',
-        method: 'get'
-    });
+  return request({
+    url: '/api/department/depts',
+    method: 'get'
+  });
 }
 
 /**
@@ -16,10 +16,10 @@ export function getDeptlist() {
  * @returns {*}
  */
 export function getDeptSelecter() {
-    return request({
-        url: '/api/department/deptselecter',
-        method: 'get'
-    });
+  return request({
+    url: '/api/department/deptselecter',
+    method: 'get'
+  });
 }
 
 /**
@@ -27,9 +27,9 @@ export function getDeptSelecter() {
  * @returns {*}
  */
 export function add(form) {
-    return request({
-        url: '/api/department/add',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/department/add',
+    method: 'post',
+    data: { ...form }
+  });
 }

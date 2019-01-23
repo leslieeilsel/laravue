@@ -5,10 +5,10 @@ import request from '../utils/request'
  * @returns {*}
  */
 export function getUsers() {
-    return request({
-        url: '/api/user/users',
-        method: 'get'
-    });
+  return request({
+    url: '/api/user/users',
+    method: 'get'
+  });
 }
 
 /**
@@ -16,11 +16,11 @@ export function getUsers() {
  * @returns {*}
  */
 export function registUser(form) {
-    return request({
-        url: '/api/user/regist',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/user/regist',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
 /**
@@ -28,10 +28,10 @@ export function registUser(form) {
  * @returns {*}
  */
 export function resetPassword(form) {
-    return request({
-        url: '/api/user/resetPassword',
-        method: 'post',
-        data: { ...form }
-    });
+  return request({
+    url: '/api/user/resetPassword',
+    method: 'post',
+    data: { ...form }
+  });
 }
 
