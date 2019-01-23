@@ -104,7 +104,7 @@
           return Promise.resolve()
         } else {
           return new Promise(resolve => {
-            var script = document.createElement('script');
+            let script = document.createElement('script');
             script.src = 'https://cdn.vaptcha.com/v2.js';
             script.async = true;
             script.onload = script.onreadystatechange = function () {
@@ -124,14 +124,14 @@
             this.$store.dispatch('login', this.form).then((res) => {
               this.vaptchaObj.reset(); //重置验证码
               this.loading = false;
-              this.$router.push('/');
+              this.$router.push({name: 'home'})
             });
           }
         })
       }
     },
     mounted() {
-      var config = extend({
+      let config = extend({
         vid: '5bffa64bfc650eb8507698ed',
         container: this.$refs.vaptcha,
         style: this.vpStyle
@@ -139,7 +139,6 @@
       this.loadV2Script().then(() => {
         window.vaptcha(config).then(obj => {
           this.$emit('input', obj);
-          console.log(obj)
           let _this = this;
           _this.vaptchaObj = obj;
           obj.listen('pass', function () {
