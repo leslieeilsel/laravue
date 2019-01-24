@@ -70,7 +70,7 @@ class DictController extends Controller
 
         $dictDataRes = DictData::where('dict_id', $id)->delete();
 
-        $result = ($dictRes && $dictDataRes) ? true : false;
+        $result = ($dictRes && $dictDataRes >= 0) ? true : false;
 
         return response()->json(['result' => $result], 200);
     }
