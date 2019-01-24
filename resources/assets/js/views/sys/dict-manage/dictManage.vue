@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="search">
     <Card>
       <Row type="flex" justify="space-between" class="code-row-bg">
         <Col v-if="expand" span="5">
