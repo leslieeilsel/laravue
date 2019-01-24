@@ -13,7 +13,7 @@
               <Input v-model="form.name" placeholder="必填项"></Input>
             </FormItem>
             <FormItem label="是否设置为默认角色" prop="is_default">
-              <i-switch v-model="form.is_default" size="large" :trueValue="1" :falseValue="0">
+              <i-switch v-model="form.is_default" size="large" :true-value="1" :false-value="0">
                 <span slot="open">是</span>
                 <span slot="close">否</span>
               </i-switch>

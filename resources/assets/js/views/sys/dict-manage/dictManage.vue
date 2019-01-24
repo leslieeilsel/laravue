@@ -74,7 +74,7 @@
         <Button type="primary" :loading="submitLoading" @click="handelSubmitDict">提交</Button>
       </div>
     </Modal>
-    <Modal :title="modalTitle" v-model="modalVisible" :mask-closable='false' :width="500" :styles="{top: '30px'}">
+    <Modal :title="modalTitle" v-model="modalVisible" :mask-closable='false' :width="500" :styles="{top: '100px'}">
       <Form ref="form" :model="form" :label-width="70" :rules="formValidate">
         <FormItem label="名称" prop="title">
           <Input v-model="form.title" placeholder=""/>
