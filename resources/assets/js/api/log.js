@@ -4,9 +4,9 @@ import request from '../utils/request'
  * 获取操作日志列表
  * @returns {*}
  */
-export function getOperationlogs() {
+export function getOperationLogs() {
   return request({
-    url: '/api/log/operationlogs',
+    url: '/api/log/getOperationLogs',
     method: 'get'
   });
 }

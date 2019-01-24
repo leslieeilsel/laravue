@@ -60,4 +60,4 @@ Route::post('role/setrolemenus', 'System\RoleController@setRoleMenus');
 Route::post('overviewmonth', 'Api\ApiController@getOverviewMonthData');
 Route::get('exportoverviewmonth/{startMonth}/{endMonth}/{type}', 'Api\ApiController@exportOverviewMonthData');
 
-Route::get('log/operationlogs', 'Logs\LogController@getOperationlogs');
+Route::get('log/getOperationLogs', 'Logs\LogController@getOperationLogs');

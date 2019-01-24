@@ -4,7 +4,7 @@
   </Card>
 </template>
 <script>
-  import {getOperationlogs} from "api/log";
+  import {getOperationLogs} from "../../api/log";
 
   export default {
     data() {
@@ -41,7 +41,7 @@
     },
     methods: {
       init() {
-        getOperationlogs().then(res => {
+        getOperationLogs().then(res => {
           this.data = res.result;
           this.loading = false;
         });

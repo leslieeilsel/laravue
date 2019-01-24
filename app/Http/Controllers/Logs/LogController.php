@@ -7,15 +7,16 @@ use Illuminate\Support\Facades\DB;
 
 class LogController
 {
-    public function getOperationlogs()
+    public function getOperationLogs()
     {
-        $result = OperationLog::get()->toArray();
+        $result = OperationLog::all()->sortByDesc('created_at')->toArray();
 
         foreach ($result as $key => $value) {
             $user = DB::table('users')->where('id', $value['user_id'])->first();
             $result[$key]['username'] = $user['name'];
         }
-        
+        $result = array_merge($result);
+
         return response()->json(['result' => $result], 200);
     }
 }
