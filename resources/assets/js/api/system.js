@@ -214,3 +214,52 @@ export function deleteDictData(id) {
     data: { id }
   });
 }
+
+/**############################### 菜单管理 ###############################*/
+
+/**
+ * 获取全部菜单
+ * @returns {*}
+ */
+export function getAllMenuList() {
+  return request({
+    url: '/api/menu/getAllMenuList',
+    method: 'get'
+  });
+}
+
+/**
+ * 修改菜单
+ * @returns {*}
+ */
+export function editMenu(form) {
+  return request({
+    url: '/api/menu/editMenu',
+    method: 'post',
+    data: { ...form }
+  });
+}
+
+/**
+ * 添加字典
+ * @returns {*}
+ */
+export function addMenu(form) {
+  return request({
+    url: '/api/menu/addMenu',
+    method: 'post',
+    data: { ...form }
+  });
+}
+
+/**
+ * 删除菜单
+ * @returns {*}
+ */
+export function deleteMenu(id) {
+  return request({
+    url: '/api/menu/deleteMenu',
+    method: 'post',
+    data: { id }
+  });
+}

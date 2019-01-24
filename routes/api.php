@@ -51,6 +51,9 @@ Route::get('menu/getrouter', 'System\MenuController@getRouter');
 Route::get('menu/menuselecter', 'System\MenuController@getMenuSelecter');
 Route::post('menu/menutree', 'System\MenuController@getMenuTree');
 Route::post('menu/add', 'System\MenuController@add');
+Route::post('menu/addMenu', 'System\MenuController@addMenu');
+Route::post('menu/editMenu', 'System\MenuController@editMenu');
+Route::post('menu/deleteMenu', 'System\MenuController@deleteMenu');
 
 Route::get('role/roles', 'System\RoleController@getRoles');
 Route::post('role/add', 'System\RoleController@add');

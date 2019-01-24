@@ -18,7 +18,7 @@ class MenuController
 
     public function getMenuList($role_id = null)
     {
-        $menus = Menu::select('id', 'title', 'path', 'description', 'created_at', 'parent_id')->get()->toArray();
+        $menus = Menu::all()->toArray();
         $data = [];
         foreach ($menus as $k => $v) {
             if ($v['parent_id'] === 0) {
@@ -105,25 +105,6 @@ class MenuController
         return $tree;
     }
 
-    /**
-     * 创建菜单
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function add(Request $request)
-    {
-        $data = $request->input();
-        $data['created_at'] = date('Y-m-d H:i:s');
-        $result = Menu::insert($data);
-        if ($result) {
-            $log = new OperationLog();
-            $log->eventLog($request, '创建菜单');
-        }
-
-        return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
-    }
-
     public function getMenuTree(Request $request)
     {
         $id = $request->input('id');
@@ -194,5 +175,71 @@ class MenuController
         }
 
         return $tree;
+    }
+
+    /**
+     * 创建菜单
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addMenu(Request $request)
+    {
+        $form = $request->input();
+        $menu = new Menu($form);
+        $menu->created_user_id = Auth::id();
+        $result = $menu->save();
+
+        if ($request) {
+            $this->addOperationLog($request, '创建菜单');
+        }
+
+        return response()->json(['result' => $result], 200);
+    }
+
+    /**
+     * 编辑菜单
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function editMenu(Request $request)
+    {
+        $form = $request->input();
+
+        $menu = Menu::find($form['id']);
+        $menu->updated_user_id = Auth::id();
+        $result = $menu->update($form);
+
+        if ($request) {
+            $this->addOperationLog($request, '修改菜单');
+        }
+
+        return response()->json(['result' => $result], 200);
+    }
+
+    public function addOperationLog($request, $word)
+    {
+        $log = new OperationLog();
+        $log->eventLog($request, $word);
+    }
+
+    /**
+     * 删除菜单
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteMenu(Request $request)
+    {
+        $id = $request->get('id');
+        $ids = explode(',', $id);
+
+        $menuRes = Menu::destroy($ids);
+        $roleRes = DB::table('ibiart_slms_role_menus')->whereIn('menu_id', $ids)->delete();
+
+        $result = ($menuRes && $roleRes >= 0) ? true : false;
+
+        return response()->json(['result' => $result], 200);
     }
 }
