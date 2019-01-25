@@ -297,16 +297,16 @@
     },
     methods: {
       init() {
-        this.treeLoading = true;
         // 获取树数据
         this.getAllDict();
         // 获取表单数据
         this.getDataList();
       },
       getAllDict() {
+        this.treeLoading = true;
         getAllDictList().then(res => {
-          this.treeData = res.result;
           this.treeLoading = false;
+          this.treeData = res.result;
         });
       },
       addDict() {
@@ -322,15 +322,12 @@
             if (this.modalType === 0) {
               // 添加 避免编辑后传入id等数据 记得删除
               delete this.dictForm.id;
-              console.log(this.dictForm);
               addDict(this.dictForm).then(res => {
                 this.submitLoading = false;
                 if (res.result === true) {
                   this.$Message.success("添加成功");
                   this.dictModalVisible = false;
-                  this.treeLoading = true;
                   this.getAllDict();
-                  this.treeLoading = false;
                 }
               });
             } else if (this.modalType === 1) {
@@ -339,8 +336,8 @@
                 this.submitLoading = false;
                 if (res.result === true) {
                   this.$Message.success("修改成功");
-                  this.getAllDict();
                   this.dictModalVisible = false;
+                  this.getAllDict();
                 }
               });
             }
@@ -359,8 +356,8 @@
                 this.submitLoading = false;
                 if (res.result === true) {
                   this.$Message.success("添加成功");
-                  this.getDataList();
                   this.modalVisible = false;
+                  this.getDataList();
                 }
               });
             } else if (this.modalType === 1) {
@@ -369,8 +366,8 @@
                 this.submitLoading = false;
                 if (res.result === true) {
                   this.$Message.success("修改成功");
-                  this.getDataList();
                   this.modalVisible = false;
+                  this.getDataList();
                 }
               });
             }
@@ -438,7 +435,6 @@
         });
       },
       refreshDict() {
-        this.treeLoading = true;
         this.getAllDict();
         this.selectNode = {};
         this.editTitle = "";
