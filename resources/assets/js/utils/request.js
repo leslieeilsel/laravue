@@ -21,7 +21,7 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(response => {
 
   if (response.status === 401) {
-    Message.error('登录失效，请重新登录!');
+    // Message.error('登录失效，请重新登录!');
     store.dispatch('logout').then(() => {
       location.reload();
     });
