@@ -110,14 +110,14 @@
     },
     methods: {
       init () {
-        if (!this.getObjArr('router')) {
+        // if (!this.getObjArr('router')) {
           getRouter().then(data => {
             this.menus = this.filterAsyncRouter(data.result);
-            this.saveObjArr('router', this.menus); //存储路由到localStorage
-          })
-        } else {//从localStorage拿到了路由
-          this.menus = this.getObjArr('router');//拿到路由
-        }
+            // this.saveObjArr('router', this.menus); //存储路由到localStorage
+          });
+        // } else {//从localStorage拿到了路由
+        //   this.menus = this.getObjArr('router');//拿到路由
+        // }
         this.userName = this.$store.getters.user.name;
 
         let messageCount = 3;
