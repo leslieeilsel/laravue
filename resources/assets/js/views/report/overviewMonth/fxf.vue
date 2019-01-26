@@ -180,11 +180,20 @@
             alert("出错了！");
           });
         } else {
-          this.$Message.info({
-            content: '请重新选择时间！',
-            duration: 5,
-            closable: true
-          });
+          if ((startArray[0] < endArray[0]) || (startArray[0] > endArray[0])) {
+            this.$Message.info({
+              content: '选择时间不能跨年，请重新选择！',
+              duration: 5,
+              closable: true
+            });
+          }
+          if (endArray[1] < startArray[1]) {
+            this.$Message.info({
+              content: '开始月份不能大于结束月份，，请重新选择！',
+              duration: 5,
+              closable: true
+            });
+          }
         }
       },
       exportData() {
