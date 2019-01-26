@@ -28,6 +28,17 @@ export function getUserInfo() {
 }
 
 /**
+ * 获取当前登录用户的信息
+ * @returns {*}
+ */
+export function logout() {
+  return request({
+    url: '/api/logout',
+    method: 'post',
+  })
+}
+
+/**
  * 密码重置的邮件发送
  * @param email
  * @returns {*}

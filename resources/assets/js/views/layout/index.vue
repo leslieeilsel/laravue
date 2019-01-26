@@ -69,6 +69,7 @@
   import util from '@/libs/util.js';
   import { getRouter } from 'api/system';
   import layout from 'views/layout';
+  import {logout} from "../../api/login";
 
   export default {
     components: {
@@ -140,8 +141,19 @@
           });
         } else if (name === 'logout') {
           // 退出登录
-          this.$store.dispatch('logout').then(() => this.$router.push('login'));
-          //this.$store.commit('clearOpenedSubmenu');
+          // this.$store.commit("logout", this);
+          // this.$store.commit("clearOpenedSubmenu");
+          // 强制刷新页面 重新加载router
+          // location.reload();
+          // console.log(this)
+          logout().then(res => {
+            if (res.result === true) {
+              location.reload();
+              // this.$store.dispatch('logout').then(() => this.$router.push('/login'));
+            }
+          });
+          // this.$store.dispatch('logout').then(() => this.$router.push('login'));
+          // //this.$store.commit('clearOpenedSubmenu');
         }
       },
       filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符串，转换为组件对象
