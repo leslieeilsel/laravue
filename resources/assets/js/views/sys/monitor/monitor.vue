@@ -13,7 +13,7 @@
                 height="700px"
                 scrolling="auto"
               ></iframe>
-              <Spin fix size="large" v-if="loading"></Spin>
+<!--              <Spin fix size="large" v-if="loading"></Spin>-->
             </div>
           </Row>
         </Card>
@@ -36,25 +36,24 @@
     computed: {},
     methods: {
       initUrl() {
-        console.log(this)
         let url = this.$route.meta.url;
         if (url !== null && url !== undefined) {
           this.url = url;
           this.go = url;
           // window.open(this.go);
-          this.loading = true;
+          // this.loading = true;
           let that = this;
           // 判断iframe是否加载完毕
           let iframe = document.getElementById("iframe");
           if (iframe.attachEvent) {
             iframe.attachEvent("onload", function () {
               //iframe加载完成后你需要进行的操作
-              that.loading = false;
+              // that.loading = false;
             });
           } else {
             iframe.onload = function () {
               //iframe加载完成后你需要进行的操作
-              that.loading = false;
+              // that.loading = false;
             };
           }
         }
