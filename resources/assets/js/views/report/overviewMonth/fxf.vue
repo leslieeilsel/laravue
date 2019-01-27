@@ -189,7 +189,7 @@
           }
           if (endArray[1] < startArray[1]) {
             this.$Message.info({
-              content: '开始月份不能大于结束月份，，请重新选择！',
+              content: '开始月份不能大于结束月份，请重新选择！',
               duration: 5,
               closable: true
             });
