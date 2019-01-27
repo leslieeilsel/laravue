@@ -126,7 +126,7 @@ class MenuController
 
     public function buildRouter($menuIds)
     {
-        $menus = Menu::select('id', 'path', 'name', 'title', 'component', 'icon', 'parent_id')->whereIn('id', $menuIds)->where('enabled', 1)->get()->toArray();
+        $menus = Menu::whereIn('id', $menuIds)->where('enabled', 1)->get()->toArray();
         $data = [];
         foreach ($menus as $k => $v) {
             if ($v['parent_id'] === 0) {
@@ -134,6 +134,7 @@ class MenuController
                 $v['component'] = ($v['component']) ? $v['component'] : 'layout' ;
                 $v['meta']['title'] = $v['title'];
                 $v['meta']['icon'] = $v['icon'];
+                $v['meta']['url'] = $v['url'];
                 if (!$v['name']) {
                     unset($v['name']);
                 }
@@ -160,6 +161,7 @@ class MenuController
             $v['component'] = ($v['component']) ? $v['component'] : 'layout' ;
             $v['meta']['title'] = $v['title'];
             $v['meta']['icon'] = $v['icon'];
+            $v['meta']['url'] = $v['url'];
             if ($v['parent_id'] === $pid) {
                 // 匹配子记录
                 $v['children'] = $this->getRouterChild($v['id'], $menus); // 递归获取子记录

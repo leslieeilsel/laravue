@@ -86,7 +86,7 @@
     padding-top: 160px;
     
     .bottom {
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
   }
   

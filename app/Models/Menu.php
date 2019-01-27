@@ -17,6 +17,8 @@ class Menu extends Model
         'parent_id',
         'description',
         'path',
+        'link_type',
+        'url',
         'icon',
         'target',
         'enabled',

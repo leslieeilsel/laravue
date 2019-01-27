@@ -49,8 +49,32 @@
             <FormItem label="图标" prop="icon">
               <Input :icon="menuForm.icon" v-model="menuForm.icon" @on-focus="showEditIcon(0)" placeholder=""/>
             </FormItem>
+            <FormItem label="链接类型" prop="link_type">
+              <RadioGroup v-model="menuForm.link_type" @on-change="changeLinkType">
+                <Radio :label="0">
+                  <Icon type="md-compass" size="16" style="margin-bottom:3px;"></Icon>
+                  <span>本地链接</span>
+                </Radio>
+                <Radio :label="1">
+                  <Icon type="md-link" size="16" style="margin-bottom:3px;"></Icon>
+                  <span>第三方链接</span>
+                </Radio>
+              </RadioGroup>
+            </FormItem>
             <FormItem label="前端组件" prop="component">
-              <Input v-model="menuForm.component" placeholder=""/>
+              <Input v-model="menuForm.component" :disabled="menuFormComponent" placeholder=""/>
+            </FormItem>
+            <FormItem label="链接地址" prop="url" v-if="menuForm.link_type===1">
+              <Poptip
+                trigger="focus"
+                placement="right"
+                width="320"
+                word-wrap
+                title="提示"
+                content="链接开头必须为 http:// 或 https://"
+              >
+                <Input v-model="menuForm.url" placeholder=""/>
+              </Poptip>
             </FormItem>
             <FormItem label="排序值" prop="sort">
               <InputNumber :max="1000" :min="0" v-model="menuForm.sort"></InputNumber>
@@ -101,8 +125,32 @@
         <FormItem label="图标" prop="icon">
           <Input :icon="menuFormAdd.icon" v-model="menuFormAdd.icon" @on-focus="showEditIcon(1)" placeholder=""/>
         </FormItem>
+        <FormItem label="链接类型" prop="link_type">
+          <RadioGroup v-model="menuFormAdd.link_type" @on-change="changeAddLinkType">
+            <Radio :label="0">
+              <Icon type="md-compass" size="16" style="margin-bottom:3px;"></Icon>
+              <span>本地链接</span>
+            </Radio>
+            <Radio :label="1">
+              <Icon type="md-link" size="16" style="margin-bottom:3px;"></Icon>
+              <span>第三方链接</span>
+            </Radio>
+          </RadioGroup>
+        </FormItem>
         <FormItem label="前端组件" prop="component">
-          <Input v-model="menuFormAdd.component" placeholder=""/>
+          <Input v-model="menuFormAdd.component" :disabled="menuFormAddComponent" placeholder=""/>
+        </FormItem>
+        <FormItem label="链接地址" prop="url" v-if="menuFormAdd.link_type===1">
+          <Poptip
+            trigger="focus"
+            placement="right"
+            width="320"
+            word-wrap
+            title="提示"
+            content="链接开头必须为 http:// 或 https://"
+          >
+            <Input v-model="menuFormAdd.url" placeholder=""/>
+          </Poptip>
         </FormItem>
         <FormItem label="排序值" prop="sort">
           <InputNumber :max="1000" :min="0" v-model="menuFormAdd.sort"></InputNumber>
@@ -136,8 +184,11 @@
     data() {
       return {
         loading: false,
+        button1: '北京',
         editTitle: '',
         modalTitle: '',
+        menuFormComponent: false,
+        menuFormAddComponent: false,
         parentTitle: "",
         expandLevel: 1,
         selectList: [],
@@ -148,16 +199,17 @@
         menuModalVisible: false,
         showParent: false,
         menuForm: {
+          link_type: 0,
           id: "",
           parent_id: "",
           sort: 0,
           level: null,
           enabled: 1,
-          path: ""
+          path: "",
+          url: ''
         },
         menuFormAdd: {},
-        isMenu: false,
-        isButton: false,
+        beforeValue: '',
         data: [],
         menuFormValidate: {
           title: [{required: true, message: "名称不能为空", trigger: "blur"}],
@@ -214,18 +266,6 @@
       },
       selectTree(v) {
         if (v.length > 0) {
-          if (Number(v[0].level) === 1 || Number(v[0].level) === 2) {
-            this.isButton = false;
-            this.isMenu = true;
-          } else {
-            this.isButton = true;
-            this.isMenu = false;
-          }
-          if (Number(v[0].status) === 0) {
-            this.editStatus = true;
-          } else {
-            this.editStatus = false;
-          }
           // 转换null为""
           for (let attr in v[0]) {
             if (v[0][attr] === null) {
@@ -235,6 +275,8 @@
           let str = JSON.stringify(v[0]);
           let menu = JSON.parse(str);
           this.menuForm = menu;
+          this.beforeValue = this.menuForm.component;
+          this.menuFormComponent = this.menuForm.link_type !== 0;
           this.editTitle = menu.title;
         } else {
           this.cancelEdit();
@@ -306,7 +348,8 @@
         this.menuFormAdd = {
           parent_id: this.menuForm.id,
           sort: 0,
-          enabled: 1
+          enabled: 1,
+          link_type: 0,
         };
         this.menuModalVisible = true;
       },
@@ -367,7 +410,25 @@
             });
           }
         });
-      }
+      },
+      changeLinkType(v) {
+        if (v !== 1) {
+          this.menuFormComponent = false;
+          this.menuForm.component = this.beforeValue;
+        } else {
+          this.menuFormComponent = true;
+          this.menuForm.component = 'views/sys/monitor/monitor';
+        }
+      },
+      changeAddLinkType(v) {
+        if (v !== 1) {
+          this.menuFormAddComponent = false;
+          this.menuFormAdd.component = '';
+        } else {
+          this.menuFormAddComponent = true;
+          this.menuFormAdd.component = 'views/sys/monitor/monitor';
+        }
+      },
     },
     mounted() {
       this.init();
