@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\System;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Dict;
@@ -13,7 +14,7 @@ class DictController extends Controller
     /**
      * 获取所有字典
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function dicts()
     {
@@ -26,7 +27,7 @@ class DictController extends Controller
      * 添加字典
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function addDict(Request $request)
     {
@@ -43,7 +44,7 @@ class DictController extends Controller
      * 编辑字典
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function editDict(Request $request)
     {
@@ -60,7 +61,7 @@ class DictController extends Controller
      * 删除字典
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function deleteDict(Request $request)
     {
@@ -79,7 +80,7 @@ class DictController extends Controller
      * 字典数据列表
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function dictDataList(Request $request)
     {
@@ -94,7 +95,7 @@ class DictController extends Controller
      * 添加字典
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function addDictData(Request $request)
     {
@@ -111,7 +112,7 @@ class DictController extends Controller
      * 编辑字典数据
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function editDictData(Request $request)
     {
@@ -130,7 +131,7 @@ class DictController extends Controller
      * 删除字典数据
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function deleteDictData(Request $request)
     {

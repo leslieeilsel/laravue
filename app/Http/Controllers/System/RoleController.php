@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\System;
 
 use App\Models\Role;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\OperationLog;
@@ -13,7 +14,7 @@ class RoleController
      * 创建角色
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function add(Request $request)
     {
@@ -34,7 +35,7 @@ class RoleController
     /**
      * 获取权限列表
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getRoles()
     {
@@ -79,7 +80,7 @@ class RoleController
      * 设置默认角色
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function setDefaultRole(Request $request)
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Departments;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ class DepartmentController extends Controller
      * 获取部门
      *
      * @param $parentId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getByParentId($parentId)
     {
@@ -35,7 +36,7 @@ class DepartmentController extends Controller
      * 创建部门
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function add(Request $request)
     {
@@ -55,7 +56,7 @@ class DepartmentController extends Controller
      * 修改部门
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function edit(Request $request)
     {

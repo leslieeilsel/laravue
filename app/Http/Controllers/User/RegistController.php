@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Departments;
@@ -16,7 +17,7 @@ class RegistController extends Controller
     /**
      * 获取用户列表
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getUsers()
     {
@@ -47,7 +48,7 @@ class RegistController extends Controller
      * 创建用户
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function registUser(Request $request)
     {
@@ -69,7 +70,7 @@ class RegistController extends Controller
      * 修改密码
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function resetPassword(Request $request)
     {

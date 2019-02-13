@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\System;
 
 use App\Models\Menu;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -183,7 +184,7 @@ class MenuController
      * 创建菜单
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function addMenu(Request $request)
     {
@@ -203,7 +204,7 @@ class MenuController
      * 编辑菜单
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function editMenu(Request $request)
     {
@@ -230,7 +231,7 @@ class MenuController
      * 删除菜单
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function deleteMenu(Request $request)
     {

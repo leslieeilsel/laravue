@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\FeeOverviewMonthReport;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Exception;
 
 class ApiController extends Controller
 {
@@ -12,7 +14,7 @@ class ApiController extends Controller
      * 获取概览表（月报）数据
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getOverviewMonthData(Request $request)
     {
@@ -30,7 +32,7 @@ class ApiController extends Controller
      * @param string $endMonth
      * @param string $reportType
      * @return void
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws Exception
      */
     public function exportOverviewMonthData($startMonth, $endMonth, $reportType)
     {
