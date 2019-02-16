@@ -131,7 +131,6 @@
           description: "",
           status: 1
         },
-        formAdd: {},
         menuFormValidate: {
           title: [{required: true, message: "名称不能为空", trigger: "blur"}]
         },
