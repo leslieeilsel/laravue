@@ -109,8 +109,9 @@ class ProjectController extends Controller
         $ids = explode(',', $id);
 
         $menuRes = ProjectInfo::destroy($ids);
+        $roleRes = DB::table('iba_project_early_warning')->whereIn('project_info_id', $ids)->delete();
 
-        $result = ($menuRes) ? true : false;
+        $result = ($menuRes && $roleRes > 0) ? true : false;
 
         return response()->json(['result' => $result], 200);
     }
@@ -139,7 +140,7 @@ class ProjectController extends Controller
     {
         $data = [];
         $result = ProjectEarlyWarning::all()->toArray();
-        foreach($result as $k => $row) {
+        foreach ($result as $k => $row) {
             $data[$k]['key'] = $row['id'];
             $data[$k]['project_info_id'] = $row['project_info_id'];
             $data[$k]['title'] = $row['title'];
