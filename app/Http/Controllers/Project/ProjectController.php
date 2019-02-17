@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\ProjectInfo;
 use Illuminate\Support\Facades\Auth;
 use App\Models\OperationLog;
+use Illuminate\Support\Facades\DB;
+use App\Models\ProjectEarlyWarning;
 
 class ProjectController extends Controller
 {
@@ -45,7 +48,10 @@ class ProjectController extends Controller
         $data['plan_end_at'] = date("Y-m-d", strtotime($data['plan_end_at']));
         $data['actual_start_at'] = date("Y-m-d", strtotime($data['actual_start_at']));
         $data['actual_end_at'] = date("Y-m-d", strtotime($data['actual_end_at']));
-        $result = ProjectInfo::insert($data);
+
+        $result = DB::table('iba_project_info')->insertGetId($data);
+
+        $this->earlyWarning($data, $result, 'insert');
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '创建项目信息');
@@ -75,6 +81,7 @@ class ProjectController extends Controller
 
         $result = ProjectInfo::where('id', $id)->update($data);
 
+        $this->earlyWarning($data, $id, 'update');
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '修改项目信息');
@@ -85,7 +92,7 @@ class ProjectController extends Controller
 
     public function getAllDepartment()
     {
-        $departments = Departments::all()->pluck('title', 'id')->toArray();
+        $departments = ProjectInfo::all()->toArray();
 
         return response()->json(['result' => $departments], 200);
     }
@@ -106,5 +113,39 @@ class ProjectController extends Controller
         $result = ($menuRes) ? true : false;
 
         return response()->json(['result' => $result], 200);
+    }
+
+    public function earlyWarning($data, $id, $type)
+    {
+        $insert = [];
+        $insert['project_info_id'] = $id;
+        $insert['title'] = $data['title'];
+        if ($data['actual_start_at'] > $data['plan_start_at']) {
+            $insert['warning_title'] = '项目延期开始';
+        } elseif ($data['actual_start_at'] > $data['plan_start_at']) {
+            $insert['warning_title'] = '项目延期结束';
+        } else {
+            $insert['warning_title'] = '项目进展正常';
+        }
+
+        if ($type === 'insert') {
+            ProjectEarlyWarning::insert($insert);
+        } else {
+            ProjectEarlyWarning::where('project_info_id', $id)->update($insert);
+        }
+    }
+
+    public function getAllWarning()
+    {
+        $data = [];
+        $result = ProjectEarlyWarning::all()->toArray();
+        foreach($result as $k => $row) {
+            $data[$k]['key'] = $row['id'];
+            $data[$k]['project_info_id'] = $row['project_info_id'];
+            $data[$k]['title'] = $row['title'];
+            $data[$k]['tags'] = $row['warning_title'];
+        }
+
+        return response()->json(['result' => $data], 200);
     }
 }

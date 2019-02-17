@@ -17,7 +17,18 @@ export function initProjectInfo() {
  */
 export function getAllDepartment() {
   return request({
-    url: '/api/department/getAllDepartment',
+    url: '/api/project/getAllDepartment',
+    method: 'get'
+  });
+}
+
+/**
+ * 获取所有部门
+ * @returns {*}
+ */
+export function getAllWarning() {
+  return request({
+    url: '/api/project/getAllWarning',
     method: 'get'
   });
 }

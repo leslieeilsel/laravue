@@ -37,7 +37,8 @@ Route::post('department/addDepartment', 'System\DepartmentController@add');
 Route::post('department/editDepartment', 'System\DepartmentController@edit');
 
 Route::get('project/getByParentId/{id}', 'Project\ProjectController@getByParentId');
-//Route::get('department/getAllDepartment', 'System\DepartmentController@getAllDepartment');
+Route::get('project/getAllWarning', 'Project\ProjectController@getAllWarning');
+Route::get('project/getAllDepartment', 'Project\ProjectController@getAllDepartment');
 Route::post('project/addDepartment', 'Project\ProjectController@add');
 Route::post('project/editDepartment', 'Project\ProjectController@edit');
 Route::post('project/deleteProject', 'Project\ProjectController@delete');

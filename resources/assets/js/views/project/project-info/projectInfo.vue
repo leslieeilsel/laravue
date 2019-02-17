@@ -2,7 +2,7 @@
   <div class="search">
     <Card>
       <Row class="operation">
-        <Button @click="add" type="primary" icon="md-add">添加子节点</Button>
+        <Button @click="add" type="primary" icon="md-add">添加子项目</Button>
         <Button @click="addRoot" icon="md-add">添加一级项目</Button>
         <Button @click="delAll" icon="md-trash">批量删除</Button>
         <Button @click="getParentList" icon="md-refresh">刷新</Button>
@@ -80,11 +80,11 @@
                 </Col>
               </Row>
             </FormItem>
-            <FormItem label="所在经度" prop="longitude">
-              <Input v-model="form.longitude" placeholder=""/>
+            <FormItem label="所在经度" prop="lng">
+              <Input v-model="form.lng" placeholder=""/>
             </FormItem>
-            <FormItem label="所在纬度" prop="latitude">
-              <Input v-model="form.latitude" placeholder=""/>
+            <FormItem label="所在纬度" prop="lat">
+              <Input v-model="form.lat" placeholder=""/>
             </FormItem>
             <Form-item>
               <Button
@@ -143,11 +143,11 @@
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="所在经度" prop="longitude">
-          <Input v-model="formAdd.longitude" placeholder=""/>
+        <FormItem label="所在经度" prop="lng">
+          <Input v-model="formAdd.lng" placeholder=""/>
         </FormItem>
-        <FormItem label="所在纬度" prop="latitude">
-          <Input v-model="formAdd.latitude" placeholder=""/>
+        <FormItem label="所在纬度" prop="lat">
+          <Input v-model="formAdd.lat" placeholder=""/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -188,8 +188,8 @@
           plan_end_at: '',
           actual_start_at: '',
           actual_end_at: '',
-          longitude: '',
-          latitude: ''
+          lng: '',
+          lat: ''
         },
         formAdd: {
           // 添加对象初始化数据
@@ -407,8 +407,8 @@
           plan_end_at: '',
           actual_start_at: '',
           actual_end_at: '',
-          longitude: '',
-          latitude: ''
+          lng: '',
+          lat: ''
         };
         this.modalVisible = true;
       },

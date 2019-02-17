@@ -24,8 +24,8 @@ class CreateIbaProjectInfoTable extends Migration
             $table->date('plan_end_at')->nullable();                // 计划结束时间
             $table->date('actual_start_at')->nullable();            // 实际开始时间
             $table->date('actual_end_at')->nullable();              // 实际结束时间
-            $table->string('longitude', 50)->nullable();            // 经度
-            $table->string('latitude', 50)->nullable();             // 纬度
+            $table->string('lng', 50)->nullable();                  // 经度
+            $table->string('lat', 50)->nullable();                  // 纬度
             $table->timestamps();
         });
     }
