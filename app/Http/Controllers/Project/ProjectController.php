@@ -77,7 +77,7 @@ class ProjectController extends Controller
         if ($data['is_parent']) {
             unset($data['loading'], $data['children']);
         }
-        unset($data['id'], $data['updated_at'], $data['parent_title'], $data['is_parent'], $data['nodeKey'], $data['selected']);
+        unset($data['id'], $data['updated_at'], $data['expand'], $data['parent_title'], $data['is_parent'], $data['nodeKey'], $data['selected']);
 
         $result = ProjectInfo::where('id', $id)->update($data);
 
@@ -121,14 +121,24 @@ class ProjectController extends Controller
         $insert = [];
         $insert['project_info_id'] = $id;
         $insert['title'] = $data['title'];
+        $insert['warning_title'] = '';
         if ($data['actual_start_at'] > $data['plan_start_at']) {
-            $insert['warning_title'] = '项目延期开始';
-        } elseif ($data['actual_start_at'] > $data['plan_start_at']) {
-            $insert['warning_title'] = '项目延期结束';
-        } else {
-            $insert['warning_title'] = '项目进展正常';
+            $insert['warning_title'] = $insert['warning_title'] . ',项目延期开始';
+        }
+        if ($data['actual_end_at'] > $data['plan_end_at']) {
+            $insert['warning_title'] = $insert['warning_title'] . ',项目延期结束';
+        }
+        if ($data['plan_end_at'] < $data['plan_start_at']) {
+            $insert['warning_title'] = $insert['warning_title'] . ',项目填报异常';
+        }
+        if ($data['actual_end_at'] < $data['actual_start_at']) {
+            $insert['warning_title'] = $insert['warning_title'] . ',项目填报异常';
+        }
+        if ($insert['warning_title'] == ''){
+            $insert['warning_title'] = $insert['warning_title'] . ',项目进展正常';
         }
 
+        $insert['warning_title'] = ltrim($insert['warning_title'], ',');
         if ($type === 'insert') {
             ProjectEarlyWarning::insert($insert);
         } else {
@@ -141,10 +151,14 @@ class ProjectController extends Controller
         $data = [];
         $result = ProjectEarlyWarning::all()->toArray();
         foreach ($result as $k => $row) {
-            $data[$k]['key'] = $row['id'];
-            $data[$k]['project_info_id'] = $row['project_info_id'];
-            $data[$k]['title'] = $row['title'];
-            $data[$k]['tags'] = $row['warning_title'];
+            $project_info_id = $row['project_info_id'];
+            $parent_id = ProjectInfo::where('id', $project_info_id)->pluck('parent_id')->first();
+            if ($parent_id === 0) {
+                $data[$k]['key'] = $row['id'];
+                $data[$k]['project_info_id'] = $row['project_info_id'];
+                $data[$k]['title'] = $row['title'];
+                $data[$k]['tags'] = $row['warning_title'];
+            }
         }
 
         return response()->json(['result' => $data], 200);
