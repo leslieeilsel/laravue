@@ -1,4 +1,4 @@
-# Laravue
+<h1 align="center">Laravue</h1>
 
 ## 安装
 
@@ -6,16 +6,14 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/Donng/laravel-vue-iview.git
+https://github.com/leslieeilsel/Laravue.git
 
 # 安装composer依赖
-cd laravel-vue-iview && composer install
+cd laravue
+composer install
 
-# 设置国内淘宝镜像（未设置的）
-npm install -g cnpm --registry=https://registry.npm.taobao.org
-
-# 安装npm扩展包
-cnpm install
+# 推荐使用yarn安装扩展包
+yarn install
 ```
 #### 配置
 
