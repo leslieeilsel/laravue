@@ -1,12 +1,14 @@
 <h1 align="center">Laravue</h1>
-
+<div align="center">
+基于Laravel和Vue实现的后台管理系统
+</div>
 ## 安装
 
 #### 安装扩展
 
 ```bash
 # 克隆项目
-https://github.com/leslieeilsel/Laravue.git
+git clone https://github.com/leslieeilsel/Laravue.git
 
 # 安装composer依赖
 cd laravue

@@ -18,7 +18,7 @@
       <div class="main-header">
         <div class="header-middle-con">
           <div class="main-breadcrumb">
-            陕西体育彩票财务数据综合管理系统
+            Laravue
           </div>
         </div>
         <div class="header-avator-con">

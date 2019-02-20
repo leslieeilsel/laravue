@@ -1,6 +1,6 @@
 <template>
   <div id="background" class="content">
-    <p class="user-layout-title">陕西体育彩票财务数据综合管理系统</p>
+    <p class="user-layout-title">Laravue</p>
     <Row type="flex" justify="center" class-name="row">
       <br>
       <Col class="loginFrom">
@@ -9,12 +9,12 @@
         </Tabs>
         <Form ref="form" :model="form" :rules="ruleInline">
           <FormItem prop="email">
-            <Input type="text" size="large" v-model="form.email" :placeholder="$t('login.username')">
+            <Input type="text" size="large" v-model="form.email" :placeholder="$t('login.username')" placeholder="">
               <Icon type="md-person" slot="prepend"></Icon>
             </Input>
           </FormItem>
           <FormItem prop="password" class="bottom">
-            <Input type="password" size="large" v-model="form.password" :placeholder="$t('login.password')">
+            <Input type="password" size="large" v-model="form.password" :placeholder="$t('login.password')" placeholder="">
               <Icon type="md-lock" slot="prepend"></Icon>
             </Input>
           </FormItem>
