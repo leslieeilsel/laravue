@@ -1,4 +1,4 @@
-# laravel-iview
+# Laravue
 
 ## 安装
 
