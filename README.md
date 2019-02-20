@@ -35,9 +35,11 @@ php artisan jwt:secret
 # 数据库迁移
 php artisan migrate
 php artisan db:seed
+
+# 将database/data/laravue.sql导入数据库
 ```
 
-#### 编译
+#### 编译运行
 
 ```bash
 # 开发环境编译
