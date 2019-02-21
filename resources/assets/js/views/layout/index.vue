@@ -65,10 +65,9 @@
   import tagsPageOpened from './components/tags-page-opened.vue';
   import breadcrumbNav from './components/breadcrumb-nav.vue';
   import messageTip from './components/message-tip.vue';
-  import Cookies from 'js-cookie';
-  import util from '@/libs/util.js';
-  import { getRouter } from 'api/system';
-  import layout from 'views/layout';
+  import util from '../../libs/util.js';
+  import { getRouter } from '../../api/system';
+  import layout from '../../views/layout';
   import {logout} from "../../api/login";
 
   export default {

@@ -62,10 +62,9 @@
   </div>
 </template>
 <script>
-  import {registUser, getUsers} from 'api/user';
-  import {initDepartment, loadDepartment} from 'api/system';
-  import {getRoles} from 'api/role';
-  import {getDeptSelecter} from 'api/department';
+  import {registUser, getUsers} from '../../api/user';
+  import {initDepartment, loadDepartment} from '../../api/system';
+  import {getRoles} from '../../api/role';
   import './users.css';
 
   const rowSelection = {
@@ -195,7 +194,6 @@
       getRoles().then((data) => {
         this.roleList = data.result;
         this.roleList.forEach(e => {
-          console.log(e)
           if (e.is_default == 1) {
             this.checkedDefaultRole = e.id;
             this.form.group_id = this.checkedDefaultRole;
