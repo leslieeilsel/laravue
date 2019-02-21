@@ -2,7 +2,6 @@
 <div align="center">
 基于Laravel和Vue实现的后台管理系统
 </div>
-## 安装
 
 #### 安装扩展
 
