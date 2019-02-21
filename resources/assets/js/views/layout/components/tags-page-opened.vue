@@ -1,9 +1,9 @@
 <template>
   <div ref="scrollCon" @DOMMouseScroll="handlescroll" @mousewheel="handlescroll" class="tags-outer-scroll-con">
     <div class="close-all-tag-con">
-      <Dropdown transfer @on-click="clearTags">
+      <Dropdown transfer @on-click="handleTagsOption">
         <Button size="small" type="text">
-          <Icon :size="18" type="ios-close-circle-outline" />
+          <Icon :size="18" type="ios-close-circle-outline"/>
         </Button>
         <DropdownMenu slot="list">
           <DropdownItem name="clearAll">关闭所有</DropdownItem>
@@ -11,24 +11,24 @@
         </DropdownMenu>
       </Dropdown>
     </div>
-
+    
     <div ref="scrollBody" class="tags-inner-scroll-body" :style="{left: tagBodyLeft + 'px'}">
       <transition-group name="taglist-moving-animation">
         <Tag
-            type="dot"
-            v-for="(item, index) in tags"
-            ref="tagsPageOpened"
-            :key="item.name"
-            :name="item.name"
-            @click.native="linkTo(item)"
-            :closable="item.name === 'home' ? false : true"
-            :color="color(item)"
-            @on-close="closeTag"
+          type="dot"
+          v-for="(item, index) in tags"
+          ref="tagsPageOpened"
+          :key="item.name"
+          :name="item.name"
+          @click.native="linkTo(item)"
+          :closable="item.name === 'home' ? false : true"
+          :color="item.children ? (item.children[0].name === currentPageName ? 'primary' : 'default') : (item.name === currentPageName ? 'primary' : 'default')"
+          @on-close="closeTag"
         >{{ itemTitle(item) }}
         </Tag>
       </transition-group>
     </div>
-
+  
   </div>
 </template>
 
@@ -39,7 +39,7 @@
   Vue.use(VueI18n);
   export default {
     name: 'tagsPageOpened',
-    data () {
+    data() {
       return {
         tagBodyLeft: 0,
         refsTag: [],
@@ -47,10 +47,10 @@
       };
     },
     computed: {
-      currentPageName () {
+      currentPageName() {
         return this.$route.name;
       },
-      tags () {
+      tags() {
         return this.$store.state.app.tags;
       }
     },
@@ -60,15 +60,15 @@
       },
     },
     methods: {
-      appendTag () {
+      appendTag() {
         if (this.$route.name && this.$route.meta && this.$route.meta.title) {
           this.$store.dispatch('appendTag', this.$route);
         }
       },
-      initTags () {
+      initTags() {
         this.appendTag()
       },
-      itemTitle (item) {
+      itemTitle(item) {
         if (typeof item.title === 'object') {
           return this.$t(item.title.i18n);
         } else {
@@ -79,10 +79,10 @@
         const currentItem = item.children ? item.children[0] : item;
         return (currentItem.name === this.currentPageName) ? 'primary' : 'default';
       },
-      linkTo (item) {
+      linkTo(item) {
         this.$router.push(item);
       },
-      handlescroll (e) {
+      handlescroll(e) {
         var type = e.type;
         let delta = 0;
         if (type === 'DOMMouseScroll' || type === 'mousewheel') {
@@ -107,16 +107,16 @@
       // 关闭标签
       closeTag(event, name) {
         this.$store.dispatch('closeTag', name);
-        this.$router.push({name: 'home'})
+        this.$router.push({name: 'home'});
       },
-      clearTags (type) {
+      handleTagsOption(type) {
         if (type === 'clearAll') {
-          this.$store.dispatch('clearAllTags');
+          this.$store.commit('clearAllTags');
           this.$router.push({
             name: 'home'
           });
         } else {
-          this.$store.dispatch('clearOtherTags', this.currentPageName);
+          this.$store.commit('clearOtherTags', this);
         }
         this.tagBodyLeft = 0;
       },
