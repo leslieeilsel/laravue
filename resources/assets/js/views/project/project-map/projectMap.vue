@@ -18,10 +18,6 @@
         const timestamp = new Date().getTime();
         const BMap_URL = "http://api.map.baidu.com/getscript?v="+ apiVersion +"&ak="+ AK +"&services=&t=" + timestamp;
         return new Promise((resolve, reject) => {
-          if(typeof BMap !== "undefined") {
-            resolve(BMap);
-            return true;
-          }
           // 插入script脚本
           let scriptNode = document.createElement("script");
           scriptNode.setAttribute("type", "text/javascript");
