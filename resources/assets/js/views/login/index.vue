@@ -1,6 +1,6 @@
 <template>
   <div id="background" class="content">
-    <p class="user-layout-title">陕西体育彩票财务数据综合管理系统</p>
+    <p class="user-layout-title">沣西云投资平台</p>
     <Row type="flex" justify="center" class-name="row">
       <br>
       <Col class="loginFrom">
