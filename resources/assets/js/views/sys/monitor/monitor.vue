@@ -10,7 +10,7 @@
                 :src="go"
                 frameborder="0"
                 width="100%"
-                height="700px"
+                :height="iframeHeight"
                 scrolling="auto"
               ></iframe>
 <!--              <Spin fix size="large" v-if="loading"></Spin>-->
@@ -30,7 +30,8 @@
         loading: false,
         go: "",
         url: "",
-        html: ""
+        html: "",
+        iframeHeight: 0
       };
     },
     computed: {},
@@ -40,6 +41,7 @@
         if (url !== null && url !== undefined) {
           this.url = url;
           this.go = url;
+          this.iframeHeight = this.$parent.$el.clientHeight - 160;
           // window.open(this.go);
           // this.loading = true;
           let that = this;
