@@ -159,7 +159,7 @@
 </template>
 
 <script>
-  import "./projectInfo.css";
+  import "./projectPlan.css";
   import {initProjectInfo, loadDepartment, addDepartment, editDepartment, deleteProject} from "../../../api/project";
   
   export default {
