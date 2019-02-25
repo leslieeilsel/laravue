@@ -67,7 +67,4 @@ Route::post('role/add', 'System\RoleController@add');
 Route::post('role/setDefaultRole', 'System\RoleController@setDefaultRole');
 Route::post('role/setrolemenus', 'System\RoleController@setRoleMenus');
 
-Route::post('overviewmonth', 'Api\ApiController@getOverviewMonthData');
-Route::get('exportoverviewmonth/{startMonth}/{endMonth}/{type}', 'Api\ApiController@exportOverviewMonthData');
-
 Route::get('log/getOperationLogs', 'Logs\LogController@getOperationLogs');
