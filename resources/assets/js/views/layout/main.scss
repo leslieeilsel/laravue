@@ -261,3 +261,17 @@
 .ivu-dropdown-menu {
   margin-bottom: 0;
 }
+
+.ivu-menu-vertical .ivu-menu-submenu-title {
+  border-bottom: 1px solid #e9eaec;
+  border-collapse:collapse;
+}
+
+.ivu-menu-submenu > .ivu-menu {
+  background: #fbfbfb;
+}
+
+.ivu-menu-submenu > .ivu-menu > .ivu-menu-item {
+  border-bottom: 1px solid #e9eaec;
+  border-right: 1px solid #e9eaec;
+}
