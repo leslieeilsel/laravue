@@ -62,10 +62,9 @@
   </div>
 </template>
 <script>
-  import {registUser, getUsers} from 'api/user';
+  import {registUser, getUsers} from '../../api/user';
   import {initDepartment, loadDepartment} from 'api/system';
-  import {getRoles} from 'api/role';
-  import {getDeptSelecter} from 'api/department';
+  import {getRoles} from '../../api/role';
   import './users.css';
 
   const rowSelection = {
