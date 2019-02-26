@@ -9,8 +9,9 @@
       v-model="modal"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
+      width="540"
       title="创建项目">
-      <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
+      <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="110">
         <FormItem label="项目名称" prop="title">
           <Input v-model="form.title" placeholder="必填项"/>
         </FormItem>
@@ -62,11 +63,14 @@
             </Col>
           </Row>
         </FormItem>
+        <FormItem label="项目中心点坐标" prop="center_point">
+          <Input v-model="form.center_point" placeholder="必填项"/>
+        </FormItem>
         <FormItem
           v-for="(item, index) in form.positions"
           v-if="item.status"
           :key="index"
-          :label="'坐标点 ' + item.index"
+          :label="'项目轮廓坐标 ' + item.index"
           :prop="'positions.' + index + '.value'"
           :rules="{required: true, message: '坐标点 ' + item.index +' 不能为空', trigger: 'blur'}">
           <Row>
@@ -209,6 +213,7 @@
           plan_end_at: '',
           actual_start_at: '',
           actual_end_at: '',
+          center_point: '',
           positions: [
             {
               value: '',
@@ -240,6 +245,9 @@
           ],
           unit: [
             {required: true, message: '建设单位不能为空', trigger: 'blur'}
+          ],
+          center_point: [
+            {required: true, message: '项目中心点坐标不能为空', trigger: 'blur'}
           ]
         },
       }

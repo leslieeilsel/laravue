@@ -22,6 +22,7 @@ class CreateIbaProjectProjectsTable extends Migration
             $table->decimal('amount', 8, 2);                        // 项目金额
             $table->string('type');                                 // 项目类型
             $table->string('is_gc');                                // 项目标识
+            $table->string('center_point');                         // 项目中心点坐标
             $table->string('positions');                            // 项目坐标集
             $table->integer('parent_id')->nullable()->unsigned();   // 父级ID
             $table->date('plan_start_at')->nullable();              // 计划开始时间
