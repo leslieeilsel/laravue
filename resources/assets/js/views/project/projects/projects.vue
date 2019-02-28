@@ -133,7 +133,7 @@
           },
           {
             title: '建设状态',
-            key: 'description',
+            key: 'status',
             width: 100
           },
           {
@@ -144,7 +144,7 @@
           {
             title: '建设单位',
             key: 'unit',
-            width: 200
+            width: 210
           },
           {
             title: '项目金额',
