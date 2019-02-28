@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
-use App\Models\Role;
+use App\Models\Project\Projects;
+use App\Models\Project\ProjectPlan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\ProjectInfo;
-use Illuminate\Support\Facades\Auth;
 use App\Models\OperationLog;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProjectEarlyWarning;
@@ -20,19 +20,48 @@ class ProjectController extends Controller
      * @param $parentId
      * @return JsonResponse
      */
-    public function getByParentId($parentId)
+    public function getProjects()
     {
-        $departments = ProjectInfo::where('parent_id', $parentId)->get()->toArray();
-        $parentIds = ProjectInfo::get()->pluck('parent_id')->toArray();
-        $parentIds = array_unique($parentIds);
-        
-        $parenTitle = ($parentId == 0) ? '一级项目' : ProjectInfo::where('id', $parentId)->first()->title ;
-        foreach ($departments as $key => $value) {
-            $departments[$key]['parent_title'] = $parenTitle;
-            $departments[$key]['is_parent'] = in_array($value['id'], $parentIds);
+        $peojects = Projects::get()->toArray();
+
+        $projectIds = ProjectPlan::get()->pluck('project_id')->toArray();
+        $projectIds = array_unique($projectIds);
+
+        foreach ($peojects as $key => $value) {
+            $peojects[$key]['parent_title'] = '一级项目';
+            $peojects[$key]['deep'] = 1;
+            $peojects[$key]['is_parent'] = in_array($value['id'], $projectIds);
         }
         
-        return response()->json(['result' => $departments], 200);
+        return response()->json(['result' => $peojects], 200);
+    }
+
+    public function loadPlan($project_id)
+    {
+        $yearPlans = ProjectPlan::where('project_id', $project_id)->where('parent_id', 0)->get()->toArray();
+
+        $data = [];
+        foreach ($yearPlans as $key => $value) {
+            $value['children'] = $this->getChildPlan($value['id']);
+            $value['key'] = $value['id'];
+            $value['deep'] = 2;
+            $data[] = $value;
+        }
+        
+        return response()->json(['result' => $data], 200);
+    }
+
+    public function getChildPlan($parent_id)
+    {
+        $data = [];
+        $monthPlans = ProjectPlan::where('parent_id', $parent_id)->get()->toArray();
+        foreach ($monthPlans as $key => $value) {
+            $value['key'] = $value['id'];
+            $value['deep'] = 3;
+            $data[] = $value;
+        }
+
+        return $data;
     }
 
     /**
@@ -48,16 +77,29 @@ class ProjectController extends Controller
         $data['plan_end_at'] = date("Y-m-d", strtotime($data['plan_end_at']));
         $data['actual_start_at'] = date("Y-m-d", strtotime($data['actual_start_at']));
         $data['actual_end_at'] = date("Y-m-d", strtotime($data['actual_end_at']));
+        $data['positions'] = $this->buildPositions($data['positions']);
 
-        $result = DB::table('iba_project_info')->insertGetId($data);
+        $result = Projects::insert($data);
 
-        $this->earlyWarning($data, $result, 'insert');
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '创建项目信息');
         }
 
-        return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
+        return response()->json(['result' => $result], 200);
+    }
+
+    public function addProjectPlan(Request $request)
+    {
+        $data = $request->input();
+        $result = ProjectPlan::insert($data);
+        
+        // if ($result) {
+        //     $log = new OperationLog();
+        //     $log->eventLog($request, '创建项目计划');
+        // }
+        
+        return response()->json(['result' => $result], 200);
     }
 
     /**
@@ -81,7 +123,6 @@ class ProjectController extends Controller
 
         $result = ProjectInfo::where('id', $id)->update($data);
 
-        $this->earlyWarning($data, $id, 'update');
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '修改项目信息');
@@ -90,11 +131,11 @@ class ProjectController extends Controller
         return response()->json(['result' => $result], 200);
     }
 
-    public function getAllDepartment()
+    public function getAllProjects()
     {
-        $departments = ProjectInfo::all()->toArray();
+        $projects = Projects::all()->toArray();
 
-        return response()->json(['result' => $departments], 200);
+        return response()->json(['result' => $projects], 200);
     }
 
     /**
@@ -105,45 +146,23 @@ class ProjectController extends Controller
      */
     public function delete(Request $request)
     {
-        $id = $request->get('id');
-        $ids = explode(',', $id);
-
-        $menuRes = ProjectInfo::destroy($ids);
-        $roleRes = DB::table('iba_project_early_warning')->whereIn('project_info_id', $ids)->delete();
-
-        $result = ($menuRes && $roleRes > 0) ? true : false;
-
-        return response()->json(['result' => $result], 200);
-    }
-
-    public function earlyWarning($data, $id, $type)
-    {
-        $insert = [];
-        $insert['project_info_id'] = $id;
-        $insert['title'] = $data['title'];
-        $insert['warning_title'] = '';
-        if ($data['actual_start_at'] > $data['plan_start_at']) {
-            $insert['warning_title'] = $insert['warning_title'] . ',项目延期开始';
+        $allIds = $request->all();
+        if ($allIds['parentsIds']) {
+            $parentsIds = explode(',', $allIds['parentsIds']);
+            Projects::destroy($parentsIds);
+            DB::table('iba_project_plan')->whereIn('project_id', $parentsIds)->delete();
         }
-        if ($data['actual_end_at'] > $data['plan_end_at']) {
-            $insert['warning_title'] = $insert['warning_title'] . ',项目延期结束';
+        if ($allIds['yearIds']) {
+            $yearIds = explode(',', $allIds['yearIds']);
+            ProjectPlan::destroy($yearIds);
+            DB::table('iba_project_plan')->whereIn('parent_id', $yearIds)->delete();
         }
-        if ($data['plan_end_at'] < $data['plan_start_at']) {
-            $insert['warning_title'] = $insert['warning_title'] . ',项目填报异常';
-        }
-        if ($data['actual_end_at'] < $data['actual_start_at']) {
-            $insert['warning_title'] = $insert['warning_title'] . ',项目填报异常';
-        }
-        if ($insert['warning_title'] == ''){
-            $insert['warning_title'] = $insert['warning_title'] . ',项目进展正常';
+        if ($allIds['monthIds']) {
+            $monthIds = explode(',', $allIds['monthIds']);
+            ProjectPlan::destroy($monthIds);
         }
 
-        $insert['warning_title'] = ltrim($insert['warning_title'], ',');
-        if ($type === 'insert') {
-            ProjectEarlyWarning::insert($insert);
-        } else {
-            ProjectEarlyWarning::where('project_info_id', $id)->update($insert);
-        }
+        return response()->json(['result' => true], 200);
     }
 
     public function getAllWarning()
@@ -162,5 +181,19 @@ class ProjectController extends Controller
         }
 
         return response()->json(['result' => $data], 200);
+    }
+
+    public function buildPositions($positions)
+    {
+        $result = [];
+        if ($positions) {
+            foreach ($positions as $key => $value) {
+                if ($value['status'] == 1) {
+                    $result[] = $value['value'];
+                }
+            }
+        }
+
+        return implode(';', $result);
     }
 }

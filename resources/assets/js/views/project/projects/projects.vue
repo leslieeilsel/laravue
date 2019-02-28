@@ -18,10 +18,17 @@
         <FormItem label="项目编号" prop="num">
           <Input v-model="form.num" placeholder="必填项"></Input>
         </FormItem>
+        <FormItem label="建设状态" prop="status">
+          <Select v-model="form.status">
+            <Option value="计划">计划</Option>
+            <Option value="在建">在建</Option>
+            <Option value="建成">建成</Option>
+          </Select>
+        </FormItem>
         <FormItem label="业主" prop="owner">
           <Input v-model="form.owner" placeholder="必填项"/>
         </FormItem>
-        <FormItem label="类型" prop="type">
+        <FormItem label="项目类型" prop="type">
           <Select v-model="form.type">
             <Option value="房建">房建</Option>
             <Option value="市政">市政</Option>
@@ -40,6 +47,9 @@
             <Option value="是改创项目">是改创项目</Option>
             <Option value="不是改创项目">不是改创项目</Option>
           </Select>
+        </FormItem>
+        <FormItem label="项目概况" prop="description">
+            <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
         </FormItem>
         <FormItem label="计划时间">
           <Row>
@@ -119,6 +129,11 @@
           {
             title: '项目编号',
             key: 'num',
+            width: 100
+          },
+          {
+            title: '建设状态',
+            key: 'description',
             width: 100
           },
           {
@@ -206,14 +221,16 @@
           num: '',
           owner: '',
           type: '',
+          status: '',
           unit: '',
           amount: '',
-          is_gc: 0,
+          is_gc: '',
           plan_start_at: '',
           plan_end_at: '',
           actual_start_at: '',
           actual_end_at: '',
           center_point: '',
+          description: '',
           positions: [
             {
               value: '',
@@ -230,6 +247,9 @@
           ],
           num: [
             {required: true, message: '项目编号不能为空', trigger: 'blur'}
+          ],
+          status: [
+            {required: true, message: '建设状态不能为空', trigger: 'blur'}
           ],
           owner: [
             {required: true, message: '业主不能为空', trigger: 'blur'}
@@ -254,6 +274,7 @@
     },
     methods: {
       init() {
+        this.$refs.formValidate.resetFields();
         this.getProject();
       },
       getProject() {
@@ -272,7 +293,7 @@
                 this.$Message.success('添加成功!');
                 this.loading = false;
                 this.modal = false;
-                this.getProject();
+                this.init();
               } else {
                 this.$Message.error('添加失败!');
                 this.loading = false;

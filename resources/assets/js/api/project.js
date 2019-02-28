@@ -6,7 +6,7 @@ import request from '../utils/request'
  */
 export function initProjectInfo() {
   return request({
-    url: '/api/project/getByParentId/0',
+    url: '/api/project/getProjects',
     method: 'get'
   });
 }
@@ -15,9 +15,9 @@ export function initProjectInfo() {
  * 获取所有部门
  * @returns {*}
  */
-export function getAllDepartment() {
+export function getAllProjects() {
   return request({
-    url: '/api/project/getAllDepartment',
+    url: '/api/project/getAllProjects',
     method: 'get'
   });
 }
@@ -37,21 +37,33 @@ export function getAllWarning() {
  * 获取子部门
  * @returns {*}
  */
-export function loadDepartment(id) {
+export function loadPlan(id) {
   return request({
-    url: `/api/project/getByParentId/${id}`,
+    url: `/api/project/loadPlan/${id}`,
     method: 'get',
     data: { id }
   });
 }
 
 /**
- * 创建组织机构
+ * 新增项目
  * @returns {*}
  */
-export function addDepartment(form) {
+export function addProject(form) {
   return request({
-    url: '/api/project/addDepartment',
+    url: '/api/project/addProject',
+    method: 'post',
+    data: { ...form }
+  });
+}
+
+/**
+ * 新增项目
+ * @returns {*}
+ */
+export function addProjectPlan(form) {
+  return request({
+    url: '/api/project/addProjectPlan',
     method: 'post',
     data: { ...form }
   });
@@ -70,13 +82,13 @@ export function editDepartment(form) {
 }
 
 /**
- * 删除菜单
+ * 删除项目
  * @returns {*}
  */
-export function deleteProject(id) {
+export function deleteProject(parentsIds, yearIds, monthIds) {
   return request({
     url: '/api/project/deleteProject',
     method: 'post',
-    data: { id }
+    data: { parentsIds, yearIds, monthIds }
   });
 }
