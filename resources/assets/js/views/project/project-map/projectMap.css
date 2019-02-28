@@ -1,0 +1,39 @@
+.graycircle {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #d0ceca;
+    border-radius: 50%;
+    border: 1px solid #d0ceca;
+}
+
+.greencircle {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #228B22;
+    border-radius: 50%;
+    border: 1px solid #228B22;
+}
+
+.yellowcircle {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #f5c613;
+    border-radius: 50%;
+    border: 1px solid #f5c613;
+}
+
+.redcircle {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #f55213;
+    border-radius: 50%;
+    border: 1px solid #f55213;
+}
+
+.anchorBL {
+    display: none;
+}
