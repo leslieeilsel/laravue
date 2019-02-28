@@ -112,16 +112,24 @@ class ProjectController extends Controller
     {
         $data = $request->input();
         $id = $data['id'];
-        $data['plan_start_at'] = date("Y-m-d", strtotime($data['plan_start_at']));
-        $data['plan_end_at'] = date("Y-m-d", strtotime($data['plan_end_at']));
-        $data['actual_start_at'] = date("Y-m-d", strtotime($data['actual_start_at']));
-        $data['actual_end_at'] = date("Y-m-d", strtotime($data['actual_end_at']));
-        if ($data['is_parent']) {
-            unset($data['loading'], $data['children']);
-        }
-        unset($data['id'], $data['updated_at'], $data['expand'], $data['parent_title'], $data['is_parent'], $data['nodeKey'], $data['selected']);
+        if ($data['deep'] == 1) {
+            $data['plan_start_at'] = date("Y-m-d", strtotime($data['plan_start_at']));
+            $data['plan_end_at'] = date("Y-m-d", strtotime($data['plan_end_at']));
+            $data['actual_start_at'] = date("Y-m-d", strtotime($data['actual_start_at']));
+            $data['actual_end_at'] = date("Y-m-d", strtotime($data['actual_end_at']));
+            if ($data['is_parent']) {
+                unset($data['loading'], $data['children']);
+            }
+            unset($data['id'], $data['updated_at'], $data['expand'], $data['parent_title'], $data['deep'], $data['is_parent'], $data['nodeKey'], $data['selected']);
 
-        $result = ProjectInfo::where('id', $id)->update($data);
+            $result = Projects::where('id', $id)->update($data);
+        } else {
+            unset($data['id'], $data['updated_at'], $data['children'], $data['key'], $data['deep'], $data['nodeKey'], $data['selected']);
+            if ($data['expand']) {
+                unset($data['expand']);
+            }
+            $result = ProjectPlan::where('id', $id)->update($data);
+        }
 
         if ($result) {
             $log = new OperationLog();

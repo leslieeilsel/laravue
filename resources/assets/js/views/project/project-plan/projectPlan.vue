@@ -14,13 +14,13 @@
             <span class="select-title">{{editTitle}}</span>
             <a class="select-clear" v-if="form.id" @click="cancelEdit">取消选择</a>
           </Alert>
-<!--          <Input-->
-<!--            v-model="searchKey"-->
-<!--            suffix="ios-search"-->
-<!--            @on-change="search"-->
-<!--            placeholder="输入节点名搜索"-->
-<!--            clearable-->
-<!--          />-->
+          <!--          <Input-->
+          <!--            v-model="searchKey"-->
+          <!--            suffix="ios-search"-->
+          <!--            @on-change="search"-->
+          <!--            placeholder="输入节点名搜索"-->
+          <!--            clearable-->
+          <!--          />-->
           <div class="tree-bar">
             <Tree
               ref="tree"
@@ -60,7 +60,7 @@
                 </Select>
               </FormItem>
               <FormItem label="业主" prop="owner">
-                <Input v-model="form.owner" placeholder=""/>
+                <Input v-model="form.owner" placeholder="必填项"/>
               </FormItem>
               <FormItem label="项目类型" prop="type">
                 <Select v-model="form.type">
@@ -77,35 +77,40 @@
                 </Select>
               </FormItem>
               <FormItem label="建设单位" prop="unit">
-                <Input v-model="form.unit" placeholder=""/>
+                <Input v-model="form.unit" placeholder="必填项"/>
+              </FormItem>
+              <FormItem label="项目概况" prop="description">
+                <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
+                      placeholder="请输入..."></Input>
               </FormItem>
             </div>
             <FormItem label="项目金额" prop="amount">
               <Input v-model="form.amount" placeholder="支持小数点后两位"/>
             </FormItem>
-            <FormItem label="项目概况" prop="description">
-                <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
-            </FormItem>
             <div v-if="editSon">
               <FormItem label="计划时间">
                 <Row>
                   <Col span="11">
-                    <DatePicker type="date" placeholder="开始时间" format="yyyy-MM-dd" v-model="form.plan_start_at"></DatePicker>
+                    <DatePicker type="date" placeholder="开始时间" format="yyyy-MM-dd"
+                                v-model="form.plan_start_at"></DatePicker>
                   </Col>
                   <Col span="2" style="text-align: center">-</Col>
                   <Col span="11">
-                    <DatePicker type="date" placeholder="结束时间" format="yyyy-MM-dd" v-model="form.plan_end_at"></DatePicker>
+                    <DatePicker type="date" placeholder="结束时间" format="yyyy-MM-dd"
+                                v-model="form.plan_end_at"></DatePicker>
                   </Col>
                 </Row>
               </FormItem>
               <FormItem label="实际时间">
                 <Row>
                   <Col span="11">
-                    <DatePicker type="date" placeholder="开始时间" format="yyyy-MM-dd" v-model="form.actual_start_at"></DatePicker>
+                    <DatePicker type="date" placeholder="开始时间" format="yyyy-MM-dd"
+                                v-model="form.actual_start_at"></DatePicker>
                   </Col>
                   <Col span="2" style="text-align: center">-</Col>
                   <Col span="11">
-                    <DatePicker type="date" placeholder="结束时间" format="yyyy-MM-dd" v-model="form.actual_end_at"></DatePicker>
+                    <DatePicker type="date" placeholder="结束时间" format="yyyy-MM-dd"
+                                v-model="form.actual_end_at"></DatePicker>
                   </Col>
                 </Row>
               </FormItem>
@@ -140,6 +145,9 @@
         <FormItem label="名称" prop="title">
           <Input v-model="formAdd.title" placeholder=""/>
         </FormItem>
+        <FormItem label="项目金额" prop="amount">
+          <Input v-model="formAdd.amount" placeholder="支持小数点后两位"/>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" @click="modalVisible=false">取消</Button>
@@ -151,8 +159,8 @@
 
 <script>
   import "./projectPlan.css";
-  import {initProjectInfo, loadPlan, addProjectPlan, editDepartment, deleteProject} from "../../../api/project";
-  
+  import {initProjectInfo, loadPlan, addProjectPlan, edit, deleteProject} from "../../../api/project";
+
   export default {
     name: "tree",
     data() {
@@ -189,7 +197,33 @@
         },
         formValidate: {
           // 表单验证规则
-          title: [{required: true, message: "名称不能为空", trigger: "blur"}]
+          title: [
+            {required: true, message: "名称不能为空", trigger: "blur"}
+          ],
+          num: [
+            {required: true, message: '项目编号不能为空', trigger: 'blur'}
+          ],
+          status: [
+            {required: true, message: '建设状态不能为空', trigger: 'blur'}
+          ],
+          owner: [
+            {required: true, message: '业主不能为空', trigger: 'blur'}
+          ],
+          type: [
+            {required: true, message: '项目类型不能为空', trigger: 'blur'}
+          ],
+          amount: [
+            {required: true, message: '项目金额不能为空', trigger: 'blur'}
+          ],
+          is_gc: [
+            {required: true, message: '项目标识不能为空', trigger: 'blur'}
+          ],
+          unit: [
+            {required: true, message: '建设单位不能为空', trigger: 'blur'}
+          ],
+          center_point: [
+            {required: true, message: '项目中心点坐标不能为空', trigger: 'blur'}
+          ]
         },
         submitLoading: false,
         data: [],
@@ -208,7 +242,7 @@
         initProjectInfo().then(res => {
           this.loading = false;
           if (res.result) {
-            res.result.forEach(function(e) {
+            res.result.forEach(function (e) {
               if (e.is_parent) {
                 e.loading = false;
                 e.children = [];
@@ -223,7 +257,7 @@
         initProjectInfo().then(res => {
           this.loadingEdit = false;
           if (res.result) {
-            res.result.forEach(function(e) {
+            res.result.forEach(function (e) {
               if (e.is_parent) {
                 e.loading = false;
                 e.children = [];
@@ -243,7 +277,7 @@
         // 异步加载树子节点数据
         loadPlan(item.id).then(res => {
           if (res.result) {
-            res.result.forEach(function(e) {
+            res.result.forEach(function (e) {
               if (e.is_parent) {
                 e.loading = false;
                 e.children = [];
@@ -305,7 +339,7 @@
           let str = JSON.stringify(v[0]);
           let data = JSON.parse(str);
           this.form = data;
-          
+
           if (this.form.deep !== 1) {
             this.editSon = false;
           }
@@ -349,7 +383,7 @@
               return;
             }
             this.submitLoading = true;
-            editDepartment(this.form).then(res => {
+            edit(this.form, this.form.deep).then(res => {
               this.submitLoading = false;
               if (res.result) {
                 this.$Message.success("编辑成功");
@@ -387,7 +421,6 @@
         this.modalTitle = "添加项目计划";
         this.showParent = true;
         this.addSon = false;
-          console.log('TCL: add -> this.form', this.form)
         if (this.form.deep == 1) {
           this.formAdd = {
             parent_id: 0,

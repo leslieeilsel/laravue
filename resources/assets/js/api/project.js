@@ -58,7 +58,7 @@ export function addProject(form) {
 }
 
 /**
- * 新增项目
+ * 新增项目计划
  * @returns {*}
  */
 export function addProjectPlan(form) {
@@ -70,12 +70,12 @@ export function addProjectPlan(form) {
 }
 
 /**
- * 修改组织机构信息
+ * 修改项目信息，项目计划信息
  * @returns {*}
  */
-export function editDepartment(form) {
+export function edit(form) {
   return request({
-    url: '/api/project/editDepartment',
+    url: '/api/project/edit',
     method: 'post',
     data: { ...form }
   });
