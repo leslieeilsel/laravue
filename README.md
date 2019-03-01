@@ -1,21 +1,19 @@
-# Laravue
-
-## 安装
+<h1 align="center">icp-沣西投资云平台</h1>
 
 #### 安装扩展
 
 ```bash
 # 克隆项目
-git clone https://github.com/Donng/laravel-vue-iview.git
+git clone https://github.com/leslieeilsel/Laravue.git
 
-# 安装composer依赖
-cd laravel-vue-iview && composer install
+# 切换到icp分支
 
-# 设置国内淘宝镜像（未设置的）
-npm install -g cnpm --registry=https://registry.npm.taobao.org
+# 安装composer依赖包
+cd laravue
+composer install
 
-# 安装npm扩展包
-cnpm install
+# 推荐使用yarn安装依赖包
+yarn install (或 npm install)
 ```
 #### 配置
 
@@ -35,13 +33,15 @@ php artisan jwt:secret
 # 数据库迁移
 php artisan migrate
 php artisan db:seed
+
+# 将database/data/laravue.sql导入数据库
 ```
 
-#### 编译
+#### 编译运行
 
 ```bash
 # 开发环境编译
-npm run dev (或 npm run watch 监控文件修改)
+npm run watch (或 npm run dev)
 # 生产环境编译，压缩JS文件
 npm run prod
 ```
