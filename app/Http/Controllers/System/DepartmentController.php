@@ -20,7 +20,7 @@ class DepartmentController extends Controller
     public function getByParentId($parentId)
     {
         $departments = Departments::where('parent_id', $parentId)->orderBy('sort', 'asc')->get()->toArray();
-        $parentIds = Departments::get()->pluck('parent_id')->toArray();
+        $parentIds = Departments::all()->pluck('parent_id')->toArray();
         $parentIds = array_unique($parentIds);
         
         $parenTitle = ((int)$parentId === 0) ? '一级部门' : Departments::where('id', $parentId)->first()->title ;
@@ -64,7 +64,7 @@ class DepartmentController extends Controller
         $id = $data['id'];
         $data['update_by'] = Auth::user()->name;
         if ($data['is_parent']) {
-            unset($data['loading'], $data['children']);
+            unset($data['loading'], $data['children'], $data['expand']);
         }
         unset($data['id'], $data['updated_at'], $data['parent_title'], $data['is_parent'], $data['nodeKey'], $data['selected']);
 
