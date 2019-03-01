@@ -1,7 +1,7 @@
 <template>
   <div class="search">
     <Card>
-      <Row>
+      <Row class="operation">
         <Button @click="add" type="primary" icon="md-add">添加子部门</Button>
         <Button @click="addRoot" icon="md-add">添加一级部门</Button>
         <!-- <Button @click="delAll" icon="md-trash">批量删除</Button> -->
