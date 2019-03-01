@@ -52,7 +52,7 @@ class MenuController
                 }
                 // 匹配子记录
                 $v['children'] = $this->getChild($v['id'], $menus, $role_id); // 递归获取子记录
-                if ($v['children'] == null) {
+                if ($v['children'] === null) {
                     unset($v['children']);                          // 如果子元素为空则unset()
                 }
                 $v['key'] = $v['id'];
@@ -74,9 +74,7 @@ class MenuController
                 $v['key'] = $v['id'];
                 $v['value'] = (string)$v['id'];
                 $v['label'] = $v['title'];
-                unset($v['id']);
-                unset($v['title']);
-                unset($v['parent_id']);
+                unset($v['id'], $v['title'], $v['parent_id']);
                 $deptArr[] = $v;
             }
         }
@@ -90,15 +88,13 @@ class MenuController
         foreach ($menus as $k => $v) {
             if ($v['parent_id'] === $pid) {                                 // 匹配子记录
                 $v['children'] = $this->getChildSelecter($v['id'], $menus); // 递归获取子记录
-                if ($v['children'] == null) {
+                if ($v['children'] === null) {
                     unset($v['children']);                                  // 如果子元素为空则unset()
                 }
                 $v['label'] = $v['title'];
                 $v['key'] = $v['id'];
                 $v['value'] = (string)$v['id'];
-                unset($v['id']);
-                unset($v['title']);
-                unset($v['parent_id']);
+                unset($v['id'], $v['title'], $v['parent_id']);
                 $tree[] = $v;
             }
         }
@@ -131,8 +127,8 @@ class MenuController
         $data = [];
         foreach ($menus as $k => $v) {
             if ($v['parent_id'] === 0) {
-                $v['path'] = ($v['path']) ? $v['path'] : '/' ;
-                $v['component'] = ($v['component']) ? $v['component'] : 'layout' ;
+                $v['path'] = $v['path'] ?: '/' ;
+                $v['component'] = $v['component'] ?: 'layout' ;
                 $v['meta']['title'] = $v['title'];
                 $v['meta']['icon'] = $v['icon'];
                 $v['meta']['url'] = $v['url'];
@@ -140,13 +136,10 @@ class MenuController
                     unset($v['name']);
                 }
                 $v['children'] = $this->getRouterChild($v['id'], $menus);
-                if ($v['children'] && count($v['children']) == 1) {
+                if ($v['children'] && count($v['children']) === 1) {
                     $v['showParent'] = false;
                 }
-                unset($v['id']);
-                unset($v['title']);
-                unset($v['icon']);
-                unset($v['parent_id']);
+                unset($v['id'], $v['title'], $v['icon'], $v['parent_id']);
                 $data[] = $v;
             }
         }
@@ -158,21 +151,18 @@ class MenuController
     {
         $tree = [];
         foreach ($menus as $k => $v) {
-            $v['path'] = ($v['path']) ? $v['path'] : '/' ;
-            $v['component'] = ($v['component']) ? $v['component'] : 'layout' ;
+            $v['path'] = $v['path'] ?: '/' ;
+            $v['component'] = $v['component'] ?: 'layout' ;
             $v['meta']['title'] = $v['title'];
             $v['meta']['icon'] = $v['icon'];
             $v['meta']['url'] = $v['url'];
             if ($v['parent_id'] === $pid) {
                 // 匹配子记录
                 $v['children'] = $this->getRouterChild($v['id'], $menus); // 递归获取子记录
-                if ($v['children'] == null) {
+                if ($v['children'] === null) {
                     unset($v['children']);                          // 如果子元素为空则unset()
                 }
-                unset($v['id']);
-                unset($v['title']);
-                unset($v['icon']);
-                unset($v['parent_id']);
+                unset($v['id'], $v['title'], $v['icon'], $v['parent_id']);
                 $tree[] = $v;
             }
         }
@@ -241,7 +231,7 @@ class MenuController
         $menuRes = Menu::destroy($ids);
         $roleRes = DB::table('ibiart_slms_role_menus')->whereIn('menu_id', $ids)->delete();
 
-        $result = ($menuRes && $roleRes >= 0) ? true : false;
+        $result = ($menuRes && $roleRes >= 0);
 
         return response()->json(['result' => $result], 200);
     }

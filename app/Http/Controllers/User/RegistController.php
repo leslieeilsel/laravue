@@ -24,7 +24,7 @@ class RegistController extends Controller
         $data = DB::table('users')->select('name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id')->get()->toArray();
 
         foreach ($data as $k => $row) {
-            if (!($row['department_id'])) {
+            if (!$row['department_id']) {
                 $data[$k]['department'] = '无';
             } else {
                 $department = Departments::where('id', $row['department_id'])->first()->title;
@@ -32,7 +32,7 @@ class RegistController extends Controller
             }
             unset($data[$k]['department_id']);
 
-            if (!($row['group_id'])) {
+            if (!$row['group_id']) {
                 $data[$k]['group'] = '无';
             } else {
                 $group = Role::where('id', $row['group_id'])->first()->name;

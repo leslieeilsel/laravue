@@ -23,10 +23,10 @@ class DepartmentController extends Controller
         $parentIds = Departments::get()->pluck('parent_id')->toArray();
         $parentIds = array_unique($parentIds);
         
-        $parenTitle = ($parentId == 0) ? '一级部门' : Departments::where('id', $parentId)->first()->title ;
+        $parenTitle = ($parentId === 0) ? '一级部门' : Departments::where('id', $parentId)->first()->title ;
         foreach ($departments as $key => $value) {
             $departments[$key]['parent_title'] = $parenTitle;
-            $departments[$key]['is_parent'] = in_array($value['id'], $parentIds);
+            $departments[$key]['is_parent'] = in_array($value['id'], $parentIds, true);
         }
         
         return response()->json(['result' => $departments], 200);
