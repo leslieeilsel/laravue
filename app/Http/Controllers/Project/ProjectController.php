@@ -17,23 +17,22 @@ class ProjectController extends Controller
     /**
      * 获取一级项目信息
      *
-     * @param $parentId
      * @return JsonResponse
      */
     public function getProjects()
     {
-        $peojects = Projects::get()->toArray();
+        $projects = Projects::all()->toArray();
 
-        $projectIds = ProjectPlan::get()->pluck('project_id')->toArray();
+        $projectIds = ProjectPlan::all()->pluck('project_id')->toArray();
         $projectIds = array_unique($projectIds);
 
-        foreach ($peojects as $key => $value) {
-            $peojects[$key]['parent_title'] = '一级项目';
-            $peojects[$key]['deep'] = 1;
-            $peojects[$key]['is_parent'] = in_array($value['id'], $projectIds);
+        foreach ($projects as $key => $value) {
+            $projects[$key]['parent_title'] = '一级项目';
+            $projects[$key]['deep'] = 1;
+            $projects[$key]['is_parent'] = in_array($value['id'], $projectIds, true);
         }
         
-        return response()->json(['result' => $peojects], 200);
+        return response()->json(['result' => $projects], 200);
     }
 
     public function loadPlan($project_id)
@@ -73,10 +72,10 @@ class ProjectController extends Controller
     public function add(Request $request)
     {
         $data = $request->input();
-        $data['plan_start_at'] = date("Y-m-d", strtotime($data['plan_start_at']));
-        $data['plan_end_at'] = date("Y-m-d", strtotime($data['plan_end_at']));
-        $data['actual_start_at'] = date("Y-m-d", strtotime($data['actual_start_at']));
-        $data['actual_end_at'] = date("Y-m-d", strtotime($data['actual_end_at']));
+        $data['plan_start_at'] = date('Y-m-d', strtotime($data['plan_start_at']));
+        $data['plan_end_at'] = date('Y-m-d', strtotime($data['plan_end_at']));
+        $data['actual_start_at'] = date('Y-m-d', strtotime($data['actual_start_at']));
+        $data['actual_end_at'] = date('Y-m-d', strtotime($data['actual_end_at']));
         $data['positions'] = $this->buildPositions($data['positions']);
 
         $result = Projects::insert($data);
@@ -112,11 +111,11 @@ class ProjectController extends Controller
     {
         $data = $request->input();
         $id = $data['id'];
-        if ($data['deep'] == 1) {
-            $data['plan_start_at'] = date("Y-m-d", strtotime($data['plan_start_at']));
-            $data['plan_end_at'] = date("Y-m-d", strtotime($data['plan_end_at']));
-            $data['actual_start_at'] = date("Y-m-d", strtotime($data['actual_start_at']));
-            $data['actual_end_at'] = date("Y-m-d", strtotime($data['actual_end_at']));
+        if ($data['deep'] === 1) {
+            $data['plan_start_at'] = date('Y-m-d', strtotime($data['plan_start_at']));
+            $data['plan_end_at'] = date('Y-m-d', strtotime($data['plan_end_at']));
+            $data['actual_start_at'] = date('Y-m-d', strtotime($data['actual_start_at']));
+            $data['actual_end_at'] = date('Y-m-d', strtotime($data['actual_end_at']));
             if ($data['is_parent']) {
                 unset($data['loading'], $data['children']);
             }
@@ -196,7 +195,7 @@ class ProjectController extends Controller
         $result = [];
         if ($positions) {
             foreach ($positions as $key => $value) {
-                if ($value['status'] == 1) {
+                if ($value['status'] === 1) {
                     $result[] = $value['value'];
                 }
             }
