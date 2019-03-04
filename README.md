@@ -31,10 +31,7 @@ php artisan jwt:secret
 配置数据库名称、用户名和密码
 
 # 数据库迁移
-php artisan migrate
-php artisan db:seed
-
-# 将database/data/laravue.sql导入数据库
+# 将database/data/icp.sql还原到数据库
 ```
 
 #### 编译运行
