@@ -88,13 +88,13 @@
         <Row>
           <Col span="11">
             <FormItem label="计划开始时间" prop="plan_start_at">
-              <DatePicker type="date" placeholder="开始时间" v-model="form.plan_start_at"></DatePicker>
+              <DatePicker type="month" placeholder="开始时间" format="yyyy年MM月" v-model="form.plan_start_at"></DatePicker>
             </FormItem>
           </Col>
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="计划结束时间" prop="plan_end_at">
-              <DatePicker type="date" placeholder="结束时间" v-model="form.plan_end_at"></DatePicker>
+              <DatePicker type="month" placeholder="结束时间" format="yyyy年MM月" v-model="form.plan_end_at"></DatePicker>
             </FormItem>
           </Col>
         </Row>
@@ -107,7 +107,10 @@
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="项目状态" prop="status">
-              <Input v-model="form.status" placeholder="必填项"></Input>
+              <Select v-model="form.status">
+                <Option value="在建">在建</Option>
+                <Option value="已建">已建</Option>
+              </Select>
             </FormItem>
           </Col>
         </Row>

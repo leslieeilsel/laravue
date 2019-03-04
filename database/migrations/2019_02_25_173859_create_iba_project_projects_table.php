@@ -30,8 +30,8 @@ class CreateIbaProjectProjectsTable extends Migration
             $table->string('description');                          // 投资概况
             $table->string('center_point');                         // 项目中心点坐标
             $table->string('positions');                            // 项目坐标集
-            $table->date('plan_start_at')->nullable();              // 计划开始时间
-            $table->date('plan_end_at')->nullable();                // 计划结束时间
+            $table->string('plan_start_at');                        // 计划开始时间
+            $table->string('plan_end_at');                          // 计划结束时间
             $table->timestamps();
         });
     }

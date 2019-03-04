@@ -72,8 +72,8 @@ class ProjectController extends Controller
     public function add(Request $request)
     {
         $data = $request->input();
-        $data['plan_start_at'] = date('Y-m-d', strtotime($data['plan_start_at']));
-        $data['plan_end_at'] = date('Y-m-d', strtotime($data['plan_end_at']));
+        $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
+        $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
         $data['positions'] = $this->buildPositions($data['positions']);
         $data['created_at'] = date('Y-m-d H:i:s');
 
@@ -111,8 +111,8 @@ class ProjectController extends Controller
         $data = $request->input();
         $id = $data['id'];
         if ($data['deep'] === 1) {
-            $data['plan_start_at'] = date('Y-m-d', strtotime($data['plan_start_at']));
-            $data['plan_end_at'] = date('Y-m-d', strtotime($data['plan_end_at']));
+            $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
+            $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
             if ($data['is_parent']) {
                 unset($data['loading'], $data['children']);
             }
