@@ -232,7 +232,7 @@
         }
       },
       add() {
-        if (this.form.id == "" || this.form.id == null) {
+        if (this.form.id === "" || this.form.id == null) {
           this.$Message.warning("请先点击选择一个部门");
           return;
         }
