@@ -1,3 +1,7 @@
 .btnGroup {
     margin-bottom: 10px;
 }
+
+.ivu-form .ivu-date-picker {
+    display: block;
+}
