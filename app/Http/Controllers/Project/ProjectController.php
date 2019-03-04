@@ -74,7 +74,7 @@ class ProjectController extends Controller
         $data = $request->input();
         $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
         $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
-        $data['positions'] = $this->buildPositions($data['positions']);
+        $data['positions'] = self::buildPositions($data['positions']);
         $data['created_at'] = date('Y-m-d H:i:s');
 
         $result = Projects::insert($data);
@@ -187,7 +187,7 @@ class ProjectController extends Controller
         return response()->json(['result' => $data], 200);
     }
 
-    public function buildPositions($positions)
+    public static function buildPositions($positions)
     {
         $result = [];
         if ($positions) {
