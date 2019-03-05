@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Project;
 use App\Http\Controllers\Controller;
 use App\Models\Project\Projects;
 use App\Models\Project\ProjectPlan;
+use App\Models\Project\ProjectSchedule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\ProjectInfo;
@@ -199,5 +200,35 @@ class ProjectController extends Controller
         }
 
         return implode(';', $result);
+    }
+    /**
+     * 项目信息填报
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function projectProgress(Request $request)
+    {
+        $data = $request->input();
+        if($data['build_start_at']){
+            $data['build_start_at'] = date('Y', strtotime($data['build_start_at']));
+        }
+        if($data['build_end_at']){
+            $data['build_end_at'] = date('Y', strtotime($data['build_end_at']));
+        }
+        if($data['start_at']){
+            $data['start_at'] = date('Y-m', strtotime($data['start_at']));
+        }
+        if($data['plan_start_at']){
+            $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
+        }
+        $result = ProjectSchedule::insert($data);
+
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '投资项目进度填报');
+        }
+
+        return response()->json(['result' => $result], 200);
     }
 }

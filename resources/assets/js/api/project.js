@@ -92,3 +92,14 @@ export function deleteProject(parentsIds, yearIds, monthIds) {
     data: { parentsIds, yearIds, monthIds }
   });
 }
+/**
+ * 投资项目进度填报
+ * @returns {*}
+ */
+export function projectProgress(form) {
+  return request({
+    url: '/api/project/projectProgress',
+    method: 'post',
+    data: { ...form }
+  });
+}
