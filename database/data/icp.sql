@@ -11,7 +11,7 @@
  Target Server Version : 50722
  File Encoding         : 65001
 
- Date: 04/03/2019 09:57:35
+ Date: 05/03/2019 09:54:07
 */
 
 SET NAMES utf8mb4;
@@ -77,29 +77,33 @@ CREATE TABLE `iba_project_projects`  (
   `num` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `owner` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `subject` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `unit` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `amount` decimal(10, 2) NOT NULL,
+  `safe_amount` decimal(10, 2) NULL DEFAULT NULL,
+  `land_amount` decimal(10, 2) NULL DEFAULT NULL,
   `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `is_gc` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `center_point` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `positions` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `plan_start_at` date NULL DEFAULT NULL,
-  `plan_end_at` date NULL DEFAULT NULL,
-  `actual_start_at` date NULL DEFAULT NULL,
-  `actual_end_at` date NULL DEFAULT NULL,
+  `plan_start_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `plan_end_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `created_at` timestamp(0) NULL DEFAULT NULL,
   `updated_at` timestamp(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of iba_project_projects
 -- ----------------------------
-INSERT INTO `iba_project_projects` VALUES (4, '西咸新区沣西新城智慧沣西1号楼', '345345', '在建', '沣西新城', '陕西建工第一建设集团有限公司', 345345.00, '绿化', '不是改创项目', '本项目建设内容为房建，项目总投资为100万元。资金来源通过自筹及申请中省市专项建设资金解决。', '108.708638,34.297493', '108.705233,34.299387;108.711162,34.299469;108.711809,34.29589;108.706032,34.295778', '2019-02-22', '2019-02-20', '2019-02-14', '2019-02-21', NULL, NULL);
-INSERT INTO `iba_project_projects` VALUES (9, '沣西新城西部云谷7号楼', '34543', '计划', '西部云谷', '陕西建工第三建设集团有限公司', 3455.00, '市政', '不是改创项目', '本项目建设内容为房建，项目总投资为100万元。资金来源通过自筹及申请中省市专项建设资金解决。', '108.735518, 34.300319', '108.730882,34.30175;108.737242,34.30263;108.737997,34.295159;108.732535, 34.294727', '2019-02-01', '2019-02-06', '2019-02-12', '2019-02-21', NULL, NULL);
-INSERT INTO `iba_project_projects` VALUES (10, '沣西新城第三幼儿园建设项目', '35334', '完成', '沣西新城', '陕西建工第三建设集团有限公司', 345345.00, '绿化', '是改创项目', '本项目建设内容为房建，项目总投资为100万元。资金来源通过自筹及申请中省市专项建设资金解决。', '108.72605,34.303882', '108.721846,34.30509;108.729409,34.306089;108.730343,34.302078;108.723624,34.301243', '2019-02-01', '2019-02-08', '2019-02-04', '2019-02-08', NULL, NULL);
-INSERT INTO `iba_project_projects` VALUES (11, '沣西新城双创中心建设项目', '456456', '在建', '双创中心', '陕西建工第四建设集团有限公司', 456456.00, '房建', '是改创项目', '本项目建设内容为房建，项目总投资为100万元。资金来源通过自筹及申请中省市专项建设资金解决。', '108.71218,34.306969', '108.708083,34.307565;108.7143,34.312217;108.715665,34.304643;108.710527,34.303837', '2019-02-05', '2019-02-06', '2019-02-20', '2019-02-20', NULL, NULL);
+INSERT INTO `iba_project_projects` VALUES (4, '西咸新区沣西新城智慧沣西1号楼', '345345', '在建', '沣西新城', '234234', '陕西建工第一建设集团有限公司', 345345.00, 23423.00, 234234.00, '绿化', '不是国民经济计划', '本项目建设内容为房建，项目总投资为100万元。资金来源通过自筹及申请中省市专项建设资金解决。', '108.708638,34.297493', '108.705233,34.299387;108.711162,34.299469;108.711809,34.29589;108.706032,34.295778', '2019-02', '2019-02', '2019-03-04 16:32:28', NULL);
+INSERT INTO `iba_project_projects` VALUES (9, '沣西新城西部云谷7号楼', '34543', '计划', '西部云谷', '345', '陕西建工第三建设集团有限公司', 3455.00, 345.00, 345.00, '市政', '不是国民经济计划', '本项目建设内容为房建，项目总投资为100万元。资金来源通过自筹及申请中省市专项建设资金解决。', '108.735518, 34.300319', '108.730882,34.30175;108.737242,34.30263;108.737997,34.295159;108.732535, 34.294727', '2019-02', '2019-02', '2019-03-04 16:57:12', NULL);
+INSERT INTO `iba_project_projects` VALUES (10, '沣西新城第三幼儿园建设项目', '35334', '完成', '沣西新城', '53453', '陕西建工第三建设集团有限公司', 345345.00, 345.00, 345.00, '绿化', '是国民经济计划', '本项目建设内容为房建，项目总投资为100万元。资金来源通过自筹及申请中省市专项建设资金解决。', '108.72605,34.303882', '108.721846,34.30509;108.729409,34.306089;108.730343,34.302078;108.723624,34.301243', '2019-02', '2019-02', '2019-03-04 17:58:38', NULL);
+INSERT INTO `iba_project_projects` VALUES (11, '沣西新城双创中心建设项目', '456456', '在建', '双创中心', '234234\r\n345\r\n53453', '陕西建工第四建设集团有限公司', 456456.00, 345.00, 234.00, '房建', '是国民经济计划', '本项目建设内容为房建，项目总投资为100万元。资金来源通过自筹及申请中省市专项建设资金解决。', '108.71218,34.306969', '108.708083,34.307565;108.7143,34.312217;108.715665,34.304643;108.710527,34.303837', '2019-02', '2019-02', '2019-03-05 09:53:39', NULL);
+INSERT INTO `iba_project_projects` VALUES (12, '234234', '234234', '在建', '234234', '234234', '234234', 234234.00, 23423.00, 234234.00, '房建', '是国民经济计划', '234234234', '234234,2342342', '234234234,23423424234;234234,2342342', '2019-03', '2019-03', '2019-03-04 16:32:28', NULL);
+INSERT INTO `iba_project_projects` VALUES (13, '34', '345', '在建', '345', '345', '345', 345.00, 345.00, 345.00, '房建', '是国民经济计划', '234234', '345,34534', '2342,234234', '2019-03', '2019-03', '2019-03-04 16:57:12', NULL);
+INSERT INTO `iba_project_projects` VALUES (14, '345345', '34534', '在建', '4534534', '53453', '34535', 345.00, 345.00, 345.00, '市政', '是国民经济计划', '345345345', '345345,345345', '345345345,345345345', '2019-06', '2019-09', '2019-03-04 17:58:38', NULL);
 
 -- ----------------------------
 -- Table structure for iba_system_department
@@ -424,7 +428,7 @@ CREATE TABLE `operation_log`  (
   `created_at` timestamp(0) NULL DEFAULT NULL,
   `updated_at` timestamp(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 345 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 355 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of operation_log
@@ -773,6 +777,16 @@ INSERT INTO `operation_log` VALUES (341, '修改部门', 'POST', 'api/department
 INSERT INTO `operation_log` VALUES (342, '创建部门', 'POST', 'api/department/addDepartment', '::1', '', 1, '2019-03-01 14:08:07', NULL);
 INSERT INTO `operation_log` VALUES (343, '用户登录', 'POST', 'api/login', '::1', '', 1, '2019-03-01 16:02:54', NULL);
 INSERT INTO `operation_log` VALUES (344, '用户登录', 'POST', 'api/login', '::1', '', 1, '2019-03-03 18:35:08', NULL);
+INSERT INTO `operation_log` VALUES (345, '用户登录', 'POST', 'api/login', '::1', '', 1, '2019-03-04 10:03:20', NULL);
+INSERT INTO `operation_log` VALUES (346, '用户登录', 'POST', 'api/login', '::1', '', 1, '2019-03-04 11:26:33', NULL);
+INSERT INTO `operation_log` VALUES (347, '用户登录', 'POST', 'api/login', '::1', '', 1, '2019-03-04 14:05:01', NULL);
+INSERT INTO `operation_log` VALUES (348, '用户登录', 'POST', 'api/login', '::1', '', 1, '2019-03-04 14:52:58', NULL);
+INSERT INTO `operation_log` VALUES (349, '用户登录', 'POST', 'api/login', '::1', '', 1, '2019-03-04 15:56:35', NULL);
+INSERT INTO `operation_log` VALUES (350, '创建项目信息', 'POST', 'api/project/addProject', '::1', '', 1, '2019-03-04 16:32:28', NULL);
+INSERT INTO `operation_log` VALUES (351, '创建项目信息', 'POST', 'api/project/addProject', '::1', '', 0, '2019-03-04 16:57:12', NULL);
+INSERT INTO `operation_log` VALUES (352, '用户登录', 'POST', 'api/login', '::1', '', 1, '2019-03-04 17:46:55', NULL);
+INSERT INTO `operation_log` VALUES (353, '创建项目信息', 'POST', 'api/project/addProject', '::1', '', 1, '2019-03-04 17:59:10', NULL);
+INSERT INTO `operation_log` VALUES (354, '用户登录', 'POST', 'api/login', '::1', '', 1, '2019-03-05 09:48:53', NULL);
 
 -- ----------------------------
 -- Table structure for password_resets
@@ -815,7 +829,7 @@ CREATE TABLE `users`  (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, 'admin', 'Admin', '15594990729', 'admin@admin.com', NULL, '$2y$10$q7IuhSqsnGL5g3CNQEypleEuDMZrJyQImZqwSlLEORMoGHBp9u9.u', '超级管理员', 2, 4, NULL, '2019-03-03 18:35:08', '2018-11-25 00:06:23', '2019-03-03 18:35:08');
+INSERT INTO `users` VALUES (1, 'admin', 'Admin', '15594990729', 'admin@admin.com', NULL, '$2y$10$q7IuhSqsnGL5g3CNQEypleEuDMZrJyQImZqwSlLEORMoGHBp9u9.u', '超级管理员', 2, 4, NULL, '2019-03-05 09:48:53', '2018-11-25 00:06:23', '2019-03-05 09:48:53');
 INSERT INTO `users` VALUES (2, 'user01', 'user01', '12345678900', 'user01@admin.com', NULL, '$2y$10$rtuz3jfr81IKP8Mmm/pLBOvYq270GD2ReG9FOJPzcL14DySDD7SrS', 'user01', 2, 5, NULL, '2019-01-26 11:47:04', '2019-01-09 15:11:02', '2019-01-26 11:47:04');
 INSERT INTO `users` VALUES (3, 'user02', 'user02', '12345678900', 'user02@user02.com', NULL, '$2y$10$5uRNH/DJLS9.gOYwpTp1ROmgcwl8HejJrdhhBQka/WyHxmE28jC6S', 'user02', 2, 5, NULL, NULL, '2019-01-10 02:44:13', NULL);
 INSERT INTO `users` VALUES (4, 'user03', 'user03', '12345678901', 'user03@user03.com', NULL, '$2y$10$9MoQkbhMrQfjKYhVm5ltSekQqHwb/2kuthB3tPPYvAHpymFhrgQ7u', 'user03', 2, 5, NULL, NULL, '2019-01-22 21:46:38', NULL);
