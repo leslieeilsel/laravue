@@ -112,20 +112,26 @@
                   </Col>
                   <Col span="2"></Col>
                   <Col span="11">
-                      <FormItem label="形象进度照片" prop="img_progress_pic">
-                        <Upload
-                            multiple
-                            action="//jsonplaceholder.typicode.com/posts/">
-                            <Button icon="ios-cloud-upload-outline">Upload files</Button>
-                        </Upload>
+                      <FormItem label="备注" prop="marker">
+                          <Input v-model="form.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
+                              placeholder="请输入..."></Input>
                       </FormItem>
                   </Col>
               </Row>
               <Row>
                   <Col span="11">
-                      <FormItem label="备注" prop="marker">
-                          <Input v-model="form.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                              placeholder="请输入..."></Input>
+                      <FormItem label="形象进度照片" prop="img_progress_pic">
+                        <Upload
+                            ref="upload"
+                            :show-upload-list="false"
+                            :default-file-list="defaultList"
+                            :on-success="handleSuccess"
+                            multiple
+                            :format="['jpg','jpeg','png']"
+                            :max-size="2048"
+                            action="//jsonplaceholder.typicode.com/posts/">
+                            <Button icon="ios-cloud-upload-outline">Upload files</Button>
+                        </Upload>
                       </FormItem>
                   </Col>
               </Row>
@@ -217,7 +223,10 @@
             {value: '11',label: '11月'},
             {value: '12',label: '12月'},
         ],
-        project_id:[]
+        project_id:[],
+        imgName: '',
+        visible: false,
+        uploadList: []
       };
     },
     methods: {
@@ -263,10 +272,44 @@
             });
           }
         })
+      },//上传图片
+      handleView (name) {
+          this.imgName = name;
+          this.visible = true;
+      },
+      handleRemove (file) {
+          const fileList = this.$refs.upload.fileList;
+          this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+      },
+      handleSuccess (res, file) {
+          file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
+          file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+      },
+      handleFormatError (file) {
+          this.$Notice.warning({
+              title: 'The file format is incorrect',
+              desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+          });
+      },
+      handleMaxSize (file) {
+          this.$Notice.warning({
+              title: 'Exceeding file size limit',
+              desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+          });
+      },
+      handleBeforeUpload () {
+          const check = this.uploadList.length < 5;
+          if (!check) {
+              this.$Notice.warning({
+                  title: 'Up to five pictures can be uploaded.'
+              });
+          }
+          return check;
       }
     },
     mounted() {
       this.init();
+      this.uploadList = this.$refs.upload.fileList;
     }
   };
 </script>
