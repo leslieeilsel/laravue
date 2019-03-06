@@ -15,10 +15,11 @@ class CreateIbaProjectPlanTable extends Migration
     {
         Schema::create('iba_project_plan', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');                                // 名称
-            $table->integer('project_id')->nullable()->unsigned();  // 项目ID
-            $table->integer('parent_id')->nullable()->unsigned();   // 父级ID
+            $table->integer('date');                                // 时间划分（包括年和月）
+            $table->integer('project_id')->unsigned();              // 项目ID
+            $table->integer('parent_id')->unsigned();               // 父级ID
             $table->decimal('amount', 10, 2);                       // 项目金额
+            $table->text('image_progress');                         // 形象进度
             $table->timestamps();
         });
     }

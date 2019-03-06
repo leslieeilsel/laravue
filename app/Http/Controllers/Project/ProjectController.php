@@ -32,7 +32,7 @@ class ProjectController extends Controller
             $projects[$key]['deep'] = 1;
             $projects[$key]['is_parent'] = in_array($value['id'], $projectIds, true);
         }
-        
+
         return response()->json(['result' => $projects], 200);
     }
 
@@ -47,7 +47,7 @@ class ProjectController extends Controller
             $value['deep'] = 2;
             $data[] = $value;
         }
-        
+
         return response()->json(['result' => $data], 200);
     }
 
@@ -78,7 +78,14 @@ class ProjectController extends Controller
         $data['positions'] = self::buildPositions($data['positions']);
         $data['created_at'] = date('Y-m-d H:i:s');
 
-        $result = Projects::insert($data);
+        $planData = $data['projectPlan'];
+
+        unset($data['projectPlan']);
+
+        $id = DB::table('iba_project_projects')->insertGetId($data);
+        $this->insertPlan($id, $planData, [$data['plan_start_at'], $data['plan_end_at']]);
+
+        $result = $id ? true : false;
 
         if ($result) {
             $log = new OperationLog();
@@ -88,16 +95,86 @@ class ProjectController extends Controller
         return response()->json(['result' => $result], 200);
     }
 
+    /**
+     * 添加项目计划
+     *
+     * @param $projectId
+     * @param $planData
+     * @param $planDate
+     */
+    public function insertPlan($projectId, $planData, $planDate)
+    {
+        $startDate = $planDate[0];
+        $endDate = $planDate[1];
+        $monthArr = $this->getMonthList(strtotime($startDate), strtotime($endDate));
+        foreach ($planData as $k => $v) {
+            $v['project_id'] = $projectId;
+            $v['parent_id'] = 0;
+            $v['created_at'] = date('Y-m-d H:i:s');
+
+            $parentId = DB::table('iba_project_plan')->insertGetId($v);
+
+            $yearAmount = $v['amount'];
+            $monthAmount = round($yearAmount / count($monthArr[$v['date']]), 2);
+            foreach ($monthArr[$v['date']] as $key => $value) {
+                $monthData = [];
+                $monthData['date'] = (int)$value['month'];
+                $monthData['project_id'] = $projectId;
+                $monthData['parent_id'] = $parentId;
+                $monthData['amount'] = $monthAmount;
+                $monthData['image_progress'] = '';
+                $monthData['created_at'] = date('Y-m-d H:i:s');
+
+                ProjectPlan::insert($monthData);
+            }
+        }
+    }
+
+    /**
+     * 获取一段时间内的所有月份
+     *
+     * @param $startDate
+     * @param $endDate
+     * @return array
+     */
+    public function getMonthList($startDate, $endDate)
+    {
+        $yearStart = date('Y', $startDate);
+        $monthStart = date('m', $startDate);
+
+        $yearEnd = date('Y', $endDate);
+        $monthEnd = date('m', $endDate);
+
+        if ($yearStart == $yearEnd) {
+            $monthInterval = $monthEnd - $monthStart;
+        } elseif ($yearStart < $yearEnd) {
+            $yearInterval = $yearEnd - $yearStart - 1;
+            $monthInterval = (12 - $monthStart + $monthEnd) + 12 * $yearInterval;
+        }
+        //循环输出月份
+        $data = [];
+        for ($i = 0; $i <= $monthInterval; $i++) {
+            $tmpTime = mktime(0, 0, 0, $monthStart + $i, 1, $yearStart);
+            $data[$i]['year'] = date('Y', $tmpTime);
+            $data[$i]['month'] = date('m', $tmpTime);
+        }
+        unset($tmpTime);
+
+        $data = collect($data)->groupBy('year')->toArray();
+
+        return $data;
+    }
+
     public function addProjectPlan(Request $request)
     {
         $data = $request->input();
         $result = ProjectPlan::insert($data);
-        
+
         // if ($result) {
         //     $log = new OperationLog();
         //     $log->eventLog($request, '创建项目计划');
         // }
-        
+
         return response()->json(['result' => $result], 200);
     }
 
@@ -136,6 +213,11 @@ class ProjectController extends Controller
         return response()->json(['result' => $result], 200);
     }
 
+    /**
+     * 获取所有项目信息
+     *
+     * @return JsonResponse
+     */
     public function getAllProjects()
     {
         $projects = Projects::all()->toArray();
@@ -201,6 +283,7 @@ class ProjectController extends Controller
 
         return implode(';', $result);
     }
+
     /**
      * 项目信息填报
      *
@@ -210,16 +293,16 @@ class ProjectController extends Controller
     public function projectProgress(Request $request)
     {
         $data = $request->input();
-        if($data['build_start_at']){
+        if ($data['build_start_at']) {
             $data['build_start_at'] = date('Y', strtotime($data['build_start_at']));
         }
-        if($data['build_end_at']){
+        if ($data['build_end_at']) {
             $data['build_end_at'] = date('Y', strtotime($data['build_end_at']));
         }
-        if($data['start_at']){
+        if ($data['start_at']) {
             $data['start_at'] = date('Y-m', strtotime($data['start_at']));
         }
-        if($data['plan_start_at']){
+        if ($data['plan_start_at']) {
             $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
         }
         $result = ProjectSchedule::insert($data);

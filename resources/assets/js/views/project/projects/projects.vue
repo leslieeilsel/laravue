@@ -12,6 +12,7 @@
       width="850"
       title="创建项目">
       <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="110">
+        <Divider><h4>基本信息</h4></Divider>
         <Row>
           <Col span="11">
             <FormItem label="项目名称" prop="title">
@@ -94,7 +95,7 @@
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="计划结束时间" prop="plan_end_at">
-              <DatePicker type="month" placeholder="结束时间" format="yyyy年MM月" v-model="form.plan_end_at"></DatePicker>
+              <DatePicker type="month" @on-change="buildYearPlan" placeholder="结束时间" format="yyyy年MM月" v-model="form.plan_end_at"></DatePicker>
             </FormItem>
           </Col>
         </Row>
@@ -143,10 +144,33 @@
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="项目概况" prop="description">
-              <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
+              <Input v-model="form.description" type="textarea" :rows="4" placeholder="请输入..."></Input>
             </FormItem>
           </Col>
         </Row>
+        <Divider><h4>投资计划</h4></Divider>
+        <div v-for="(item, index) in form.projectPlan">
+          <Divider orientation="left"><h5>{{item.date}}年项目计划</h5></Divider>
+          <Row>
+            <Col span="11">
+              <FormItem
+                label="计划投资金额"
+                :prop="'projectPlan.' + index + '.amount'"
+                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur'}">
+                <Input v-model="item.amount" placeholder="支持小数点后两位"/>
+              </FormItem>
+            </Col>
+            <Col span="2"></Col>
+            <Col span="11">
+              <FormItem
+                label="计划形象进度"
+                :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
+                :prop="'projectPlan.' + index + '.image_progress'">
+                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."></Input>
+              </FormItem>
+            </Col>
+          </Row>
+        </div>
       </Form>
       <div slot="footer">
         <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
@@ -253,7 +277,7 @@
                           },
                           on: {
                               click: () => {
-                                  this.show(params.index)
+                                  console.log(params)
                               }
                           }
                       }, '查看'),
@@ -264,7 +288,7 @@
                           },
                           on: {
                               click: () => {
-                                  this.remove(params.index)
+                                console.log(params)
                               }
                           }
                       }, '审核')
@@ -297,7 +321,14 @@
               index: 1,
               status: 1
             }
-          ]
+          ],
+          projectPlan: [
+            {
+              date: '2019',
+              amount: '',
+              image_progress: ''
+            },
+          ],
         },
         index: 1,
         modal: false,
@@ -396,6 +427,21 @@
       cancel() {
         this.$refs.formValidate.resetFields();
         this.form.group_id = this.checkedDefaultRole;
+      },
+      buildYearPlan: function (date) {
+        let startDate = this.form.plan_start_at;
+        let startYear = startDate.toString().slice(11, 15);
+        let endDate = this.form.plan_end_at;
+        let endYear = endDate.toString().slice(11, 15);
+        let yearPlanArr = [];
+        for (let i = startYear; i <= endYear; i++) {
+          yearPlanArr.push({
+            date: i,
+            amount: '',
+            image_progress: ''
+          });
+        }
+        this.form.projectPlan = yearPlanArr;
       },
     },
     mounted() {
