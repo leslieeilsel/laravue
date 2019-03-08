@@ -103,3 +103,25 @@ export function projectProgress(form) {
     data: { ...form }
   });
 }
+/**
+ * 投资项目进度列表
+ * @returns {*}
+ */
+export function projectProgressList(form) {
+  return request({
+    url: '/api/project/projectProgressList',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 上传文件
+ * @returns {*}
+ */
+export function uploadPic(form) {
+  return request({
+    url: '/api/project/uploadPic',
+    method: 'post',
+    data: { ...form }
+  });
+}

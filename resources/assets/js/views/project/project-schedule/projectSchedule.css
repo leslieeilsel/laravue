@@ -35,3 +35,10 @@
         cursor: pointer;
         margin: 0 2px;
     }
+    .btnGroup {
+        margin-bottom: 10px;
+    }
+    
+    .ivu-form .ivu-date-picker {
+        display: block;
+    }

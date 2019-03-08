@@ -12,6 +12,7 @@ use App\Models\ProjectInfo;
 use App\Models\OperationLog;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProjectEarlyWarning;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -292,18 +293,24 @@ class ProjectController extends Controller
      */
     public function projectProgress(Request $request)
     {
-        $data = $request->input();
+        $data = $request->input();        
+        if ($data['month']) {
+            $data['month'] = date('Y-m', strtotime($data['month']));
+        }
         if ($data['build_start_at']) {
-            $data['build_start_at'] = date('Y', strtotime($data['build_start_at']));
+            $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
         }
         if ($data['build_end_at']) {
-            $data['build_end_at'] = date('Y', strtotime($data['build_end_at']));
+            $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
         }
         if ($data['start_at']) {
             $data['start_at'] = date('Y-m', strtotime($data['start_at']));
         }
         if ($data['plan_start_at']) {
             $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
+        }
+        if ($data['img_progress_pic']) {
+            $data['img_progress_pic'] = substr($data['img_progress_pic'],1);
         }
         $result = ProjectSchedule::insert($data);
 
@@ -313,5 +320,30 @@ class ProjectController extends Controller
         }
 
         return response()->json(['result' => $result], 200);
+    }
+    /**
+     * 获取项目进度列表
+     *
+     * @return JsonResponse
+     */
+    public function projectProgressList(Request $request)
+    {
+        $data = $request->input();
+        $ProjectSchedules = ProjectSchedule::all()->toArray();
+        
+        return response()->json(['result' => $ProjectSchedules], 200);
+    }
+    
+    /**
+     * 上传
+     *
+     * @return JsonResponse
+     */
+    public function uploadPic(Request $request)
+    {
+        $path = Storage::putFile(
+            '/project/project-schedule', $request->file('img_pic')
+        );        
+        return response()->json(['result' => $path], 200);
     }
 }

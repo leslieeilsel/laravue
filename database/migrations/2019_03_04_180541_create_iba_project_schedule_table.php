@@ -17,9 +17,10 @@ class CreateIbaProjectScheduleTable extends Migration
             $table->increments('id');
             $table->string('month')->nullable();     //填报月份   
             $table->string('project_id')->nullable();     //项目名称->项目表id
+            $table->string('project_num')->nullable();     //项目编号
             $table->string('subject')->nullable();     //投资主体   
-            $table->integer('build_start_at')->nullable();     //建设开始年限   
-            $table->integer('build_end_at')->nullable();     //建设结束年限   
+            $table->string('build_start_at')->nullable();     //建设开始年限   
+            $table->string('build_end_at')->nullable();     //建设结束年限   
             $table->decimal('total_investors',10,2)->nullable();     //总投资   
             $table->decimal('plan_investors',10,2)->nullable();     //2019年计划投资   
             $table->string('plan_img_progress')->nullable();     //2019年计划形象进度   
