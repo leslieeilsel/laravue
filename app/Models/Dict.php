@@ -12,8 +12,21 @@ class Dict extends Model
 
     protected $fillable = ['title', 'type', 'description'];
 
-    public function dictData()
+    public function data()
     {
         return $this->hasMany('App\Models\DictData');
+    }
+
+    /**
+     * 根据分类名称查找基础信息数据
+     *
+     * @param $name
+     * @return array
+     */
+    public static function getOptionsByName($name)
+    {
+        $category = self::where('title', $name)->first()->data;
+
+        return $category ? $category->pluck('title', 'value')->toArray() : [];
     }
 }
