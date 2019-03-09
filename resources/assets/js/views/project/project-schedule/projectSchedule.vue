@@ -1,8 +1,27 @@
 <template>
   <Card>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
+        <Form-item label="用户名称" prop="username">
+          <Input
+            type="text"
+            v-model="searchForm.username"
+            clearable
+            placeholder="请输入用户名"
+            style="width: 200px"
+          />
+        </Form-item>
+        <Form-item style="margin-left:-35px;" class="br">
+          <Button @click="" type="primary" icon="ios-search">搜索</Button>
+          <Button @click="">重置</Button>
+        </Form-item>
+      </Form>
+    </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add">填报</Button>
       <!-- <Button type="error" disabled icon="md-trash">删除</Button> -->
+      <Button class="exportReport" @click="" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出报表
+      </Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Modal
@@ -350,6 +369,10 @@
   export default {
     data () {
       return {
+        btnDisable: true,
+        searchForm: {
+          username: ''
+        },
         seeModal:false,
         columns: [
           {
