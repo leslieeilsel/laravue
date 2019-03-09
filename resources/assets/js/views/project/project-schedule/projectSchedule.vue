@@ -25,52 +25,49 @@
       :styles="{top: '20px'}"
       width="850"
       title="创建项目">
-        <Form ref="form" :model="form" :label-width="150" :rules="formValidate">
+      <Form ref="form" :model="form" :label-width="150" :rules="formValidate">
+        <Row>
+          <Col span="11">
+            <FormItem label="填报月份" prop="month">
+              <DatePicker @on-change="changeMonth" type="month" placeholder="填报月份" format="yyyy-MM"
+                          v-model="form.month"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目名称" prop="project_id">
+              <Select v-model="form.project_id" @on-change="changeProject">
+                <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="项目编号" prop="project_num">
+              <Input v-model="form.project_num" placeholder="必填项" readonly></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="投资主体" prop="subject">
+              <Input v-model="form.subject" placeholder="必填项" readonly></Input>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="建设起止年限" prop="build_at">
               <Row>
-                  <Col span="11">
-                        <FormItem label="填报月份" prop="month">
-                          <DatePicker @on-change="changeMonth" type="month" placeholder="填报月份" format="yyyy-MM"
-                                      v-model="form.month"></DatePicker>
-                        </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem label="项目名称" prop="project_id">
-                            <Select v-model="form.project_id"  @on-change="changeProject" >
-                              <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
-                            </Select>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem label="项目编号" prop="project_num">
-                          <Input v-model="form.project_num" placeholder="必填项" readonly></Input>
-                      </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem label="投资主体" prop="subject">
-                          <Input v-model="form.subject" placeholder="必填项" readonly></Input>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem label="建设起止年限" prop="build_at">
-                          <Row>
-                              <Col span="11">
-                                  <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
-                                              v-model="form.build_start_at"></DatePicker>
-                              </Col>
-                              <Col span="2" style="text-align: center">-</Col>
-                              <Col span="11">
-                                  <DatePicker type="month" placeholder="结束时间" format="yyyy-MM"
-                                              v-model="form.build_end_at"></DatePicker>
-                              </Col>
-                          </Row>
-                      </FormItem>
-                  </Col>
+                <Col span="11">
+                  <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
+                              v-model="form.build_start_at"></DatePicker>
+                </Col>
+                <Col span="2" style="text-align: center">-</Col>
+                <Col span="11">
+                  <DatePicker type="month" placeholder="结束时间" format="yyyy-MM"
+                              v-model="form.build_end_at"></DatePicker>
+                </Col>
               </Row>
               <Row>
                   <Col span="11">
@@ -190,169 +187,169 @@
             <Button @click="handleReset('form')" :loading="loading">重置</Button>
       </div>
     </Modal>
-<!-- 查看model------------------------------------------------------------------------------ -->
+    <!-- 查看model------------------------------------------------------------------------------ -->
     <Modal
       v-model="seeModal"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
       width="850"
       title="查看页面">
-        <Form ref="form" :model="seeForm" :label-width="150">
+      <Form ref="form" :model="seeForm" :label-width="150">
+        <Row>
+          <Col span="11">
+            <FormItem label="填报月份" prop="month">
+              <DatePicker @on-change="changeMonth" type="month" placeholder="填报月份" format="yyyy-MM"
+                          v-model="seeForm.month" readonly></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目名称" prop="project_id">
+              
+              <Input v-model="seeForm.project_id" placeholder="必填项" readonly></Input>
+              <!-- <Select v-model="seeForm.project_id"  @on-change="changeProject" readonly>
+                <Option v-for="item in project_id" :value="item.id" :key="item.id" disabled>{{ item.title }}</Option>
+              </Select> -->
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="项目编号" prop="project_num">
+              <Input v-model="seeForm.project_num" placeholder="必填项" readonly></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="投资主体" prop="subject">
+              <Input v-model="seeForm.subject" placeholder="必填项" readonly></Input>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="建设起止年限" prop="build_at">
               <Row>
-                  <Col span="11">
-                        <FormItem label="填报月份" prop="month">
-                          <DatePicker @on-change="changeMonth" type="month" placeholder="填报月份" format="yyyy-MM"
-                                      v-model="seeForm.month" readonly></DatePicker>
-                        </FormItem>
-                  </Col>
+                <Col span="11">
+                  <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
+                              v-model="seeForm.build_start_at" readonly></DatePicker>
+                </Col>
+                <Col span="2" style="text-align: center">-</Col>
+                <Col span="11">
+                  <DatePicker type="month" placeholder="结束时间" format="yyyy-MM"
+                              v-model="seeForm.build_end_at" readonly></DatePicker>
+                </Col>
               </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem label="项目名称" prop="project_id">
-                        
-                          <Input v-model="seeForm.project_id" placeholder="必填项" readonly></Input>
-                            <!-- <Select v-model="seeForm.project_id"  @on-change="changeProject" readonly>
-                              <Option v-for="item in project_id" :value="item.id" :key="item.id" disabled>{{ item.title }}</Option>
-                            </Select> -->
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem label="项目编号" prop="project_num">
-                          <Input v-model="seeForm.project_num" placeholder="必填项" readonly></Input>
-                      </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem label="投资主体" prop="subject">
-                          <Input v-model="seeForm.subject" placeholder="必填项" readonly></Input>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem label="建设起止年限" prop="build_at">
-                          <Row>
-                              <Col span="11">
-                                  <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
-                                              v-model="seeForm.build_start_at" readonly></DatePicker>
-                              </Col>
-                              <Col span="2" style="text-align: center">-</Col>
-                              <Col span="11">
-                                  <DatePicker type="month" placeholder="结束时间" format="yyyy-MM"
-                                              v-model="seeForm.build_end_at" readonly></DatePicker>
-                              </Col>
-                          </Row>
-                      </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem label="总投资" prop="total_investors">
-                          <Input v-model="seeForm.total_investors" placeholder="必填项" readonly></Input>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem label="2019年计划投资" prop="plan_investors">
-                          <Input v-model="seeForm.plan_investors" placeholder="必填项" readonly/>
-                      </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem label="2019年计划形象进度" prop="plan_img_progress">
-                          <Input v-model="seeForm.plan_img_progress" placeholder="" readonly></Input>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem :label="start_month_img" prop="start_month_img_progress">
-                          <Input v-model="seeForm.month_img_progress" placeholder="" readonly/>
-                      </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem :label="start_month_act" prop="start_act_complete">
-                          <Input v-model="seeForm.start_act_complete" placeholder="" readonly></Input>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem label="自开始累积完成投资" prop="acc_complete">
-                          <Input v-model="seeForm.acc_complete" placeholder="" readonly/>
-                      </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem :label="month_img" prop="month_img_progress">
-                          <Input v-model="seeForm.month_img_progress" placeholder="" readonly/>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem :label="month_act" prop="month_act_complete">
-                          <Input v-model="seeForm.month_act_complete" placeholder="" readonly></Input>
-                      </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem label="存在问题" prop="problem">
-                          <Input v-model="seeForm.problem" placeholder="" readonly></Input>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem label="开工时间" prop="start_at">
-                          <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
-                                      v-model="seeForm.start_at" readonly></DatePicker>
-                      </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem label="计划开工时间" prop="plan_start_at">
-                          <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
-                                      v-model="seeForm.plan_start_at" readonly></DatePicker>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="11">
-                      <FormItem label="土地征收情况及前期手续办理情况" prop="exp_preforma">
-                          <Input v-model="seeForm.exp_preforma" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                              placeholder="请输入..." readonly></Input>
-                      </FormItem>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span="11">
-                      <FormItem label="备注" prop="marker">
-                          <Input v-model="seeForm.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                              placeholder="请输入..." readonly></Input>
-                      </FormItem>
-                  </Col>
-                  <Col span="2"></Col>
-                  <Col span="9" style="margin-left: 20px;">
-                      <div class="demo-upload-list" v-for="item in defaultList">
-                          <template>
-                              <img :src="'storage/'+item.url">
-                              <div class="demo-upload-list-cover">
-                                  <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
-                              </div>
-                          </template>
-                          <template>
-                              <Progress hide-info></Progress>
-                          </template>
-                      </div>
-                      <Modal title="View Image" v-model="visible">
-                          <img :src="'storage/'+imgUrl" style="width: 100%">
-                      </Modal>
-                  </Col>
-              </Row>
-        </Form>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="总投资" prop="total_investors">
+              <Input v-model="seeForm.total_investors" placeholder="必填项" readonly></Input>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="2019年计划投资" prop="plan_investors">
+              <Input v-model="seeForm.plan_investors" placeholder="必填项" readonly/>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="2019年计划形象进度" prop="plan_img_progress">
+              <Input v-model="seeForm.plan_img_progress" placeholder="" readonly></Input>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem :label="start_month_img" prop="start_month_img_progress">
+              <Input v-model="seeForm.month_img_progress" placeholder="" readonly/>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem :label="start_month_act" prop="start_act_complete">
+              <Input v-model="seeForm.start_act_complete" placeholder="" readonly></Input>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="自开始累积完成投资" prop="acc_complete">
+              <Input v-model="seeForm.acc_complete" placeholder="" readonly/>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem :label="month_img" prop="month_img_progress">
+              <Input v-model="seeForm.month_img_progress" placeholder="" readonly/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem :label="month_act" prop="month_act_complete">
+              <Input v-model="seeForm.month_act_complete" placeholder="" readonly></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="存在问题" prop="problem">
+              <Input v-model="seeForm.problem" placeholder="" readonly></Input>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="开工时间" prop="start_at">
+              <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
+                          v-model="seeForm.start_at" readonly></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="计划开工时间" prop="plan_start_at">
+              <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
+                          v-model="seeForm.plan_start_at" readonly></DatePicker>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="土地征收情况及前期手续办理情况" prop="exp_preforma">
+              <Input v-model="seeForm.exp_preforma" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
+                     placeholder="请输入..." readonly></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="备注" prop="marker">
+              <Input v-model="seeForm.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
+                     placeholder="请输入..." readonly></Input>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="9" style="margin-left: 20px;">
+            <div class="demo-upload-list" v-for="item in defaultList">
+              <template>
+                <img :src="'storage/'+item.url">
+                <div class="demo-upload-list-cover">
+                  <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
+                </div>
+              </template>
+              <template>
+                <Progress hide-info></Progress>
+              </template>
+            </div>
+            <Modal title="View Image" v-model="visible">
+              <img :src="'storage/'+imgUrl" style="width: 100%">
+            </Modal>
+          </Col>
+        </Row>
+      </Form>
     </Modal>
 <!-- 编辑model------------------------------------------------------------------------------ -->
     <Modal
@@ -360,7 +357,7 @@
       @on-cancel="cancel"
       :styles="{top: '20px'}"
       width="850"
-      title="审核页面">
+      title="编辑页面">
         <Form ref="editForm" :model="editForm" :label-width="150" :rules="editFormValidate">
               <Row>
                   <Col span="11">
@@ -530,13 +527,13 @@
             <Button @click="handleReset('editform')" :loading="loading">重置</Button>
       </div>
     </Modal>
-<!-- 核查model------------------------------------------------------------------------------ -->
+<!-- 审核model------------------------------------------------------------------------------ -->
     <Modal
       v-model="auditModal"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
       width="850"
-      title="核查页面">
+      title="审核页面">
         <Form ref="auditForm" :model="auditForm" :label-width="150" :rules="auditFormValidate">
               <Row>
                   <Col span="11">
@@ -718,9 +715,9 @@
 <script>
   import {initProjectInfo,projectProgress,projectProgressList,projectPlanInfo,editProjectProgress,getData,auditProjectProgress} from '../../../api/project';
   import './projectSchedule.css'
-  
+
   export default {
-    data () {
+    data() {
       return {
         btnDisable: true,
         searchForm: {
@@ -1008,12 +1005,12 @@
         data: [],
         tableLoading: true,
         loading: false,
-        start_month_img:'1-  月形象进度',
-        start_month_act:'1- 月实际完成投资',
-        month_img:'x月形象进度',
-        month_act:'x月实际完成投资',
-        year_investors:'2019年计划投资',
-        year_img:'2019年形象进度',
+        start_month_img: '1-  月形象进度',
+        start_month_act: '1- 月实际完成投资',
+        month_img: 'x月形象进度',
+        month_act: 'x月实际完成投资',
+        year_investors: '2019年计划投资',
+        year_img: '2019年形象进度',
         form: {
           month:'',
           project_id:'',
@@ -1166,11 +1163,11 @@
             {required: true, type: 'date', message: '计划开工时间不能为空', trigger: 'change'}
           ]
         },
-        project_id:[],
+        project_id: [],
         imgName: '',
         visible: false,
-        uploadList:[],
-        imgUrl:'',
+        uploadList: [],
+        imgUrl: '',
         defaultList: [],
         is_audit:[]
       }
@@ -1189,9 +1186,9 @@
           this.tableLoading = false;
         });
       },
-      getProjectId(){
+      getProjectId() {
         initProjectInfo().then(res => {
-          this.project_id=res.result;
+          this.project_id = res.result;
         });
       },
       getIsAudit(){
@@ -1202,53 +1199,53 @@
       changeProject(e){
         let _this = this;
         this.project_id.forEach(function (em) {
-          if (em.id===e) {
-            _this.form.subject=em.subject;
-            _this.form.project_num=em.num;
-            _this.form.build_start_at=em.plan_start_at;
-            _this.form.build_end_at=em.plan_end_at;
-            _this.form.total_investors=em.amount;
-            _this.form.plan_start_at=em.plan_start_at;
-            if(_this.form.month){
-              projectPlanInfo({month:_this.form.month}).then(res => {
-                  _this.form.plan_investors=res.result.amount;
-                  _this.form.plan_img_progress=res.result.image_progress;
+          if (em.id === e) {
+            _this.form.subject = em.subject;
+            _this.form.project_num = em.num;
+            _this.form.build_start_at = em.plan_start_at;
+            _this.form.build_end_at = em.plan_end_at;
+            _this.form.total_investors = em.amount;
+            _this.form.plan_start_at = em.plan_start_at;
+            if (_this.form.month) {
+              projectPlanInfo({month: _this.form.month}).then(res => {
+                _this.form.plan_investors = res.result.amount;
+                _this.form.plan_img_progress = res.result.image_progress;
               });
             }
           }
         })
       },
       changeMonth(e) {
-          this.start_month_img='开始到'+e+' 月形象进度'
-          this.start_month_act='开始到'+e+' 月实际完成投资'
-          this.month_img=e+' 月形象进度'
-          this.month_act=e+' 月实际完成投资'
-          this.year_investors=e.substring(0,4)+'年计划投资';
-          this.year_img=e.substring(0,4)+'年形象进度';
-          if(this.form.project_id){
-              projectPlanInfo({month:e}).then(res => {
-                  this.form.plan_investors=res.result.amount;
-                  this.form.plan_img_progress=res.result.image_progress;
-              });
-          }
+        this.start_month_img = '开始到' + e + ' 月形象进度'
+        this.start_month_act = '开始到' + e + ' 月实际完成投资'
+        this.month_img = e + ' 月形象进度'
+        this.month_act = e + ' 月实际完成投资'
+        this.year_investors = e.substring(0, 4) + '年计划投资';
+        this.year_img = e.substring(0, 4) + '年形象进度';
+        if (this.form.project_id) {
+          projectPlanInfo({month: e}).then(res => {
+            this.form.plan_investors = res.result.amount;
+            this.form.plan_img_progress = res.result.image_progress;
+          });
+        }
       },
       handleReset() {
         this.$refs[name].resetFields();
         this.$refs.upload.clearFiles()
       },
       submitF(name) {
-          this.$refs[name].validate((valid) => {
-            if (valid) {
-              this.submitLoading=true;
-              projectProgress(this.form).then(res => {
-                this.submitLoading=false;
-                if(res.result){
-                  this.$Message.success("填报成功");
-                  this.modal = false;
-                  this.init();
-                }else{
-                  this.$Message.error('填报失败!');
-                }
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            this.submitLoading = true;
+            projectProgress(this.form).then(res => {
+              this.submitLoading = false;
+              if (res.result) {
+                this.$Message.success("填报成功");
+                this.modal = false;
+                this.init();
+              } else {
+                this.$Message.error('填报失败!');
+              }
             });
           }
         })
@@ -1270,7 +1267,6 @@
         })
       },auditSubmit(name) {
         this.submitLoading=true;
-        alert(1111)
         auditProjectProgress(this.auditForm).then(res => {
           this.submitLoading=false;
           if(res.result){
@@ -1286,33 +1282,33 @@
         this.$refs.form.resetFields();
         this.form.group_id = this.checkedDefaultRole;
       },//上传图片
-      handleView (url) {
-          this.imgUrl = url;
-          this.visible = true;
+      handleView(url) {
+        this.imgUrl = url;
+        this.visible = true;
       },
-      handleSuccess (res, file) {
-        this.form.img_progress_pic=this.form.img_progress_pic+','+res.result;
+      handleSuccess(res, file) {
+        this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
       },
-      handleFormatError (file) {
+      handleFormatError(file) {
+        this.$Notice.warning({
+          title: '文件格式不正确',
+          desc: '文件格式不正确，请选择JPG或PNG'
+        });
+      },
+      handleMaxSize(file) {
+        this.$Notice.warning({
+          title: '超出文件大小限制',
+          desc: '文件太大，不超过2米'
+        });
+      },
+      handleBeforeUpload() {
+        const check = this.uploadList.length < 5;
+        if (!check) {
           this.$Notice.warning({
-              title: '文件格式不正确',
-              desc: '文件格式不正确，请选择JPG或PNG'
+            title: '最多可上载5张图片'
           });
-      },
-      handleMaxSize (file) {
-          this.$Notice.warning({
-              title: '超出文件大小限制',
-              desc: '文件太大，不超过2米'
-          });
-      },
-      handleBeforeUpload () {
-          const check = this.uploadList.length < 5;
-          if (!check) {
-              this.$Notice.warning({
-                  title: '最多可上载5张图片'
-              });
-          }
-          return check;
+        }
+        return check;
       }
     },
     mounted() {
