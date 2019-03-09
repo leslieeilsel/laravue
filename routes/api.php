@@ -50,6 +50,11 @@ Route::post('project/projectProgressList', 'Project\ProjectController@projectPro
 Route::post('project/uploadPic', 'Project\ProjectController@uploadPic');
 Route::post('project/projectPlanInfo', 'Project\ProjectController@projectPlanInfo');
 Route::post('project/getData', 'Project\ProjectController@getData');
+Route::post('project/projectLedgerAdd', 'Project\ProjectController@projectLedgerAdd');
+Route::post('project/projectLedgerList', 'Project\ProjectController@projectLedgerList');
+Route::post('project/projectQuarter', 'Project\ProjectController@projectQuarter');
+Route::post('project/editProjectProgress', 'Project\ProjectController@editProjectProgress');
+Route::post('project/auditProjectProgress', 'Project\ProjectController@auditProjectProgress');
 
 Route::get('dict/dicts', 'System\DictController@dicts');
 Route::post('dict/addDict', 'System\DictController@addDict');

@@ -142,7 +142,7 @@ export function projectPlanInfo(form) {
 }
 
 /**
- * 查询建设性质
+ * 获取项目库数据字典字段
  * @returns {*}
  */
 export function getData(form) {
@@ -164,5 +164,61 @@ export function getProjectDictData(dictName) {
     data: {dictName}
   });
 }
+/**
+ * 添加台账
+ * @returns {*}
+ */
+export function projectLedgerAdd(dictName) {
+  return request({
+    url: '/api/project/projectLedgerAdd',
+    method: 'post',
+    data: {dictName}
+  });
+}
+/**
+ * 台账列表
+ * @returns {*}
+ */
+export function projectLedgerList(form) {
+  return request({
+    url: '/api/project/projectLedgerList',
+    method: 'post',
+    data: {...form}
+  });
+}
+/**
+ * 项目季度台账
+ * @returns {*}
+ */
+export function projectQuarter(dictName) {
+  return request({
+    url: '/api/project/projectQuarter',
+    method: 'post',
+    data: {dictName}
+  });
+}
+/**
+ * 修改填报
+ * @returns {*}
+ */
+export function editProjectProgress(dictName) {
+  return request({
+    url: '/api/project/editProjectProgress',
+    method: 'post',
+    data: {dictName}
+  });
+}
+/**
+ * 审核填报
+ * @returns {*}
+ */
+export function auditProjectProgress(form) {
+  return request({
+    url: '/api/project/auditProjectProgress',
+    method: 'post',
+    data: {...form}
+  });
+}
+
 
 

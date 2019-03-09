@@ -1,7 +1,23 @@
 <template>
   <Card>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
+        <Form-item label="项目名称" prop="project_id">
+          <Select v-model="searchForm.project_id"
+            style="width: 200px">
+            <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
+          </Select>
+        </Form-item>
+        <Form-item style="margin-left:-35px;" class="br">
+          <Button @click="getProjectLedgerList" type="primary" icon="ios-search">搜索</Button>
+          <!-- <Button @click="">重置</Button> -->
+        </Form-item>
+      </Form>
+    </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add">添加台账</Button>
+      <Button class="exportReport" @click="" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
+      </Button>
       <!-- <Button type="error" disabled icon="md-trash">删除</Button> -->
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
@@ -11,19 +27,19 @@
       :styles="{top: '20px'}"
       width="850"
       title="创建项目">
-      <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="110">
+      <Form ref="formValidate" :model="form" :rules="formValidate" :label-width="110">
         <Row>
           <Col span="11">
-                <FormItem label="台账年份" prop="month">
+                <FormItem label="台账年份" prop="year">
                   <DatePicker type="year" placeholder="台账年份" format="yyyy"
-                              v-model="form.month"></DatePicker>
+                              v-model="form.year" @on-change="changeYear"></DatePicker>
                 </FormItem>
           </Col>
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="季度" prop="quarter">
               <Select v-model="form.quarter">
-                <Option v-for="item in quarter" :value="item.id" :key="item.id" disabled>{{ item.title }}</Option>
+                <Option v-for="item in quarter" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -47,7 +63,7 @@
           <Col span="11">
             <FormItem label="建设性质" prop="nature">
               <Select v-model="form.nature">
-                    <Option v-for="item in nature" :value="item.id" :key="item.id">{{ item.title }}</Option>
+                    <Option v-for="item in nature" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -66,7 +82,7 @@
           </Col>
           <Col span="2"></Col>
           <Col span="11">
-            <FormItem :label="scale_con" prop="scale_con">
+            <FormItem label="主要建设规模及主要内容" prop="scale_con">
               <Input v-model="form.scale_con"  type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="必填项"></Input>
             </FormItem>
           </Col>
@@ -86,7 +102,7 @@
         </Row>
         <Row>
           <Col span="11">
-            <FormItem :label="quarter_progress" prop="quarter_progress">
+            <FormItem label="季度项目进度" prop="quarter_progress">
               <Input v-model="form.quarter_progress" placeholder="必填项"></Input>
             </FormItem>
           </Col>
@@ -106,7 +122,7 @@
   </Card>
 </template>
 <script>
-  import {initProjectInfo,getData} from '../../../api/project';
+  import {initProjectInfo,getData,projectLedgerList,projectQuarter,projectLedgerAdd} from '../../../api/project';
   import './projectLedger.css'
   
   export default {
@@ -122,8 +138,7 @@
           {
             title: '年度',
             key: 'year',
-            width: 220,
-            fixed: 'left'
+            width: 100,
           },
           {
             title: '季度',
@@ -132,13 +147,12 @@
           },
           {
             title: '项目名称',
-            key: 'title',
+            key: 'project_id',
             width: 220,
-            fixed: 'left'
           },
           {
             title: '项目编号',
-            key: 'num',
+            key: 'project_num',
             width: 100
           },
           {
@@ -149,7 +163,7 @@
           {
             title: '投资主体',
             key: 'subject',
-            width: 210
+            width: 100
           },
           {
             title: '总投资',
@@ -181,42 +195,31 @@
             key: 'problem',
             width: 140
           },
-          {
-              title: '操作',
-              key: 'action',
-              width: 150,
-              fixed: 'right',
-              align: 'center',
-              render: (h, params) => {
-                  return h('div', [
-                      h('Button', {
-                          props: {
-                              type: 'primary',
-                              size: 'small'
-                          },
-                          style: {
-                              marginRight: '5px'
-                          },
-                          on: {
-                              click: () => {
-                                  console.log(params)
-                              }
-                          }
-                      }, '查看'),
-                      h('Button', {
-                          props: {
-                              type: 'error',
-                              size: 'small'
-                          },
-                          on: {
-                              click: () => {
-                                console.log(params)
-                              }
-                          }
-                      }, '审核')
-                  ]);
-              }
-          }
+          // {
+          //     title: '操作',
+          //     key: 'action',
+          //     width: 150,
+          //     fixed: 'right',
+          //     align: 'center',
+          //     render: (h, params) => {
+          //         return h('div', [
+          //             h('Button', {
+          //                 props: {
+          //                     type: 'primary',
+          //                     size: 'small'
+          //                 },
+          //                 style: {
+          //                     marginRight: '5px'
+          //                 },
+          //                 on: {
+          //                     click: () => {
+          //                         console.log(params)
+          //                     }
+          //                 }
+          //             }, '查看')
+          //         ]);
+          //     }
+          // }
         ],
         data: [],
         tableLoading: true,
@@ -236,33 +239,45 @@
           problem: '',
         },
         index: 1,
-        modal: false,
-        ruleValidate: {
+        formValidate: {
           year: [
-            {required: true, message: '年度不能为空', trigger: 'blur'}
+            {required: true, type: 'date', message: '年度不能为空', trigger: 'change'}
           ],
           quarter: [
-            {required: true, message: '季度不能为空', trigger: 'blur'}
+            {required: true, type: 'number', message: '季度不能为空', trigger: 'change'}
           ],
           project_id: [
-            {required: true, message: '项目名称不能为空', trigger: 'blur'}
+            {required: true, type: 'number', message: '项目名称不能为空', trigger: 'change'}
           ]
         },
+        btnDisable: true,
+        searchForm: {
+          project_id: ''
+        },
+        submitLoading:false,
         quarter:[],
         project_id:[],
         nature:[],
-        scale_con: '2019年主要建设规模及主要内容',
         plan_investors: '2019年项目计划投资',
         plan_con: '2019年主要建设内容',
-        quarter_progress: '2019年主要建设内容',
+        modal: false,
       }
     },
     methods: {
       init() {
         this.$refs.formValidate.resetFields();
+        this.getProjectLedgerList();
         this.getProjectId();
         this.getQuarter();
         this.getNature();
+      },
+      getProjectLedgerList(){
+        let search_project_id=this.searchForm.project_id;
+        this.tableLoading = true;
+        projectLedgerList({search_project_id:search_project_id}).then(res => {
+          this.data = res.result;
+          this.tableLoading = false;
+        })
       },
       getProjectId(){
         initProjectInfo().then(res => {
@@ -276,27 +291,45 @@
       },
       getNature(){
         getData({title:'建设性质'}).then(res => {
-          console.log(res);
-          
-          this.nature=res.nature;
+          this.nature=res.result;
         });
+      },changeYear(e){
+        this.plan_investors=e+'年计划投资';
+        this.plan_con=e+'年主要建设内容';
       },
       changeProject(e){
-        let _this = this;
-        this.project_id.forEach(function (em) {
-          if (em.id===e) {
-            // _this.form.subject=em.subject;
-            // _this.form.project_num=em.num;
-            // _this.form.build_start_at=em.plan_start_at;
-            // _this.form.build_end_at=em.plan_end_at;
-            // _this.form.total_investors=em.amount;
-            // _this.form.plan_start_at=em.plan_start_at;
-            // if(_this.form.month){
-            //   projectPlanInfo({month:_this.form.month}).then(res => {
-            //       _this.form.plan_investors=res.result.amount;
-            //       _this.form.plan_img_progress=res.result.image_progress;
-            //   });
-            // }
+        this.loading = true;
+        projectQuarter({year:this.form.year,quarter:this.form.quarter,project_id:e}).then(res => {
+          
+          let ps=res.result.ProjectSchedules;
+          let p=res.result.projects;
+          this.form.project_num=p.num;
+          this.form.nature=p.build_type;
+          this.form.subject=p.subject;
+          this.form.total_investors=p.amount;
+          this.form.scale_con=p.description;
+          this.form.plan_investors=ps.plan_investors;
+          this.form.plan_con=ps.plan_img_progress;
+          this.form.quarter_progress=ps.start_month_img_progress;
+          this.form.problem=ps.problem;
+          this.loading = false;
+        })
+      },
+      handleSubmit(name) {
+        console.log(name);
+          this.$refs[name].validate((valid) => {
+            if (valid) {
+              this.submitLoading=true;
+              projectLedgerAdd(this.form).then(res => {
+                this.submitLoading=false;
+                if(res.result){
+                  this.$Message.success("添加成功");
+                  this.modal = false;
+                  this.init();
+                }else{
+                  this.$Message.error('添加失败!');
+                }
+            });
           }
         })
       },

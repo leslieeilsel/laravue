@@ -35,6 +35,7 @@ class CreateIbaProjectScheduleTable extends Migration
             $table->string('exp_preforma')->nullable();     //土地征收情况及前期手续办理情况    
             $table->string('img_progress_pic')->nullable();     //形象进度照片       
             $table->string('marker')->nullable();     //备注    
+            $table->integer('is_audit')->default(0);                            // 审核状态
             $table->timestamps();
         });
     }

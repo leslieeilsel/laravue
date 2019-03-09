@@ -22,7 +22,7 @@ class CreateIbaProjectLedgerTable extends Migration
             $table->string('nature')->nullable();     //建设性质 
             $table->string('subject')->nullable();     //投资主体   
             $table->decimal('total_investors',10,2)->nullable();     //总投资  
-            $table->string('scale_con')->nullable();     //2019年主要建设规模及主要内容
+            $table->string('scale_con')->nullable();     //主要建设规模及主要内容
             $table->decimal('plan_investors',10,2)->nullable();     //2019年计划投资 
             $table->string('plan_con')->nullable();     //2019年主要建设内容
             $table->string('quarter_progress')->nullable();     //季度项目进度
