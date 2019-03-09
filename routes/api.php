@@ -40,6 +40,7 @@ Route::get('project/getProjects', 'Project\ProjectController@getProjects');
 Route::get('project/loadPlan/{id}', 'Project\ProjectController@loadPlan');
 Route::get('project/getAllWarning', 'Project\ProjectController@getAllWarning');
 Route::get('project/getAllProjects', 'Project\ProjectController@getAllProjects');
+Route::post('project/getProjectDictData', 'Project\ProjectController@getProjectDictData');
 Route::post('project/addProject', 'Project\ProjectController@add');
 Route::post('project/addProjectPlan', 'Project\ProjectController@addProjectPlan');
 Route::post('project/edit', 'Project\ProjectController@edit');

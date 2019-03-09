@@ -228,7 +228,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * 删除菜单
+     * 删除项目
      *
      * @param Request $request
      * @return JsonResponse
@@ -267,6 +267,12 @@ class ProjectController extends Controller
         return response()->json(['result' => $data], 200);
     }
 
+    /**
+     * 构建坐标集
+     *
+     * @param array $positions
+     * @return string
+     */
     public static function buildPositions($positions)
     {
         $result = [];
@@ -289,7 +295,7 @@ class ProjectController extends Controller
      */
     public function projectProgress(Request $request)
     {
-        $data = $request->input();        
+        $data = $request->input();
         if ($data['month']) {
             $data['month'] = date('Y-m', strtotime($data['month']));
         }
@@ -306,7 +312,7 @@ class ProjectController extends Controller
             $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
         }
         if ($data['img_progress_pic']) {
-            $data['img_progress_pic'] = substr($data['img_progress_pic'],1);
+            $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
         }
         $result = ProjectSchedule::insert($data);
 
@@ -317,6 +323,7 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 获取项目进度列表
      *
@@ -326,10 +333,10 @@ class ProjectController extends Controller
     {
         $data = $request->input();
         $ProjectSchedules = ProjectSchedule::all()->toArray();
-        
+
         return response()->json(['result' => $ProjectSchedules], 200);
     }
-    
+
     /**
      * 上传
      *
@@ -339,10 +346,11 @@ class ProjectController extends Controller
     {
         $path = Storage::putFile(
             '/project/project-schedule', $request->file('img_pic')
-        );        
+        );
+
         return response()->json(['result' => $path], 200);
     }
-    
+
     /**
      * 查询项目计划
      *
@@ -351,13 +359,15 @@ class ProjectController extends Controller
     public function projectPlanInfo(Request $request)
     {
         $data = $request->input();
-        $year=date('Y');
+        $year = date('Y');
         if ($data['month']) {
             $year = date('Y', strtotime($data['month']));
         }
-        $plans = DB::table('iba_project_plan')->where('date',$year)->first();
+        $plans = DB::table('iba_project_plan')->where('date', $year)->first();
+
         return response()->json(['result' => $plans], 200);
     }
+
     /**
      * 查询建设性质
      *
@@ -366,8 +376,23 @@ class ProjectController extends Controller
     public function getData(Request $request)
     {
         $params = $request->input();
-        $data=Dict::getOptionsByName($params['title']);
+        $data = Dict::getOptionsByName($params['title']);
+
         return response()->json(['result' => $data], 200);
     }
-    
+
+    /**
+     * 获取项目库表单中的数据字典数据
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function getProjectDictData(Request $request)
+    {
+        $nameArr = $request->input('dictName');
+        $result = Projects::getDictDataByName($nameArr);
+
+        return response()->json(['result' => $result], 200);
+    }
+
 }
