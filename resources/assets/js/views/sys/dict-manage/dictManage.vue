@@ -142,7 +142,8 @@
           title: '',
           status: 1,
           description: "",
-          sort: 0
+          sort: 0,
+          value: ''
         },
         dictFormValidate: {
           // 表单验证规则
@@ -151,8 +152,8 @@
         },
         formValidate: {
           // 表单验证规则
-          title: [{required: true, message: "不能为空", trigger: "blur"}],
-          value: [{required: true, message: "不能为空", trigger: "blur"}]
+          title: [{required: true, message: "名称不能为空", trigger: "blur"}],
+          value: [{required: true, message: "数据值不能为空", trigger: "blur"}]
         },
         selectNode: {},
         selectCount: 0, // 多选计数
