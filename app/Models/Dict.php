@@ -29,12 +29,12 @@ class Dict extends Model
 
         $data = $category ? $category->pluck('title', 'value')->toArray() : [];
 
-        if ($data) {
+        if (!empty($data)) {
             $i = 0;
             foreach ($data as $value => $title) {
                 $data[$i] = [
                     'title' => $title,
-                    'value' => $value
+                    'value' => $value,
                 ];
                 $i++;
             }
