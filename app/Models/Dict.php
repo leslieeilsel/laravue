@@ -27,6 +27,19 @@ class Dict extends Model
     {
         $category = self::where('title', $name)->first()->data;
 
-        return $category ? $category->pluck('title', 'value')->toArray() : [];
+        $data = $category ? $category->pluck('title', 'value')->toArray() : [];
+
+        if ($data) {
+            $i = 0;
+            foreach ($data as $value => $title) {
+                $data[$i] = [
+                    'title' => $title,
+                    'value' => $value
+                ];
+                $i++;
+            }
+        }
+
+        return $data;
     }
 }
