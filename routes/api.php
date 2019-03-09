@@ -47,6 +47,8 @@ Route::post('project/deleteProject', 'Project\ProjectController@delete');
 Route::post('project/projectProgress', 'Project\ProjectController@projectProgress');
 Route::post('project/projectProgressList', 'Project\ProjectController@projectProgressList');
 Route::post('project/uploadPic', 'Project\ProjectController@uploadPic');
+Route::post('project/projectPlanInfo', 'Project\ProjectController@projectPlanInfo');
+Route::post('project/getData', 'Project\ProjectController@getData');
 
 Route::get('dict/dicts', 'System\DictController@dicts');
 Route::post('dict/addDict', 'System\DictController@addDict');

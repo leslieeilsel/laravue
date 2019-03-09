@@ -125,3 +125,27 @@ export function uploadPic(form) {
     data: { ...form }
   });
 }
+/**
+ * 查询项目计划
+ * @returns {*}
+ */
+export function projectPlanInfo(form) {
+  return request({
+    url: '/api/project/projectPlanInfo',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 查询建设性质
+ * @returns {*}
+ */
+export function getData(form) {
+  return request({
+    url: '/api/project/getData',
+    method: 'post',
+    data: { ...form }
+  });
+}
+
+

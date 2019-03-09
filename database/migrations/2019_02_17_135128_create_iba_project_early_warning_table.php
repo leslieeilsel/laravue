@@ -16,8 +16,8 @@ class CreateIbaProjectEarlyWarningTable extends Migration
         Schema::create('iba_project_early_warning', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');                                    // 项目名称
-            $table->string('warning_title');                            // 预警名称
-            $table->integer('project_info_id')->nullable()->unsigned(); // 项目信息ID
+            $table->integer('warning_type');                            // 预警类型
+            $table->integer('project_id')->nullable()->unsigned(); // 项目信息ID
             $table->timestamps();
         });
     }

@@ -66,34 +66,47 @@
                   </Col>
                   <Col span="2"></Col>
                   <Col span="11">
-                      <FormItem label="2019年计划投资" prop="plan_investors">
+                      <FormItem :label="year_investors" prop="plan_investors">
                           <Input v-model="form.plan_investors" placeholder="必填项"/>
                       </FormItem>
                   </Col>
               </Row>
               <Row>
                   <Col span="11">
-                      <FormItem label="2019年计划形象进度" prop="plan_img_progress">
+                      <FormItem :label="year_img" prop="plan_img_progress">
                           <Input v-model="form.plan_img_progress" placeholder=""></Input>
                       </FormItem>
                   </Col>
                   <Col span="2"></Col>
                   <Col span="11">
-                      <FormItem :label="month_img" prop="month_img_progress">
+                      <FormItem :label="start_month_img" prop="start_month_img_progress">
                           <Input v-model="form.month_img_progress" placeholder=""/>
                       </FormItem>
                   </Col>
               </Row>
               <Row>
                   <Col span="11">
-                      <FormItem :label="month_act" prop="act_complete">
-                          <Input v-model="form.act_complete" placeholder=""></Input>
+                      <FormItem :label="start_month_act" prop="start_act_complete">
+                          <Input v-model="form.start_act_complete" placeholder=""></Input>
                       </FormItem>
                   </Col>
                   <Col span="2"></Col>
                   <Col span="11">
                       <FormItem label="自开始累积完成投资" prop="acc_complete">
                           <Input v-model="form.acc_complete" placeholder=""/>
+                      </FormItem>
+                  </Col>
+              </Row>
+              <Row>
+                  <Col span="11">
+                      <FormItem :label="month_img" prop="month_img_progress">
+                          <Input v-model="form.month_img_progress" placeholder=""/>
+                      </FormItem>
+                  </Col>
+                  <Col span="2"></Col>
+                  <Col span="11">
+                      <FormItem :label="month_act" prop="month_act_complete">
+                          <Input v-model="form.month_act_complete" placeholder=""></Input>
                       </FormItem>
                   </Col>
               </Row>
@@ -240,21 +253,34 @@
                   </Col>
                   <Col span="2"></Col>
                   <Col span="11">
-                      <FormItem :label="month_img" prop="month_img_progress">
+                      <FormItem :label="start_month_img" prop="start_month_img_progress">
                           <Input v-model="seeForm.month_img_progress" placeholder="" readonly/>
                       </FormItem>
                   </Col>
               </Row>
               <Row>
                   <Col span="11">
-                      <FormItem :label="month_act" prop="act_complete">
-                          <Input v-model="seeForm.act_complete" placeholder="" readonly></Input>
+                      <FormItem :label="start_month_act" prop="start_act_complete">
+                          <Input v-model="seeForm.start_act_complete" placeholder="" readonly></Input>
                       </FormItem>
                   </Col>
                   <Col span="2"></Col>
                   <Col span="11">
                       <FormItem label="自开始累积完成投资" prop="acc_complete">
                           <Input v-model="seeForm.acc_complete" placeholder="" readonly/>
+                      </FormItem>
+                  </Col>
+              </Row>
+              <Row>
+                  <Col span="11">
+                      <FormItem :label="month_img" prop="month_img_progress">
+                          <Input v-model="seeForm.month_img_progress" placeholder="" readonly/>
+                      </FormItem>
+                  </Col>
+                  <Col span="2"></Col>
+                  <Col span="11">
+                      <FormItem :label="month_act" prop="month_act_complete">
+                          <Input v-model="seeForm.month_act_complete" placeholder="" readonly></Input>
                       </FormItem>
                   </Col>
               </Row>
@@ -318,7 +344,7 @@
   </Card>
 </template>
 <script>
-  import {initProjectInfo,projectProgress,projectProgressList} from '../../../api/project';
+  import {initProjectInfo,projectProgress,projectProgressList,projectPlanInfo} from '../../../api/project';
   import './projectSchedule.css'
   
   export default {
@@ -375,12 +401,22 @@
           },
           {
             title: '1-  月形象进度',
-            key: 'month_img_progress',
+            key: 'start_month_img_progress',
             width: 100
           },
           {
             title: '1-  月实际完成投资',
-            key: 'act_complete',
+            key: 'start_act_complete',
+            width: 100
+          },
+          {
+            title: 'x月形象进度',
+            key: 'month_img_progress',
+            width: 100
+          },
+          {
+            title: 'x月实际完成投资',
+            key: 'month_act_complete',
             width: 100
           },
           {
@@ -440,7 +476,9 @@
                                       _seeThis.seeForm.plan_investors=em.plan_investors;
                                       _seeThis.seeForm.plan_img_progress=em.plan_img_progress;
                                       _seeThis.seeForm.month_img_progress=em.month_img_progress;
-                                      _seeThis.seeForm.act_complete=em.act_complete;
+                                      _seeThis.seeForm.month_act_complete=em.month_act_complete;
+                                      _seeThis.seeForm.start_month_img_progress=em.start_month_img_progress;
+                                      _seeThis.seeForm.start_act_complete=em.start_act_complete;
                                       _seeThis.seeForm.acc_complete=em.acc_complete;
                                       _seeThis.seeForm.problem=em.problem;
                                       _seeThis.seeForm.start_at=em.start_at;
@@ -473,8 +511,12 @@
         data: [],
         tableLoading: true,
         loading: false,
-        month_img:'1-  月形象进度',
-        month_act:'1- 月实际完成投资',
+        start_month_img:'1-  月形象进度',
+        start_month_act:'1- 月实际完成投资',
+        month_img:'x月形象进度',
+        month_act:'x月实际完成投资',
+        year_investors:'2019年计划投资',
+        year_img:'2019年形象进度',
         form: {
           month:'',
           project_id:'',
@@ -485,8 +527,10 @@
           total_investors:'',
           plan_investors:'',
           plan_img_progress:'',
+          start_month_img_progress:'',
+          start_act_complete:'',
           month_img_progress:'',
-          act_complete:'',
+          month_act_complete:'',
           acc_complete:'',
           problem:'',
           start_at:'',
@@ -505,8 +549,10 @@
           total_investors:'',
           plan_investors:'',
           plan_img_progress:'',
+          start_month_img_progress:'',
+          start_act_complete:'',
           month_img_progress:'',
-          act_complete:'',
+          month_act_complete:'',
           acc_complete:'',
           problem:'',
           start_at:'',
@@ -577,12 +623,32 @@
           if (em.id===e) {
             _this.form.subject=em.subject;
             _this.form.project_num=em.num;
+            _this.form.build_start_at=em.plan_start_at;
+            _this.form.build_end_at=em.plan_end_at;
+            _this.form.total_investors=em.amount;
+            _this.form.plan_start_at=em.plan_start_at;
+            if(_this.form.month){
+              projectPlanInfo({month:_this.form.month}).then(res => {
+                  _this.form.plan_investors=res.result.amount;
+                  _this.form.plan_img_progress=res.result.image_progress;
+              });
+            }
           }
         })
       },
       changeMonth(e) {
+          this.start_month_img='开始到'+e+' 月形象进度'
+          this.start_month_act='开始到'+e+' 月实际完成投资'
           this.month_img=e+' 月形象进度'
           this.month_act=e+' 月实际完成投资'
+          this.year_investors=e.substring(0,4)+'年计划投资';
+          this.year_img=e.substring(0,4)+'年形象进度';
+          if(this.form.project_id){
+              projectPlanInfo({month:e}).then(res => {
+                  this.form.plan_investors=res.result.amount;
+                  this.form.plan_img_progress=res.result.image_progress;
+              });
+          }
       },
       handleReset() {
         this.$refs.form.resetFields();

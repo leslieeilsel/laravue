@@ -24,8 +24,10 @@ class CreateIbaProjectScheduleTable extends Migration
             $table->decimal('total_investors',10,2)->nullable();     //总投资   
             $table->decimal('plan_investors',10,2)->nullable();     //2019年计划投资   
             $table->string('plan_img_progress')->nullable();     //2019年计划形象进度   
-            $table->string('month_img_progress')->nullable();     //1- 月形象进度   
-            $table->string('act_complete')->nullable();     //1- 月实际完成投资   
+            $table->string('start_month_img_progress')->nullable();     //1- 月形象进度   
+            $table->string('start_act_complete')->nullable();     //1- 月实际完成投资   
+            $table->string('month_img_progress')->nullable();     //x月形象进度   
+            $table->string('month_act_complete')->nullable();     //x月实际完成投资 
             $table->string('acc_complete')->nullable();     //自开始累积完成投资  
             $table->string('problem')->nullable();     //存在问题   
             $table->string('start_at')->nullable();     //开工时间

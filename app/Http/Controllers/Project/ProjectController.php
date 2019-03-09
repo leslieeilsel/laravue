@@ -13,6 +13,7 @@ use App\Models\OperationLog;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProjectEarlyWarning;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Dict;
 
 class ProjectController extends Controller
 {
@@ -258,16 +259,11 @@ class ProjectController extends Controller
         $data = [];
         $result = ProjectEarlyWarning::all()->toArray();
         foreach ($result as $k => $row) {
-            $project_info_id = $row['project_info_id'];
-            $parent_id = ProjectInfo::where('id', $project_info_id)->pluck('parent_id')->first();
-            if ($parent_id === 0) {
-                $data[$k]['key'] = $row['id'];
-                $data[$k]['project_info_id'] = $row['project_info_id'];
-                $data[$k]['title'] = $row['title'];
-                $data[$k]['tags'] = $row['warning_title'];
-            }
+            $data[$k]['key'] = $row['id'];
+            $data[$k]['project_id'] = $row['project_id'];
+            $data[$k]['title'] = $row['title'];
+            $data[$k]['tags'] = $row['warning_type'];
         }
-
         return response()->json(['result' => $data], 200);
     }
 
@@ -346,4 +342,32 @@ class ProjectController extends Controller
         );        
         return response()->json(['result' => $path], 200);
     }
+    
+    /**
+     * 查询项目计划
+     *
+     * @return JsonResponse
+     */
+    public function projectPlanInfo(Request $request)
+    {
+        $data = $request->input();
+        $year=date('Y');
+        if ($data['month']) {
+            $year = date('Y', strtotime($data['month']));
+        }
+        $plans = DB::table('iba_project_plan')->where('date',$year)->first();
+        return response()->json(['result' => $plans], 200);
+    }
+    /**
+     * 查询建设性质
+     *
+     * @return JsonResponse
+     */
+    public function getData(Request $request)
+    {
+        $params = $request->input();
+        $data=Dict::getOptionsByName($params['title']);
+        return response()->json(['result' => $data], 200);
+    }
+    
 }
