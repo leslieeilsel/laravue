@@ -4,7 +4,23 @@
       <Button type="primary" @click="modal = true" icon="md-add">添加项目</Button>
       <Button type="error" disabled icon="md-trash">删除</Button>
     </p>
-    <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
+    <Row>
+      <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
+    </Row>
+    <!--    <Row type="flex" justify="end" class="page">-->
+    <!--      <Page-->
+    <!--        :current="searchForm.pageNumber"-->
+    <!--        :total="total"-->
+    <!--        :page-size="searchForm.pageSize"-->
+    <!--        @on-change="changePage"-->
+    <!--        @on-page-size-change="changePageSize"-->
+    <!--        :page-size-opts="[10,20,50]"-->
+    <!--        size="small"-->
+    <!--        show-total-->
+    <!--        show-elevator-->
+    <!--        show-sizer-->
+    <!--      ></Page>-->
+    <!--    </Row>-->
     <Modal
       v-model="modal"
       @on-cancel="cancel"
@@ -43,10 +59,7 @@
           <Col span="11">
             <FormItem label="项目类型" prop="type">
               <Select v-model="form.type">
-                <Option value="房建">房建</Option>
-                <Option value="市政">市政</Option>
-                <Option value="绿化">绿化</Option>
-                <Option value="水利">水利</Option>
+                <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -54,6 +67,23 @@
           <Col span="11">
             <FormItem label="建设单位" prop="unit">
               <Input v-model="form.unit" placeholder="必填项"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="建设性质" prop="build_type">
+              <Select v-model="form.build_type">
+                <Option v-for="item in dict.build_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="资金来源" prop="money_from">
+              <Select v-model="form.money_from">
+                <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
             </FormItem>
           </Col>
         </Row>
@@ -78,10 +108,9 @@
           </Col>
           <Col span="2"></Col>
           <Col span="11">
-            <FormItem label="项目标识" prop="is_gc">
+            <FormItem label="项目标识(是否为国民经济计划)" prop="is_gc">
               <Select v-model="form.is_gc">
-                <Option value="是国民经济计划">是国民经济计划</Option>
-                <Option value="不是国民经济计划">不是国民经济计划</Option>
+                <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -95,7 +124,8 @@
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="计划结束时间" prop="plan_end_at">
-              <DatePicker type="month" @on-change="buildYearPlan" placeholder="结束时间" format="yyyy年MM月" v-model="form.plan_end_at"></DatePicker>
+              <DatePicker type="month" @on-change="buildYearPlan" placeholder="结束时间" format="yyyy年MM月"
+                          v-model="form.plan_end_at"></DatePicker>
             </FormItem>
           </Col>
         </Row>
@@ -109,8 +139,7 @@
           <Col span="11">
             <FormItem label="项目状态" prop="status">
               <Select v-model="form.status">
-                <Option value="在建">在建</Option>
-                <Option value="已建">已建</Option>
+                <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -180,11 +209,11 @@
   </Card>
 </template>
 <script>
-  import {getAllProjects, addProject} from '../../../api/project';
+  import {getAllProjects, addProject, getProjectDictData} from '../../../api/project';
   import './projects.css'
-  
+
   export default {
-    data () {
+    data() {
       return {
         columns: [
           {
@@ -230,6 +259,16 @@
             width: 210
           },
           {
+            title: '建设性质',
+            key: 'build_type',
+            width: 90
+          },
+          {
+            title: '资金来源',
+            key: 'money_from',
+            width: 90
+          },
+          {
             title: '项目金额',
             key: 'amount',
             width: 100
@@ -260,51 +299,67 @@
             width: 120
           },
           {
-              title: '操作',
-              key: 'action',
-              width: 150,
-              fixed: 'right',
-              align: 'center',
-              render: (h, params) => {
-                  return h('div', [
-                      h('Button', {
-                          props: {
-                              type: 'primary',
-                              size: 'small'
-                          },
-                          style: {
-                              marginRight: '5px'
-                          },
-                          on: {
-                              click: () => {
-                                  console.log(params)
-                              }
-                          }
-                      }, '查看'),
-                      h('Button', {
-                          props: {
-                              type: 'error',
-                              size: 'small'
-                          },
-                          on: {
-                              click: () => {
-                                console.log(params)
-                              }
-                          }
-                      }, '审核')
-                  ]);
-              }
+            title: '操作',
+            key: 'action',
+            width: 150,
+            fixed: 'right',
+            align: 'center',
+            render: (h, params) => {
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      console.log(params)
+                    }
+                  }
+                }, '查看'),
+                h('Button', {
+                  props: {
+                    type: 'error',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      console.log(params)
+                    }
+                  }
+                }, '审核')
+              ]);
+            }
           }
         ],
         data: [],
         tableLoading: true,
         loading: false,
+        dictName: {
+          type: '工程类项目分类',
+          is_gc: '是否为国民经济计划',
+          status: '项目状态',
+          money_from: '资金来源',
+          build_type: '建设性质'
+        },
+        dict: {
+          type: [],
+          is_gc: [],
+          status: [],
+          money_from: [],
+          build_type: []
+        },
         form: {
           title: '',
           num: '',
           owner: '',
           subject: '',
           type: '',
+          build_type: '',
+          money_from: '',
           status: '',
           unit: '',
           amount: '',
@@ -340,7 +395,13 @@
             {required: true, message: '项目编号不能为空', trigger: 'blur'}
           ],
           status: [
-            {required: true, message: '建设状态不能为空', trigger: 'blur'}
+            {required: true, message: '建设状态不能为空', trigger: 'change', type:'number'}
+          ],
+          build_type: [
+            {required: true, message: '建设性质不能为空', trigger: 'change', type:'number'}
+          ],
+          money_from: [
+            {required: true, message: '资金来源不能为空', trigger: 'change', type:'number'}
           ],
           owner: [
             {required: true, message: '业主不能为空', trigger: 'blur'}
@@ -349,7 +410,7 @@
             {required: true, message: '投资主体不能为空', trigger: 'blur'}
           ],
           type: [
-            {required: true, message: '项目类型不能为空', trigger: 'blur'}
+            {required: true, message: '项目类型不能为空', trigger: 'change', type:'number'}
           ],
           amount: [
             {required: true, message: '项目金额不能为空', trigger: 'blur'}
@@ -361,7 +422,7 @@
             {required: true, message: '土地费用不能为空', trigger: 'blur'}
           ],
           is_gc: [
-            {required: true, message: '项目标识不能为空', trigger: 'blur'}
+            {required: true, message: '项目标识不能为空', trigger: 'change', type:'number'}
           ],
           unit: [
             {required: true, message: '建设单位不能为空', trigger: 'blur'}
@@ -369,11 +430,11 @@
           center_point: [
             {required: true, message: '项目中心点坐标不能为空', trigger: 'blur'}
           ],
-          plan_start_at:[
-           { required: true, message: '预送达时间不能为空', trigger: 'change' ,type: 'date'},
-         ],
-          plan_end_at:[
-            { required: true, message: '预送达时间不能为空', trigger: 'change' ,type: 'date'},
+          plan_start_at: [
+            {required: true, message: '预送达时间不能为空', trigger: 'change', type: 'date'},
+          ],
+          plan_end_at: [
+            {required: true, message: '预送达时间不能为空', trigger: 'change', type: 'date'},
           ],
         },
       }
@@ -381,6 +442,7 @@
     methods: {
       init() {
         this.$refs.formValidate.resetFields();
+        this.getDictData();
         this.getProject();
       },
       getProject() {
@@ -390,7 +452,14 @@
           this.tableLoading = false;
         });
       },
-      handleSubmit (name) {
+      getDictData() {
+        getProjectDictData(this.dictName).then(res => {
+          if (res.result) {
+            this.dict = res.result;
+          }
+        });
+      },
+      handleSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.loading = true;
@@ -410,10 +479,10 @@
           }
         })
       },
-      handleReset (name) {
+      handleReset(name) {
         this.$refs[name].resetFields();
       },
-      handleAdd () {
+      handleAdd() {
         this.index++;
         this.form.positions.push({
           value: '',
@@ -421,7 +490,7 @@
           status: 1
         });
       },
-      handleRemove (index) {
+      handleRemove(index) {
         this.form.positions[index].status = 0;
       },
       cancel() {
