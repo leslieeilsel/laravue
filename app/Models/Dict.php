@@ -42,4 +42,19 @@ class Dict extends Model
 
         return $data;
     }
+
+    /**
+     * 根据分类名称查找基础信息数据
+     *
+     * @param $name
+     * @return array
+     */
+    public static function getOptionsArrByName($name)
+    {
+
+        $category = self::where('title', $name)->first()->data;
+
+        return $category ? $category->pluck('title', 'value')->toArray() : [];
+    }
+
 }

@@ -1,8 +1,27 @@
 <template>
   <Card>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
+        <Form-item label="用户名称" prop="username">
+          <Input
+            type="text"
+            v-model="searchForm.username"
+            clearable
+            placeholder="请输入用户名"
+            style="width: 200px"
+          />
+        </Form-item>
+        <Form-item style="margin-left:-35px;" class="br">
+          <Button @click="" type="primary" icon="ios-search">搜索</Button>
+          <Button @click="">重置</Button>
+        </Form-item>
+      </Form>
+    </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add">添加项目</Button>
       <Button type="error" disabled icon="md-trash">删除</Button>
+      <Button class="exportReport" @click="" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出报表
+      </Button>
     </p>
     <Row>
       <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
@@ -199,6 +218,21 @@
               </FormItem>
             </Col>
           </Row>
+          <Row>
+            <Table :columns="columns111" :data="item.month" size="small">
+              <template slot-scope="{ row, index }" slot="month">
+                <span>{{ row.date }}</span>
+              </template>
+  
+              <template slot-scope="{ row, index }" slot="amount">
+                <Input type="text" v-model="row.amount"/>
+              </template>
+  
+              <template slot-scope="{ row, index }" slot="image_progress">
+                <Input type="text" v-model="row.image_progress"/>
+              </template>
+            </Table>
+          </Row>
         </div>
       </Form>
       <div slot="footer">
@@ -209,12 +243,74 @@
   </Card>
 </template>
 <script>
-  import {getAllProjects, addProject, getProjectDictData} from '../../../api/project';
+  import {getAllProjects, addProject, getProjectDictData, buildPlanFields} from '../../../api/project';
   import './projects.css'
 
   export default {
     data() {
       return {
+        columns111: [
+          {
+            title: '月份',
+            slot: 'month',
+            width: 100
+          },
+          {
+            title: '计划投资金额',
+            slot: 'amount',
+            width: 150
+          },
+          {
+            title: '计划投资进度',
+            slot: 'image_progress'
+          },
+        ],
+        data111: [
+          {
+            month: 6,
+            amount: 18000,
+            image_progress: 'dfgdfgdfgdfgdfgdfgdfgdfg'
+          },
+        ],
+        monthColumns: [
+          {
+            title: '称呼',
+            key: 'name',
+            render: (h, params) => {
+              console.log(this)
+              console.log(this.$refs.searchForm)
+              console.log(params)
+              this.MonthData[params.index] = params.row;
+              return h(
+                'div',
+                (this.$refs['myTable'])[0].$scopedSlots.name({
+                  row: params.row,
+                  idx: params.row._index
+                })
+              )
+            }
+          },
+          {
+            title: '年龄',
+            key: 'age'
+          },
+          {
+            title: '地址',
+            key: 'address'
+          }
+        ],
+        MonthData: [
+          {
+            name: '',
+            age: 18,
+            date: '',
+            address: 'Beijing'
+          }
+        ],
+        btnDisable: true,
+        searchForm: {
+          username: ''
+        },
         columns: [
           {
             type: 'selection',
@@ -236,7 +332,8 @@
           {
             title: '建设状态',
             key: 'status',
-            width: 100
+            width: 100,
+            align: "center"
           },
           {
             title: '业主',
@@ -251,7 +348,8 @@
           {
             title: '项目类型',
             key: 'type',
-            width: 100
+            width: 100,
+            align: "center"
           },
           {
             title: '建设单位',
@@ -261,32 +359,38 @@
           {
             title: '建设性质',
             key: 'build_type',
-            width: 90
+            width: 90,
+            align: "center"
           },
           {
             title: '资金来源',
             key: 'money_from',
-            width: 90
+            width: 90,
+            align: "center"
           },
           {
             title: '项目金额',
             key: 'amount',
-            width: 100
+            width: 120,
+            align: "right"
           },
           {
             title: '建安投资',
             key: 'safe_amount',
-            width: 100
+            width: 120,
+            align: "right"
           },
           {
             title: '土地费用',
             key: 'land_amount',
-            width: 100
+            width: 120,
+            align: "right"
           },
           {
-            title: '项目标识',
+            title: '是否为国民经济计划',
             key: 'is_gc',
-            width: 140
+            width: 150,
+            align: "center"
           },
           {
             title: '计划开始时间',
@@ -381,7 +485,14 @@
             {
               date: '2019',
               amount: '',
-              image_progress: ''
+              image_progress: '',
+              month: [
+                {
+                  date: 1,
+                  amount: '',
+                  image_progress: ''
+                }
+              ]
             },
           ],
         },
@@ -395,13 +506,13 @@
             {required: true, message: '项目编号不能为空', trigger: 'blur'}
           ],
           status: [
-            {required: true, message: '建设状态不能为空', trigger: 'change', type:'number'}
+            {required: true, message: '建设状态不能为空', trigger: 'change', type: 'number'}
           ],
           build_type: [
-            {required: true, message: '建设性质不能为空', trigger: 'change', type:'number'}
+            {required: true, message: '建设性质不能为空', trigger: 'change', type: 'number'}
           ],
           money_from: [
-            {required: true, message: '资金来源不能为空', trigger: 'change', type:'number'}
+            {required: true, message: '资金来源不能为空', trigger: 'change', type: 'number'}
           ],
           owner: [
             {required: true, message: '业主不能为空', trigger: 'blur'}
@@ -410,7 +521,7 @@
             {required: true, message: '投资主体不能为空', trigger: 'blur'}
           ],
           type: [
-            {required: true, message: '项目类型不能为空', trigger: 'change', type:'number'}
+            {required: true, message: '项目类型不能为空', trigger: 'change', type: 'number'}
           ],
           amount: [
             {required: true, message: '项目金额不能为空', trigger: 'blur'}
@@ -422,7 +533,7 @@
             {required: true, message: '土地费用不能为空', trigger: 'blur'}
           ],
           is_gc: [
-            {required: true, message: '项目标识不能为空', trigger: 'change', type:'number'}
+            {required: true, message: '项目标识不能为空', trigger: 'change', type: 'number'}
           ],
           unit: [
             {required: true, message: '建设单位不能为空', trigger: 'blur'}
@@ -464,14 +575,13 @@
           if (valid) {
             this.loading = true;
             addProject(this.form).then(e => {
+              this.loading = false;
               if (e.result) {
                 this.$Message.success('添加成功!');
-                this.loading = false;
                 this.modal = false;
                 this.init();
               } else {
                 this.$Message.error('添加失败!');
-                this.loading = false;
               }
             });
           } else {
@@ -497,20 +607,15 @@
         this.$refs.formValidate.resetFields();
         this.form.group_id = this.checkedDefaultRole;
       },
-      buildYearPlan: function (date) {
+      buildYearPlan() {
         let startDate = this.form.plan_start_at;
-        let startYear = startDate.toString().slice(11, 15);
         let endDate = this.form.plan_end_at;
-        let endYear = endDate.toString().slice(11, 15);
-        let yearPlanArr = [];
-        for (let i = startYear; i <= endYear; i++) {
-          yearPlanArr.push({
-            date: i,
-            amount: '',
-            image_progress: ''
-          });
-        }
-        this.form.projectPlan = yearPlanArr;
+        buildPlanFields([startDate, endDate]).then(res => {
+          if (res.result) {
+            this.form.projectPlan = res.result;
+            console.log(this.form.projectPlan)
+          }
+        });
       },
     },
     mounted() {
