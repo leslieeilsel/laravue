@@ -337,7 +337,7 @@ class ProjectController extends Controller
             $log = new OperationLog();
             $log->eventLog($request, '投资项目进度填报');
         }
-
+        
         return response()->json(['result' => $result], 200);
     }
 
