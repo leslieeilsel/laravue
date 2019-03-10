@@ -15,10 +15,11 @@ export function initProjectInfo() {
  * 获取所有部门
  * @returns {*}
  */
-export function getAllProjects() {
+export function getAllProjects(searchForm) {
   return request({
     url: '/api/project/getAllProjects',
-    method: 'get'
+    method: 'post',
+    data: {searchForm}
   });
 }
 

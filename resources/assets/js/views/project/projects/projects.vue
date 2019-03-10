@@ -2,26 +2,24 @@
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
-        <Form-item label="用户名称" prop="username">
+        <Form-item label="项目编号" prop="num">
           <Input
             type="text"
-            v-model="searchForm.username"
+            v-model="searchForm.num"
             clearable
-            placeholder="请输入用户名"
+            placeholder="请输入项目编号"
             style="width: 200px"
           />
         </Form-item>
         <Form-item style="margin-left:-35px;" class="br">
-          <Button @click="" type="primary" icon="ios-search">搜索</Button>
-          <Button @click="">重置</Button>
+          <Button @click="getProject" type="primary" icon="ios-search" :loading="searchLoading">搜索</Button>
+<!--          <Button @click="">重置</Button>-->
         </Form-item>
       </Form>
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add">添加项目</Button>
       <Button type="error" disabled icon="md-trash">删除</Button>
-      <Button class="exportReport" @click="" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出报表
-      </Button>
     </p>
     <Row>
       <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
@@ -219,19 +217,26 @@
             </Col>
           </Row>
           <Row>
-            <Table :columns="columns111" :data="item.month" size="small">
-              <template slot-scope="{ row, index }" slot="month">
-                <span>{{ row.date }}</span>
-              </template>
-  
-              <template slot-scope="{ row, index }" slot="amount">
-                <Input type="text" v-model="row.amount"/>
-              </template>
-  
-              <template slot-scope="{ row, index }" slot="image_progress">
-                <Input type="text" v-model="row.image_progress"/>
-              </template>
-            </Table>
+            <Col span="8">
+              <Input type="text" value="月份" class="borderNone"/>
+            </Col>
+            <Col span="8">
+              <Input type="text" value="计划投资金额" class="borderNone"/>
+            </Col>
+            <Col span="8">
+              <Input type="text" value="计划形象进度" class="borderNone"/>
+            </Col>
+            <div v-for="(ite, index) in item.month">
+              <Col span="8">
+                <Input type="text" v-model="ite.date + '月'" disabled class="monthInput"/>
+              </Col>
+              <Col span="8">
+                <Input type="text" v-model="ite.amount" class="monthInput"/>
+              </Col>
+              <Col span="8">
+                <Input type="text" v-model="ite.image_progress" class="monthInput"/>
+              </Col>
+            </div>
           </Row>
         </div>
       </Form>
@@ -249,67 +254,9 @@
   export default {
     data() {
       return {
-        columns111: [
-          {
-            title: '月份',
-            slot: 'month',
-            width: 100
-          },
-          {
-            title: '计划投资金额',
-            slot: 'amount',
-            width: 150
-          },
-          {
-            title: '计划投资进度',
-            slot: 'image_progress'
-          },
-        ],
-        data111: [
-          {
-            month: 6,
-            amount: 18000,
-            image_progress: 'dfgdfgdfgdfgdfgdfgdfgdfg'
-          },
-        ],
-        monthColumns: [
-          {
-            title: '称呼',
-            key: 'name',
-            render: (h, params) => {
-              console.log(this)
-              console.log(this.$refs.searchForm)
-              console.log(params)
-              this.MonthData[params.index] = params.row;
-              return h(
-                'div',
-                (this.$refs['myTable'])[0].$scopedSlots.name({
-                  row: params.row,
-                  idx: params.row._index
-                })
-              )
-            }
-          },
-          {
-            title: '年龄',
-            key: 'age'
-          },
-          {
-            title: '地址',
-            key: 'address'
-          }
-        ],
-        MonthData: [
-          {
-            name: '',
-            age: 18,
-            date: '',
-            address: 'Beijing'
-          }
-        ],
         btnDisable: true,
         searchForm: {
-          username: ''
+          num: ''
         },
         columns: [
           {
@@ -558,7 +505,7 @@
       },
       getProject() {
         this.tableLoading = true;
-        getAllProjects().then(e => {
+        getAllProjects(this.searchForm).then(e => {
           this.data = e.result;
           this.tableLoading = false;
         });

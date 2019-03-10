@@ -87,7 +87,7 @@ class ProjectController extends Controller
         unset($data['projectPlan']);
 
         $id = DB::table('iba_project_projects')->insertGetId($data);
-        $this->insertPlan($id, $planData, [$data['plan_start_at'], $data['plan_end_at']]);
+        $this->insertPlan($id, $planData);
 
         $result = $id ? true : false;
 
@@ -108,29 +108,21 @@ class ProjectController extends Controller
      */
     public function insertPlan($projectId, $planData, $planDate)
     {
-        $startDate = $planDate[0];
-        $endDate = $planDate[1];
-        $monthArr = $this->getMonthList(strtotime($startDate), strtotime($endDate));
         foreach ($planData as $k => $v) {
             $v['project_id'] = $projectId;
             $v['parent_id'] = 0;
             $v['created_at'] = date('Y-m-d H:i:s');
+            $monthArr = $v['month'];
             unset($v['month']);
 
             $parentId = DB::table('iba_project_plan')->insertGetId($v);
 
-            $yearAmount = $v['amount'];
-            $monthAmount = round($yearAmount / count($monthArr[$v['date']]), 2);
-            foreach ($monthArr[$v['date']] as $key => $value) {
-                $monthData = [];
-                $monthData['date'] = (int)$value['month'];
-                $monthData['project_id'] = $projectId;
-                $monthData['parent_id'] = $parentId;
-                $monthData['amount'] = $monthAmount;
-                $monthData['image_progress'] = '';
-                $monthData['created_at'] = date('Y-m-d H:i:s');
+            foreach ($monthArr as $k => $month) {
+                $month['project_id'] = $projectId;
+                $month['parent_id'] = $parentId;
+                $month['created_at'] = date('Y-m-d H:i:s');
 
-                ProjectPlan::insert($monthData);
+                ProjectPlan::insert($month);
             }
         }
     }
@@ -221,11 +213,17 @@ class ProjectController extends Controller
     /**
      * 获取所有项目信息
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getAllProjects()
+    public function getAllProjects(Request $request)
     {
-        $projects = Projects::all()->toArray();
+        $params = $request->input('searchForm');
+        $query = new Projects;
+        if ($params['num']) {
+            $query = $query::where('num', $params['num']);
+        }
+        $projects = $query->get()->toArray();
         foreach ($projects as $k => $row) {
             $projects[$k]['type'] = Dict::getOptionsArrByName('工程类项目分类')[$row['type']];
             $projects[$k]['is_gc'] = Dict::getOptionsArrByName('是否为国民经济计划')[$row['is_gc']];
