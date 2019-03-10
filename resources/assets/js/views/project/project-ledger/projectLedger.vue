@@ -2,6 +2,10 @@
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
+        <Form-item label="台账年份" prop="year">
+            <DatePicker type="year" placeholder="台账年份" format="yyyy"
+                        v-model="searchForm.year" style="width: 200px"></DatePicker>
+        </Form-item>
         <Form-item label="项目名称" prop="project_id">
           <Select v-model="searchForm.project_id"
             style="width: 200px">
@@ -16,7 +20,7 @@
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add">添加台账</Button>
-      <Button class="exportReport" @click="" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
+      <Button class="exportReport" @click="exportLedger" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
       </Button>
       <!-- <Button type="error" disabled icon="md-trash">删除</Button> -->
     </p>
@@ -250,9 +254,10 @@
             {required: true, type: 'number', message: '项目名称不能为空', trigger: 'change'}
           ]
         },
-        btnDisable: true,
+        btnDisable: false,
         searchForm: {
-          project_id: ''
+          project_id: '',
+          year:''
         },
         submitLoading:false,
         quarter:[],
@@ -273,8 +278,9 @@
       },
       getProjectLedgerList(){
         let search_project_id=this.searchForm.project_id;
+        let search_year=this.searchForm.year;
         this.tableLoading = true;
-        projectLedgerList({search_project_id:search_project_id}).then(res => {
+        projectLedgerList({search_project_id:search_project_id,search_year:search_year}).then(res => {
           this.data = res.result;
           this.tableLoading = false;
         })
@@ -338,6 +344,11 @@
       },
       cancel() {
         this.$refs.formValidate.resetFields();
+      },//导出
+      exportLedger(){
+        let search_project_id=this.searchForm.project_id;
+        let search_year=this.searchForm.year;
+        window.location.href="/api/project/exportLedger?search_project_id="+search_project_id+"&search_year="+search_year;
       }
     },
     mounted() {

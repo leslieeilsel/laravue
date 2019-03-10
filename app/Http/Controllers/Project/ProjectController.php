@@ -298,6 +298,8 @@ class ProjectController extends Controller
         $data = $request->input();
         if ($data['month']) {
             $data['month'] = date('Y-m', strtotime($data['month']));
+            $year = date('Y', strtotime($data['month']));
+            $month = date('m', strtotime($data['month']));
         }
         if ($data['build_start_at']) {
             $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
@@ -316,7 +318,21 @@ class ProjectController extends Controller
         }
         $data['is_audit'] = 0;
         $result = ProjectSchedule::insert($data);
-
+        
+        
+        $plan_id = DB::table('iba_project_plan')->where('project_id',$data['project_id'])->where('date', $year)->value('id');
+        $plans_amount = DB::table('iba_project_plan')->where('project_id',$data['project_id'])->where('parent_id',$plan_id)->where('date', $month)->value('amount');
+        $Percentage=($plans_amount-$data['month_act_complete'])/$plans_amount;
+        if($Percentage<=0.1){
+            $warData['warning_type'] = 0;
+        }else if($Percentage>0.1&&$Percentage<=0.2){
+            $warData['warning_type'] = 1;
+        }else if($Percentage>0.2){
+            $warData['warning_type'] = 2;
+        }
+        $warData['project_id'] = $data['project_id'];
+        $warData['title'] = $year.'年'.$month.'月项目预警信息';
+        $warResult =ProjectEarlyWarning::insert($warData);
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '投资项目进度填报');
@@ -410,10 +426,14 @@ class ProjectController extends Controller
     public function projectLedgerList(Request $request)
     {
         $data = $request->input();
-        $ProjectLedger = ProjectLedger::all()->toArray();
+        $ProjectLedger = ProjectLedger::where('id','>',0);
         if ($data['search_project_id']) {
-            $ProjectLedger = ProjectLedger::where('project_id', $data['search_project_id'])->get()->toArray();
+            $ProjectLedger = $ProjectLedger->where('project_id', $data['search_project_id']);
         }
+        if ($data['search_year']) {
+            $ProjectLedger = $ProjectLedger->where('year', date('Y', strtotime($data['search_year'])));
+        }
+        $ProjectLedger=$ProjectLedger->get()->toArray();
         foreach ($ProjectLedger as $k => $row) {
             $Projects = Projects::where('id', $row['project_id'])->value('title');
             $ProjectLedger[$k]['project_id'] = $Projects;
