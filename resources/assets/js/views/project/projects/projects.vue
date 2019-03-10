@@ -6,14 +6,38 @@
           <Input
             type="text"
             v-model="searchForm.num"
-            clearable
             placeholder="请输入项目编号"
             style="width: 200px"
           />
         </Form-item>
+        <FormItem label="项目类型" prop="type">
+          <Select v-model="searchForm.type" style="width: 200px">
+            <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="建设性质" prop="build_type">
+          <Select v-model="searchForm.build_type" style="width: 200px">
+            <Option v-for="item in dict.build_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="资金来源">
+          <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
+            <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="项目标识" prop="is_gc">
+          <Select v-model="searchForm.is_gc" style="width: 200px" placeholder="是否为国民经济计划">
+            <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="项目状态" prop="status">
+          <Select v-model="searchForm.status" style="width: 200px">
+            <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
+          </Select>
+        </FormItem>
         <Form-item style="margin-left:-35px;" class="br">
-          <Button @click="getProject" type="primary" icon="ios-search" :loading="searchLoading">搜索</Button>
-<!--          <Button @click="">重置</Button>-->
+          <Button @click="getProject" type="primary" icon="ios-search">搜索</Button>
+          <Button @click="handleResetSearch">重置</Button>
         </Form-item>
       </Form>
     </Row>
@@ -49,26 +73,26 @@
         <Row>
           <Col span="11">
             <FormItem label="项目名称" prop="title">
-              <Input v-model="form.title" placeholder="必填项"/>
+              <Input v-model="form.title" placeholder="必填项" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="项目编号" prop="num">
-              <Input v-model="form.num" placeholder="必填项"></Input>
+              <Input v-model="form.num" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="11">
             <FormItem label="业主" prop="owner">
-              <Input v-model="form.owner" placeholder="必填项"/>
+              <Input v-model="form.owner" placeholder="必填项" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="投资主体" prop="subject">
-              <Input v-model="form.subject" placeholder="必填项"/>
+              <Input v-model="form.subject" placeholder="必填项" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
         </Row>
@@ -83,7 +107,7 @@
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="建设单位" prop="unit">
-              <Input v-model="form.unit" placeholder="必填项"></Input>
+              <Input v-model="form.unit" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -107,20 +131,20 @@
         <Row>
           <Col span="11">
             <FormItem label="项目金额" prop="amount">
-              <Input v-model="form.amount" placeholder="支持小数点后两位"/>
+              <Input v-model="form.amount" placeholder="支持小数点后两位" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="建安投资" prop="safe_amount">
-              <Input v-model="form.safe_amount" placeholder="支持小数点后两位"></Input>
+              <Input v-model="form.safe_amount" placeholder="支持小数点后两位" v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="11">
             <FormItem label="土地费用" prop="land_amount">
-              <Input v-model="form.land_amount" placeholder="支持小数点后两位"/>
+              <Input v-model="form.land_amount" placeholder="支持小数点后两位" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
@@ -149,7 +173,7 @@
         <Row>
           <Col span="11">
             <FormItem label="项目中心点坐标" prop="center_point">
-              <Input v-model="form.center_point" placeholder="必填项"/>
+              <Input v-model="form.center_point" placeholder="必填项" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
@@ -172,7 +196,7 @@
               :rules="{required: true, message: '坐标点 ' + item.index +' 不能为空', trigger: 'blur'}">
               <Row>
                 <Col span="18">
-                  <Input type="text" v-model="item.value" placeholder="请输入坐标"></Input>
+                  <Input type="text" v-model="item.value" placeholder="请输入坐标" v-bind:readonly="isReadOnly"></Input>
                 </Col>
                 <Col span="4" offset="1">
                   <Button @click="handleRemove(index)">移除</Button>
@@ -190,7 +214,7 @@
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="项目概况" prop="description">
-              <Input v-model="form.description" type="textarea" :rows="4" placeholder="请输入..."></Input>
+              <Input v-model="form.description" type="textarea" :rows="4" placeholder="请输入..." v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -203,7 +227,7 @@
                 label="计划投资金额"
                 :prop="'projectPlan.' + index + '.amount'"
                 :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur'}">
-                <Input v-model="item.amount" placeholder="支持小数点后两位"/>
+                <Input v-model="item.amount" placeholder="支持小数点后两位" v-bind:readonly="isReadOnly"/>
               </FormItem>
             </Col>
             <Col span="2"></Col>
@@ -212,7 +236,7 @@
                 label="计划形象进度"
                 :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
                 :prop="'projectPlan.' + index + '.image_progress'">
-                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."></Input>
+                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..." v-bind:readonly="isReadOnly"></Input>
               </FormItem>
             </Col>
           </Row>
@@ -242,21 +266,37 @@
       </Form>
       <div slot="footer">
         <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-        <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
+        <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交审核</Button>
+        <Dropdown trigger="click" style="margin-left: 20px" @on-click="audit">
+          <Button type="primary">
+            审核
+            <Icon type="ios-arrow-down"></Icon>
+          </Button>
+          <DropdownMenu slot="list">
+            <DropdownItem name="1">审核通过</DropdownItem>
+            <DropdownItem name="2" style="color: #ed4014">审核不通过</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </div>
     </Modal>
   </Card>
 </template>
 <script>
-  import {getAllProjects, addProject, getProjectDictData, buildPlanFields} from '../../../api/project';
+  import {getAllProjects, addProject, getProjectDictData, buildPlanFields, auditProject} from '../../../api/project';
   import './projects.css'
 
   export default {
-    data() {
+    data: function () {
       return {
+        isReadOnly: false,
         btnDisable: true,
         searchForm: {
-          num: ''
+          num: '',
+          type: '',
+          build_type: '',
+          money_from: '',
+          is_gc: '',
+          status: '',
         },
         columns: [
           {
@@ -350,12 +390,34 @@
             width: 120
           },
           {
+            title: '审核状态',
+            key: 'is_audit',
+            fixed: 'right',
+            width: 160,
+            render: (h, params) => {
+              const row = params.row;
+              const color = row.is_audit === 0 ? 'warning' : row.is_audit === 1 ? 'success' : 'error';
+              const text = row.is_audit === 0 ? '待审核' : row.is_audit === 1 ? '审核通过' : '审核不通过';
+
+              return h('Tag', {
+                props: {
+                  type: 'dot',
+                  color: color
+                }
+              }, text);
+            }
+          },
+          {
             title: '操作',
             key: 'action',
             width: 150,
             fixed: 'right',
             align: 'center',
             render: (h, params) => {
+              let editButton;
+              const row = params.row;
+              editButton = row.is_edit === 0 ? true : false;
+
               return h('div', [
                 h('Button', {
                   props: {
@@ -363,25 +425,36 @@
                     size: 'small'
                   },
                   style: {
-                    marginRight: '5px'
+                    marginRight: '5px',
                   },
                   on: {
                     click: () => {
                       console.log(params)
+                      this.form = params.row;
+                      this.formId = params.row.id;
+                      this.isReadOnly = true;
+                      this.modal = true;
                     }
                   }
                 }, '查看'),
                 h('Button', {
                   props: {
-                    type: 'error',
-                    size: 'small'
+                    type: 'primary',
+                    size: 'small',
+                    disabled: editButton
+                  },
+                  style: {
+                    marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      console.log(params)
+                      this.form = params.row;
+                      this.formId = params.row.id;
+                      this.isReadOnly = false;
+                      this.modal = true;
                     }
                   }
-                }, '审核')
+                }, '编辑')
               ]);
             }
           }
@@ -403,6 +476,7 @@
           money_from: [],
           build_type: []
         },
+        formId: '',
         form: {
           title: '',
           num: '',
@@ -517,6 +591,17 @@
           }
         });
       },
+      handleResetSearch() {
+        this.searchForm = {
+          num: '',
+          type: '',
+          build_type: '',
+          money_from: '',
+          is_gc: '',
+          status: '',
+        };
+        this.getProject();
+      },
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
@@ -560,7 +645,15 @@
         buildPlanFields([startDate, endDate]).then(res => {
           if (res.result) {
             this.form.projectPlan = res.result;
-            console.log(this.form.projectPlan)
+          }
+        });
+      },
+      audit(name) {
+        auditProject({id: this.formId, status: name}).then(res => {
+          if (res.result === true) {
+            this.modal = false;
+            this.$Message.success('审核状态修改成功!');
+            this.getProject();
           }
         });
       },
