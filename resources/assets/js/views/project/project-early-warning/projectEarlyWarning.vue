@@ -13,6 +13,9 @@
         columns: [{
           title: '项目名称',
           key: 'title',
+        },{
+          title: '项目填报时间',
+          key: 'shedeule_at',
         }, {
           title: '预警类型',
           key: 'tags',
@@ -73,6 +76,7 @@
     methods: {
       init () {
         getAllWarning().then(res => {
+          console.log(res)
           this.data = res.result;
           this.loadingTable = false;
         });

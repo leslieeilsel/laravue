@@ -272,6 +272,7 @@ class ProjectController extends Controller
             $data[$k]['project_id'] = $row['project_id'];
             $data[$k]['title'] = $row['title'];
             $data[$k]['tags'] = $row['warning_type'];
+            $data[$k]['shedeule_at'] = $row['shedeule_at'];
         }
         return response()->json(['result' => $data], 200);
     }
@@ -340,7 +341,8 @@ class ProjectController extends Controller
             $warData['warning_type'] = 2;
         }
         $warData['project_id'] = $data['project_id'];
-        $warData['title'] = $year.'年'.$month.'月项目预警信息';
+        $warData['date'] = $year.'-'.$month;
+        $warData['title'] =  Projects::where('id', $data['project_id'])->value('title');
         $warResult =ProjectEarlyWarning::insert($warData);
         if ($result) {
             $log = new OperationLog();
