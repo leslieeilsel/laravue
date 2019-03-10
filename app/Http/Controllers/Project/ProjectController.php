@@ -341,7 +341,7 @@ class ProjectController extends Controller
             $warData['warning_type'] = 2;
         }
         $warData['project_id'] = $data['project_id'];
-        $warData['date'] = $year.'-'.$month;
+        $warData['shedeule_at'] = $year.'-'.$month;
         $warData['title'] =  Projects::where('id', $data['project_id'])->value('title');
         $warResult =ProjectEarlyWarning::insert($warData);
         if ($result) {
@@ -436,24 +436,41 @@ class ProjectController extends Controller
      */
     public function projectLedgerList(Request $request)
     {
-        $data = $request->input();
-        $ProjectLedger = ProjectLedger::where('id','>',0);
-        if ($data['search_project_id']) {
-            $ProjectLedger = $ProjectLedger->where('project_id', $data['search_project_id']);
+        $params = $request->input();
+        $sql=ProjectSchedule::where('id', '>',0);
+        $year = date('Y', strtotime($params['search_year']));
+        if ($params['search_year']) {
+            if($quarter = $params['search_quarter']){
+                if ($quarter == 0) {
+                    $sql = $sql->whereIn('month',[$year . '-01',$year . '-02',$year . '-03']);
+                } elseif ($quarter == 1) {
+                    $sql = $sql->whereIn('month',[$year . '-04',$year . '-05',$year . '-06']);
+                } elseif ($quarter == 2) {
+                    $sql = $sql->whereIn('month',[$year . '-07',$year . '-08',$year . '-09']);
+                } elseif ($quarter == 3) {
+                    $sql = $sql->whereIn('month',[$year . '-10',$year . '-11',$year . '-12']);
+                }
+            }else{
+                $sql = $sql->where('month','like',$year."%");
+            }
+            
         }
-        if ($data['search_year']) {
-            $ProjectLedger = $ProjectLedger->where('year', date('Y', strtotime($data['search_year'])));
+        if($params['search_project_id']){
+            $sql = $sql->where('project_id',$params['search_project_id']);
         }
-        $ProjectLedger=$ProjectLedger->get()->toArray();
-        foreach ($ProjectLedger as $k => $row) {
-            $Projects = Projects::where('id', $row['project_id'])->value('title');
-            $ProjectLedger[$k]['project_id'] = $Projects;
-            $nature = Dict::getOptionsByName('建设性质');
-            $ProjectLedger[$k]['nature'] = $nature[$row['nature']]['title'];
-            $quarter = Dict::getOptionsByName('季度');
-            $ProjectLedger[$k]['quarter'] = $quarter[$row['quarter']]['title'];
+        $sql = $sql->get()->toArray();
+        
+        foreach ($sql as $k => $row) {
+            $projects= Projects::where('id', $row['project_id'])->first();
+            $sql[$k]['project_id']=$projects['title'];
+            $sql[$k]['project_num']=$projects['num'];
+            $sql[$k]['nature']=Dict::getOptionsArrByName('建设性质')[$projects['build_type']];
+            $sql[$k]['subject']=$projects['subject'];
+            $sql[$k]['total_investors']=$projects['amount'];
+            $sql[$k]['scale_con']=$projects['description'];
         }
-        return response()->json(['result' => $ProjectLedger], 200);
+
+        return response()->json(['result' => $sql], 200);
     }
 
     /**

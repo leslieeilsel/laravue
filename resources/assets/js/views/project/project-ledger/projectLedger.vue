@@ -6,6 +6,11 @@
             <DatePicker type="year" placeholder="台账年份" format="yyyy"
                         v-model="searchForm.year" style="width: 200px"></DatePicker>
         </Form-item>
+        <Form-item label="季度" prop="quarter">
+              <Select v-model="searchForm.quarter">
+                <Option v-for="item in quarter" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+        </Form-item>
         <Form-item label="项目名称" prop="project_id">
           <Select v-model="searchForm.project_id"
             style="width: 200px">
@@ -14,115 +19,18 @@
         </Form-item>
         <Form-item style="margin-left:-35px;" class="br">
           <Button @click="getProjectLedgerList" type="primary" icon="ios-search">搜索</Button>
-          <!-- <Button @click="">重置</Button> -->
+          <Button @click="cancel">重置</Button>
         </Form-item>
       </Form>
     </Row>
     <p class="btnGroup">
-      <Button type="primary" @click="modal = true" icon="md-add">添加台账</Button>
+      <!-- <Button type="primary" @click="modal = true" icon="md-add">添加台账</Button> -->
       <!-- <Button class="exportReport" @click="exportLedger" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
       </Button> -->
       <!-- <Button type="error" disabled icon="md-trash">删除</Button> -->
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
-    <Modal
-      v-model="modal"
-      @on-cancel="cancel"
-      :styles="{top: '20px'}"
-      width="850"
-      title="创建项目">
-      <Form ref="formValidate" :model="form" :rules="formValidate" :label-width="110">
-        <Row>
-          <Col span="11">
-                <FormItem label="台账年份" prop="year">
-                  <DatePicker type="year" placeholder="台账年份" format="yyyy"
-                              v-model="form.year" @on-change="changeYear"></DatePicker>
-                </FormItem>
-          </Col>
-          <Col span="2"></Col>
-          <Col span="11">
-            <FormItem label="季度" prop="quarter">
-              <Select v-model="form.quarter">
-                <Option v-for="item in quarter" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="11">
-              <FormItem label="项目名称" prop="project_id">
-                    <Select v-model="form.project_id"  @on-change="changeProject" >
-                      <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
-                    </Select>
-              </FormItem>
-          </Col>
-          <Col span="2"></Col>
-          <Col span="11">
-              <FormItem label="项目编号" prop="project_num">
-                  <Input v-model="form.project_num" placeholder="必填项" readonly></Input>
-              </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="11">
-            <FormItem label="建设性质" prop="nature">
-              <Select v-model="form.nature">
-                    <Option v-for="item in nature" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="2"></Col>
-            <Col span="11">
-                <FormItem label="投资主体" prop="subject">
-                    <Input v-model="form.subject" placeholder="必填项" readonly></Input>
-                </FormItem>
-            </Col>
-        </Row>
-        <Row>
-          <Col span="11">
-            <FormItem label="总投资" prop="total_investors">
-              <Input v-model="form.total_investors" placeholder="支持小数点后两位"/>
-            </FormItem>
-          </Col>
-          <Col span="2"></Col>
-          <Col span="11">
-            <FormItem label="主要建设规模及主要内容" prop="scale_con">
-              <Input v-model="form.scale_con"  type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="必填项"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="11">
-              <FormItem :label="plan_investors" prop="plan_investors">
-                  <Input v-model="form.plan_investors" placeholder="必填项"/>
-              </FormItem>
-          </Col>
-          <Col span="2"></Col>
-          <Col span="11">
-            <FormItem :label="plan_con" prop="plan_con">
-              <Input v-model="form.plan_con"  type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="必填项"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="11">
-            <FormItem label="季度项目进度" prop="quarter_progress">
-              <Input v-model="form.quarter_progress" placeholder="必填项"></Input>
-            </FormItem>
-          </Col>
-          <Col span="2"></Col>
-          <Col span="11">
-            <FormItem label="存在问题" prop="problem">
-              <Input v-model="form.problem"  type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="必填项"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
-      <div slot="footer">
-        <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-        <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
-      </div>
-    </Modal>
+    
   </Card>
 </template>
 <script>
@@ -139,16 +47,16 @@
             align: 'center',
             fixed: 'left'
           },
-          {
-            title: '年度',
-            key: 'year',
-            width: 100,
-          },
-          {
-            title: '季度',
-            key: 'quarter',
-            width: 100
-          },
+          // {
+          //   title: '年度',
+          //   key: 'year',
+          //   width: 100,
+          // },
+          // {
+          //   title: '季度',
+          //   key: 'quarter',
+          //   width: 100
+          // },
           {
             title: '项目名称',
             key: 'project_id',
@@ -228,59 +136,57 @@
         data: [],
         tableLoading: true,
         loading: false,
-        form: {
-          year: '',
-          quarter: '',
-          project_id: '',
-          project_num: '',
-          nature: '',
-          subject: '',
-          total_investors: '',
-          scale_con: '',
-          plan_investors: '',
-          plan_con: '',
-          quarter_progress: '',
-          problem: '',
-        },
+        // form: {
+        //   year: '',
+        //   quarter: '',
+        //   project_id: '',
+        //   project_num: '',
+        //   nature: '',
+        //   subject: '',
+        //   total_investors: '',
+        //   scale_con: '',
+        //   plan_investors: '',
+        //   plan_con: '',
+        //   quarter_progress: '',
+        //   problem: '',
+        // },
         index: 1,
-        formValidate: {
-          year: [
-            {required: true, type: 'date', message: '年度不能为空', trigger: 'change'}
-          ],
-          quarter: [
-            {required: true, type: 'number', message: '季度不能为空', trigger: 'change'}
-          ],
-          project_id: [
-            {required: true, type: 'number', message: '项目名称不能为空', trigger: 'change'}
-          ]
-        },
+        // formValidate: {
+        //   year: [
+        //     {required: true, type: 'date', message: '年度不能为空', trigger: 'change'}
+        //   ],
+        //   quarter: [
+        //     {required: true, type: 'number', message: '季度不能为空', trigger: 'change'}
+        //   ],
+        //   project_id: [
+        //     {required: true, type: 'number', message: '项目名称不能为空', trigger: 'change'}
+        //   ]
+        // },
         btnDisable: false,
         searchForm: {
           project_id: '',
-          year:''
+          year:'',
+          quarter:''
         },
         submitLoading:false,
         quarter:[],
         project_id:[],
-        nature:[],
-        plan_investors: '2019年项目计划投资',
-        plan_con: '2019年主要建设内容',
         modal: false,
       }
     },
     methods: {
       init() {
-        this.$refs.formValidate.resetFields();
         this.getProjectLedgerList();
         this.getProjectId();
         this.getQuarter();
-        this.getNature();
+        // this.getNature();
       },
       getProjectLedgerList(){
         let search_project_id=this.searchForm.project_id;
         let search_year=this.searchForm.year;
+        let search_quarter=this.searchForm.quarter;
         this.tableLoading = true;
-        projectLedgerList({search_project_id:search_project_id,search_year:search_year}).then(res => {
+        projectLedgerList({search_project_id:search_project_id,search_year:search_year,search_quarter:search_quarter}).then(res => {
           this.data = res.result;
           this.tableLoading = false;
         })
@@ -295,61 +201,61 @@
           this.quarter=res.result;
         });
       },
-      getNature(){
-        getData({title:'建设性质'}).then(res => {
-          this.nature=res.result;
-        });
-      },changeYear(e){
-        this.plan_investors=e+'年计划投资';
-        this.plan_con=e+'年主要建设内容';
-      },
-      changeProject(e){
-        this.loading = true;
-        projectQuarter({year:this.form.year,quarter:this.form.quarter,project_id:e}).then(res => {
+      // getNature(){
+      //   getData({title:'建设性质'}).then(res => {
+      //     this.nature=res.result;
+      //   });
+      // },changeYear(e){
+      //   this.plan_investors=e+'年计划投资';
+      //   this.plan_con=e+'年主要建设内容';
+      // },
+      // changeProject(e){
+      //   this.loading = true;
+      //   projectQuarter({year:this.form.year,quarter:this.form.quarter,project_id:e}).then(res => {
           
-          let ps=res.result.ProjectSchedules;
-          let p=res.result.projects;
-          this.form.project_num=p.num;
-          this.form.nature=p.build_type;
-          this.form.subject=p.subject;
-          this.form.total_investors=p.amount;
-          this.form.scale_con=p.description;
-          this.form.plan_investors=ps.plan_investors;
-          this.form.plan_con=ps.plan_img_progress;
-          this.form.quarter_progress=ps.start_month_img_progress;
-          this.form.problem=ps.problem;
-          this.loading = false;
-        })
-      },
-      handleSubmit(name) {
-        console.log(name);
-          this.$refs[name].validate((valid) => {
-            if (valid) {
-              this.submitLoading=true;
-              projectLedgerAdd(this.form).then(res => {
-                this.submitLoading=false;
-                if(res.result){
-                  this.$Message.success("添加成功");
-                  this.modal = false;
-                  this.init();
-                }else{
-                  this.$Message.error('添加失败!');
-                }
-            });
-          }
-        })
-      },
-      handleReset (name) {
-        this.$refs[name].resetFields();
-      },
+      //     let ps=res.result.ProjectSchedules;
+      //     let p=res.result.projects;
+      //     this.form.project_num=p.num;
+      //     this.form.nature=p.build_type;
+      //     this.form.subject=p.subject;
+      //     this.form.total_investors=p.amount;
+      //     this.form.scale_con=p.description;
+      //     this.form.plan_investors=ps.plan_investors;
+      //     this.form.plan_con=ps.plan_img_progress;
+      //     this.form.quarter_progress=ps.start_month_img_progress;
+      //     this.form.problem=ps.problem;
+      //     this.loading = false;
+      //   })
+      // },
+      // handleSubmit(name) {
+      //   console.log(name);
+      //     this.$refs[name].validate((valid) => {
+      //       if (valid) {
+      //         this.submitLoading=true;
+      //         projectLedgerAdd(this.form).then(res => {
+      //           this.submitLoading=false;
+      //           if(res.result){
+      //             this.$Message.success("添加成功");
+      //             this.modal = false;
+      //             this.init();
+      //           }else{
+      //             this.$Message.error('添加失败!');
+      //           }
+      //       });
+      //     }
+      //   })
+      // },
+      // handleReset (name) {
+      //   this.$refs[name].resetFields();
+      // },
       cancel() {
-        this.$refs.formValidate.resetFields();
+        this.$refs.searchForm.resetFields();
       },//导出
-      exportLedger(){
-        let search_project_id=this.searchForm.project_id;
-        let search_year=this.searchForm.year;
-        window.location.href="/api/project/exportLedger?search_project_id="+search_project_id+"&search_year="+search_year;
-      }
+      // exportLedger(){
+      //   let search_project_id=this.searchForm.project_id;
+      //   let search_year=this.searchForm.year;
+      //   window.location.href="/api/project/exportLedger?search_project_id="+search_project_id+"&search_year="+search_year;
+      // }
     },
     mounted() {
       this.init();
