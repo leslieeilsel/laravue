@@ -833,7 +833,7 @@
             render: (h, params) => {
               let edit_button = '';
               let is_button = '';
-              if (params.row.is_audit == 0 || params.row.is_audit == 0) {
+              if (params.row.is_audit === 0 || params.row.is_audit === 0) {
                 edit_button = h('Button', {
                   props: {
                     type: 'primary',
@@ -851,7 +851,7 @@
                           _editThis.editForm.month = em.month;
                           let em_project_id = em.project_id;
                           _editThis.project_id.forEach(function (em_id) {
-                            if (em_project_id === em_id.id) {
+                            if (em_project_id === em_id.title) {
 
                               _editThis.editForm.project_id = em_id.title;
                             }
@@ -907,7 +907,7 @@
                           _auditThis.auditForm.month = em.month;
                           let em_project_id = em.project_id;
                           _auditThis.project_id.forEach(function (em_id) {
-                            if (em_project_id === em_id.id) {
+                            if (em_project_id === em_id.title) {
 
                               _auditThis.auditForm.project_id = em_id.title;
                             }
@@ -965,7 +965,7 @@
                           _seeThis.seeForm.month = em.month;
                           let em_project_id = em.project_id;
                           _seeThis.project_id.forEach(function (em_id) {
-                            if (em_project_id === em_id.id) {
+                            if (em_project_id === em_id.title) {
 
                               _seeThis.seeForm.project_id = em_id.title;
                             }
