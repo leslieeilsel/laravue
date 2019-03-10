@@ -108,7 +108,7 @@
             script.src = 'https://cdn.vaptcha.com/v2.js';
             script.async = true;
             script.onload = script.onreadystatechange = function () {
-              if (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
+              if (!this.readyState || this.readyState === 'loaded' || this.readyState === 'complete') {
                 resolve();
                 script.onload = script.onreadystatechange = null
               }

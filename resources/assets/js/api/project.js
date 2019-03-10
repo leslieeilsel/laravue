@@ -165,6 +165,7 @@ export function getProjectDictData(dictName) {
     data: {dictName}
   });
 }
+
 /**
  * 添加台账
  * @returns {*}
@@ -176,6 +177,7 @@ export function projectLedgerAdd(dictName) {
     data: {dictName}
   });
 }
+
 /**
  * 台账列表
  * @returns {*}
@@ -187,6 +189,7 @@ export function projectLedgerList(form) {
     data: {...form}
   });
 }
+
 /**
  * 项目季度台账
  * @returns {*}
@@ -198,6 +201,7 @@ export function projectQuarter(dictName) {
     data: {dictName}
   });
 }
+
 /**
  * 修改填报
  * @returns {*}
@@ -209,6 +213,7 @@ export function editProjectProgress(dictName) {
     data: {dictName}
   });
 }
+
 /**
  * 审核填报
  * @returns {*}
@@ -220,8 +225,9 @@ export function auditProjectProgress(form) {
     data: {...form}
   });
 }
+
 /**
- * 修改填报
+ * 构建计划填报表单
  * @returns {*}
  */
 export function buildPlanFields(date) {
@@ -229,6 +235,18 @@ export function buildPlanFields(date) {
     url: '/api/project/buildPlanFields',
     method: 'post',
     data: {date}
+  });
+}
+
+/**
+ * 构建计划填报表单
+ * @returns {*}
+ */
+export function auditProject(status) {
+  return request({
+    url: '/api/project/auditProject',
+    method: 'post',
+    data: {status}
   });
 }
 

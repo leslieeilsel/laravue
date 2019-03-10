@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProjectEarlyWarning;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Dict;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -81,6 +82,7 @@ class ProjectController extends Controller
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['is_audit'] = 0;
         $data['is_edit'] = 0;
+        $data['user_id'] = Auth::id();
 
         $planData = $data['projectPlan'];
 
@@ -104,9 +106,8 @@ class ProjectController extends Controller
      *
      * @param $projectId
      * @param $planData
-     * @param $planDate
      */
-    public function insertPlan($projectId, $planData, $planDate)
+    public function insertPlan($projectId, $planData)
     {
         foreach ($planData as $k => $v) {
             $v['project_id'] = $projectId;
@@ -223,7 +224,7 @@ class ProjectController extends Controller
         if ($params['num']) {
             $query = $query::where('num', $params['num']);
         }
-        $projects = $query->get()->toArray();
+        $projects = $query->where('user_id', Auth::id())->get()->toArray();
         foreach ($projects as $k => $row) {
             $projects[$k]['type'] = Dict::getOptionsArrByName('工程类项目分类')[$row['type']];
             $projects[$k]['is_gc'] = Dict::getOptionsArrByName('是否为国民经济计划')[$row['is_gc']];
@@ -587,6 +588,16 @@ class ProjectController extends Controller
         }
 
         return response()->json(['result' => $data], 200);
+    }
+
+    public function auditProject(Request $request)
+    {
+        $data = $request->input('status');
+        $result = Projects::where('id', $data['id'])->update(['is_audit' => $data['status']]);
+
+        $result = $result ? true : false;
+
+        return response()->json(['result' => $result], 200);
     }
 
 }
