@@ -79,6 +79,8 @@ class ProjectController extends Controller
         $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
         $data['positions'] = self::buildPositions($data['positions']);
         $data['created_at'] = date('Y-m-d H:i:s');
+        $data['is_audit'] = 0;
+        $data['is_edit'] = 0;
 
         $planData = $data['projectPlan'];
 
@@ -113,6 +115,7 @@ class ProjectController extends Controller
             $v['project_id'] = $projectId;
             $v['parent_id'] = 0;
             $v['created_at'] = date('Y-m-d H:i:s');
+            unset($v['month']);
 
             $parentId = DB::table('iba_project_plan')->insertGetId($v);
 
@@ -223,6 +226,13 @@ class ProjectController extends Controller
     public function getAllProjects()
     {
         $projects = Projects::all()->toArray();
+        foreach ($projects as $k => $row) {
+            $projects[$k]['type'] = Dict::getOptionsArrByName('工程类项目分类')[$row['type']];
+            $projects[$k]['is_gc'] = Dict::getOptionsArrByName('是否为国民经济计划')[$row['is_gc']];
+            $projects[$k]['status'] = Dict::getOptionsArrByName('项目状态')[$row['status']];
+            $projects[$k]['money_from'] = Dict::getOptionsArrByName('资金来源')[$row['money_from']];
+            $projects[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
+        }
 
         return response()->json(['result' => $projects], 200);
     }
@@ -546,6 +556,39 @@ class ProjectController extends Controller
         }
 
         return response()->json(['result' => $result], 200);
+    }
+
+    public function buildPlanFields(Request $request)
+    {
+        $date = $request->input('date');
+
+        $start = strtotime($date[0]);
+        $end = strtotime($date[1]);
+        $dateList = self::getMonthList($start, $end);
+
+        $data = [];
+        $i = 0;
+        foreach ($dateList as $year => $month) {
+            $data[$i] = [
+                'date' => $year,
+                'amount' => '',
+                'image_progress' => ''
+            ];
+            $monthList = [];
+            $ii = 0;
+            foreach ($month as $k => $v) {
+                $monthList[$ii] = [
+                    'date' => (int)$v['month'],
+                    'amount' => '',
+                    'image_progress' => ''
+                ];
+                $ii++;
+            }
+            $data[$i]['month'] = $monthList;
+            $i++;
+        }
+
+        return response()->json(['result' => $data], 200);
     }
 
 }

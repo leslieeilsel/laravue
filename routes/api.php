@@ -55,6 +55,7 @@ Route::post('project/projectLedgerList', 'Project\ProjectController@projectLedge
 Route::post('project/projectQuarter', 'Project\ProjectController@projectQuarter');
 Route::post('project/editProjectProgress', 'Project\ProjectController@editProjectProgress');
 Route::post('project/auditProjectProgress', 'Project\ProjectController@auditProjectProgress');
+Route::post('project/buildPlanFields', 'Project\ProjectController@buildPlanFields');
 // 添加台账导出
 Route::get('project/exportLedger', 'Project\LedgerController@export');
 
