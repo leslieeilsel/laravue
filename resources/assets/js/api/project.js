@@ -219,6 +219,17 @@ export function auditProjectProgress(form) {
     data: {...form}
   });
 }
+/**
+ * 修改填报
+ * @returns {*}
+ */
+export function buildPlanFields(date) {
+  return request({
+    url: '/api/project/buildPlanFields',
+    method: 'post',
+    data: {date}
+  });
+}
 
 
 
