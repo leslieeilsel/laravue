@@ -20,6 +20,7 @@ class CreateIbaProjectPlanTable extends Migration
             $table->integer('parent_id')->unsigned();               // 父级ID
             $table->decimal('amount', 10, 2);                       // 项目金额
             $table->text('image_progress');                         // 形象进度
+            $table->integer('user_id')->nullable();     //用户id
             $table->timestamps();
         });
     }

@@ -35,6 +35,7 @@ class CreateIbaProjectProjectsTable extends Migration
             $table->string('positions');                            // 项目坐标集
             $table->string('plan_start_at');                        // 计划开始年月
             $table->string('plan_end_at');                          // 计划结束年月
+            $table->integer('user_id')->nullable();     //用户id
             $table->timestamps();
         });
     }

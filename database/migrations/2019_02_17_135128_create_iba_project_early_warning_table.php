@@ -18,6 +18,7 @@ class CreateIbaProjectEarlyWarningTable extends Migration
             $table->string('title');                                    // 项目名称
             $table->integer('warning_type');                            // 预警类型
             $table->integer('project_id')->nullable()->unsigned(); // 项目信息ID
+            $table->integer('user_id')->nullable();     //用户id
             $table->timestamps();
         });
     }

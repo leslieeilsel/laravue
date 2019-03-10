@@ -80,10 +80,12 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(22);
         $spreadsheet->getActiveSheet()->getRowDimension('2')->setRowHeight(30.75);
         $spreadsheet->getActiveSheet()->getRowDimension('3')->setRowHeight(15.75);
-        $spreadsheet->getActiveSheet()->getRowDimension(['4','5'])->setRowHeight(29);
-        $spreadsheet->getActiveSheet()->getRowDimension('6','7')->setRowHeight(71);
+        $spreadsheet->getActiveSheet()->getRowDimensions('4')->setRowHeight(29);
+        $spreadsheet->getActiveSheet()->getRowDimensions('5')->setRowHeight(28.5);
+        $spreadsheet->getActiveSheet()->getRowDimensions('6')->setRowHeight(70.5);
+        $spreadsheet->getActiveSheet()->getRowDimension('7')->setRowHeight(71);
         
-        $spreadsheet->getActiveSheet()->getColumnIndex('A')->setWidth(1.38);
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(1.38);
         // 设置对齐方式
         //居中
         $numberStyleCenter = [

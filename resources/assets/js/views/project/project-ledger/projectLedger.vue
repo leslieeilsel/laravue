@@ -20,8 +20,8 @@
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add">添加台账</Button>
-      <Button class="exportReport" @click="exportLedger" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
-      </Button>
+      <!-- <Button class="exportReport" @click="exportLedger" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
+      </Button> -->
       <!-- <Button type="error" disabled icon="md-trash">删除</Button> -->
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
