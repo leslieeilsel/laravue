@@ -27,6 +27,7 @@ class CreateIbaProjectLedgerTable extends Migration
             $table->string('plan_con')->nullable();     //2019年主要建设内容
             $table->string('quarter_progress')->nullable();     //季度项目进度
             $table->string('problem')->nullable();     //存在问题
+            $table->integer('user_id')->nullable();     //用户id
             $table->timestamps();
         });
     }
