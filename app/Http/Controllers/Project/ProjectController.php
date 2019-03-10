@@ -9,12 +9,12 @@ use App\Models\Project\ProjectSchedule;
 use App\Models\Project\ProjectLedger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Models\ProjectInfo;
 use App\Models\OperationLog;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProjectEarlyWarning;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Dict;
+
 class ProjectController extends Controller
 {
     /**
@@ -334,11 +334,11 @@ class ProjectController extends Controller
     {
         $data = $request->input();
         $ProjectSchedules = ProjectSchedule::all()->toArray();
-        if($data['search_project_id']){
-            $ProjectSchedules = ProjectSchedule::where('project_id',$data['search_project_id'])->get()->toArray();
+        if ($data['search_project_id']) {
+            $ProjectSchedules = ProjectSchedule::where('project_id', $data['search_project_id'])->get()->toArray();
         }
         foreach ($ProjectSchedules as $k => $row) {
-            $Projects=Projects::where('id',$row['project_id'])->value('title');
+            $Projects = Projects::where('id', $row['project_id'])->value('title');
             $ProjectSchedules[$k]['project_id'] = $Projects;
         }
         return response()->json(['result' => $ProjectSchedules], 200);
@@ -401,6 +401,7 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 获取台账进度列表
      *
@@ -410,19 +411,20 @@ class ProjectController extends Controller
     {
         $data = $request->input();
         $ProjectLedger = ProjectLedger::all()->toArray();
-        if($data['search_project_id']){
-            $ProjectLedger = ProjectLedger::where('project_id',$data['search_project_id'])->get()->toArray();
+        if ($data['search_project_id']) {
+            $ProjectLedger = ProjectLedger::where('project_id', $data['search_project_id'])->get()->toArray();
         }
         foreach ($ProjectLedger as $k => $row) {
-            $Projects=Projects::where('id',$row['project_id'])->value('title');
+            $Projects = Projects::where('id', $row['project_id'])->value('title');
             $ProjectLedger[$k]['project_id'] = $Projects;
-            $nature=Dict::getOptionsByName('建设性质');
+            $nature = Dict::getOptionsByName('建设性质');
             $ProjectLedger[$k]['nature'] = $nature[$row['nature']]['title'];
-            $quarter=Dict::getOptionsByName('季度');
+            $quarter = Dict::getOptionsByName('季度');
             $ProjectLedger[$k]['quarter'] = $quarter[$row['quarter']]['title'];
         }
         return response()->json(['result' => $ProjectLedger], 200);
     }
+
     /**
      * 项目季度改变项目名称，填写其他字段
      *
@@ -434,25 +436,26 @@ class ProjectController extends Controller
         if ($params['dictName']['year']) {
             $year = date('Y', strtotime($params['dictName']['year']));
         }
-        $quarter=$params['dictName']['quarter'];
-        if($quarter==0){
-            $date=$year.'-03';
-        }else if($quarter==1){
-            $date=$year.'-06';
-        }else if($quarter==2){
-            $date=$year.'-09';
-        }else if($quarter==3){
-            $date=$year.'-12';
+        $quarter = $params['dictName']['quarter'];
+        if ($quarter == 0) {
+            $date = $year . '-03';
+        } elseif ($quarter == 1) {
+            $date = $year . '-06';
+        } elseif ($quarter == 2) {
+            $date = $year . '-09';
+        } elseif ($quarter == 3) {
+            $date = $year . '-12';
         }
-        $project_id=$params['dictName']['project_id'];
-        $result=[];
-        $result['projects'] = Projects::where('id',$project_id)->first();
+        $project_id = $params['dictName']['project_id'];
+        $result = [];
+        $result['projects'] = Projects::where('id', $project_id)->first();
 
-        $result['ProjectSchedules'] = ProjectSchedule::where('project_id',$project_id)->where('month',$date)->first();
+        $result['ProjectSchedules'] = ProjectSchedule::where('project_id', $project_id)->where('month', $date)->first();
         // $ProjectLedger = ProjectLedger::all()->toArray();
 
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 添加台账
      *
@@ -462,7 +465,7 @@ class ProjectController extends Controller
     public function projectLedgerAdd(Request $request)
     {
         $data = $request->input();
-        $params=$data['dictName'];
+        $params = $data['dictName'];
         if ($params['year']) {
             $params['year'] = date('Y', strtotime($params['year']));
         }
@@ -493,8 +496,8 @@ class ProjectController extends Controller
         if ($data['img_progress_pic']) {
             $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
         }
-        unset($data['id'], $data['updated_at'],$data['project_id'],$data['subject'],$data['project_num'],$data['build_start_at'],$data['build_end_at'],$data['total_investors'],$data['plan_start_at'],$data['plan_investors'],$data['plan_img_progress'],$data['month']);
-     
+        unset($data['id'], $data['updated_at'], $data['project_id'], $data['subject'], $data['project_num'], $data['build_start_at'], $data['build_end_at'], $data['total_investors'], $data['plan_start_at'], $data['plan_investors'], $data['plan_img_progress'], $data['month']);
+
         $result = ProjectSchedule::where('id', $id)->update($data);
 
         if ($result) {
@@ -504,6 +507,7 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 审核项目进度填报
      *
@@ -514,7 +518,7 @@ class ProjectController extends Controller
     {
         $data = $request->input();
         $id = $data['id'];
-        $result = ProjectSchedule::where('id', $id)->update(['is_audit'=>$data['is_audit']]);
+        $result = ProjectSchedule::where('id', $id)->update(['is_audit' => $data['is_audit']]);
 
         if ($result) {
             $log = new OperationLog();
@@ -523,5 +527,5 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
-    
+
 }
