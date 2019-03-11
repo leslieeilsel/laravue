@@ -57,8 +57,11 @@ Route::post('project/editProjectProgress', 'Project\ProjectController@editProjec
 Route::post('project/auditProjectProgress', 'Project\ProjectController@auditProjectProgress');
 Route::post('project/buildPlanFields', 'Project\ProjectController@buildPlanFields');
 Route::post('project/auditProject', 'Project\ProjectController@auditProject');
+Route::post('project/getEditFormData', 'Project\ProjectController@getEditFormData');
 // 添加台账导出
 Route::get('project/exportLedger', 'Project\LedgerController@export');
+//项目调整
+Route::post('project/projectAdjustment', 'Project\ProjectController@projectAdjustment');
 
 Route::get('dict/dicts', 'System\DictController@dicts');
 Route::post('dict/addDict', 'System\DictController@addDict');

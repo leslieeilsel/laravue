@@ -23,10 +23,10 @@ class CreateIbaProjectProjectsTable extends Migration
             $table->string('subject');                              // 投资主体
             $table->string('unit');                                 // 建设单位
             $table->integer('build_type');                          // 建设性质
-            $table->decimal('amount', 10, 2);                       // 项目金额（总金额）
+            $table->decimal('amount', 14, 4);                       // 项目金额（总金额）
             $table->integer('money_from');                          // 资金来源
-            $table->decimal('safe_amount', 10, 2);                  // 建安投资
-            $table->decimal('land_amount', 10, 2);                  // 土地费用
+            $table->decimal('safe_amount', 14, 4)->nullable();      // 建安投资
+            $table->decimal('land_amount', 14, 4)->nullable();      // 土地费用
             $table->integer('is_gc');                               // 改创项目
             $table->integer('is_audit');                            // 审核状态
             $table->integer('is_edit');                             // 编辑状态

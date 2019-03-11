@@ -3,17 +3,17 @@
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
         <Form-item label="台账年份" prop="year">
-            <DatePicker type="year" placeholder="台账年份" format="yyyy"
-                        v-model="searchForm.year" style="width: 200px"></DatePicker>
+          <DatePicker type="year" placeholder="台账年份" format="yyyy"
+                      v-model="searchForm.year" style="width: 200px"></DatePicker>
         </Form-item>
         <Form-item label="季度" prop="quarter">
-              <Select v-model="searchForm.quarter">
-                <Option v-for="item in quarter" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
+          <Select v-model="searchForm.quarter" style="width: 200px">
+            <Option v-for="item in quarter" :value="item.value" :key="item.value">{{ item.title }}</Option>
+          </Select>
         </Form-item>
         <Form-item label="项目名称" prop="project_id">
           <Select v-model="searchForm.project_id"
-            style="width: 200px">
+                  style="width: 200px">
             <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
           </Select>
         </Form-item>
@@ -30,15 +30,15 @@
       <!-- <Button type="error" disabled icon="md-trash">删除</Button> -->
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
-    
+  
   </Card>
 </template>
 <script>
-  import {initProjectInfo,getData,projectLedgerList,projectQuarter,projectLedgerAdd} from '../../../api/project';
+  import {initProjectInfo, getData, projectLedgerList, projectQuarter, projectLedgerAdd} from '../../../api/project';
   import './projectLedger.css'
-  
+
   export default {
-    data () {
+    data() {
       return {
         columns: [
           {
@@ -88,24 +88,24 @@
             width: 210
           },
           {
-            title: '2019年计划投资',
+            title: '2019年计划投资(万元)',
             key: 'plan_investors',
-            width: 100
+            width: 180
           },
           {
             title: '2019年主要建设内容',
             key: 'plan_con',
-            width: 100
+            width: 200
           },
           {
             title: '季度项目进度',
             key: 'quarter_progress',
-            width: 100
+            width: 180
           },
           {
             title: '存在问题',
             key: 'problem',
-            width: 140
+            width: 180
           },
           // {
           //     title: '操作',
@@ -165,12 +165,12 @@
         btnDisable: false,
         searchForm: {
           project_id: '',
-          year:'',
-          quarter:''
+          year: '',
+          quarter: ''
         },
-        submitLoading:false,
-        quarter:[],
-        project_id:[],
+        submitLoading: false,
+        quarter: [],
+        project_id: [],
         modal: false,
       }
     },
@@ -181,24 +181,28 @@
         this.getQuarter();
         // this.getNature();
       },
-      getProjectLedgerList(){
-        let search_project_id=this.searchForm.project_id;
-        let search_year=this.searchForm.year;
-        let search_quarter=this.searchForm.quarter;
+      getProjectLedgerList() {
+        let search_project_id = this.searchForm.project_id;
+        let search_year = this.searchForm.year;
+        let search_quarter = this.searchForm.quarter;
         this.tableLoading = true;
-        projectLedgerList({search_project_id:search_project_id,search_year:search_year,search_quarter:search_quarter}).then(res => {
+        projectLedgerList({
+          search_project_id: search_project_id,
+          search_year: search_year,
+          search_quarter: search_quarter
+        }).then(res => {
           this.data = res.result;
           this.tableLoading = false;
         })
       },
-      getProjectId(){
+      getProjectId() {
         initProjectInfo().then(res => {
-          this.project_id=res.result;
+          this.project_id = res.result;
         });
       },
-      getQuarter(){
-        getData({title:'季度'}).then(res => {
-          this.quarter=res.result;
+      getQuarter() {
+        getData({title: '季度'}).then(res => {
+          this.quarter = res.result;
         });
       },
       // getNature(){
@@ -212,7 +216,7 @@
       // changeProject(e){
       //   this.loading = true;
       //   projectQuarter({year:this.form.year,quarter:this.form.quarter,project_id:e}).then(res => {
-          
+
       //     let ps=res.result.ProjectSchedules;
       //     let p=res.result.projects;
       //     this.form.project_num=p.num;

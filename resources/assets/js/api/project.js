@@ -250,5 +250,26 @@ export function auditProject(status) {
   });
 }
 
+/**
+ * 构建计划填报表单
+ * @returns {*}
+ */
+export function getEditFormData(id) {
+  return request({
+    url: '/api/project/getEditFormData',
+    method: 'post',
+    data: {id}
+  });
+}
 
-
+/**
+ * 发起项目调整
+ * @returns {*}
+ */
+export function projectAdjustment(status) {
+  return request({
+    url: '/api/project/projectAdjustment',
+    method: 'post',
+    data: {status}
+  });
+}

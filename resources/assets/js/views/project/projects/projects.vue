@@ -48,20 +48,6 @@
     <Row>
       <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     </Row>
-    <!--    <Row type="flex" justify="end" class="page">-->
-    <!--      <Page-->
-    <!--        :current="searchForm.pageNumber"-->
-    <!--        :total="total"-->
-    <!--        :page-size="searchForm.pageSize"-->
-    <!--        @on-change="changePage"-->
-    <!--        @on-page-size-change="changePageSize"-->
-    <!--        :page-size-opts="[10,20,50]"-->
-    <!--        size="small"-->
-    <!--        show-total-->
-    <!--        show-elevator-->
-    <!--        show-sizer-->
-    <!--      ></Page>-->
-    <!--    </Row>-->
     <Modal
       v-model="modal"
       @on-cancel="cancel"
@@ -130,21 +116,21 @@
         </Row>
         <Row>
           <Col span="11">
-            <FormItem label="项目金额" prop="amount">
-              <Input v-model="form.amount" placeholder="支持小数点后两位" v-bind:readonly="isReadOnly"/>
+            <FormItem label="项目金额(万元)" prop="amount">
+              <Input v-model="form.amount" placeholder="必填项" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
           <Col span="11">
-            <FormItem label="建安投资" prop="safe_amount">
-              <Input v-model="form.safe_amount" placeholder="支持小数点后两位" v-bind:readonly="isReadOnly"></Input>
+            <FormItem label="建安投资(万元)" prop="safe_amount">
+              <Input v-model="form.safe_amount" placeholder="建设安装费用" v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="11">
-            <FormItem label="土地费用" prop="land_amount">
-              <Input v-model="form.land_amount" placeholder="支持小数点后两位" v-bind:readonly="isReadOnly"/>
+            <FormItem label="土地费用(万元)" prop="land_amount">
+              <Input v-model="form.land_amount" placeholder="必填项" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
@@ -218,16 +204,16 @@
             </FormItem>
           </Col>
         </Row>
-        <Divider><h4>投资计划</h4></Divider>
+        <Divider><h4>项目投资计划</h4></Divider>
         <div v-for="(item, index) in form.projectPlan">
-          <Divider orientation="left"><h5>{{item.date}}年项目计划</h5></Divider>
+          <Divider orientation="left"><h5>{{item.date}}年项目投资计划</h5></Divider>
           <Row>
             <Col span="11">
               <FormItem
                 label="计划投资金额"
                 :prop="'projectPlan.' + index + '.amount'"
                 :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur'}">
-                <Input v-model="item.amount" placeholder="支持小数点后两位" v-bind:readonly="isReadOnly"/>
+                <Input v-model="item.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
               </FormItem>
             </Col>
             <Col span="2"></Col>
@@ -245,20 +231,23 @@
               <Input type="text" value="月份" class="borderNone"/>
             </Col>
             <Col span="8">
-              <Input type="text" value="计划投资金额" class="borderNone"/>
+              <Input type="text" value="计划投资金额(万元)" class="borderNone"/>
             </Col>
             <Col span="8">
               <Input type="text" value="计划形象进度" class="borderNone"/>
             </Col>
             <div v-for="(ite, index) in item.month">
               <Col span="8">
-                <Input type="text" v-model="ite.date + '月'" disabled class="monthInput"/>
+                <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
               </Col>
               <Col span="8">
-                <Input type="text" v-model="ite.amount" class="monthInput"/>
+                <Input
+                  :prop="'month.' + item.date + ite.date + '.amount'"
+                  :rules="{required: true, message: '月计划投资金额不能为空', trigger: 'blur'}"
+                  type="text" placeholder="必填项" v-model="ite.amount" class="monthInput"/>
               </Col>
               <Col span="8">
-                <Input type="text" v-model="ite.image_progress" class="monthInput"/>
+                <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
               </Col>
             </div>
           </Row>
@@ -266,8 +255,369 @@
       </Form>
       <div slot="footer">
         <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-        <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交审核</Button>
-        <Dropdown trigger="click" style="margin-left: 20px" @on-click="audit">
+        <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">保存</Button>
+      </div>
+    </Modal>
+    <Modal
+      v-model="editModal"
+      @on-cancel="cancel"
+      :styles="{top: '20px'}"
+      width="850"
+      title="修改项目">
+      <Form ref="editFormValidate" :model="editForm" :rules="ruleValidate" :label-width="110">
+        <Divider><h4>基本信息</h4></Divider>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目名称" prop="title">
+              <Input v-model="editForm.title" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="项目编号" prop="num">
+              <Input v-model="editForm.num" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="业主" prop="owner">
+              <Input v-model="editForm.owner" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="投资主体" prop="subject">
+              <Input v-model="editForm.subject" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目类型" prop="type">
+              <Select v-model="editForm.type">
+                <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="建设单位" prop="unit">
+              <Input v-model="editForm.unit" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="建设性质" prop="build_type">
+              <Select v-model="editForm.build_type">
+                <Option v-for="item in dict.build_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="资金来源" prop="money_from">
+              <Select v-model="editForm.money_from">
+                <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目金额(万元)" prop="amount">
+              <Input v-model="editForm.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="建安投资(万元)" prop="safe_amount">
+              <Input v-model="editForm.safe_amount" placeholder="单位万元" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="土地费用(万元)" prop="land_amount">
+              <Input v-model="editForm.land_amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="项目标识(是否为国民经济计划)" prop="is_gc">
+              <Select v-model="editForm.is_gc">
+                <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="计划开始时间" prop="plan_start_at">
+              <DatePicker type="month" placeholder="开始时间" format="yyyy年MM月" v-model="editForm.plan_start_at"></DatePicker>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="计划结束时间" prop="plan_end_at">
+              <DatePicker type="month" @on-change="buildYearPlan" placeholder="结束时间" format="yyyy年MM月"
+                          v-model="editForm.plan_end_at"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目中心点坐标" prop="center_point">
+              <Input v-model="editForm.center_point" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="项目状态" prop="status">
+              <Select v-model="editForm.status">
+                <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <FormItem label="项目轮廓点坐标" prop="positions">
+            <Input v-model="editForm.positions" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+          </FormItem>
+        </Row>
+        <Row>
+          <FormItem label="项目概况" prop="description">
+            <Input v-model="editForm.description" type="textarea" :rows="4" placeholder="请输入..." v-bind:readonly="isReadOnly"></Input>
+          </FormItem>
+        </Row>
+        <Divider><h4>投资计划</h4></Divider>
+        <div v-for="(item, index) in editForm.projectPlan">
+          <Divider orientation="left"><h5>{{item.date}}年项目计划</h5></Divider>
+          <Row>
+            <Col span="11">
+              <FormItem
+                label="计划投资金额"
+                :prop="'projectPlan.' + index + '.amount'"
+                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur'}">
+                <Input v-model="item.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+              </FormItem>
+            </Col>
+            <Col span="2"></Col>
+            <Col span="11">
+              <FormItem
+                label="计划形象进度"
+                :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
+                :prop="'projectPlan.' + index + '.image_progress'">
+                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..." v-bind:readonly="isReadOnly"></Input>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="8">
+              <Input type="text" value="月份" class="borderNone"/>
+            </Col>
+            <Col span="8">
+              <Input type="text" value="计划投资金额(万元)" class="borderNone"/>
+            </Col>
+            <Col span="8">
+              <Input type="text" value="计划形象进度" class="borderNone"/>
+            </Col>
+            <div v-for="(ite, index) in item.month">
+              <Col span="8">
+                <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
+              </Col>
+              <Col span="8">
+                <Input
+                  :prop="'month.' + item.date + ite.date + '.amount'"
+                  :rules="{required: true, message: '月计划投资金额不能为空', trigger: 'blur'}"
+                  type="text" placeholder="必填项" v-model="ite.amount" class="monthInput"/>
+              </Col>
+              <Col span="8">
+                <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
+              </Col>
+            </div>
+          </Row>
+        </div>
+      </Form>
+      <div slot="footer">
+        <Button type="primary" @click="editSubmit('editFormValidate')" :loading="loading">保存</Button>
+      </div>
+    </Modal>
+    <Modal
+      v-model="previewModal"
+      @on-cancel="cancel"
+      :styles="{top: '20px'}"
+      width="850"
+      title="查看项目">
+      <Form ref="previewFormValidate" :model="previewForm" :label-width="110">
+        <Divider><h4>基本信息</h4></Divider>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目名称" prop="title">
+              <Input v-model="previewForm.title" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="项目编号" prop="num">
+              <Input v-model="previewForm.num" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="业主" prop="owner">
+              <Input v-model="previewForm.owner" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="投资主体" prop="subject">
+              <Input v-model="previewForm.subject" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目类型" prop="type">
+              <Input v-model="previewForm.type" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="建设单位" prop="unit">
+              <Input v-model="previewForm.unit" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="建设性质" prop="build_type">
+              <Input v-model="previewForm.build_type" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="资金来源" prop="money_from">
+              <Input v-model="previewForm.money_from" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目金额(万元)" prop="amount">
+              <Input v-model="previewForm.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="建安投资(万元)" prop="safe_amount">
+              <Input v-model="previewForm.safe_amount" placeholder="单位万元" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="土地费用(万元)" prop="land_amount">
+              <Input v-model="previewForm.land_amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="项目标识(是否为国民经济计划)" prop="is_gc">
+              <Input v-model="previewForm.is_gc" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="计划开始时间" prop="plan_start_at">
+              <DatePicker type="month" v-bind:readonly="isReadOnly" placeholder="开始时间" format="yyyy年MM月" v-model="previewForm.plan_start_at"></DatePicker>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="计划结束时间" prop="plan_end_at">
+              <DatePicker type="month" v-bind:readonly="isReadOnly" @on-change="buildYearPlan" placeholder="结束时间" format="yyyy年MM月"
+                          v-model="previewForm.plan_end_at"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
+            <FormItem label="项目中心点坐标" prop="center_point">
+              <Input v-model="previewForm.center_point" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            </FormItem>
+          </Col>
+          <Col span="2"></Col>
+          <Col span="11">
+            <FormItem label="项目状态" prop="status">
+              <Input v-model="previewForm.status" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <FormItem label="项目轮廓点坐标" prop="positions">
+            <Input v-model="previewForm.positions" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+          </FormItem>
+        </Row>
+        <Row>
+          <FormItem label="项目概况" prop="description">
+            <Input v-model="previewForm.description" type="textarea" :rows="4" placeholder="请输入..." v-bind:readonly="isReadOnly"></Input>
+          </FormItem>
+        </Row>
+        <Divider><h4>投资计划</h4></Divider>
+        <div v-for="(item, index) in previewForm.projectPlan">
+          <Divider orientation="left"><h5>{{item.date}}年项目计划</h5></Divider>
+          <Row>
+            <Col span="11">
+              <FormItem
+                label="计划投资金额"
+                :prop="'projectPlan.' + index + '.amount'"
+                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur'}">
+                <Input v-model="item.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+              </FormItem>
+            </Col>
+            <Col span="2"></Col>
+            <Col span="11">
+              <FormItem
+                label="计划形象进度"
+                :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
+                :prop="'projectPlan.' + index + '.image_progress'">
+                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..." v-bind:readonly="isReadOnly"></Input>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="8">
+              <Input type="text" value="月份" class="borderNone"/>
+            </Col>
+            <Col span="8">
+              <Input type="text" value="计划投资金额(万元)" class="borderNone"/>
+            </Col>
+            <Col span="8">
+              <Input type="text" value="计划形象进度" class="borderNone"/>
+            </Col>
+            <div v-for="(ite, index) in item.month">
+              <Col span="8">
+                <Input type="text" v-model="ite.date + '月'" readonly class="monthInput"/>
+              </Col>
+              <Col span="8">
+                <Input
+                  :prop="'month.' + item.date + ite.date + '.amount'"
+                  :rules="{required: true, message: '月计划投资金额不能为空', trigger: 'blur'}"
+                  type="text" placeholder="必填项" v-model="ite.amount" readonly class="monthInput"/>
+              </Col>
+              <Col span="8">
+                <Input type="text" placeholder="请输入..." v-model="ite.image_progress" readonly class="monthInput"/>
+              </Col>
+            </div>
+          </Row>
+        </div>
+      </Form>
+      <div slot="footer">
+        <Dropdown trigger="click" style="margin-left: 20px" @on-click="audit" v-if="showAuditButton">
           <Button type="primary">
             审核
             <Icon type="ios-arrow-down"></Icon>
@@ -282,7 +632,7 @@
   </Card>
 </template>
 <script>
-  import {getAllProjects, addProject, getProjectDictData, buildPlanFields, auditProject} from '../../../api/project';
+  import {edit, getEditFormData, getAllProjects, addProject, getProjectDictData, buildPlanFields, auditProject} from '../../../api/project';
   import './projects.css'
 
   export default {
@@ -290,6 +640,7 @@
       return {
         isReadOnly: false,
         btnDisable: true,
+        editFormLoading: false,
         searchForm: {
           num: '',
           type: '',
@@ -356,19 +707,19 @@
             align: "center"
           },
           {
-            title: '项目金额',
+            title: '项目金额(万元)',
             key: 'amount',
             width: 120,
             align: "right"
           },
           {
-            title: '建安投资',
+            title: '建安投资(万元)',
             key: 'safe_amount',
             width: 120,
             align: "right"
           },
           {
-            title: '土地费用',
+            title: '土地费用(万元)',
             key: 'land_amount',
             width: 120,
             align: "right"
@@ -379,16 +730,16 @@
             width: 150,
             align: "center"
           },
-          {
-            title: '计划开始时间',
-            key: 'plan_start_at',
-            width: 120
-          },
-          {
-            title: '计划结束时间',
-            key: 'plan_end_at',
-            width: 120
-          },
+          // {
+          //   title: '计划开始时间',
+          //   key: 'plan_start_at',
+          //   width: 120
+          // },
+          // {
+          //   title: '计划结束时间',
+          //   key: 'plan_end_at',
+          //   width: 120
+          // },
           {
             title: '审核状态',
             key: 'is_audit',
@@ -396,8 +747,8 @@
             width: 160,
             render: (h, params) => {
               const row = params.row;
-              const color = row.is_audit === 0 ? 'warning' : row.is_audit === 1 ? 'success' : 'error';
-              const text = row.is_audit === 0 ? '待审核' : row.is_audit === 1 ? '审核通过' : '审核不通过';
+              const color = row.is_audit === 0 ? 'warning' : row.is_audit === 1 ? 'success' : row.is_audit === 2 ? 'error' : 'primary';
+              const text = row.is_audit === 0 ? '待审核' : row.is_audit === 1 ? '审核通过' : row.is_audit === 2 ? '审核不通过' : '投资调整';
 
               return h('Tag', {
                 props: {
@@ -415,8 +766,21 @@
             align: 'center',
             render: (h, params) => {
               let editButton;
-              const row = params.row;
-              editButton = row.is_edit === 0 ? true : false;
+              let _this = this;
+              const groupId = this.$store.getters.user.group_id;
+              if (groupId === 6) {
+                this.showAuditButton = false;
+                if (params.row.is_audit === 3) {
+                  editButton = false;
+                } else {
+                  const row = params.row;
+                  editButton = row.is_edit === 0 ? true : false;
+                }
+              }
+              if (groupId === 4 || groupId === 7) {
+                this.showAuditButton = true;
+                editButton = false;
+              }
 
               return h('div', [
                 h('Button', {
@@ -429,11 +793,10 @@
                   },
                   on: {
                     click: () => {
-                      console.log(params)
-                      this.form = params.row;
+                      this.previewForm = params.row;
                       this.formId = params.row.id;
                       this.isReadOnly = true;
-                      this.modal = true;
+                      this.previewModal = true;
                     }
                   }
                 }, '查看'),
@@ -441,17 +804,22 @@
                   props: {
                     type: 'primary',
                     size: 'small',
-                    disabled: editButton
+                    disabled: editButton,
+                    // loading: _this.editFormLoading
                   },
                   style: {
                     marginRight: '5px'
                   },
                   on: {
                     click: () => {
-                      this.form = params.row;
-                      this.formId = params.row.id;
-                      this.isReadOnly = false;
-                      this.modal = true;
+                      // this.editFormLoading = true;
+                      getEditFormData(params.row.id).then(res => {
+                        this.editForm = res.result;
+                        this.formId = params.row.id;
+                        this.isReadOnly = false;
+                        this.editModal = true;
+                        // this.editFormLoading = false;
+                      });
                     }
                   }
                 }, '编辑')
@@ -517,8 +885,48 @@
             },
           ],
         },
+        editForm: {
+        
+        },
+        previewForm: {
+          title: '',
+          num: '',
+          owner: '',
+          subject: '',
+          type: '',
+          build_type: '',
+          money_from: '',
+          status: '',
+          unit: '',
+          amount: '',
+          safe_amount: '',
+          land_amount: '',
+          is_gc: '',
+          plan_start_at: '',
+          plan_end_at: '',
+          center_point: '',
+          description: '',
+          positions: '',
+          projectPlan: [
+            {
+              date: '2019',
+              amount: '',
+              image_progress: '',
+              month: [
+                {
+                  date: 1,
+                  amount: '',
+                  image_progress: ''
+                }
+              ]
+            },
+          ],
+        },
         index: 1,
         modal: false,
+        previewModal: false,
+        showAuditButton: true,
+        editModal: false,
         ruleValidate: {
           title: [
             {required: true, message: '项目名称不能为空', trigger: 'blur'}
@@ -547,12 +955,12 @@
           amount: [
             {required: true, message: '项目金额不能为空', trigger: 'blur'}
           ],
-          safe_amount: [
-            {required: true, message: '建安投资不能为空', trigger: 'blur'}
-          ],
-          land_amount: [
-            {required: true, message: '土地费用不能为空', trigger: 'blur'}
-          ],
+          // safe_amount: [
+          //   {required: true, message: '建安投资不能为空', trigger: 'blur'}
+          // ],
+          // land_amount: [
+          //   {required: true, message: '土地费用不能为空', trigger: 'blur'}
+          // ],
           is_gc: [
             {required: true, message: '项目标识不能为空', trigger: 'change', type: 'number'}
           ],
@@ -573,6 +981,15 @@
     },
     methods: {
       init() {
+        const groupId = this.$store.getters.user.group_id;
+        if (groupId === 6) {
+          this.showAuditButton = false;
+          this.editButton = false;
+        }
+        if (groupId === 4 || groupId === 7) {
+          this.showAuditButton = true;
+          this.editButton = true;
+        }
         this.$refs.formValidate.resetFields();
         this.getDictData();
         this.getProject();
@@ -621,6 +1038,25 @@
           }
         })
       },
+      editSubmit(name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            this.loading = true;
+            edit(this.editForm).then(e => {
+              this.loading = false;
+              if (e.result) {
+                this.$Message.success('修改成功!');
+                this.editModal = false;
+                this.init();
+              } else {
+                this.$Message.error('修改失败!');
+              }
+            });
+          } else {
+            this.$Message.error('请填写必填字段!');
+          }
+        })
+      },
       handleReset(name) {
         this.$refs[name].resetFields();
       },
@@ -651,7 +1087,7 @@
       audit(name) {
         auditProject({id: this.formId, status: name}).then(res => {
           if (res.result === true) {
-            this.modal = false;
+            this.previewModal = false;
             this.$Message.success('审核状态修改成功!');
             this.getProject();
           }

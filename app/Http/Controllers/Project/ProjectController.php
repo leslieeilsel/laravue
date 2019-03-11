@@ -186,27 +186,13 @@ class ProjectController extends Controller
     {
         $data = $request->input();
         $id = $data['id'];
-        if ($data['deep'] === 1) {
-            $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
-            $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
-            if ($data['is_parent']) {
-                unset($data['loading'], $data['children']);
-            }
-            unset($data['id'], $data['updated_at'], $data['expand'], $data['parent_title'], $data['deep'], $data['is_parent'], $data['nodeKey'], $data['selected']);
+        $projectPlan = $data['projectPlan'];
+        unset($data['id'], $data['projectPlan'], $data['positions'], $data['center_point']);
+        $result = Projects::where('id', $id)->update($data);
+        ProjectPlan::where('project_id', $id)->delete();
+        $this->insertPlan($id, $projectPlan);
 
-            $result = Projects::where('id', $id)->update($data);
-        } else {
-            unset($data['id'], $data['updated_at'], $data['children'], $data['key'], $data['deep'], $data['nodeKey'], $data['selected']);
-            if ($data['expand']) {
-                unset($data['expand']);
-            }
-            $result = ProjectPlan::where('id', $id)->update($data);
-        }
-
-        if ($result) {
-            $log = new OperationLog();
-            $log->eventLog($request, '修改项目信息');
-        }
+        $result = ($result) ? true : false;
 
         return response()->json(['result' => $result], 200);
     }
@@ -221,19 +207,72 @@ class ProjectController extends Controller
     {
         $params = $request->input('searchForm');
         $query = new Projects;
-        if ($params['num']) {
-            $query = $query::where('num', $params['num']);
+        if (isset($params['num'])) {
+            $query = $query->where('num', $params['num']);
         }
-        $projects = $query->where('user_id', Auth::id())->get()->toArray();
+        if (isset($params['type'])) {
+            $query = $query->where('type', $params['type']);
+        }
+        if (isset($params['build_type'])) {
+            $query = $query->where('build_type', $params['build_type']);
+        }
+        if (isset($params['money_from'])) {
+            $query = $query->where('money_from', $params['money_from']);
+        }
+        if (isset($params['is_gc'])) {
+            $query = $query->where('is_gc', $params['is_gc']);
+        }
+        if (isset($params['status'])) {
+            $query = $query->where('status', $params['status']);
+        }
+        $group_id = Auth::user()->group_id;
+        if ($group_id === 4 || $group_id === 7) {
+            $user_id = [1, 2, 3, 4, 5, 6, 7, 8];
+        }
+        if ($group_id === 6) {
+            $user_id = [7];
+        }
+        $projects = $query->whereIn('user_id', $user_id)->get()->toArray();
         foreach ($projects as $k => $row) {
             $projects[$k]['type'] = Dict::getOptionsArrByName('工程类项目分类')[$row['type']];
             $projects[$k]['is_gc'] = Dict::getOptionsArrByName('是否为国民经济计划')[$row['is_gc']];
             $projects[$k]['status'] = Dict::getOptionsArrByName('项目状态')[$row['status']];
             $projects[$k]['money_from'] = Dict::getOptionsArrByName('资金来源')[$row['money_from']];
             $projects[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
+            $projects[$k]['projectPlan'] = $this->getPlanData($row['id']);
         }
 
         return response()->json(['result' => $projects], 200);
+    }
+
+    public function getEditFormData(Request $request)
+    {
+        $id = $request->input('id');
+
+        $projects = Projects::where('id', $id)->first()->toArray();
+
+        $projects['projectPlan'] = $this->getPlanData($id);
+
+        return response()->json(['result' => $projects], 200);
+    }
+
+    public function getPlanData($project_id)
+    {
+        $projectPlans = ProjectPlan::where('project_id', $project_id)->where('parent_id', 0)->get()->toArray();
+        $data = [];
+        foreach ($projectPlans as $k => $row) {
+            $data[$k]['date'] = $row['date'];
+            $data[$k]['amount'] = $row['amount'];
+            $data[$k]['image_progress'] = $row['image_progress'];
+            $monthPlan = ProjectPlan::where('parent_id', $row['id'])->get()->toArray();
+            foreach ($monthPlan as $key => $v) {
+                $data[$k]['month'][$key]['date'] = $v['date'];
+                $data[$k]['month'][$key]['amount'] = $v['amount'];
+                $data[$k]['month'][$key]['image_progress'] = $v['image_progress'];
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -328,27 +367,26 @@ class ProjectController extends Controller
         }
         $data['is_audit'] = 0;
         $result = ProjectSchedule::insert($data);
-        
-        
-        $plan_id = DB::table('iba_project_plan')->where('project_id',$data['project_id'])->where('date', $year)->value('id');
-        $plans_amount = DB::table('iba_project_plan')->where('project_id',$data['project_id'])->where('parent_id',$plan_id)->where('date', $month)->value('amount');
-        $Percentage=($plans_amount-$data['month_act_complete'])/$plans_amount;
-        if($Percentage<=0.1){
+
+        $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
+        $plans_amount = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $month)->value('amount');
+        $Percentage = ($plans_amount - $data['month_act_complete']) / $plans_amount;
+        if ($Percentage <= 0.1) {
             $warData['warning_type'] = 0;
-        }else if($Percentage>0.1&&$Percentage<=0.2){
+        } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
             $warData['warning_type'] = 1;
-        }else if($Percentage>0.2){
+        } elseif ($Percentage > 0.2) {
             $warData['warning_type'] = 2;
         }
         $warData['project_id'] = $data['project_id'];
-        $warData['shedeule_at'] = $year.'-'.$month;
-        $warData['title'] =  Projects::where('id', $data['project_id'])->value('title');
-        $warResult =ProjectEarlyWarning::insert($warData);
+        $warData['shedeule_at'] = $year . '-' . $month;
+        $warData['title'] = Projects::where('id', $data['project_id'])->value('title');
+        $warResult = ProjectEarlyWarning::insert($warData);
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '投资项目进度填报');
         }
-        
+
         return response()->json(['result' => $result], 200);
     }
 
@@ -379,8 +417,10 @@ class ProjectController extends Controller
     public function uploadPic(Request $request)
     {
         $path = Storage::putFile(
-            '/public/project/project-schedule', $request->file('img_pic')
+            'public/project/project-schedule', $request->file('img_pic')
         );
+
+        $path = 'storage/' . substr($path, 7);
 
         return response()->json(['result' => $path], 200);
     }
@@ -437,37 +477,37 @@ class ProjectController extends Controller
     public function projectLedgerList(Request $request)
     {
         $params = $request->input();
-        $sql=ProjectSchedule::where('id', '>',0);
+        $sql = ProjectSchedule::where('id', '>', 0);
         $year = date('Y', strtotime($params['search_year']));
         if ($params['search_year']) {
-            if($quarter = $params['search_quarter']){
+            if ($quarter = $params['search_quarter']) {
                 if ($quarter == 0) {
-                    $sql = $sql->whereIn('month',[$year . '-01',$year . '-02',$year . '-03']);
+                    $sql = $sql->whereIn('month', [$year . '-01', $year . '-02', $year . '-03']);
                 } elseif ($quarter == 1) {
-                    $sql = $sql->whereIn('month',[$year . '-04',$year . '-05',$year . '-06']);
+                    $sql = $sql->whereIn('month', [$year . '-04', $year . '-05', $year . '-06']);
                 } elseif ($quarter == 2) {
-                    $sql = $sql->whereIn('month',[$year . '-07',$year . '-08',$year . '-09']);
+                    $sql = $sql->whereIn('month', [$year . '-07', $year . '-08', $year . '-09']);
                 } elseif ($quarter == 3) {
-                    $sql = $sql->whereIn('month',[$year . '-10',$year . '-11',$year . '-12']);
+                    $sql = $sql->whereIn('month', [$year . '-10', $year . '-11', $year . '-12']);
                 }
-            }else{
-                $sql = $sql->where('month','like',$year."%");
+            } else {
+                $sql = $sql->where('month', 'like', $year . "%");
             }
-            
+
         }
-        if($params['search_project_id']){
-            $sql = $sql->where('project_id',$params['search_project_id']);
+        if ($params['search_project_id']) {
+            $sql = $sql->where('project_id', $params['search_project_id']);
         }
         $sql = $sql->get()->toArray();
-        
+
         foreach ($sql as $k => $row) {
-            $projects= Projects::where('id', $row['project_id'])->first();
-            $sql[$k]['project_id']=$projects['title'];
-            $sql[$k]['project_num']=$projects['num'];
-            $sql[$k]['nature']=Dict::getOptionsArrByName('建设性质')[$projects['build_type']];
-            $sql[$k]['subject']=$projects['subject'];
-            $sql[$k]['total_investors']=$projects['amount'];
-            $sql[$k]['scale_con']=$projects['description'];
+            $projects = Projects::where('id', $row['project_id'])->first();
+            $sql[$k]['project_id'] = $projects['title'];
+            $sql[$k]['project_num'] = $projects['num'];
+            $sql[$k]['nature'] = Dict::getOptionsArrByName('建设性质')[$projects['build_type']];
+            $sql[$k]['subject'] = $projects['subject'];
+            $sql[$k]['total_investors'] = $projects['amount'];
+            $sql[$k]['scale_con'] = $projects['description'];
         }
 
         return response()->json(['result' => $sql], 200);
@@ -590,7 +630,7 @@ class ProjectController extends Controller
             $data[$i] = [
                 'date' => $year,
                 'amount' => '',
-                'image_progress' => ''
+                'image_progress' => '',
             ];
             $monthList = [];
             $ii = 0;
@@ -598,7 +638,7 @@ class ProjectController extends Controller
                 $monthList[$ii] = [
                     'date' => (int)$v['month'],
                     'amount' => '',
-                    'image_progress' => ''
+                    'image_progress' => '',
                 ];
                 $ii++;
             }
@@ -613,6 +653,21 @@ class ProjectController extends Controller
     {
         $data = $request->input('status');
         $result = Projects::where('id', $data['id'])->update(['is_audit' => $data['status']]);
+
+        $result = $result ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+
+    /**
+     * 项目调整 ，改变审核状态
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function projectAdjustment(Request $request)
+    {
+        $result = Projects::where('id', '>', 0)->update(['is_audit' => 3]);
 
         $result = $result ? true : false;
 

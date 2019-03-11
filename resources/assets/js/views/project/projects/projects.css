@@ -6,10 +6,14 @@
     display: block;
 }
 
-.borderNone input{
+.borderNone input {
     border: none;
 }
 
 .monthInput {
     padding-right: 10px;
+}
+
+.ivu-select .ivu-select-dropdown ul {
+    margin-bottom: 0;
 }
