@@ -1,0 +1,15 @@
+.btnGroup {
+    margin-bottom: 10px;
+}
+
+.ivu-form .ivu-date-picker {
+    display: block;
+}
+
+.borderNone input{
+    border: none;
+}
+
+.monthInput {
+    padding-right: 10px;
+}
