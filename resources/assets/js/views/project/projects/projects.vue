@@ -2,6 +2,11 @@
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
+        <Form-item label="项目名称" prop="project_id">
+          <Select v-model="searchForm.project_id" filterable style="width: 200px">
+            <Option v-for="item in data" :value="item.title" :key="item.id">{{ item.title }}</Option>
+          </Select>
+        </Form-item>
         <Form-item label="项目编号" prop="num">
           <Input
             type="text"
@@ -10,39 +15,46 @@
             style="width: 200px"
           />
         </Form-item>
-        <FormItem label="项目类型" prop="type">
-          <Select v-model="searchForm.type" style="width: 200px">
-            <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="建设性质" prop="build_type">
-          <Select v-model="searchForm.build_type" style="width: 200px" filterable>
-            <Option v-for="item in dict.build_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="资金来源">
-          <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
-            <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="项目标识" prop="is_gc">
-          <Select  @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px" placeholder="是否为国民经济计划">
-            <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="国民经济计划分类" prop="nep_type">
-          <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
-            <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="项目状态" prop="status">
-          <Select v-model="searchForm.status" style="width: 200px">
-            <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
-          </Select>
-        </FormItem>
+        <span v-if="drop">
+          <FormItem label="项目类型" prop="type">
+            <Select v-model="searchForm.type" style="width: 200px">
+              <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="建设性质" prop="build_type">
+            <Select v-model="searchForm.build_type" style="width: 200px" filterable>
+              <Option v-for="item in dict.build_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="资金来源">
+            <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
+              <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="项目标识" prop="is_gc">
+            <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
+                    placeholder="是否为国民经济计划">
+              <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="国民经济计划分类" prop="nep_type">
+            <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
+              <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="项目状态" prop="status">
+            <Select v-model="searchForm.status" style="width: 200px">
+              <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
+            </Select>
+          </FormItem>
+        </span>
         <Form-item style="margin-left:-35px;" class="br">
           <Button @click="getProject" type="primary" icon="ios-search">搜索</Button>
           <Button @click="handleResetSearch">重置</Button>
+          <a class="drop-down" @click="dropDown">
+            {{dropDownContent}}
+            <Icon :type="dropDownIcon"></Icon>
+          </a>
         </Form-item>
       </Form>
     </Row>
@@ -615,6 +627,8 @@
   export default {
     data: function () {
       return {
+        dropDownContent: '展开',
+        dropDownIcon: "ios-arrow-down",
         isReadOnly: false,
         btnDisable: true,
         editFormLoading: false,
@@ -1041,6 +1055,16 @@
         if (this.searchNepDisabled) {
           this.searchForm.nep_type = '';
         }
+      },
+      dropDown() {
+        if (this.drop) {
+          this.dropDownContent = "展开";
+          this.dropDownIcon = "ios-arrow-down";
+        } else {
+          this.dropDownContent = "收起";
+          this.dropDownIcon = "ios-arrow-up";
+        }
+        this.drop = !this.drop;
       },
     },
     mounted() {

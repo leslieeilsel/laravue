@@ -25,16 +25,7 @@ class ProjectController extends Controller
      */
     public function getProjects()
     {
-        $projects = Projects::all()->toArray();
-
-        $projectIds = ProjectPlan::all()->pluck('project_id')->toArray();
-        $projectIds = array_unique($projectIds);
-
-        foreach ($projects as $key => $value) {
-            $projects[$key]['parent_title'] = '一级项目';
-            $projects[$key]['deep'] = 1;
-            $projects[$key]['is_parent'] = in_array($value['id'], $projectIds, true);
-        }
+        $projects = Projects::select('id', 'title')->get()->toArray();
 
         return response()->json(['result' => $projects], 200);
     }
@@ -207,6 +198,9 @@ class ProjectController extends Controller
     {
         $params = $request->input('searchForm');
         $query = new Projects;
+        if (isset($params['title'])) {
+            $query = $query->where('title', $params['title']);
+        }
         if (isset($params['num'])) {
             $query = $query->where('num', $params['num']);
         }

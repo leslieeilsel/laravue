@@ -17,3 +17,8 @@
 .ivu-select .ivu-select-dropdown ul {
     margin-bottom: 0;
 }
+
+.drop-down {
+    font-size: 13px;
+    margin-left: 5px;
+}
