@@ -59,26 +59,13 @@
         <Row>
           <Col span="11">
             <FormItem label="项目名称" prop="title">
-              <Input v-model="form.title" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+              <Input v-model="form.title" placeholder="必填项"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="项目编号" prop="num">
-              <Input v-model="form.num" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="11">
-            <FormItem label="业主" prop="owner">
-              <Input v-model="form.owner" placeholder="必填项" v-bind:readonly="isReadOnly"/>
-            </FormItem>
-          </Col>
-          <Col span="2"></Col>
-          <Col span="11">
-            <FormItem label="投资主体" prop="subject">
-              <Input v-model="form.subject" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+              <Input v-model="form.num" placeholder="必填项"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -92,8 +79,8 @@
           </Col>
           <Col span="2"></Col>
           <Col span="11">
-            <FormItem label="建设单位" prop="unit">
-              <Input v-model="form.unit" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            <FormItem label="投资主体" prop="subject">
+              <Input v-model="form.subject" placeholder="必填项"/>
             </FormItem>
           </Col>
         </Row>
@@ -107,30 +94,30 @@
           </Col>
           <Col span="2"></Col>
           <Col span="11">
+            <FormItem label="承建单位" prop="unit">
+              <Input v-model="form.unit" placeholder="必填项"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
             <FormItem label="资金来源" prop="money_from">
               <Select v-model="form.money_from">
                 <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
-          <Col span="11">
-            <FormItem label="项目金额(万元)" prop="amount">
-              <Input v-model="form.amount" placeholder="必填项" v-bind:readonly="isReadOnly"/>
-            </FormItem>
-          </Col>
           <Col span="2"></Col>
           <Col span="11">
-            <FormItem label="建安投资(万元)" prop="safe_amount">
-              <Input v-model="form.safe_amount" placeholder="建设安装费用" v-bind:readonly="isReadOnly"></Input>
+            <FormItem label="项目金额(万元)" prop="amount">
+              <Input v-model="form.amount" placeholder="必填项"/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="11">
             <FormItem label="土地费用(万元)" prop="land_amount">
-              <Input v-model="form.land_amount" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+              <Input v-model="form.land_amount" placeholder="必填项"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
@@ -159,7 +146,7 @@
         <Row>
           <Col span="11">
             <FormItem label="项目中心点坐标" prop="center_point">
-              <Input v-model="form.center_point" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+              <Input v-model="form.center_point" placeholder="必填项"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
@@ -182,7 +169,7 @@
               :rules="{required: true, message: '坐标点 ' + item.index +' 不能为空', trigger: 'blur'}">
               <Row>
                 <Col span="18">
-                  <Input type="text" v-model="item.value" placeholder="请输入坐标" v-bind:readonly="isReadOnly"></Input>
+                  <Input type="text" v-model="item.value" placeholder="请输入坐标"></Input>
                 </Col>
                 <Col span="4" offset="1">
                   <Button @click="handleRemove(index)">移除</Button>
@@ -200,7 +187,7 @@
           <Col span="2"></Col>
           <Col span="11">
             <FormItem label="项目概况" prop="description">
-              <Input v-model="form.description" type="textarea" :rows="4" placeholder="请输入..." v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="form.description" type="textarea" :rows="4" placeholder="请输入..."></Input>
             </FormItem>
           </Col>
         </Row>
@@ -213,7 +200,7 @@
                 label="计划投资金额"
                 :prop="'projectPlan.' + index + '.amount'"
                 :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur'}">
-                <Input v-model="item.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+                <Input v-model="item.amount" placeholder="单位万元"/>
               </FormItem>
             </Col>
             <Col span="2"></Col>
@@ -222,7 +209,7 @@
                 label="计划形象进度"
                 :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
                 :prop="'projectPlan.' + index + '.image_progress'">
-                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..." v-bind:readonly="isReadOnly"></Input>
+                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."></Input>
               </FormItem>
             </Col>
           </Row>
@@ -281,19 +268,6 @@
         </Row>
         <Row>
           <Col span="11">
-            <FormItem label="业主" prop="owner">
-              <Input v-model="editForm.owner" placeholder="必填项" v-bind:readonly="isReadOnly"/>
-            </FormItem>
-          </Col>
-          <Col span="2"></Col>
-          <Col span="11">
-            <FormItem label="投资主体" prop="subject">
-              <Input v-model="editForm.subject" placeholder="必填项" v-bind:readonly="isReadOnly"/>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="11">
             <FormItem label="项目类型" prop="type">
               <Select v-model="editForm.type">
                 <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
@@ -302,8 +276,8 @@
           </Col>
           <Col span="2"></Col>
           <Col span="11">
-            <FormItem label="建设单位" prop="unit">
-              <Input v-model="editForm.unit" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            <FormItem label="投资主体" prop="subject">
+              <Input v-model="editForm.subject" placeholder="必填项" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
         </Row>
@@ -317,23 +291,23 @@
           </Col>
           <Col span="2"></Col>
           <Col span="11">
+            <FormItem label="承建单位" prop="unit">
+              <Input v-model="editForm.unit" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="11">
             <FormItem label="资金来源" prop="money_from">
               <Select v-model="editForm.money_from">
                 <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
+          <Col span="2"></Col>
           <Col span="11">
             <FormItem label="项目金额(万元)" prop="amount">
               <Input v-model="editForm.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
-            </FormItem>
-          </Col>
-          <Col span="2"></Col>
-          <Col span="11">
-            <FormItem label="建安投资(万元)" prop="safe_amount">
-              <Input v-model="editForm.safe_amount" placeholder="单位万元" v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -467,8 +441,8 @@
         </Row>
         <Row>
           <Col span="11">
-            <FormItem label="业主" prop="owner">
-              <Input v-model="previewForm.owner" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            <FormItem label="项目类型" prop="type">
+              <Input v-model="previewForm.type" placeholder="必填项" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="2"></Col>
@@ -480,40 +454,27 @@
         </Row>
         <Row>
           <Col span="11">
-            <FormItem label="项目类型" prop="type">
-              <Input v-model="previewForm.type" placeholder="必填项" v-bind:readonly="isReadOnly"/>
-            </FormItem>
-          </Col>
-          <Col span="2"></Col>
-          <Col span="11">
-            <FormItem label="建设单位" prop="unit">
-              <Input v-model="previewForm.unit" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="11">
             <FormItem label="建设性质" prop="build_type">
               <Input v-model="previewForm.build_type" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
           <Col span="2"></Col>
           <Col span="11">
-            <FormItem label="资金来源" prop="money_from">
-              <Input v-model="previewForm.money_from" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+            <FormItem label="承建单位" prop="unit">
+              <Input v-model="previewForm.unit" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="11">
-            <FormItem label="项目金额(万元)" prop="amount">
-              <Input v-model="previewForm.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+            <FormItem label="资金来源" prop="money_from">
+              <Input v-model="previewForm.money_from" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
           <Col span="2"></Col>
           <Col span="11">
-            <FormItem label="建安投资(万元)" prop="safe_amount">
-              <Input v-model="previewForm.safe_amount" placeholder="单位万元" v-bind:readonly="isReadOnly"></Input>
+            <FormItem label="项目金额(万元)" prop="amount">
+              <Input v-model="previewForm.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
             </FormItem>
           </Col>
         </Row>
@@ -674,11 +635,6 @@
             align: "center"
           },
           {
-            title: '业主',
-            key: 'owner',
-            width: 100
-          },
-          {
             title: '投资主体',
             key: 'subject',
             width: 210
@@ -690,7 +646,7 @@
             align: "center"
           },
           {
-            title: '建设单位',
+            title: '承建单位',
             key: 'unit',
             width: 210
           },
@@ -709,12 +665,6 @@
           {
             title: '项目金额(万元)',
             key: 'amount',
-            width: 120,
-            align: "right"
-          },
-          {
-            title: '建安投资(万元)',
-            key: 'safe_amount',
             width: 120,
             align: "right"
           },
@@ -848,7 +798,6 @@
         form: {
           title: '',
           num: '',
-          owner: '',
           subject: '',
           type: '',
           build_type: '',
@@ -856,7 +805,6 @@
           status: '',
           unit: '',
           amount: '',
-          safe_amount: '',
           land_amount: '',
           is_gc: '',
           plan_start_at: '',
@@ -891,7 +839,6 @@
         previewForm: {
           title: '',
           num: '',
-          owner: '',
           subject: '',
           type: '',
           build_type: '',
@@ -899,7 +846,6 @@
           status: '',
           unit: '',
           amount: '',
-          safe_amount: '',
           land_amount: '',
           is_gc: '',
           plan_start_at: '',
@@ -943,9 +889,6 @@
           money_from: [
             {required: true, message: '资金来源不能为空', trigger: 'change', type: 'number'}
           ],
-          owner: [
-            {required: true, message: '业主不能为空', trigger: 'blur'}
-          ],
           subject: [
             {required: true, message: '投资主体不能为空', trigger: 'blur'}
           ],
@@ -955,12 +898,6 @@
           amount: [
             {required: true, message: '项目金额不能为空', trigger: 'blur'}
           ],
-          // safe_amount: [
-          //   {required: true, message: '建安投资不能为空', trigger: 'blur'}
-          // ],
-          // land_amount: [
-          //   {required: true, message: '土地费用不能为空', trigger: 'blur'}
-          // ],
           is_gc: [
             {required: true, message: '项目标识不能为空', trigger: 'change', type: 'number'}
           ],

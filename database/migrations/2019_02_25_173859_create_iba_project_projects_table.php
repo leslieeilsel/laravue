@@ -19,13 +19,11 @@ class CreateIbaProjectProjectsTable extends Migration
             $table->string('num');                                  // 项目编号
             $table->integer('type');                                // 项目类型
             $table->integer('status');                              // 项目状态
-            $table->string('owner');                                // 业主
             $table->string('subject');                              // 投资主体
-            $table->string('unit');                                 // 建设单位
+            $table->string('unit');                                 // 承建单位
             $table->integer('build_type');                          // 建设性质
             $table->decimal('amount', 14, 4);                       // 项目金额（总金额）
             $table->integer('money_from');                          // 资金来源
-            $table->decimal('safe_amount', 14, 4)->nullable();      // 建安投资
             $table->decimal('land_amount', 14, 4)->nullable();      // 土地费用
             $table->integer('is_gc');                               // 改创项目
             $table->integer('is_audit');                            // 审核状态
