@@ -48,7 +48,7 @@
             </Select>
           </FormItem>
         </span>
-        <Form-item style="margin-left:-35px;" class="br">
+        <Form-item style="margin-left:-70px;" class="br">
           <Button @click="getProject" type="primary" icon="ios-search">搜索</Button>
           <Button @click="handleResetSearch">重置</Button>
           <a class="drop-down" @click="dropDown">
@@ -628,6 +628,7 @@
     data: function () {
       return {
         dropDownContent: '展开',
+        drop: false,
         dropDownIcon: "ios-arrow-down",
         isReadOnly: false,
         btnDisable: true,
