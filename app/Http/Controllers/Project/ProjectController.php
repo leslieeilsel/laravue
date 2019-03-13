@@ -222,6 +222,9 @@ class ProjectController extends Controller
         if (isset($params['is_gc'])) {
             $query = $query->where('is_gc', $params['is_gc']);
         }
+        if (isset($params['nep_type'])) {
+            $query = $query->where('nep_type', $params['nep_type']);
+        }
         if (isset($params['status'])) {
             $query = $query->where('status', $params['status']);
         }
@@ -239,6 +242,7 @@ class ProjectController extends Controller
             $projects[$k]['status'] = Dict::getOptionsArrByName('项目状态')[$row['status']];
             $projects[$k]['money_from'] = Dict::getOptionsArrByName('资金来源')[$row['money_from']];
             $projects[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
+            $projects[$k]['nep_type'] = isset($row['nep_type']) ? Dict::getOptionsArrByName('国民经济计划分类')[$row['nep_type']] : '';
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id']);
         }
 
