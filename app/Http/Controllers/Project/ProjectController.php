@@ -201,6 +201,12 @@ class ProjectController extends Controller
         if (isset($params['title'])) {
             $query = $query->where('title', $params['title']);
         }
+        if (isset($params['subject'])) {
+            $query = $query->where('subject', $params['subject']);
+        }
+        if (isset($params['unit'])) {
+            $query = $query->where('unit', $params['unit']);
+        }
         if (isset($params['num'])) {
             $query = $query->where('num', $params['num']);
         }

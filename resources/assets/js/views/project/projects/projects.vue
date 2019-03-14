@@ -2,8 +2,8 @@
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
-        <Form-item label="项目名称" prop="project_id">
-          <Select v-model="searchForm.project_id" filterable style="width: 200px">
+        <Form-item label="项目名称" prop="title">
+          <Select v-model="searchForm.title" filterable style="width: 200px">
             <Option v-for="item in data" :value="item.title" :key="item.id">{{ item.title }}</Option>
           </Select>
         </Form-item>
@@ -16,6 +16,16 @@
           />
         </Form-item>
         <span v-if="drop">
+          <Form-item label="投资主体" prop="subject">
+            <Select v-model="searchForm.subject" filterable style="width: 200px">
+              <Option v-for="item in data" :value="item.subject" :key="item.id">{{ item.subject }}</Option>
+            </Select>
+          </Form-item>
+          <Form-item label="承建单位" prop="unit">
+            <Select v-model="searchForm.unit" filterable style="width: 200px">
+              <Option v-for="item in data" :value="item.unit" :key="item.id">{{ item.unit }}</Option>
+            </Select>
+          </Form-item>
           <FormItem label="项目类型" prop="type">
             <Select v-model="searchForm.type" style="width: 200px">
               <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
@@ -634,6 +644,9 @@
         btnDisable: true,
         editFormLoading: false,
         searchForm: {
+          title: '',
+          subject: '',
+          unit: '',
           num: '',
           type: '',
           build_type: '',
