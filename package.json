@@ -12,6 +12,8 @@
   "devDependencies": {
     "cross-env": "^5.2",
     "css-loader": "^1.0.1",
+    "less": "^3.8.1",
+    "less-loader": "^4.1.0",
     "laravel-mix": "^3.0",
     "node-sass": "^4.11.0",
     "webpack-bundle-analyzer": "^3.0.4"
