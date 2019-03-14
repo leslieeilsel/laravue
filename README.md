@@ -1,4 +1,4 @@
-<h1 align="center">icp-沣西集团投资云平台</h1>
+<h1 align="center">icp - 沣西集团投资云平台</h1>
 
 #### 安装扩展
 
