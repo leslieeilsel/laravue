@@ -565,15 +565,13 @@
             <Col span="12">
               <FormItem
                 label="计划投资金额"
-                :prop="'projectPlan.' + index + '.amount'"
-                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur'}">
+                :prop="'projectPlan.' + index + '.amount'">
                 <Input v-model="item.amount" placeholder="" v-bind:readonly="isReadOnly"/>
               </FormItem>
             </Col>
             <Col span="12">
               <FormItem
                 label="计划形象进度"
-                :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
                 :prop="'projectPlan.' + index + '.image_progress'">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder=""
                        v-bind:readonly="isReadOnly"></Input>

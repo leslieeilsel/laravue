@@ -10,8 +10,8 @@
     border: none;
 }
 
-.monthInput {
-    padding-right: 10px;
+.monthInput input{
+    border-radius: unset;
 }
 
 .ivu-select .ivu-select-dropdown ul {
