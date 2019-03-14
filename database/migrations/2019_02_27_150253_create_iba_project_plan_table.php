@@ -18,7 +18,7 @@ class CreateIbaProjectPlanTable extends Migration
             $table->integer('date');                                // 时间划分（包括年和月）
             $table->integer('project_id')->unsigned();              // 项目ID
             $table->integer('parent_id')->unsigned();               // 父级ID
-            $table->decimal('amount', 14, 4);                       // 项目金额
+            $table->decimal('amount', 10, 2);                       // 项目金额
             $table->text('image_progress')->nullable();             // 形象进度
             $table->integer('user_id')->nullable();                 // 用户id
             $table->timestamps();

@@ -231,13 +231,15 @@ class ProjectController extends Controller
         }
         $projects = $query->whereIn('user_id', $user_id)->get()->toArray();
         foreach ($projects as $k => $row) {
+            $projects[$k]['amount'] = number_format($row['amount'], 2);
+            $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
             $projects[$k]['type'] = Dict::getOptionsArrByName('工程类项目分类')[$row['type']];
             $projects[$k]['is_gc'] = Dict::getOptionsArrByName('是否为国民经济计划')[$row['is_gc']];
             $projects[$k]['status'] = Dict::getOptionsArrByName('项目状态')[$row['status']];
             $projects[$k]['money_from'] = Dict::getOptionsArrByName('资金来源')[$row['money_from']];
             $projects[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? Dict::getOptionsArrByName('国民经济计划分类')[$row['nep_type']] : '';
-            $projects[$k]['projectPlan'] = $this->getPlanData($row['id']);
+            $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
         }
 
         return response()->json(['result' => $projects], 200);
@@ -249,23 +251,30 @@ class ProjectController extends Controller
 
         $projects = Projects::where('id', $id)->first()->toArray();
 
-        $projects['projectPlan'] = $this->getPlanData($id);
+        $projects['projectPlan'] = $this->getPlanData($id, 'edit');
 
         return response()->json(['result' => $projects], 200);
     }
 
-    public function getPlanData($project_id)
+    /**
+     * 获取计划数据
+     *
+     * @param integer $project_id
+     * @param string $status
+     * @return array
+     */
+    public function getPlanData($project_id, $status)
     {
         $projectPlans = ProjectPlan::where('project_id', $project_id)->where('parent_id', 0)->get()->toArray();
         $data = [];
         foreach ($projectPlans as $k => $row) {
             $data[$k]['date'] = $row['date'];
-            $data[$k]['amount'] = $row['amount'];
+            $data[$k]['amount'] = $status === 'preview' ? number_format($row['amount'], 2) : $row['amount'];
             $data[$k]['image_progress'] = $row['image_progress'];
             $monthPlan = ProjectPlan::where('parent_id', $row['id'])->get()->toArray();
             foreach ($monthPlan as $key => $v) {
                 $data[$k]['month'][$key]['date'] = $v['date'];
-                $data[$k]['month'][$key]['amount'] = $v['amount'];
+                $data[$k]['month'][$key]['amount'] = $status === 'preview' ? number_format($v['amount'], 2) : $v['amount'];
                 $data[$k]['month'][$key]['image_progress'] = $v['image_progress'];
             }
         }

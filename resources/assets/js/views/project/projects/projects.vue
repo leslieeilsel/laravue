@@ -387,7 +387,7 @@
         </Row>
         <Divider><h4>投资计划</h4></Divider>
         <div v-for="(item, index) in editForm.projectPlan">
-          <Divider orientation="left"><h5>{{item.date}}年项目计划</h5></Divider>
+          <Divider orientation="left"><h5 style="color: #2d8cf0;">{{item.date}}年项目投资计划</h5></Divider>
           <Row>
             <Col span="12">
               <FormItem
@@ -550,7 +550,7 @@
         </Row>
         <Divider><h4>投资计划</h4></Divider>
         <div v-for="(item, index) in previewForm.projectPlan">
-          <Divider orientation="left"><h5>{{item.date}}年项目计划</h5></Divider>
+          <Divider orientation="left"><h5 style="color: #2d8cf0;">{{item.date}}年项目投资计划</h5></Divider>
           <Row>
             <Col span="12">
               <FormItem
