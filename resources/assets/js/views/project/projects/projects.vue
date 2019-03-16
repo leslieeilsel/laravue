@@ -633,7 +633,7 @@
   import './projects.css'
 
   export default {
-    data: function () {
+    data() {
       return {
         dropDownContent: '展开',
         drop: false,

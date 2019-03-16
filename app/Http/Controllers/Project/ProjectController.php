@@ -176,6 +176,8 @@ class ProjectController extends Controller
     public function edit(Request $request)
     {
         $data = $request->input();
+        $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
+        $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
         $id = $data['id'];
         $projectPlan = $data['projectPlan'];
         unset($data['id'], $data['projectPlan'], $data['positions'], $data['center_point']);
