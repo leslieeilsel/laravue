@@ -134,11 +134,11 @@ export function uploadPic(form) {
  * 查询项目计划
  * @returns {*}
  */
-export function projectPlanInfo(form) {
+export function projectPlanInfo(month) {
   return request({
     url: '/api/project/projectPlanInfo',
     method: 'post',
-    data: {...form}
+    data: {month}
   });
 }
 

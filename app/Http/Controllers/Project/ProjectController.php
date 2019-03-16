@@ -371,16 +371,14 @@ class ProjectController extends Controller
         if ($data['build_end_at']) {
             $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
         }
-        if ($data['start_at']) {
-            $data['start_at'] = date('Y-m', strtotime($data['start_at']));
-        }
-        if ($data['plan_start_at']) {
-            $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
+        if ($data['plan_build_start_at']) {
+            $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
         }
         if ($data['img_progress_pic']) {
             $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
         }
         $data['is_audit'] = 0;
+        $data['created_at'] = date('Y-m-d H:i:s');
         $result = ProjectSchedule::insert($data);
 
         $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');

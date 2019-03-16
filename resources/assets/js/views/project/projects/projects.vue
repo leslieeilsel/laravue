@@ -780,7 +780,6 @@
                 this.showAuditButton = true;
                 editButton = false;
               }
-
               return h('div', [
                 h('Button', {
                   props: {
