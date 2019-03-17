@@ -178,6 +178,7 @@ class ProjectController extends Controller
         $data = $request->input();
         $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
         $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
+        $data['is_audit'] = 0;
         $id = $data['id'];
         $projectPlan = $data['projectPlan'];
         unset($data['id'], $data['projectPlan'], $data['positions'], $data['center_point']);
@@ -258,6 +259,9 @@ class ProjectController extends Controller
         $id = $request->input('id');
 
         $projects = Projects::where('id', $id)->first()->toArray();
+
+        $projects['plan_start_at'] = date('Y-m', strtotime($projects['plan_start_at']));
+        $projects['plan_end_at'] = date('Y-m', strtotime($projects['plan_end_at']));
 
         $projects['projectPlan'] = $this->getPlanData($id, 'edit');
 

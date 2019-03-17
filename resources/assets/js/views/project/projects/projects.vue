@@ -769,16 +769,14 @@
               let _this = this;
               const groupId = this.$store.getters.user.group_id;
               if (groupId === 6) {
-                this.showAuditButton = false;
                 if (params.row.is_audit === 3) {
                   editButton = false;
                 } else {
                   const row = params.row;
-                  editButton = row.is_edit === 0 ? true : false;
+                  editButton = row.is_edit === 0;
                 }
               }
               if (groupId === 4 || groupId === 7) {
-                this.showAuditButton = true;
                 editButton = false;
               }
               return h('div', [
@@ -792,6 +790,13 @@
                   },
                   on: {
                     click: () => {
+                      const groupId = this.$store.getters.user.group_id;
+                      if (groupId === 6) {
+                        this.showAuditButton = false;
+                      }
+                      if (groupId === 4 || groupId === 7) {
+                          this.showAuditButton = params.row.is_audit === 0;
+                      }
                       this.previewForm = params.row;
                       this.formId = params.row.id;
                       this.isReadOnly = true;
