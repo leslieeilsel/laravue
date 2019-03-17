@@ -1,15 +1,37 @@
 <template>
   <Card>
-    <div id="map" style="height: 800px"></div>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
+        <FormItem label="项目状态" prop="status">
+          <Select v-model="searchForm.status" style="width: 200px">
+            <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
+          </Select>
+        </FormItem>
+        <Form-item style="margin-left:-70px;" class="br">
+          <Button @click="createMap" type="primary" icon="ios-search">搜索</Button>
+          <Button @click="handleResetSearch">重置</Button>
+        </Form-item>
+      </Form>
+    </Row>
+    <div id="map" style="height: 740px"></div>
   </Card>
 </template>
 <script>
 import "./projectMap.css";
-import { getAllProjects } from "../../../api/project";
+import { getAllProjects, getProjectDictData } from "../../../api/project";
 
 export default {
   data() {
     return {
+      searchForm: {
+        status: 0,
+      },
+      dict: {
+        status: [],
+      },
+      dictName: {
+        status: '项目状态'
+      },
     };
   },
   mounted() {
@@ -49,12 +71,20 @@ export default {
         }, 500);
       });
     },
+    getDictData() {
+      getProjectDictData(this.dictName).then(res => {
+        if (res.result) {
+          this.dict = res.result;
+        }
+      });
+    },
     createMap() {
       // 百度地图API功能
       let map = new BMap.Map("map", {minZoom: 13, maxZoom: 16}, {enableMapClick: false});// 构造底图时，关闭底图可点功能
       map.centerAndZoom(new BMap.Point(108.720027, 34.298497), 15);
       map.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
-      getAllProjects().then(e => {
+      this.getDictData();
+      getAllProjects(this.searchForm).then(e => {
         let _this = this;
         e.result.forEach(function(project) {
           // 添加标注
@@ -109,6 +139,12 @@ export default {
           _this.addClickHandler(sContent, marker, map);
         });
       });
+    },
+    handleResetSearch() {
+      this.searchForm = {
+        status: 0,
+      };
+      this.createMap();
     },
     addClickHandler(content, marker, map) {
       let _this = this;
