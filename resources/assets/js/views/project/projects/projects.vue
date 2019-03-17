@@ -70,7 +70,7 @@
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add">添加项目</Button>
-      <Button type="error" disabled icon="md-trash">删除</Button>
+<!--      <Button type="error" disabled icon="md-trash">删除</Button>-->
     </p>
     <Row>
       <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
@@ -655,12 +655,12 @@
           status: '',
         },
         columns: [
-          {
-            type: 'selection',
-            width: 60,
-            align: 'center',
-            fixed: 'left'
-          },
+          // {
+          //   type: 'selection',
+          //   width: 60,
+          //   align: 'center',
+          //   fixed: 'left'
+          // },
           {
             title: '项目名称',
             key: 'title',
