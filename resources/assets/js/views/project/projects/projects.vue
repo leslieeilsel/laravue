@@ -82,7 +82,7 @@
       width="850"
       title="创建项目">
       <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="110">
-        <Divider><h4>基本信息</h4></Divider>
+        <Divider><h4>基础信息</h4></Divider>
         <Row>
           <Col span="12">
             <FormItem label="项目名称" prop="title">
@@ -282,70 +282,70 @@
       width="850"
       title="修改项目">
       <Form ref="editFormValidate" :model="editForm" :rules="ruleValidate" :label-width="110">
-        <Divider><h4>基本信息</h4></Divider>
+        <Divider><h4>基础信息</h4></Divider>
         <Row>
           <Col span="12">
             <FormItem label="项目名称" prop="title">
-              <Input v-model="editForm.title" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+              <Input v-model="editForm.title" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="项目编号" prop="num">
-              <Input v-model="editForm.num" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="editForm.num" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="项目类型" prop="type">
-              <Select v-model="editForm.type">
+              <Select v-model="editForm.type" v-bind:disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="投资主体" prop="subject">
-              <Input v-model="editForm.subject" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+              <Input v-model="editForm.subject" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="建设性质" prop="build_type">
-              <Select v-model="editForm.build_type">
+              <Select v-model="editForm.build_type" v-bind:disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.build_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="承建单位" prop="unit">
-              <Input v-model="editForm.unit" placeholder="必填项" v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="editForm.unit" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="资金来源" prop="money_from">
-              <Select v-model="editForm.money_from">
+              <Select v-model="editForm.money_from" v-bind:disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="项目金额(万元)" prop="amount">
-              <Input v-model="editForm.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+              <Input v-model="editForm.amount" placeholder="单位万元" v-bind:disabled="isAdjustReadOnly"/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="土地费用(万元)" prop="land_amount">
-              <Input v-model="editForm.land_amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+              <Input v-model="editForm.land_amount" placeholder="单位万元" v-bind:disabled="isAdjustReadOnly"/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="项目状态" prop="status">
-              <Select v-model="editForm.status">
+              <Select v-model="editForm.status" v-bind:disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
             </FormItem>
@@ -354,7 +354,7 @@
         <Row>
           <Col span="12">
             <FormItem label="项目标识(是否为国民经济计划)" prop="is_gc">
-              <Select v-model="editForm.is_gc" @on-change="onAddIsGcChange">
+              <Select v-model="editForm.is_gc" @on-change="onAddIsGcChange" v-bind:disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
             </FormItem>
@@ -371,28 +371,28 @@
           <Col span="12">
             <FormItem label="计划开始时间" prop="plan_start_at">
               <DatePicker type="month" placeholder="开始时间" format="yyyy年MM月"
-                          v-model="editForm.plan_start_at"></DatePicker>
+                          v-model="editForm.plan_start_at" v-bind:disabled="isAdjustReadOnly"></DatePicker>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="计划结束时间" prop="plan_end_at">
               <DatePicker type="month" @on-change="buildYearPlan" placeholder="结束时间" format="yyyy年MM月"
-                          v-model="editForm.plan_end_at"></DatePicker>
+                          v-model="editForm.plan_end_at" v-bind:disabled="isAdjustReadOnly"></DatePicker>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <FormItem label="项目中心点坐标" prop="center_point">
-            <Input v-model="editForm.center_point" placeholder="必填项" v-bind:readonly="isReadOnly"/>
+            <Input v-model="editForm.center_point" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"/>
           </FormItem>
           <FormItem label="项目轮廓点坐标" prop="positions">
-            <Input v-model="editForm.positions" placeholder="必填项" readonly/>
+            <Input v-model="editForm.positions" placeholder="必填项" disabled/>
           </FormItem>
         </Row>
         <Row>
           <FormItem label="项目概况" prop="description">
             <Input v-model="editForm.description" type="textarea" :rows="4" placeholder="请输入..."
-                   v-bind:readonly="isReadOnly"></Input>
+                   v-bind:disabled="isAdjustReadOnly"></Input>
           </FormItem>
         </Row>
         <Divider><h4>投资计划</h4></Divider>
@@ -455,7 +455,7 @@
       width="850"
       title="查看项目">
       <Form ref="previewFormValidate" :model="previewForm" :label-width="110">
-        <Divider><h4>基本信息</h4></Divider>
+        <Divider><h4>基础信息</h4></Divider>
         <Row>
           <Col span="12">
             <FormItem label="项目名称" prop="title">
@@ -639,6 +639,7 @@
         drop: false,
         dropDownIcon: "ios-arrow-down",
         isReadOnly: false,
+        isAdjustReadOnly: false,
         btnDisable: true,
         editFormLoading: false,
         searchForm: {
@@ -813,11 +814,17 @@
                       // this.editFormLoading = true;
                       getEditFormData(params.row.id).then(res => {
                         this.editForm = res.result;
-                        this.addNepDisabled = this.editForm.is_gc !== 1;
-                        if (this.addNepDisabled) {
-                          this.editForm.nep_type = '';
+												console.log('TCL: data -> this.editForm', this.editForm)
+                        if (params.row.is_audit === 3) {
+                          this.addNepDisabled = params.row.is_audit === 3;
+                        } else {
+                          this.addNepDisabled = this.editForm.is_gc !== 1;
+                          if (this.addNepDisabled) {
+                            this.editForm.nep_type = '';
+                          }
                         }
                         this.formId = params.row.id;
+                        this.isAdjustReadOnly = params.row.is_audit === 3;
                         this.isReadOnly = false;
                         this.editModal = true;
                         // this.editFormLoading = false;

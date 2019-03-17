@@ -182,10 +182,10 @@ class ProjectController extends Controller
         $projectPlan = $data['projectPlan'];
         unset($data['id'], $data['projectPlan'], $data['positions'], $data['center_point']);
         $result = Projects::where('id', $id)->update($data);
-        ProjectPlan::where('project_id', $id)->delete();
+        $deleteRes = ProjectPlan::where('project_id', $id)->delete();
         $this->insertPlan($id, $projectPlan);
 
-        $result = ($result) ? true : false;
+        $result = ($result >= 0 && $deleteRes >= 0) ? true : false;
 
         return response()->json(['result' => $result], 200);
     }
@@ -430,7 +430,8 @@ class ProjectController extends Controller
     public function uploadPic(Request $request)
     {
         $path = Storage::putFile(
-            'public/project/project-schedule', $request->file('img_pic')
+            'public/project/project-schedule',
+            $request->file('img_pic')
         );
 
         $path = 'storage/' . substr($path, 7);
@@ -506,7 +507,6 @@ class ProjectController extends Controller
             } else {
                 $sql = $sql->where('month', 'like', $year . "%");
             }
-
         }
         if ($params['search_project_id']) {
             $sql = $sql->where('project_id', $params['search_project_id']);
@@ -686,5 +686,4 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
-
 }
