@@ -657,6 +657,10 @@
                   },
                   on: {
                     click: () => {
+                      this.month_img = params.row.month + ' 月形象进度';
+                      this.month_act = params.row.month + ' 月实际完成投资';
+                      this.year_investors = params.row.month.substring(0, 4) + '年计划投资';
+                      this.year_img = params.row.month.substring(0, 4) + '年形象进度';
                       const groupId = this.$store.getters.user.group_id;
                       if (groupId === 6) {
                         this.showAuditButton = false;
@@ -718,6 +722,10 @@
                   },
                   on: {
                     click: () => {
+                      this.month_img = params.row.month + ' 月形象进度';
+                      this.month_act = params.row.month + ' 月实际完成投资';
+                      this.year_investors = params.row.month.substring(0, 4) + '年计划投资';
+                      this.year_img = params.row.month.substring(0, 4) + '年形象进度';
                       this.editForm.id = params.row.id;
                       let _editThis = this;
                       this.data.forEach(function (em) {
@@ -825,6 +833,10 @@
     },
     methods: {
       init() {
+        this.month_im = '-月形象进度';
+        this.month_ac = '-月实际完成投资';
+        this.year_investor = '--年计划投资';
+        this.year_im = '--年形象进度';
         const groupId = this.$store.getters.user.group_id;
         if (groupId === 6) {
           this.showAuditButton = false;
@@ -938,6 +950,10 @@
       cancel() {
         this.$refs.form.resetFields();
         this.handleClearFiles();
+        this.month_im = '-月形象进度';
+        this.month_ac = '-月实际完成投资';
+        this.year_investor = '--年计划投资';
+        this.year_im = '--年形象进度';
       },//上传图片
       handleView(url) {
         this.imgUrl = url;
