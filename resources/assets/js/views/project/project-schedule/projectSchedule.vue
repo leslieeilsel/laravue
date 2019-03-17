@@ -2,16 +2,47 @@
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
-        <Form-item label="项目名称" prop="project_id">
-          <Select v-model="searchForm.project_id"
-                  style="width: 200px">
+        <FormItem label="项目名称" prop="project_id">
+          <Select v-model="searchForm.project_id" filterable style="width: 200px">
             <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
           </Select>
+        </FormItem>
+        <Form-item label="项目编号" prop="project_num">
+          <Input
+            type="text"
+            v-model="searchForm.project_num"
+            placeholder="请输入项目编号"
+            style="width: 200px"
+          />
         </Form-item>
-        <Form-item style="margin-left:-35px;" class="br">
+        <span v-if="drop">
+          <Form-item label="投资主体" prop="subject">
+            <Select v-model="searchForm.subject" filterable style="width: 200px">
+              <Option v-for="item in data" :value="item.subject" :key="item.id">{{ item.subject }}</Option>
+            </Select>
+          </Form-item>
+          <FormItem label="填报起止时间" prop="build_at">
+            <Row style="width: 220px">
+              <Col span="11">
+                <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
+                </DatePicker>
+              </Col>
+              <Col span="2" style="text-align: center">-</Col>
+              <Col span="11">
+                <DatePicker type="month" placeholder="结束时间" format="yyyy-MM" v-model="searchForm.end_at">
+                </DatePicker>
+              </Col>
+            </Row>
+          </FormItem>
+        </span>
+        <FormItem style="margin-left:-35px;" class="br">
           <Button @click="getProjectScheduleList" type="primary" icon="ios-search">搜索</Button>
-          <!-- <Button @click="">重置</Button> -->
-        </Form-item>
+           <Button @click="handleResetSearch">重置</Button>
+          <a class="drop-down" @click="dropDown">
+            {{dropDownContent}}
+            <Icon :type="dropDownIcon"></Icon>
+          </a>
+        </FormItem>
       </Form>
     </Row>
     <p class="btnGroup">
@@ -474,9 +505,16 @@
   export default {
     data() {
       return {
+        dropDownContent: '展开',
+        drop: false,
+        dropDownIcon: "ios-arrow-down",
         btnDisable: true,
         searchForm: {
-          project_id: ''
+          project_id: '',
+          project_num: '',
+          subject: '',
+          start_at: '',
+          end_at: ''
         },
         seeModal: false,
         editModal: false,
@@ -582,7 +620,7 @@
           {
             title: '操作',
             key: 'action',
-            width: 200,
+            width: 150,
             fixed: 'right',
             align: 'center',
             render: (h, params) => {
@@ -765,9 +803,8 @@
         this.getProjectScheduleList();
       },
       getProjectScheduleList() {
-        let search_project_id = this.searchForm.project_id;
         this.tableLoading = true;
-        projectProgressList({search_project_id: search_project_id}).then(res => {
+        projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
           this.tableLoading = false;
         });
@@ -879,6 +916,26 @@
           });
         }
         return check;
+      },
+      handleResetSearch() {
+        this.searchForm = {
+          project_id: '',
+          project_num: '',
+          subject: '',
+          start_at: '',
+          end_at: ''
+        };
+        this.getProjectScheduleList();
+      },
+      dropDown() {
+        if (this.drop) {
+          this.dropDownContent = "展开";
+          this.dropDownIcon = "ios-arrow-down";
+        } else {
+          this.dropDownContent = "收起";
+          this.dropDownIcon = "ios-arrow-up";
+        }
+        this.drop = !this.drop;
       },
     },
     mounted() {

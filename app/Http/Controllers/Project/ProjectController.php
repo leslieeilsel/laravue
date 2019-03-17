@@ -410,11 +410,30 @@ class ProjectController extends Controller
      */
     public function projectProgressList(Request $request)
     {
-        $data = $request->input();
-        $ProjectSchedules = ProjectSchedule::all()->toArray();
-        if ($data['search_project_id']) {
-            $ProjectSchedules = ProjectSchedule::where('project_id', $data['search_project_id'])->get()->toArray();
+        $data = $request->all();
+        $query = new ProjectSchedule;
+        if (isset($data['project_id'])) {
+            $query = $query->where('project_id', $data['search_project_id']);
         }
+        if (isset($data['project_num'])) {
+            $query = $query->where('project_num', $data['project_num']);
+        }
+        if (isset($data['subject'])) {
+            $query = $query->where('subject', $data['subject']);
+        }
+        if (isset($data['start_at']) && isset($data['end_at'])) {
+            $data['start_at'] = date('Y-m', strtotime($data['start_at']));
+            $data['end_at'] = date('Y-m', strtotime($data['end_at']));
+            $query = $query->whereBetween('month', [$data['start_at'], $data['end_at']]);
+        }
+        $group_id = Auth::user()->group_id;
+        if ($group_id === 4 || $group_id === 7) {
+            $user_id = [1, 2, 3, 4, 5, 6, 7, 8];
+        }
+        if ($group_id === 6) {
+            $user_id = [7];
+        }
+        $ProjectSchedules = $query->whereIn('user_id', $user_id)->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
             $Projects = Projects::where('id', $row['project_id'])->value('title');
             $ProjectSchedules[$k]['project_id'] = $Projects;
