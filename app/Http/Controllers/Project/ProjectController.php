@@ -25,7 +25,7 @@ class ProjectController extends Controller
      */
     public function getProjects()
     {
-        $projects = Projects::select('id', 'title')->get()->toArray();
+        $projects = Projects::all()->toArray();
 
         return response()->json(['result' => $projects], 200);
     }
@@ -383,6 +383,7 @@ class ProjectController extends Controller
         }
         $data['is_audit'] = 0;
         $data['created_at'] = date('Y-m-d H:i:s');
+        $data['user_id'] = Auth::id();
         $result = ProjectSchedule::insert($data);
 
         $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
@@ -448,6 +449,7 @@ class ProjectController extends Controller
     /**
      * 上传
      *
+     * @param Request $request
      * @return JsonResponse
      */
     public function uploadPic(Request $request)

@@ -895,7 +895,10 @@
       },
       handleReset(name) {
         this.$refs[name].resetFields();
-        this.$refs.upload.clearFiles()
+        this.$refs.upload.clearFiles();
+      },
+      handleClearFiles () {
+        this.$refs.upload.clearFiles();
       },
       submitF(name) {
         this.$refs[name].validate((valid) => {
@@ -922,6 +925,7 @@
               this.submitLoading = false;
               if (res.result) {
                 this.$Message.success("修改成功");
+                this.handleClearFiles();
                 this.editModal = false;
                 this.init();
               } else {
@@ -933,6 +937,7 @@
       },
       cancel() {
         this.$refs.form.resetFields();
+        this.handleClearFiles();
       },//上传图片
       handleView(url) {
         this.imgUrl = url;
