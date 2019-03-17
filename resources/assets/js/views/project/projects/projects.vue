@@ -766,15 +766,9 @@
             align: 'center',
             render: (h, params) => {
               let editButton;
-              let _this = this;
               const groupId = this.$store.getters.user.group_id;
               if (groupId === 6) {
-                if (params.row.is_audit === 3) {
-                  editButton = false;
-                } else {
-                  const row = params.row;
-                  editButton = row.is_edit === 0;
-                }
+                  editButton = !(params.row.is_audit === 3 || params.row.is_audit === 2);
               }
               if (groupId === 4 || groupId === 7) {
                 editButton = false;

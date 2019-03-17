@@ -642,12 +642,7 @@ class ProjectController extends Controller
     {
         $data = $request->input();
         $id = $data['id'];
-        $result = ProjectSchedule::where('id', $id)->update(['is_audit' => $data['is_audit']]);
-
-        if ($result) {
-            $log = new OperationLog();
-            $log->eventLog($request, '修改项目进度信息');
-        }
+        $result = ProjectSchedule::where('id', $id)->update(['is_audit' => $data['status']]);
 
         return response()->json(['result' => $result], 200);
     }

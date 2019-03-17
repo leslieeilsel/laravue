@@ -335,6 +335,18 @@
           </Col>
         </Row>
       </Form>
+      <div slot="footer">
+        <Dropdown trigger="click" style="margin-left: 20px" @on-click="audit" v-if="showAuditButton">
+          <Button type="primary">
+            审核
+            <Icon type="ios-arrow-down"></Icon>
+          </Button>
+          <DropdownMenu slot="list">
+            <DropdownItem name="1">审核通过</DropdownItem>
+            <DropdownItem name="2" style="color: #ed4014">审核不通过</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
     </Modal>
     <!-- 编辑model------------------------------------------------------------------------------ -->
     <Modal
@@ -505,6 +517,8 @@
   export default {
     data() {
       return {
+        showAuditButton: false,
+        formId: '',
         dropDownContent: '展开',
         drop: false,
         dropDownIcon: "ios-arrow-down",
@@ -624,13 +638,80 @@
             fixed: 'right',
             align: 'center',
             render: (h, params) => {
-              let edit_button = '';
-              let is_button = '';
-              if (params.row.is_audit === 0 || params.row.is_audit === 0) {
-                edit_button = h('Button', {
+              let editButton;
+              const groupId = this.$store.getters.user.group_id;
+              if (groupId === 6) {
+                editButton = !(params.row.is_audit === 3 || params.row.is_audit === 2);
+              }
+              if (groupId === 4 || groupId === 7) {
+                editButton = false;
+              }
+              return h('div', [
+                h('Button', {
                   props: {
                     type: 'primary',
                     size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      const groupId = this.$store.getters.user.group_id;
+                      if (groupId === 6) {
+                        this.showAuditButton = false;
+                      }
+                      if (groupId === 4 || groupId === 7) {
+                        this.showAuditButton = params.row.is_audit === 0;
+                      }
+                      this.formId = params.row.id;
+                      let _seeThis = this;
+                      this.data.forEach(function (em) {
+                        if (em.id === params.row.id) {
+                          _seeThis.seeForm.month = em.month;
+                          let em_project_id = em.project_id;
+                          _seeThis.project_id.forEach(function (em_id) {
+                            if (em_project_id === em_id.title) {
+                              _seeThis.seeForm.project_id = em_id.title;
+                            }
+                          });
+                          _seeThis.seeForm.project_num = em.project_num;
+                          _seeThis.seeForm.subject = em.subject;
+                          _seeThis.seeForm.build_start_at = em.build_start_at;
+                          _seeThis.seeForm.build_end_at = em.build_end_at;
+                          _seeThis.seeForm.total_investors = em.total_investors;
+                          _seeThis.seeForm.plan_investors = em.plan_investors;
+                          _seeThis.seeForm.plan_img_progress = em.plan_img_progress;
+                          _seeThis.seeForm.month_img_progress = em.month_img_progress;
+                          _seeThis.seeForm.month_act_complete = em.month_act_complete;
+                          _seeThis.seeForm.acc_img_progress = em.acc_img_progress;
+                          _seeThis.seeForm.acc_complete = em.acc_complete;
+                          _seeThis.seeForm.problem = em.problem;
+                          _seeThis.seeForm.plan_build_start_at = em.plan_build_start_at;
+                          _seeThis.seeForm.exp_preforma = em.exp_preforma;
+
+                          let img_pic = [];
+                          if (em.img_progress_pic) {
+                            let pics = em.img_progress_pic.split(",");
+                            let i = 0;
+                            pics.forEach(function (em_pic) {
+                              img_pic.push({url: em_pic, name: i});
+                              i++;
+                            })
+                          }
+                          _seeThis.defaultList = img_pic;
+                          _seeThis.seeForm.marker = em.marker;
+                        }
+                      });
+                      this.seeModal = true;
+                    }
+                  }
+                }, '查看'),
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small',
+                    disabled: editButton,
                   },
                   style: {
                     marginRight: '5px'
@@ -679,62 +760,7 @@
                       this.editModal = true;
                     }
                   }
-                }, '编辑');
-              }
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      let _seeThis = this;
-                      this.data.forEach(function (em) {
-                        if (em.id === params.row.id) {
-                          _seeThis.seeForm.month = em.month;
-                          let em_project_id = em.project_id;
-                          _seeThis.project_id.forEach(function (em_id) {
-                            if (em_project_id === em_id.title) {
-                              _seeThis.seeForm.project_id = em_id.title;
-                            }
-                          });
-                          _seeThis.seeForm.project_num = em.project_num;
-                          _seeThis.seeForm.subject = em.subject;
-                          _seeThis.seeForm.build_start_at = em.build_start_at;
-                          _seeThis.seeForm.build_end_at = em.build_end_at;
-                          _seeThis.seeForm.total_investors = em.total_investors;
-                          _seeThis.seeForm.plan_investors = em.plan_investors;
-                          _seeThis.seeForm.plan_img_progress = em.plan_img_progress;
-                          _seeThis.seeForm.month_img_progress = em.month_img_progress;
-                          _seeThis.seeForm.month_act_complete = em.month_act_complete;
-                          _seeThis.seeForm.acc_img_progress = em.acc_img_progress;
-                          _seeThis.seeForm.acc_complete = em.acc_complete;
-                          _seeThis.seeForm.problem = em.problem;
-                          _seeThis.seeForm.plan_build_start_at = em.plan_build_start_at;
-                          _seeThis.seeForm.exp_preforma = em.exp_preforma;
-
-                          let img_pic = [];
-                          if (em.img_progress_pic) {
-                            let pics = em.img_progress_pic.split(",");
-                            let i = 0;
-                            pics.forEach(function (em_pic) {
-                              img_pic.push({url: em_pic, name: i});
-                              i++;
-                            })
-                          }
-                          _seeThis.defaultList = img_pic;
-                          _seeThis.seeForm.marker = em.marker;
-                        }
-                      });
-                      this.seeModal = true;
-                    }
-                  }
-                }, '查看'),
-                edit_button
+                }, '编辑')
               ]);
             }
           }
@@ -793,11 +819,21 @@
         uploadList: [],
         imgUrl: '',
         defaultList: [],
-        is_audit: []
+        is_audit: [],
+        editButton: false,
       }
     },
     methods: {
       init() {
+        const groupId = this.$store.getters.user.group_id;
+        if (groupId === 6) {
+          this.showAuditButton = false;
+          this.editButton = false;
+        }
+        if (groupId === 4 || groupId === 7) {
+          this.showAuditButton = true;
+          this.editButton = true;
+        }
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
         this.getProjectScheduleList();
@@ -807,6 +843,15 @@
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
           this.tableLoading = false;
+        });
+      },
+      audit(name) {
+        auditProjectProgress({id: this.formId, status: name}).then(res => {
+          if (res.result) {
+            this.seeModal = false;
+            this.$Message.success('审核状态修改成功!');
+            this.getProjectScheduleList();
+          }
         });
       },
       getProjectId() {
