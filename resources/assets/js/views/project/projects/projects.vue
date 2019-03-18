@@ -4,7 +4,7 @@
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
         <Form-item label="项目名称" prop="title">
           <Select v-model="searchForm.title" filterable style="width: 200px">
-            <Option v-for="item in data" :value="item.title" :key="item.id">{{ item.title }}</Option>
+            <Option v-for="item in project_list" :value="item.title" :key="item.id">{{ item.title }}</Option>
           </Select>
         </Form-item>
         <Form-item label="项目编号" prop="num">
@@ -616,6 +616,7 @@
 </template>
 <script>
   import {
+    initProjectInfo,
     edit,
     getEditFormData,
     getAllProjects,
@@ -890,6 +891,7 @@
             },
           ],
         },
+        project_list : [],
         editForm: {},
         previewForm: {},
         index: 1,
@@ -954,6 +956,11 @@
           this.isShowButton = false;
         }
         this.$refs.formValidate.resetFields();
+        initProjectInfo().then(res => {
+          if (res.result) {
+            this.project_list = res.result;
+          }
+        });
         this.getDictData();
         this.getProject();
       },

@@ -420,7 +420,7 @@ class ProjectController extends Controller
         $data = $request->all();
         $query = new ProjectSchedule;
         if (isset($data['project_id'])) {
-            $query = $query->where('project_id', $data['search_project_id']);
+            $query = $query->where('project_id', $data['project_id']);
         }
         if (isset($data['project_num'])) {
             $query = $query->where('project_num', $data['project_num']);
