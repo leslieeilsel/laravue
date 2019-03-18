@@ -10,7 +10,11 @@
     border: none;
 }
 
-.monthInput input {
+.monthInput input, .monthInput .ivu-input-number {
+    border-radius: unset;
+}
+
+.collapse .ivu-input-number {
     border-radius: unset;
 }
 
@@ -21,4 +25,8 @@
 .drop-down {
     font-size: 13px;
     margin-left: 5px;
+}
+
+.ivu-input-number {
+    width: 100%;
 }

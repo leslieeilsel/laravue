@@ -133,14 +133,14 @@
           </Col>
           <Col span="12">
             <FormItem label="项目金额(万元)" prop="amount">
-              <Input v-model="form.amount" placeholder="必填项"/>
+              <InputNumber :min="1" :step="1.2" v-model="form.amount" placeholder="必填项"></InputNumber>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="土地费用(万元)" prop="land_amount">
-              <Input v-model="form.land_amount" placeholder="必填项"/>
+              <InputNumber :min="1" :step="1.2" v-model="form.land_amount" placeholder=""></InputNumber>
             </FormItem>
           </Col>
           <Col span="12">
@@ -221,10 +221,10 @@
           <Row>
             <Col span="12">
               <FormItem
-                label="计划投资金额"
+                label="计划投资金额（万元）"
                 :prop="'projectPlan.' + index + '.amount'"
-                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur'}">
-                <Input v-model="item.amount" placeholder="单位万元"/>
+                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'}">
+                <InputNumber :min="1" :step="1.2" v-model="item.amount" placeholder="必填项"></InputNumber>
               </FormItem>
             </Col>
             <Col span="12">
@@ -237,7 +237,7 @@
             </Col>
           </Row>
           <Row>
-            <Collapse>
+            <Collapse class="collapse">
               <Panel name="index">
                 填写月项目投资计划（非必填）
                 <Row slot="content">
@@ -255,10 +255,7 @@
                       <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
                     </Col>
                     <Col span="8">
-                      <Input
-                        :prop="'month.' + item.date + ite.date + '.amount'"
-                        :rules="{required: true, message: '月计划投资金额不能为空', trigger: 'blur'}"
-                        type="text" placeholder="必填项" v-model="ite.amount" class="monthInput"/>
+                      <InputNumber :min="1" :step="1.2" v-model="ite.amount" placeholder="" class="monthInput"></InputNumber>
                     </Col>
                     <Col span="8">
                       <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
@@ -333,14 +330,16 @@
           </Col>
           <Col span="12">
             <FormItem label="项目金额(万元)" prop="amount">
-              <Input v-model="editForm.amount" placeholder="单位万元" v-bind:disabled="isAdjustReadOnly"/>
+              <InputNumber :min="1" :step="1.2" v-model="editForm.amount" placeholder="" v-bind:disabled="isAdjustReadOnly">
+              </InputNumber>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="土地费用(万元)" prop="land_amount">
-              <Input v-model="editForm.land_amount" placeholder="单位万元" v-bind:disabled="isAdjustReadOnly"/>
+              <InputNumber :step="1.2" :min="1" v-model="editForm.land_amount" placeholder="" v-bind:disabled="isAdjustReadOnly">
+              </InputNumber>
             </FormItem>
           </Col>
           <Col span="12">
@@ -401,10 +400,11 @@
           <Row>
             <Col span="12">
               <FormItem
-                label="计划投资金额"
+                label="计划投资金额（万元）"
                 :prop="'projectPlan.' + index + '.amount'"
-                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur'}">
-                <Input v-model="item.amount" placeholder="单位万元" v-bind:readonly="isReadOnly"/>
+                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'}">
+                <InputNumber :min="1" :step="1.2" v-model="item.amount" placeholder="" v-bind:disabled="isReadOnly">
+                </InputNumber>
               </FormItem>
             </Col>
             <Col span="12">
@@ -432,10 +432,7 @@
                 <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
               </Col>
               <Col span="8">
-                <Input
-                  :prop="'month.' + item.date + ite.date + '.amount'"
-                  :rules="{required: true, message: '月计划投资金额不能为空', trigger: 'blur'}"
-                  type="text" placeholder="必填项" v-model="ite.amount" class="monthInput"/>
+                <InputNumber :min="1" :step="1.2" v-model="ite.amount" placeholder="" class="monthInput"></InputNumber>
               </Col>
               <Col span="8">
                 <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
@@ -564,7 +561,7 @@
           <Row>
             <Col span="12">
               <FormItem
-                label="计划投资金额"
+                label="计划投资金额（万元）"
                 :prop="'projectPlan.' + index + '.amount'">
                 <Input v-model="item.amount" placeholder="" v-bind:readonly="isReadOnly"/>
               </FormItem>
@@ -593,10 +590,7 @@
                 <Input type="text" v-model="ite.date + '月'" readonly class="monthInput"/>
               </Col>
               <Col span="8">
-                <Input
-                  :prop="'month.' + item.date + ite.date + '.amount'"
-                  :rules="{required: true, message: '月计划投资金额不能为空', trigger: 'blur'}"
-                  type="text" placeholder="" v-model="ite.amount" readonly class="monthInput"/>
+                <Input type="text" placeholder="" v-model="ite.amount" readonly class="monthInput"/>
               </Col>
               <Col span="8">
                 <Input type="text" placeholder="" v-model="ite.image_progress" readonly class="monthInput"/>
@@ -814,7 +808,6 @@
                       // this.editFormLoading = true;
                       getEditFormData(params.row.id).then(res => {
                         this.editForm = res.result;
-												console.log('TCL: data -> this.editForm', this.editForm)
                         if (params.row.is_audit === 3) {
                           this.addNepDisabled = params.row.is_audit === 3;
                         } else {
@@ -867,8 +860,8 @@
           money_from: '',
           status: '',
           unit: '',
-          amount: '',
-          land_amount: '',
+          amount: null,
+          land_amount: null,
           is_gc: '',
           nep_type: '',
           plan_start_at: '',
@@ -885,12 +878,12 @@
           projectPlan: [
             {
               date: '2019',
-              amount: '',
+              amount: null,
               image_progress: '',
               month: [
                 {
                   date: 1,
-                  amount: '',
+                  amount: null,
                   image_progress: ''
                 }
               ]
@@ -927,7 +920,7 @@
             {required: true, message: '项目类型不能为空', trigger: 'change', type: 'number'}
           ],
           amount: [
-            {required: true, message: '项目金额不能为空', trigger: 'blur'}
+            {required: true, message: '项目金额不能为空', trigger: 'blur', type: 'number'}
           ],
           is_gc: [
             {required: true, message: '项目标识不能为空', trigger: 'change', type: 'number'}
@@ -939,10 +932,10 @@
             {required: true, message: '项目中心点坐标不能为空', trigger: 'blur'}
           ],
           plan_start_at: [
-            {required: true, message: '预送达时间不能为空', trigger: 'change', type: 'date'},
+            {required: true, message: '计划开始时间不能为空', trigger: 'change', type: 'date'},
           ],
           plan_end_at: [
-            {required: true, message: '预送达时间不能为空', trigger: 'change', type: 'date'},
+            {required: true, message: '计划结束时间不能为空', trigger: 'change', type: 'date'},
           ],
         },
       }

@@ -262,6 +262,8 @@ class ProjectController extends Controller
 
         $projects['plan_start_at'] = date('Y-m', strtotime($projects['plan_start_at']));
         $projects['plan_end_at'] = date('Y-m', strtotime($projects['plan_end_at']));
+        $projects['amount'] = (float)$projects['amount'];
+        $projects['land_amount'] = $projects['land_amount'] ? (float)$projects['land_amount'] : null;
 
         $projects['projectPlan'] = $this->getPlanData($id, 'edit');
 
@@ -281,12 +283,12 @@ class ProjectController extends Controller
         $data = [];
         foreach ($projectPlans as $k => $row) {
             $data[$k]['date'] = $row['date'];
-            $data[$k]['amount'] = $status === 'preview' ? number_format($row['amount'], 2) : $row['amount'];
+            $data[$k]['amount'] = $status === 'preview' ? number_format($row['amount'], 2) : (float)$row['amount'];
             $data[$k]['image_progress'] = $row['image_progress'];
             $monthPlan = ProjectPlan::where('parent_id', $row['id'])->get()->toArray();
             foreach ($monthPlan as $key => $v) {
                 $data[$k]['month'][$key]['date'] = $v['date'];
-                $data[$k]['month'][$key]['amount'] = $status === 'preview' ? number_format($v['amount'], 2) : $v['amount'];
+                $data[$k]['month'][$key]['amount'] = $status === 'preview' ? number_format($v['amount'], 2) : (float)$v['amount'];
                 $data[$k]['month'][$key]['image_progress'] = $v['image_progress'];
             }
         }
@@ -662,7 +664,7 @@ class ProjectController extends Controller
         foreach ($dateList as $year => $month) {
             $data[$i] = [
                 'date' => $year,
-                'amount' => '',
+                'amount' => null,
                 'image_progress' => '',
             ];
             $monthList = [];
@@ -670,7 +672,7 @@ class ProjectController extends Controller
             foreach ($month as $k => $v) {
                 $monthList[$ii] = [
                     'date' => (int)$v['month'],
-                    'amount' => '',
+                    'amount' => null,
                     'image_progress' => '',
                 ];
                 $ii++;
