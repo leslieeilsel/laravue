@@ -58,6 +58,8 @@ Route::post('project/auditProjectProgress', 'Project\ProjectController@auditProj
 Route::post('project/buildPlanFields', 'Project\ProjectController@buildPlanFields');
 Route::post('project/auditProject', 'Project\ProjectController@auditProject');
 Route::post('project/getEditFormData', 'Project\ProjectController@getEditFormData');
+Route::post('project/toAudit', 'Project\ProjectController@toAudit');
+Route::post('project/toAuditSchedule', 'Project\ProjectController@toAuditSchedule');
 // 添加台账导出
 Route::get('project/exportLedger', 'Project\LedgerController@export');
 //项目调整

@@ -273,3 +273,27 @@ export function projectAdjustment(status) {
     data: {status}
   });
 }
+
+/**
+ * 发起项目调整
+ * @returns {*}
+ */
+export function toAudit(id) {
+  return request({
+    url: '/api/project/toAudit',
+    method: 'post',
+    data: {id}
+  });
+}
+
+/**
+ * 发起项目调整
+ * @returns {*}
+ */
+export function toAuditSchedule(id) {
+  return request({
+    url: '/api/project/toAuditSchedule',
+    method: 'post',
+    data: {id}
+  });
+}

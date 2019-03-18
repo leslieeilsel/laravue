@@ -510,7 +510,8 @@
     projectPlanInfo,
     editProjectProgress,
     getData,
-    auditProjectProgress
+    auditProjectProgress,
+    toAuditSchedule
   } from '../../../api/project';
   import './projectSchedule.css'
 
@@ -620,16 +621,34 @@
             fixed: 'right',
             width: 160,
             render: (h, params) => {
-              const row = params.row;
-              const color = row.is_audit === 0 ? 'warning' : row.is_audit === 1 ? 'success' : row.is_audit === 2 ? 'error' : 'primary';
-              const text = row.is_audit === 0 ? '待审核' : row.is_audit === 1 ? '审核通过' : row.is_audit === 2 ? '审核不通过' : '投资调整';
-
-              return h('Tag', {
-                props: {
-                  type: 'dot',
-                  color: color
-                }
-              }, text);
+              let edit_button = '';
+              if (params.row.is_audit === 4) {
+                edit_button = h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.goToAudit(params.row);
+                    }
+                  }
+                }, '提交审核');
+              } else {
+                const row = params.row;
+                const color = row.is_audit === 0 ? 'warning' : row.is_audit === 1 ? 'success' : row.is_audit === 2 ? 'error' : 'primary';
+                const text = row.is_audit === 0 ? '待审核' : row.is_audit === 1 ? '审核通过' : row.is_audit === 2 ? '审核不通过' : '投资调整';
+                edit_button = h('Tag', {
+                  props: {
+                    type: 'dot',
+                    color: color
+                  }
+                }, text);
+              }
+              return edit_button;
             }
           },
           {
@@ -642,7 +661,7 @@
               let editButton;
               const groupId = this.$store.getters.user.group_id;
               if (groupId === 6) {
-                editButton = !(params.row.is_audit === 3 || params.row.is_audit === 2);
+                editButton = !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4);
               }
               if (groupId === 4 || groupId === 7) {
                 editButton = false;
@@ -818,9 +837,9 @@
           month_act_complete: [
             {required: true, message: '月底即完成投资不能为空', trigger: 'blur'}
           ],
-          acc_complete: [
-            {required: true, message: '累计完成投资不能为空', trigger: 'blur'}
-          ],
+          // acc_complete: [
+          //   {required: true, message: '累计完成投资不能为空', trigger: 'blur'}
+          // ],
         },
         project_id: [],
         imgName: '',
@@ -866,6 +885,14 @@
             this.seeModal = false;
             this.$Message.success('审核状态修改成功!');
             this.getProjectScheduleList();
+          }
+        });
+      },
+      goToAudit(row) {
+        toAuditSchedule(row.id).then(res => {
+          if (res.result) {
+            this.$Message.success('提交成功!');
+            this.init();
           }
         });
       },

@@ -623,7 +623,8 @@
     addProject,
     getProjectDictData,
     buildPlanFields,
-    auditProject
+    auditProject,
+    toAudit
   } from '../../../api/project';
   import './projects.css'
 
@@ -742,16 +743,34 @@
             fixed: 'right',
             width: 160,
             render: (h, params) => {
-              const row = params.row;
-              const color = row.is_audit === 0 ? 'warning' : row.is_audit === 1 ? 'success' : row.is_audit === 2 ? 'error' : 'primary';
-              const text = row.is_audit === 0 ? '待审核' : row.is_audit === 1 ? '审核通过' : row.is_audit === 2 ? '审核不通过' : '投资调整';
-
-              return h('Tag', {
-                props: {
-                  type: 'dot',
-                  color: color
-                }
-              }, text);
+              let edit_button = '';
+              if (params.row.is_audit === 4) {
+                edit_button = h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.goToAudit(params.row);
+                    }
+                  }
+                }, '提交审核');
+              } else {
+                const row = params.row;
+                const color = row.is_audit === 0 ? 'warning' : row.is_audit === 1 ? 'success' : row.is_audit === 2 ? 'error' : 'primary';
+                const text = row.is_audit === 0 ? '待审核' : row.is_audit === 1 ? '审核通过' : row.is_audit === 2 ? '审核不通过' : '投资调整';
+                edit_button = h('Tag', {
+                  props: {
+                    type: 'dot',
+                    color: color
+                  }
+                }, text);
+              }
+              return edit_button;
             }
           },
           {
@@ -764,7 +783,7 @@
               let editButton;
               const groupId = this.$store.getters.user.group_id;
               if (groupId === 6) {
-                  editButton = !(params.row.is_audit === 3 || params.row.is_audit === 2);
+                  editButton = !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4);
               }
               if (groupId === 4 || groupId === 7) {
                 editButton = false;
@@ -969,6 +988,14 @@
         getAllProjects(this.searchForm).then(e => {
           this.data = e.result;
           this.tableLoading = false;
+        });
+      },
+      goToAudit(row) {
+        toAudit(row.id).then(res => {
+          if (res.result) {
+            this.$Message.success('提交成功!');
+            this.init();
+          }
         });
       },
       getDictData() {

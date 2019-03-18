@@ -71,7 +71,7 @@ class ProjectController extends Controller
         $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
         $data['positions'] = self::buildPositions($data['positions']);
         $data['created_at'] = date('Y-m-d H:i:s');
-        $data['is_audit'] = 0;
+        $data['is_audit'] = 4;
         $data['is_edit'] = 0;
         $data['user_id'] = Auth::id();
 
@@ -383,7 +383,7 @@ class ProjectController extends Controller
         if ($data['img_progress_pic']) {
             $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
         }
-        $data['is_audit'] = 0;
+        $data['is_audit'] = 4;
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['user_id'] = Auth::id();
         $result = ProjectSchedule::insert($data);
@@ -703,6 +703,26 @@ class ProjectController extends Controller
     public function projectAdjustment(Request $request)
     {
         $result = Projects::where('id', '>', 0)->update(['is_audit' => 3]);
+
+        $result = $result ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+
+    public function toAudit(Request $request) {
+        $id = $request->input('id');
+
+        $result = Projects::where('id', $id)->update(['is_audit' => 0]);
+
+        $result = $result ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+
+    public function toAuditSchedule(Request $request) {
+        $id = $request->input('id');
+
+        $result = ProjectSchedule::where('id', $id)->update(['is_audit' => 0]);
 
         $result = $result ? true : false;
 
