@@ -45,7 +45,7 @@
         </FormItem>
       </Form>
     </Row>
-    <p class="btnGroup">
+    <p class="btnGroup" v-if="isShowButton">
       <Button type="primary" @click="modal = true" icon="md-add">填报</Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
@@ -517,6 +517,7 @@
   export default {
     data() {
       return {
+        isShowButton: true,
         showAuditButton: false,
         formId: '',
         dropDownContent: '展开',
@@ -841,10 +842,12 @@
         if (groupId === 6) {
           this.showAuditButton = false;
           this.editButton = false;
+          this.isShowButton = true;
         }
         if (groupId === 4 || groupId === 7) {
           this.showAuditButton = true;
           this.editButton = true;
+          this.isShowButton = false;
         }
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();

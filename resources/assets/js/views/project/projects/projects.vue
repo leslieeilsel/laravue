@@ -68,7 +68,7 @@
         </Form-item>
       </Form>
     </Row>
-    <p class="btnGroup">
+    <p class="btnGroup" v-if="isShowButton">
       <Button type="primary" @click="modal = true" icon="md-add">添加项目</Button>
 <!--      <Button type="error" disabled icon="md-trash">删除</Button>-->
     </p>
@@ -635,6 +635,7 @@
   export default {
     data() {
       return {
+        isShowButton: true,
         dropDownContent: '展开',
         drop: false,
         dropDownIcon: "ios-arrow-down",
@@ -952,10 +953,12 @@
         if (groupId === 6) {
           this.showAuditButton = false;
           this.editButton = false;
+          this.isShowButton = true;
         }
         if (groupId === 4 || groupId === 7) {
           this.showAuditButton = true;
           this.editButton = true;
+          this.isShowButton = false;
         }
         this.$refs.formValidate.resetFields();
         this.getDictData();
