@@ -415,9 +415,8 @@ class ProjectController extends Controller
      *
      * @return JsonResponse
      */
-    public function projectProgressList(Request $request)
+    public function projectProgressM($data)
     {
-        $data = $request->all();
         $query = new ProjectSchedule;
         if (isset($data['project_id'])) {
             $query = $query->where('project_id', $data['project_id']);
@@ -442,10 +441,17 @@ class ProjectController extends Controller
         }
         $ProjectSchedules = $query->whereIn('user_id', $user_id)->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
+            $ProjectSchedules[$k]['money_from']=Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->value('title');
             $ProjectSchedules[$k]['project_id'] = $Projects;
         }
-        return response()->json(['result' => $ProjectSchedules], 200);
+        return $ProjectSchedules;
+    }
+    public function projectProgressList(Request $request)
+    {
+        $params = $request->all();
+        $sql=$this->projectProgressM($params);
+        return response()->json(['result' => $sql], 200);
     }
 
     /**

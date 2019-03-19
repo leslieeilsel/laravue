@@ -60,6 +60,7 @@ Route::post('project/getEditFormData', 'Project\ProjectController@getEditFormDat
 Route::post('project/toAudit', 'Project\ProjectController@toAudit');
 Route::post('project/toAuditSchedule', 'Project\ProjectController@toAuditSchedule');
 // 添加台账导出
+Route::get('project/exportSchedule', 'Project\LedgerController@exportSchedule');
 Route::get('project/exportLedger', 'Project\LedgerController@export');
 Route::post('project/projectLedgerList', 'Project\LedgerController@projectLedgerList');
 //项目调整
