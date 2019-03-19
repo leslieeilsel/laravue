@@ -110,7 +110,8 @@
 
   &-header {
     height: 60px;
-    background: #0083bc;
+    background: -webkit-linear-gradient(right, #389afe 33%, #2945cb 100%);
+    background: linear-gradient(right, #389afe 33%, #2945cb 100%);
     box-shadow: 0 1px 1px 1px rgba(100, 100, 100, .1);
     position: relative;
     z-index: 11;
