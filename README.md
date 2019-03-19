@@ -3,6 +3,17 @@
 基于Laravel和Vue实现的后台管理系统
 </div>
 
+![登录页](./storage/screenshot/login.png)
+
+![菜单管理](./storage/screenshot/menu.png)
+
+![数据字典管理](./storage/screenshot/dict.png)
+
+![角色权限管理](./storage/screenshot/role.png)
+
+![日志管理](./storage/screenshot/log.png)
+
+
 #### 安装扩展
 
 ```bash
