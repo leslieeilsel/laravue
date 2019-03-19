@@ -2,14 +2,18 @@
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
-        <Form-item label="台账年份" prop="year">
-          <DatePicker type="year" placeholder="台账年份" format="yyyy"
-                      v-model="searchForm.year" style="width: 200px"></DatePicker>
-        </Form-item>
-        <Form-item label="季度" prop="quarter">
-          <Select v-model="searchForm.quarter" style="width: 200px">
-            <Option v-for="item in quarter" :value="item.value" :key="item.value">{{ item.title }}</Option>
-          </Select>
+        <Form-item label="台账年份" prop="year_month">
+            <Row style="width: 220px">
+              <Col span="11">
+                <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
+                </DatePicker>
+              </Col>
+              <Col span="2" style="text-align: center">-</Col>
+              <Col span="11">
+                <DatePicker type="month" placeholder="结束时间" format="yyyy-MM" v-model="searchForm.end_at">
+                </DatePicker>
+              </Col>
+            </Row>
         </Form-item>
         <Form-item label="项目名称" prop="project_id">
           <Select v-model="searchForm.project_id"
@@ -25,8 +29,8 @@
     </Row>
     <p class="btnGroup">
       <!-- <Button type="primary" @click="modal = true" icon="md-add">添加台账</Button> -->
-      <!-- <Button class="exportReport" @click="exportLedger" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
-      </Button> -->
+      <Button class="exportReport" @click="exportLedger" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
+      </Button>
       <!-- <Button type="error" disabled icon="md-trash">删除</Button> -->
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
@@ -162,7 +166,7 @@
         //     {required: true, type: 'number', message: '项目名称不能为空', trigger: 'change'}
         //   ]
         // },
-        btnDisable: false,
+        btnDisable: true,
         searchForm: {
           project_id: '',
           year: '',
@@ -178,18 +182,22 @@
       init() {
         this.getProjectLedgerList();
         this.getProjectId();
-        this.getQuarter();
+        // this.getQuarter();
         // this.getNature();
       },
-      getProjectLedgerList() {
+      getProjectLedgerList() {        
         let search_project_id = this.searchForm.project_id;
-        let search_year = this.searchForm.year;
-        let search_quarter = this.searchForm.quarter;
+        let start_at = this.searchForm.start_at;
+        console.log(start_at);
+        let end_at = this.searchForm.end_at;
+        if(search_project_id||start_at||end_at){
+          this.btnDisable=false;
+        }
         this.tableLoading = true;
         projectLedgerList({
           search_project_id: search_project_id,
-          search_year: search_year,
-          search_quarter: search_quarter
+          start_at: start_at,
+          end_at: end_at
         }).then(res => {
           this.data = res.result;
           this.tableLoading = false;
@@ -200,11 +208,11 @@
           this.project_id = res.result;
         });
       },
-      getQuarter() {
-        getData({title: '季度'}).then(res => {
-          this.quarter = res.result;
-        });
-      },
+      // getQuarter() {
+      //   getData({title: '季度'}).then(res => {
+      //     this.quarter = res.result;
+      //   });
+      // },
       // getNature(){
       //   getData({title:'建设性质'}).then(res => {
       //     this.nature=res.result;
@@ -255,11 +263,17 @@
       cancel() {
         this.$refs.searchForm.resetFields();
       },//导出
-      // exportLedger(){
-      //   let search_project_id=this.searchForm.project_id;
-      //   let search_year=this.searchForm.year;
-      //   window.location.href="/api/project/exportLedger?search_project_id="+search_project_id+"&search_year="+search_year;
-      // }
+      exportLedger(){
+        let search_project_id = this.searchForm.project_id;
+        let start_at = this.searchForm.start_at;
+        let end_at = this.searchForm.end_at;
+        let start_time = new Date(start_at);  
+        start_time=start_time.getFullYear() + '-' + (start_time.getMonth() + 1) + '-' + start_time.getDate(); 
+        let end_time = new Date(end_at);  
+        end_time=end_time.getFullYear() + '-' + (end_time.getMonth() + 1) + '-' + end_time.getDate(); 
+        console.log(start_at);
+        window.location.href="/api/project/exportLedger?search_project_id="+search_project_id+"&start_at="+start_time+"&end_at="+end_time;
+      }
     },
     mounted() {
       this.init();

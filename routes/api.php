@@ -51,7 +51,6 @@ Route::post('project/uploadPic', 'Project\ProjectController@uploadPic');
 Route::post('project/projectPlanInfo', 'Project\ProjectController@projectPlanInfo');
 Route::post('project/getData', 'Project\ProjectController@getData');
 Route::post('project/projectLedgerAdd', 'Project\ProjectController@projectLedgerAdd');
-Route::post('project/projectLedgerList', 'Project\ProjectController@projectLedgerList');
 Route::post('project/projectQuarter', 'Project\ProjectController@projectQuarter');
 Route::post('project/editProjectProgress', 'Project\ProjectController@editProjectProgress');
 Route::post('project/auditProjectProgress', 'Project\ProjectController@auditProjectProgress');
@@ -62,6 +61,7 @@ Route::post('project/toAudit', 'Project\ProjectController@toAudit');
 Route::post('project/toAuditSchedule', 'Project\ProjectController@toAuditSchedule');
 // 添加台账导出
 Route::get('project/exportLedger', 'Project\LedgerController@export');
+Route::post('project/projectLedgerList', 'Project\LedgerController@projectLedgerList');
 //项目调整
 Route::post('project/projectAdjustment', 'Project\ProjectController@projectAdjustment');
 

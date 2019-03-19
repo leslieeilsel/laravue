@@ -511,49 +511,6 @@ class ProjectController extends Controller
     }
 
     /**
-     * 获取台账进度列表
-     *
-     * @return JsonResponse
-     */
-    public function projectLedgerList(Request $request)
-    {
-        $params = $request->input();
-        $sql = ProjectSchedule::where('id', '>', 0);
-        $year = date('Y', strtotime($params['search_year']));
-        if ($params['search_year']) {
-            if ($quarter = $params['search_quarter']) {
-                if ($quarter == 0) {
-                    $sql = $sql->whereIn('month', [$year . '-01', $year . '-02', $year . '-03']);
-                } elseif ($quarter == 1) {
-                    $sql = $sql->whereIn('month', [$year . '-04', $year . '-05', $year . '-06']);
-                } elseif ($quarter == 2) {
-                    $sql = $sql->whereIn('month', [$year . '-07', $year . '-08', $year . '-09']);
-                } elseif ($quarter == 3) {
-                    $sql = $sql->whereIn('month', [$year . '-10', $year . '-11', $year . '-12']);
-                }
-            } else {
-                $sql = $sql->where('month', 'like', $year . "%");
-            }
-        }
-        if ($params['search_project_id']) {
-            $sql = $sql->where('project_id', $params['search_project_id']);
-        }
-        $sql = $sql->get()->toArray();
-
-        foreach ($sql as $k => $row) {
-            $projects = Projects::where('id', $row['project_id'])->first();
-            $sql[$k]['project_id'] = $projects['title'];
-            $sql[$k]['project_num'] = $projects['num'];
-            $sql[$k]['nature'] = Dict::getOptionsArrByName('建设性质')[$projects['build_type']];
-            $sql[$k]['subject'] = $projects['subject'];
-            $sql[$k]['total_investors'] = $projects['amount'];
-            $sql[$k]['scale_con'] = $projects['description'];
-        }
-
-        return response()->json(['result' => $sql], 200);
-    }
-
-    /**
      * 项目季度改变项目名称，填写其他字段
      *
      * @return JsonResponse
@@ -580,29 +537,6 @@ class ProjectController extends Controller
 
         $result['ProjectSchedules'] = ProjectSchedule::where('project_id', $project_id)->where('month', $date)->first();
         // $ProjectLedger = ProjectLedger::all()->toArray();
-
-        return response()->json(['result' => $result], 200);
-    }
-
-    /**
-     * 添加台账
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function projectLedgerAdd(Request $request)
-    {
-        $data = $request->input();
-        $params = $data['dictName'];
-        if ($params['year']) {
-            $params['year'] = date('Y', strtotime($params['year']));
-        }
-        $result = ProjectLedger::insert($params);
-
-        if ($result) {
-            $log = new OperationLog();
-            $log->eventLog($request, '添加台账');
-        }
 
         return response()->json(['result' => $result], 200);
     }

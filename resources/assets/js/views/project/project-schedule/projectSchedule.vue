@@ -47,6 +47,8 @@
     </Row>
     <p class="btnGroup" v-if="isShowButton">
       <Button type="primary" @click="modal = true" icon="md-add">填报</Button>
+      <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
+      </Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Modal
@@ -1032,7 +1034,19 @@
           this.dropDownIcon = "ios-arrow-up";
         }
         this.drop = !this.drop;
-      },
+      },//导出
+      exportSchedule(){
+        let project_id = this.searchForm.project_id;
+        let project_num = this.searchForm.project_num;
+        let subject = this.searchForm.subject;
+        let start_at = this.searchForm.start_at;
+        let end_at = this.searchForm.end_at;
+        let start_time = new Date(start_at);  
+        start_time=start_time.getFullYear() + '-' + (start_time.getMonth() + 1) + '-' + start_time.getDate(); 
+        let end_time = new Date(end_at);  
+        end_time=end_time.getFullYear() + '-' + (end_time.getMonth() + 1) + '-' + end_time.getDate(); 
+        window.location.href="/api/project/exportSchedule?project_id="+project_id+"&project_num="+project_num+"&subject="+subject+"&start_at="+start_time+"&end_at="+end_time;
+      }
     },
     mounted() {
       this.init();
