@@ -49,6 +49,8 @@
       <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">填报</Button>
       <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
       </Button>
+      <Button class="exportReport" @click="downloadPic" type="primary" :disabled="picDisable" icon="md-cloud-upload">下载形象进度照片
+      </Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Modal
@@ -176,9 +178,11 @@
             <FormItem label="形象进度" prop="img_progress_pic">
               <Upload
                 ref="upload"
+                :disabled="upbtnDisabled"
                 name="img_pic"
                 :on-success="handleSuccess"
                 multiple
+                :data="upData"
                 :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
                 :max-size="5120"
                 action="/api/project/uploadPic">
@@ -527,6 +531,8 @@
         drop: false,
         dropDownIcon: "ios-arrow-down",
         btnDisable: true,
+        upbtnDisabled:true,
+        picDisable:true,
         searchForm: {
           project_id: '',
           project_num: '',
@@ -851,6 +857,7 @@
         defaultList: [],
         is_audit: [],
         editButton: false,
+        upData:{}
       }
     },
     methods: {
@@ -929,6 +936,12 @@
           this.form.month = '';
           return;
         }
+        this.upbtnDisabled=false;
+        let month_time = new Date(this.form.month); 
+        let month_time_0=(month_time.getMonth() + 1)>9?(month_time.getMonth() + 1):'0'+(month_time.getMonth() + 1);
+        
+        month_time=month_time.getFullYear() + '-' + month_time_0;
+        this.upData={month:month_time,project_num:this.form.project_num,project_id:this.form.project_id};
         this.month_img = e + ' 月形象进度';
         this.month_act = e + ' 月实际完成投资';
         this.year_investors = e.substring(0, 4) + '年计划投资';
@@ -1039,6 +1052,7 @@
         this.drop = !this.drop;
       },//导出
       exportSchedule(){
+        this.picDisable=false;
         let project_id = this.searchForm.project_id;
         let project_num = this.searchForm.project_num;
         let subject = this.searchForm.subject;
@@ -1046,15 +1060,37 @@
         let end_at = this.searchForm.end_at;
         let start_time='';
         if(start_at){
-          let start_time = new Date(start_at);  
-          start_time=start_time.getFullYear() + '-' + (start_time.getMonth() + 1) + '-' + start_time.getDate(); 
+          let start_time_0 = new Date(start_at);  
+          let month_start_time_0=(start_time_0.getMonth() + 1)>9?(start_time_0.getMonth() + 1):'0'+(start_time_0.getMonth() + 1);
+          start_time=start_time.getFullYear() + '-' + month_start_time_0; 
         }
         let end_time='';
         if(end_at){
-          let end_time = new Date(end_at); 
-          end_time=end_time.getFullYear() + '-' + (end_time.getMonth() + 1) + '-' + end_time.getDate()
+          let end_time_0 = new Date(end_at); 
+          let month_end_time_0=(end_time_0.getMonth() + 1)>9?(end_time_0.getMonth() + 1):'0'+(end_time_0.getMonth() + 1);
+          end_time=end_time.getFullYear() + '-' + month_end_time_0;
         };         
         window.location.href="/api/project/exportSchedule?project_id="+project_id+"&project_num="+project_num+"&subject="+subject+"&start_at="+start_time+"&end_at="+end_time;
+      },//下载
+      downloadPic(){
+        let project_id = this.searchForm.project_id;
+        let project_num = this.searchForm.project_num;
+        let subject = this.searchForm.subject;
+        let start_at = this.searchForm.start_at;
+        let end_at = this.searchForm.end_at;
+        let start_time='';
+        if(start_at){
+          let start_time_0 = new Date(start_at);  
+          let month_start_time_0=(start_time_0.getMonth() + 1)>9?(start_time_0.getMonth() + 1):'0'+(start_time_0.getMonth() + 1);
+          start_time=start_time.getFullYear() + '-' + month_start_time_0; 
+        }
+        let end_time='';
+        if(end_at){
+          let end_time_0 = new Date(end_at); 
+          let month_end_time_0=(end_time_0.getMonth() + 1)>9?(end_time_0.getMonth() + 1):'0'+(end_time_0.getMonth() + 1);
+          end_time=end_time.getFullYear() + '-' + month_end_time_0;
+        };         
+        window.location.href="/api/project/downLoadSchedule?project_id="+project_id+"&project_num="+project_num+"&subject="+subject+"&start_at="+start_time+"&end_at="+end_time;
       }
     },
     mounted() {

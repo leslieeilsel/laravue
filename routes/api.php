@@ -63,6 +63,7 @@ Route::post('project/toAuditSchedule', 'Project\ProjectController@toAuditSchedul
 Route::get('project/exportSchedule', 'Project\LedgerController@exportSchedule');
 Route::get('project/exportLedger', 'Project\LedgerController@export');
 Route::post('project/projectLedgerList', 'Project\LedgerController@projectLedgerList');
+Route::get('project/downLoadSchedule', 'Project\LedgerController@downLoadSchedule');
 //项目调整
 Route::post('project/projectAdjustment', 'Project\ProjectController@projectAdjustment');
 
