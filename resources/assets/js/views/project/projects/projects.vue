@@ -70,7 +70,7 @@
     </Row>
     <p class="btnGroup" v-if="isShowButton">
       <Button type="primary" @click="modal = true" icon="md-add">添加项目</Button>
-<!--      <Button type="error" disabled icon="md-trash">删除</Button>-->
+      <!--      <Button type="error" disabled icon="md-trash">删除</Button>-->
     </p>
     <Row>
       <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
@@ -138,7 +138,7 @@
           </Col>
         </Row>
         <Row>
-          <Col span="12">
+          <Col span="12" v-if="showLandMoney">
             <FormItem label="土地费用(万元)" prop="land_amount">
               <InputNumber :min="1" :step="1.2" v-model="form.land_amount" placeholder=""></InputNumber>
             </FormItem>
@@ -255,7 +255,8 @@
                       <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
                     </Col>
                     <Col span="8">
-                      <InputNumber :min="1" :step="1.2" v-model="ite.amount" placeholder="" class="monthInput"></InputNumber>
+                      <InputNumber :min="1" :step="1.2" v-model="ite.amount" placeholder=""
+                                   class="monthInput"></InputNumber>
                     </Col>
                     <Col span="8">
                       <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
@@ -330,15 +331,17 @@
           </Col>
           <Col span="12">
             <FormItem label="项目金额(万元)" prop="amount">
-              <InputNumber :min="1" :step="1.2" v-model="editForm.amount" placeholder="" v-bind:disabled="isAdjustReadOnly">
+              <InputNumber :min="1" :step="1.2" v-model="editForm.amount" placeholder=""
+                           v-bind:disabled="isAdjustReadOnly">
               </InputNumber>
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col span="12">
+          <Col span="12" v-if="showLandMoney">
             <FormItem label="土地费用(万元)" prop="land_amount">
-              <InputNumber :step="1.2" :min="1" v-model="editForm.land_amount" placeholder="" v-bind:disabled="isAdjustReadOnly">
+              <InputNumber :step="1.2" :min="1" v-model="editForm.land_amount" placeholder=""
+                           v-bind:disabled="isAdjustReadOnly">
               </InputNumber>
             </FormItem>
           </Col>
@@ -502,7 +505,7 @@
           </Col>
         </Row>
         <Row>
-          <Col span="12">
+          <Col span="12" v-if="showLandMoney">
             <FormItem label="土地费用(万元)" prop="land_amount">
               <Input v-model="previewForm.land_amount" placeholder="" v-bind:readonly="isReadOnly"/>
             </FormItem>
@@ -629,7 +632,7 @@
   import './projects.css'
 
   export default {
-    data() {
+    data: function () {
       return {
         isShowButton: true,
         dropDownContent: '展开',
@@ -642,6 +645,7 @@
         searchForm: {
           title: '',
           subject: '',
+          office: '',
           unit: '',
           num: '',
           type: '',
@@ -781,13 +785,9 @@
             align: 'center',
             render: (h, params) => {
               let editButton;
-              const groupId = this.$store.getters.user.group_id;
-              if (groupId === 6) {
-                  editButton = !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4);
-              }
-              if (groupId === 4 || groupId === 7) {
-                editButton = false;
-              }
+              editButton = this.office === 0
+                ? !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4)
+                : false;
               return h('div', [
                 h('Button', {
                   props: {
@@ -799,13 +799,7 @@
                   },
                   on: {
                     click: () => {
-                      const groupId = this.$store.getters.user.group_id;
-                      if (groupId === 6) {
-                        this.showAuditButton = false;
-                      }
-                      if (groupId === 4 || groupId === 7) {
-                          this.showAuditButton = params.row.is_audit === 0;
-                      }
+                      this.showAuditButton = this.office === 1 ? params.row.is_audit === 0 : false;
                       this.previewForm = params.row;
                       this.formId = params.row.id;
                       this.isReadOnly = true;
@@ -849,6 +843,7 @@
             }
           }
         ],
+        showLandMoney: false,
         data: [],
         addNepDisabled: true,
         searchNepDisabled: true,
@@ -910,7 +905,7 @@
             },
           ],
         },
-        project_list : [],
+        project_list: [],
         editForm: {},
         previewForm: {},
         index: 1,
@@ -963,16 +958,9 @@
     },
     methods: {
       init() {
-        const groupId = this.$store.getters.user.group_id;
-        if (groupId === 6) {
-          this.showAuditButton = false;
-          this.editButton = false;
-          this.isShowButton = true;
-        }
-        if (groupId === 4 || groupId === 7) {
-          this.showAuditButton = true;
-          this.editButton = true;
-          this.isShowButton = false;
+        this.office = this.$store.getters.user.office;
+        if (this.office === 2) {
+          this.showLandMoney = true;
         }
         this.$refs.formValidate.resetFields();
         initProjectInfo().then(res => {
@@ -1071,7 +1059,6 @@
       },
       cancel() {
         this.$refs.formValidate.resetFields();
-        this.form.group_id = this.checkedDefaultRole;
       },
       buildYearPlan() {
         let startDate = this.form.plan_start_at;
