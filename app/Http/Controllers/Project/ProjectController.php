@@ -349,14 +349,25 @@ class ProjectController extends Controller
     public function getAllWarning()
     {
         $data = [];
-        $result = ProjectEarlyWarning::all()->toArray();
+        $projects = Projects::whereIn('user_id', $this->seeIds)->get()->toArray();
+        $projectIds = array_column($projects, 'id');
+        $projectSchedules = ProjectSchedule::whereIn('project_id', $projectIds)->get()->toArray();
+        $scheduleIds = array_column($projectSchedules, 'id');
+        $result = ProjectEarlyWarning::whereIn('schedule_id', $scheduleIds)->get()->toArray();
         foreach ($result as $k => $row) {
             $data[$k]['key'] = $row['id'];
-            $data[$k]['project_id'] = $row['project_id'];
-            $data[$k]['title'] = $row['title'];
+            $res = ProjectSchedule::where('id', $row['schedule_id'])->first();
+            foreach ($projects as $kk => $v) {
+                if ($v['id'] === (int) $res->project_id) {
+                    $data[$k]['title'] = $v['title'];
+                }
+            }
+            $data[$k]['project_id'] = $res->project_id;
+            $data[$k]['problem'] = $res->problem;
             $data[$k]['tags'] = $row['warning_type'];
             $data[$k]['shedeule_at'] = $row['shedeule_at'];
         }
+
         return response()->json(['result' => $data], 200);
     }
 
@@ -409,7 +420,7 @@ class ProjectController extends Controller
         $data['is_audit'] = 4;
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['user_id'] = Auth::id();
-        $result = ProjectSchedule::insert($data);
+        $schedule_id = DB::table('iba_project_schedule')->insertGetId($data);
 
         $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
         $m = intval($month);
@@ -423,11 +434,11 @@ class ProjectController extends Controller
             } elseif ($Percentage > 0.2) {
                 $warData['warning_type'] = 2;
             }
-            $warData['project_id'] = $data['project_id'];
+            $warData['schedule_id'] = $schedule_id;
             $warData['shedeule_at'] = $year . '-' . $month;
-            $warData['title'] = Projects::where('id', $data['project_id'])->value('title');
             $warResult = ProjectEarlyWarning::insert($warData);
         }
+        $result = $schedule_id && $warResult >= 0;
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '投资项目进度填报');

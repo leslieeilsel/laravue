@@ -1,5 +1,19 @@
 <template>
   <Card>
+    <Alert type="warning" class="description">
+      <Row>
+        <Button type="success" size="small">已经超额</Button>
+        <span>：相比预期延缓<10%</span>
+      </Row>
+      <Row>
+        <Button type="warning" size="small">警告超额</Button>
+        <span>：相比预期延缓10% ~ 20%</span>
+      </Row>
+      <Row>
+        <Button type="error" size="small">严重超额</Button>
+        <span>：相比预期延缓>20%</span>
+      </Row>
+    </Alert>
     <Table border :columns="columns" :data="data" :loading="loadingTable"></Table>
     <Modal
       v-model="previewModal"
@@ -158,7 +172,8 @@
   </Card>
 </template>
 <script>
-  import {getAllWarning, getAllProjects} from '../../../api/project';
+  import {getAllWarning, getEditFormData} from '../../../api/project';
+  import './projectEarlyWarning.css';
 
   export default {
     data() {
@@ -201,84 +216,77 @@
         previewModal: false,
         isReadOnly: false,
         index: 1,
-        columns: [{
-          title: '项目名称',
-          key: 'title',
-        }, {
-          title: '项目填报时间',
-          key: 'shedeule_at',
-        }, {
-          title: '预警类型',
-          key: 'tags',
-          render: (h, params) => {
-            let button_rbg = 'success';
-            let war_title = '已经超额';
-            if (params.row.tags == 0) {
-              button_rbg = 'success';
-              war_title = '已经超额';
-            } else if (params.row.tags == 1) {
-              button_rbg = 'warning';
-              war_title = '警告超额';
-            } else if (params.row.tags == 2) {
-              button_rbg = 'error'
-              war_title = '严重超额';
+        columns: [
+          {
+            title: '项目名称',
+            key: 'title',
+          },
+          {
+            title: '项目填报时间',
+            key: 'shedeule_at',
+          },
+          {
+            title: '存在问题',
+            key: 'problem',
+          },
+          {
+            title: '预警类型',
+            key: 'tags',
+            render: (h, params) => {
+              let button_rbg = 'success';
+              let war_title = '已经超额';
+              if (params.row.tags === 0) {
+                button_rbg = 'success';
+                war_title = '已经超额';
+              } else if (params.row.tags === 1) {
+                button_rbg = 'warning';
+                war_title = '警告超额';
+              } else if (params.row.tags === 2) {
+                button_rbg = 'error';
+                war_title = '严重超额';
+              }
+              return h("div", [
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: button_rbg,
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                  },
+                  war_title
+                )
+              ]);
             }
-            return h("div", [
-              h(
-                "Button",
-                {
+          }, {
+            title: '操作',
+            key: 'action',
+            render: (h, params) => {
+              return h("div", [
+                h('Button', {
                   props: {
-                    type: button_rbg,
-                    size: "small"
+                    type: 'primary',
+                    size: 'small',
                   },
                   style: {
-                    marginRight: "5px"
+                    marginRight: '5px'
                   },
-                },
-                war_title
-              )
-            ]);
-          }
-        }, {
-          title: '操作',
-          key: 'action',
-          render: (h, params) => {
-            return h("div", [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small',
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    const groupId = this.$store.getters.user.group_id;
-                    if (groupId === 6) {
-                      this.showAuditButton = false;
-                    }
-                    if (groupId === 4 || groupId === 7) {
-                      this.showAuditButton = params.row.is_audit === 0;
-                    }
-                    this.formId = params.row.project_id;
-                    getAllProjects().then(e => {
-                      let _this = this;
-                      e.result.forEach(function (em_id) {
-                        if (params.row.project_id === em_id.id) {
-                          _this.previewForm = em_id;
-                        }
+                  on: {
+                    click: () => {
+                      getEditFormData(params.row.project_id).then(res => {
+                        this.previewForm = res.result;
+                        this.isReadOnly = true;
+                        this.previewModal = true;
                       });
-                      this.isReadOnly = true;
-                      this.previewModal = true;
-                      this.init();
-                    });
+                    }
                   }
-                }
-              }, '查看详情')
-            ]);
-          }
-        }],
+                }, '查看详情')
+              ]);
+            }
+          }],
         loadingTable: true,
         formId: '',
         project_list: []
