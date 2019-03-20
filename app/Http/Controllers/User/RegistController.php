@@ -11,6 +11,8 @@ use App\Models\Role;
 use App\Models\OperationLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Project\Projects;
+use App\Models\Dict;
 
 class RegistController extends Controller
 {
@@ -21,10 +23,10 @@ class RegistController extends Controller
      */
     public function getUsers()
     {
-        $data = DB::table('users')->select('name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id')->get()->toArray();
+        $data = DB::table('users')->select('name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id', 'office')->get()->toArray();
 
         foreach ($data as $k => $row) {
-            if (!$row['department_id']) {
+            if (!isset($row['department_id'])) {
                 $data[$k]['department'] = '无';
             } else {
                 $department = Departments::where('id', $row['department_id'])->first()->title;
@@ -32,13 +34,20 @@ class RegistController extends Controller
             }
             unset($data[$k]['department_id']);
 
-            if (!$row['group_id']) {
+            if (!isset($row['group_id'])) {
                 $data[$k]['group'] = '无';
             } else {
                 $group = Role::where('id', $row['group_id'])->first()->name;
                 $data[$k]['group'] = $group;
             }
             unset($data[$k]['group_id']);
+
+            if (!isset($row['office'])) {
+                $data[$k]['office'] = '无';
+            } else {
+                $group = Dict::getOptionsArrByName('职位');
+                $data[$k]['office'] = $group[$row['office']];
+            }
         }
 
         return response()->json(['result' => $data], 200);
@@ -57,7 +66,7 @@ class RegistController extends Controller
         $data['password'] = bcrypt($data['password']);
         $data['created_at'] = date('Y-m-d H:i:s');
         $result = DB::table('users')->insert($data);
-        
+
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '创建用户');
@@ -89,6 +98,20 @@ class RegistController extends Controller
             $log = new OperationLog();
             $log->eventLog($request, '修改密码');
         }
+
+        return response()->json(['result' => $result], 200);
+    }
+
+    /**
+     * 获取数据字典数据
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function getUserDictData(Request $request)
+    {
+        $nameArr = $request->input('dictName');
+        $result = Projects::getDictDataByName($nameArr);
 
         return response()->json(['result' => $result], 200);
     }
