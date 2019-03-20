@@ -130,7 +130,7 @@
           </Col>
           <Col span="12">
             <FormItem label="累计完成投资" prop="acc_complete">
-              <Input v-model="form.acc_complete" placeholder="万元"/>
+              <Input v-model="form.acc_complete" placeholder="万元" readonly/>
             </FormItem>
           </Col>
         </Row>
@@ -430,7 +430,7 @@
           </Col>
           <Col span="12">
             <FormItem label="累计完成投资" prop="acc_complete">
-              <Input v-model="editForm.acc_complete" placeholder="万元"/>
+              <Input v-model="editForm.acc_complete" placeholder="万元" readonly/>
             </FormItem>
           </Col>
         </Row>
