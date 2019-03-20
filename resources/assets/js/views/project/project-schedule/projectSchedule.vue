@@ -1,43 +1,43 @@
 <template>
   <Card>
     <Row>
-      <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
+      <Form ref="searchForm" :model="searchForm" inline :label-width="90" class="search-form">
         <FormItem label="项目名称" prop="project_id">
           <Select v-model="searchForm.project_id" filterable style="width: 200px">
             <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
           </Select>
         </FormItem>
-        <Form-item label="项目编号" prop="project_num">
-          <Input
-            type="text"
-            v-model="searchForm.project_num"
-            placeholder="请输入项目编号"
-            style="width: 200px"
-          />
-        </Form-item>
+        <FormItem label="填报起止时间" prop="build_at">
+          <Row style="width: 220px">
+            <Col span="11">
+              <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
+              </DatePicker>
+            </Col>
+            <Col span="2" style="text-align: center">-</Col>
+            <Col span="11">
+              <DatePicker type="month" placeholder="结束时间" format="yyyy-MM" v-model="searchForm.end_at">
+              </DatePicker>
+            </Col>
+          </Row>
+        </FormItem>
         <span v-if="drop">
+          <Form-item label="项目编号" prop="project_num">
+            <Input
+              type="text"
+              v-model="searchForm.project_num"
+              placeholder="请输入项目编号"
+              style="width: 200px"
+            />
+          </Form-item>
           <Form-item label="投资主体" prop="subject">
             <Select v-model="searchForm.subject" filterable style="width: 200px">
               <Option v-for="item in data" :value="item.subject" :key="item.id">{{ item.subject }}</Option>
             </Select>
           </Form-item>
-          <FormItem label="填报起止时间" prop="build_at">
-            <Row style="width: 220px">
-              <Col span="11">
-                <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
-                </DatePicker>
-              </Col>
-              <Col span="2" style="text-align: center">-</Col>
-              <Col span="11">
-                <DatePicker type="month" placeholder="结束时间" format="yyyy-MM" v-model="searchForm.end_at">
-                </DatePicker>
-              </Col>
-            </Row>
-          </FormItem>
         </span>
-        <FormItem style="margin-left:-35px;" class="br">
+        <FormItem style="margin-left:-70px;" class="br">
           <Button @click="getProjectScheduleList" type="primary" icon="ios-search">搜索</Button>
-           <Button @click="handleResetSearch">重置</Button>
+          <Button @click="handleResetSearch">重置</Button>
           <a class="drop-down" @click="dropDown">
             {{dropDownContent}}
             <Icon :type="dropDownIcon"></Icon>
@@ -47,9 +47,11 @@
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">填报</Button>
-      <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="btnDisable" icon="md-cloud-upload">导出台账
+      <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="btnDisable" icon="md-cloud-upload">
+        导出台账
       </Button>
-      <Button class="exportReport" @click="downloadPic" type="primary" :disabled="picDisable" icon="md-cloud-upload">下载形象进度照片
+      <Button class="exportReport" @click="downloadPic" type="primary" :disabled="picDisable" icon="md-cloud-upload">
+        下载形象进度照片
       </Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
@@ -70,7 +72,8 @@
           </Col>
           <Col span="12">
             <FormItem label="填报时间" prop="month">
-              <DatePicker @on-change="changeMonth" type="month" :options="month_options_0" placeholder="请选择" format="yyyy-MM"
+              <DatePicker @on-change="changeMonth" type="month" :options="month_options_0" placeholder="请选择"
+                          format="yyyy-MM"
                           v-model="form.month"></DatePicker>
             </FormItem>
           </Col>
@@ -121,10 +124,10 @@
             </FormItem>
           </Col>
         </Row>
-        <Divider />
+        <Divider/>
         <Row>
           <Col span="12">
-            <FormItem :label="month_act"  prop="month_act_complete">
+            <FormItem :label="month_act" prop="month_act_complete">
               <Input @on-blur="changeMonthActComplete" v-model="form.month_act_complete" placeholder="万元"></Input>
             </FormItem>
           </Col>
@@ -175,20 +178,20 @@
           </Col>
         </Row>
         <Row>
-            <FormItem label="形象进度" prop="img_progress_pic">
-              <Upload
-                ref="upload"
-                :disabled="upbtnDisabled"
-                name="img_pic"
-                :on-success="handleSuccess"
-                multiple
-                :data="upData"
-                :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
-                :max-size="5120"
-                action="/api/project/uploadPic">
-                <Button icon="ios-cloud-upload-outline">上传</Button>
-              </Upload>
-            </FormItem>
+          <FormItem label="形象进度" prop="img_progress_pic">
+            <Upload
+              ref="upload"
+              :disabled="upbtnDisabled"
+              name="img_pic"
+              :on-success="handleSuccess"
+              multiple
+              :data="upData"
+              :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
+              :max-size="5120"
+              action="/api/project/uploadPic">
+              <Button icon="ios-cloud-upload-outline">上传</Button>
+            </Upload>
+          </FormItem>
         </Row>
       </Form>
       <div slot="footer">
@@ -269,7 +272,7 @@
             </FormItem>
           </Col>
         </Row>
-        <Divider />
+        <Divider/>
         <Row>
           <Col span="12">
             <FormItem :label="month_act" prop="month_act_complete">
@@ -421,7 +424,7 @@
             </FormItem>
           </Col>
         </Row>
-        <Divider />
+        <Divider/>
         <Row>
           <Col span="12">
             <FormItem :label="month_act" prop="month_act_complete">
@@ -510,7 +513,7 @@
 </template>
 <script>
   import {
-    initProjectInfo,
+    getAuditedProjects,
     projectProgress,
     projectProgressList,
     projectPlanInfo,
@@ -532,8 +535,8 @@
         drop: false,
         dropDownIcon: "ios-arrow-down",
         btnDisable: true,
-        upbtnDisabled:true,
-        picDisable:true,
+        upbtnDisabled: true,
+        picDisable: true,
         searchForm: {
           project_id: '',
           project_num: '',
@@ -858,15 +861,16 @@
         defaultList: [],
         is_audit: [],
         editButton: false,
-        upData:{},
-        month_options_0:{
-          disabledDate (date) {
+        upData: {},
+        month_options_0: {
+          disabledDate(date) {
             let date_at = new Date();
             const disabledMonth = date.getMonth();
-            return disabledMonth < date_at.getMonth();;
+            return disabledMonth < date_at.getMonth();
+            ;
           }
         },
-        scheduleMonth:[]
+        scheduleMonth: []
       }
     },
     methods: {
@@ -894,11 +898,11 @@
         this.tableLoading = true;
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
-          if(res.result.length>0){
-            if(this.searchForm.project_id||this.searchForm.project_num||this.searchForm.subject||this.searchForm.start_at||this.searchForm.end_at){
-              this.btnDisable=false;
+          if (res.result.length > 0) {
+            if (this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
+              this.btnDisable = false;
             }
-          } 
+          }
           this.tableLoading = false;
         });
       },
@@ -920,7 +924,7 @@
         });
       },
       getProjectId() {
-        initProjectInfo().then(res => {
+        getAuditedProjects().then(res => {
           this.project_id = res.result;
         });
       },
@@ -947,24 +951,24 @@
           this.form.month = '';
           return;
         }
-        this.upbtnDisabled=false;
-        let month_time = new Date(this.form.month); 
-        let month_time_0=(month_time.getMonth() + 1)>9?(month_time.getMonth() + 1):'0'+(month_time.getMonth() + 1);
-        
-        month_time=month_time.getFullYear() + '-' + month_time_0;
-        this.upData={month:month_time,project_num:this.form.project_num,project_id:this.form.project_id};
+        this.upbtnDisabled = false;
+        let month_time = new Date(this.form.month);
+        let month_time_0 = (month_time.getMonth() + 1) > 9 ? (month_time.getMonth() + 1) : '0' + (month_time.getMonth() + 1);
+
+        month_time = month_time.getFullYear() + '-' + month_time_0;
+        this.upData = {month: month_time, project_num: this.form.project_num, project_id: this.form.project_id};
         this.month_img = e + ' 月形象进度';
         this.month_act = e + ' 月实际完成投资';
         this.year_investors = e.substring(0, 4) + '年计划投资';
         this.year_img = e.substring(0, 4) + '年形象进度';
         if (this.form.project_id) {
-          projectPlanInfo({month:this.form.month,project_id:this.form.project_id}).then(res => {
+          projectPlanInfo({month: this.form.month, project_id: this.form.project_id}).then(res => {
             this.form.plan_investors = res.result.amount;
             this.form.plan_img_progress = res.result.image_progress;
           });
         }
       },// 月实际完成投资发生改变时 改变累计投资
-      changeMonthActComplete(e){
+      changeMonthActComplete(e) {
         if (this.form.project_id === '') {
           this.$Message.error('请先选择填报项目!');
           this.form.month_act_complete = '';
@@ -974,16 +978,16 @@
           this.$Message.error('请先选择填报时间!');
           this.form.month_act_complete = '';
           return;
-        }       
-        actCompleteMoney({month:this.form.month,project_id:this.form.project_id}).then(res => {
-          this.form.acc_complete = parseFloat(res.result)+parseFloat(this.form.month_act_complete);
+        }
+        actCompleteMoney({month: this.form.month, project_id: this.form.project_id}).then(res => {
+          this.form.acc_complete = parseFloat(res.result) + parseFloat(this.form.month_act_complete);
         });
       },
       handleReset(name) {
         this.$refs[name].resetFields();
         this.$refs.upload.clearFiles();
       },
-      handleClearFiles () {
+      handleClearFiles() {
         this.$refs.upload.clearFiles();
       },
       submitF(name) {
@@ -1077,46 +1081,46 @@
         }
         this.drop = !this.drop;
       },//导出
-      exportSchedule(){
-        this.picDisable=false;
+      exportSchedule() {
+        this.picDisable = false;
         let project_id = this.searchForm.project_id;
         let project_num = this.searchForm.project_num;
         let subject = this.searchForm.subject;
         let start_at = this.searchForm.start_at;
         let end_at = this.searchForm.end_at;
-        let start_time='';
-        if(start_at){
-          let start_time_0 = new Date(start_at);  
-          let month_start_time_0=(start_time_0.getMonth() + 1)>9?(start_time_0.getMonth() + 1):'0'+(start_time_0.getMonth() + 1);
-          start_time=start_time_0.getFullYear() + '-' + month_start_time_0; 
+        let start_time = '';
+        if (start_at) {
+          let start_time_0 = new Date(start_at);
+          let month_start_time_0 = (start_time_0.getMonth() + 1) > 9 ? (start_time_0.getMonth() + 1) : '0' + (start_time_0.getMonth() + 1);
+          start_time = start_time_0.getFullYear() + '-' + month_start_time_0;
         }
-        let end_time='';
-        if(end_at){
-          let end_time_0 = new Date(end_at); 
-          let month_end_time_0=(end_time_0.getMonth() + 1)>9?(end_time_0.getMonth() + 1):'0'+(end_time_0.getMonth() + 1);
-          end_time=end_time_0.getFullYear() + '-' + month_end_time_0;
-        };         
-        window.location.href="/api/project/exportSchedule?project_id="+project_id+"&project_num="+project_num+"&subject="+subject+"&start_at="+start_time+"&end_at="+end_time;
+        let end_time = '';
+        if (end_at) {
+          let end_time_0 = new Date(end_at);
+          let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
+          end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
+        }
+        window.location.href = "/api/project/exportSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time;
       },//下载
-      downloadPic(){
+      downloadPic() {
         let project_id = this.searchForm.project_id;
         let project_num = this.searchForm.project_num;
         let subject = this.searchForm.subject;
         let start_at = this.searchForm.start_at;
         let end_at = this.searchForm.end_at;
-        let start_time='';
-        if(start_at){
-          let start_time_0 = new Date(start_at);  
-          let month_start_time_0=(start_time_0.getMonth() + 1)>9?(start_time_0.getMonth() + 1):'0'+(start_time_0.getMonth() + 1);
-          start_time=start_time_0.getFullYear() + '-' + month_start_time_0; 
+        let start_time = '';
+        if (start_at) {
+          let start_time_0 = new Date(start_at);
+          let month_start_time_0 = (start_time_0.getMonth() + 1) > 9 ? (start_time_0.getMonth() + 1) : '0' + (start_time_0.getMonth() + 1);
+          start_time = start_time_0.getFullYear() + '-' + month_start_time_0;
         }
-        let end_time='';
-        if(end_at){
-          let end_time_0 = new Date(end_at); 
-          let month_end_time_0=(end_time_0.getMonth() + 1)>9?(end_time_0.getMonth() + 1):'0'+(end_time_0.getMonth() + 1);
-          end_time=end_time_0.getFullYear() + '-' + month_end_time_0;
-        };         
-        window.location.href="/api/project/downLoadSchedule?project_id="+project_id+"&project_num="+project_num+"&subject="+subject+"&start_at="+start_time+"&end_at="+end_time;
+        let end_time = '';
+        if (end_at) {
+          let end_time_0 = new Date(end_at);
+          let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
+          end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
+        }
+        window.location.href = "/api/project/downLoadSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time;
       }
     },
     mounted() {

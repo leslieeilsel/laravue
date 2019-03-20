@@ -66,14 +66,22 @@ class ProjectController extends Controller
         if ($this->office === 2) {
             $query = $query->where('is_audit', 1);
         }
-        $c=$this->seeIds;
+
         $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
+
+        return response()->json(['result' => $projects], 200);
+    }
+
+    public function getAuditedProjects()
+    {
+        $projects = Projects::where('is_audit', 1)->whereIn('user_id', $this->seeIds)->get()->toArray();
+
         return response()->json(['result' => $projects], 200);
     }
 
     /**
      * 创建项目信息
-     * 
+     *
      * @param Request $request
      * @return JsonResponse
      */
@@ -460,14 +468,13 @@ class ProjectController extends Controller
                 }
             }
         }
-        $group_id = Auth::user()->group_id;
-        if ($group_id === 4 || $group_id === 7) {
-            $user_id = [1, 2, 3, 4, 5, 6, 7, 8];
+        if ($this->office === 1) {
+            $query = $query->where('is_audit', '!=', 4);
         }
-        if ($group_id === 6) {
-            $user_id = [7];
+        if ($this->office === 2) {
+            $query = $query->where('is_audit', 1);
         }
-        $ProjectSchedules = $query->whereIn('user_id', $user_id)->get()->toArray();
+        $ProjectSchedules = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
             $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->value('title');
