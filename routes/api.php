@@ -30,6 +30,7 @@ Route::group(['middleware' => 'api'], function ($router) {
 Route::post('user/regist', 'User\RegistController@registUser');
 Route::get('user/users', 'User\RegistController@getUsers');
 Route::post('user/resetPassword', 'User\RegistController@resetPassword');
+Route::post('user/getUserDictData', 'User\RegistController@getUserDictData');
 
 Route::get('department/getByParentId/{id}', 'System\DepartmentController@getByParentId');
 Route::get('department/getAllDepartment', 'System\DepartmentController@getAllDepartment');

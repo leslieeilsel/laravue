@@ -242,11 +242,11 @@ export function buildPlanFields(date) {
  * 构建计划填报表单
  * @returns {*}
  */
-export function auditProject(status) {
+export function auditProject(params) {
   return request({
     url: '/api/project/auditProject',
     method: 'post',
-    data: {status}
+    data: {params}
   });
 }
 
