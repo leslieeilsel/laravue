@@ -84,7 +84,7 @@ class LedgerController extends Controller
     public function export(Request $request)
     {
         $params = $request->input();
-        $start_year = date('Y', strtotime($params['start_at']));
+        // $start_year = date('Y', strtotime($params['start_at']));
         $data=$this->listData($params);
         
         return $this->downLoadSchedule($data);
@@ -100,7 +100,7 @@ class LedgerController extends Controller
             ->setCategory('Test result file');
         // 添加表头
         $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('B2', '沣西新城'.$start_year.'年重点建设项目台账')
+            ->setCellValue('B2', '沣西新城年重点建设项目台账')
             ->setCellValue('B3', '单位：万元')
             ->setCellValue('B4', '项目名称')
             ->setCellValue('D4', $data[0]['project_id'])
@@ -112,9 +112,9 @@ class LedgerController extends Controller
             ->setCellValue('M5', $data[0]['total_investors'])
             ->setCellValue('B6', "项目建设规模及主要内容")
             ->setCellValue('D6', $data[0]['acc_img_progress'])
-            ->setCellValue('B7', $start_year.'年度项目计划投资')
+            ->setCellValue('B7', '年度项目计划投资')
             ->setCellValue('D7', $data[0]['plan_investors'])
-            ->setCellValue('G7', $start_year.'年度项目主要建设内容')
+            ->setCellValue('G7', '年度项目主要建设内容')
             ->setCellValue('I7', $data[0]['month_img_progress']);
             $num=8;
             for($i=0;$i<count($data);$i++){
@@ -267,7 +267,10 @@ class LedgerController extends Controller
     */
     public function exportSchedule(Request $request){
         $params = $request->input();
-        $start_year = date('Y', strtotime($params['start_at']));
+        // $start_year = date('Y', strtotime($params['start_at']));
+        // if($start_year=='1970'){
+        //     $start_year=date('Y');
+        // }
         $ProjectC=new ProjectController();
         $data=$ProjectC->projectProgressM($params);
         // 创建一个Spreadsheet对象
@@ -282,7 +285,7 @@ class LedgerController extends Controller
             ->setCategory('Test result file');        
         // 添加表头
         $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('A2', '沣西新城'.$start_year.'年重点项目建设进度表')
+            ->setCellValue('A2', '沣西新城重点项目建设进度表')
             ->setCellValue('A3', '报送部门：')
             ->setCellValue('O3', '单位：万元')
             ->setCellValue('A4', '序号')
