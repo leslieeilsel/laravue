@@ -4,6 +4,7 @@
       <p class="btnGroup">
         <Button type="primary" @click="modal = true" icon="md-add">添加角色</Button>
         <Button type="error" disabled icon="md-trash">删除</Button>
+        <!-- 菜单权限 -->
         <Modal
           v-model="modal"
           @on-cancel="cancel"
@@ -36,6 +37,36 @@
             <Button type="primary" @click="treeSubmit()" :loading="treeSubmitLoading">提交</Button>
           </div>
         </Modal>
+        <!-- 数据权限 -->
+        <Modal :title="modalTitle" v-model="depModalVisible" :mask-closable='false' :width="500" :styles="{top: '30px'}"
+               class="depModal">
+          <Form :label-width="65">
+            <FormItem label="数据范围">
+              <Select v-model="dataType">
+                <Option :value="0">全部数据权限</Option>
+                <Option :value="1">自定义数据权限</Option>
+                <Option :value="2">仅自己</Option>
+              </Select>
+            </FormItem>
+          </Form>
+          <Alert show-icon v-if="dataType===0">
+            默认可查看全部数据
+          </Alert>
+          <Alert show-icon v-if="dataType===1">
+            请点击选择下方数据
+          </Alert>
+          <Alert show-icon v-if="dataType===2">
+            仅能查看自己添加的数据
+          </Alert>
+          <div v-if="dataType===1" style="margin-top:15px">
+            <Tree ref="depTree" :data="depData" show-checkbox style="margin-top:15px"></Tree>
+            <Spin size="large" v-if="depTreeLoading"></Spin>
+          </div>
+          <div slot="footer">
+            <Button type="text" @click="depModalVisible=false">取消</Button>
+            <Button type="primary" :loading="submitDepLoading" @click="submitDepEdit">提交</Button>
+          </div>
+        </Modal>
       </p>
       <Table border :columns="columns" :data="data" :loading="loadingTable"></Table>
     </Card>
@@ -43,8 +74,8 @@
 </template>
 <script>
   import './users.css';
-  import {add, getRoles, setRoleMenus, setDefaultRole} from 'api/role';
-  import {getMenuTree} from 'api/system';
+  import {add, getRoles, setRoleMenus, setDefaultRole, getDepartmentTree, editRoleDep} from '../../api/role';
+  import {getMenuTree} from '../../api/system';
 
   export default {
     data() {
@@ -143,7 +174,7 @@
           {
             title: '操作',
             key: 'action',
-            width: 150,
+            width: 250,
             align: 'center',
             render: (h, params) => {
               return h('div', [
@@ -167,14 +198,40 @@
                       });
                     }
                   }
-                }, '菜单权限')
+                }, '菜单权限'),
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "primary",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.editDep(params.row);
+                      }
+                    }
+                  },
+                  "数据权限"
+                ),
               ]);
             }
           }
         ],
         data: [],
         treeData: [],
-        rowId: ''
+        rowId: '',
+        dataType: 0,
+        editRolePermId: "",
+        modalTitle: "",
+        editDepartments: [],
+        depTreeLoading: true,
+        submitDepLoading: false,
+        depData: [],
+        depModalVisible: false,
       }
     },
     mounted() {
@@ -243,6 +300,49 @@
       },
       onChange(value) {
         this.form.department_id = value;
+      },
+      editDep(v) {
+        this.dataType = 0;
+        this.editRolePermId = v.id;
+        this.modalTitle = "分配 " + v.name + " 的数据权限";
+        if (v.data_type) {
+          this.dataType = v.data_type;
+        }
+        this.depTreeLoading = true;
+        getDepartmentTree(this.editRolePermId).then(res => {
+          if (res.result) {
+            this.depData = res.result;
+            this.depModalVisible = true;
+            this.depTreeLoading = false;
+          }
+        });
+      },
+      submitDepEdit() {
+        let depIds = "";
+        if (this.dataType === 1) {
+          let selectedNodes = this.$refs.depTree.getCheckedNodes();
+          if (selectedNodes.length < 1) {
+            this.$Message.error("请至少选择一条数据");
+            return;
+          }
+          selectedNodes.forEach(function (e) {
+            depIds += e.id + ",";
+          });
+          depIds = depIds.substring(0, depIds.length - 1);
+        }
+        this.submitDepLoading = true;
+        editRoleDep({
+          roleId: this.editRolePermId,
+          dataType: this.dataType,
+          depIds: depIds
+        }).then(res => {
+          this.submitDepLoading = false;
+          if (res.result === true) {
+            this.$Message.success("操作成功");
+            this.getRoleList();
+            this.depModalVisible = false;
+          }
+        });
       },
       treeSubmit() {
         this.treeSubmitLoading = true;

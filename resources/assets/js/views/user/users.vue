@@ -63,7 +63,7 @@
 </template>
 <script>
   import {registUser, getUsers} from '../../api/user';
-  import {initDepartment, loadDepartment} from 'api/system';
+  import {initDepartment, loadDepartment} from '../../api/system';
   import {getRoles} from '../../api/role';
   import './users.css';
 
@@ -85,9 +85,9 @@
         callback();
       };
       const pwdCheckValidate = (rule, value, callback) => {
-        if (this.form.password != '' && value == '') {
+        if (this.form.password !== '' && value === '') {
           callback(new Error('确认密码不能为空'));
-        } else if (this.form.password != value) {
+        } else if (this.form.password !== value) {
           callback(new Error('新密码和确认密码应相同'));
         } else {
           callback();
@@ -127,7 +127,7 @@
             {required: true, validator: pwdCheckValidate, trigger: 'blur'}
           ],
           department_title: [
-            {required: true, message: '所属部门不能为空', trigger: 'blur'}
+            {required: true, message: '所属部门不能为空', trigger: 'change'}
           ]
         },
         columns: [
@@ -194,8 +194,7 @@
       getRoles().then((data) => {
         this.roleList = data.result;
         this.roleList.forEach(e => {
-          console.log(e)
-          if (e.is_default == 1) {
+          if (e.is_default === 1) {
             this.checkedDefaultRole = e.id;
             this.form.group_id = this.checkedDefaultRole;
           }
