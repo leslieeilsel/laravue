@@ -41,6 +41,11 @@
                 </Option>
               </Select>
             </FormItem>
+            <Form-item label="职位" prop="office">
+              <Select v-model="form.office">
+                <Option v-for="item in dict.office" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </Form-item>
             <FormItem label="密码" prop="password">
               <Input v-model="form.password" type="password" placeholder="必填项"/>
             </FormItem>
@@ -62,7 +67,7 @@
   </div>
 </template>
 <script>
-  import {registUser, getUsers} from '../../api/user';
+  import {registUser, getUsers, getUserDictData} from '../../api/user';
   import {initDepartment, loadDepartment} from '../../api/system';
   import {getRoles} from '../../api/role';
   import './users.css';
@@ -100,11 +105,18 @@
         modal: false,
         selectDep: [],
         dataDep: [],
+        dictName: {
+          office: '职位',
+        },
+        dict: {
+          office: [],
+        },
         checkedDefaultRole: '',
         form: {
           username: '',
           name: '',
           email: '',
+          office: '',
           phone: '',
           department_id: '',
           department_title: '',
@@ -128,6 +140,12 @@
           ],
           department_title: [
             {required: true, message: '所属部门不能为空', trigger: 'change'}
+          ],
+          office: [
+            {required: true, message: '职位不能为空', trigger: 'change', type: 'number'}
+          ],
+          group_id: [
+            {required: true, message: '职位不能为空', trigger: 'change', type: 'number'}
           ]
         },
         columns: [
@@ -161,6 +179,10 @@
           {
             title: '角色',
             key: 'group'
+          },
+          {
+            title: '职位',
+            key: 'office'
           },
           {
             title: '邮箱',
@@ -204,6 +226,14 @@
     methods: {
       init() {
         this.initDepartmentTreeData();
+        this.getDictData();
+      },
+      getDictData() {
+        getUserDictData(this.dictName).then(res => {
+          if (res.result) {
+            this.dict = res.result;
+          }
+        });
       },
       remove(index) {
         this.data.splice(index, 1);

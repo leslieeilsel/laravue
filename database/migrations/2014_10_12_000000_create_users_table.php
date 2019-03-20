@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('desc')->nullable();
             $table->integer('department_id')->nullable();
+            $table->integer('office')->nullable();
             $table->rememberToken()->nullable();
             $table->timestamp('last_login')->nullable();
             $table->timestamps();
