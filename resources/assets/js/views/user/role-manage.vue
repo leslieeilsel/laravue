@@ -49,8 +49,14 @@
               </Select>
             </FormItem>
           </Form>
-          <Alert show-icon>
-            默认可查看全部数据，自定义数据范围请点击选择下方数据
+          <Alert show-icon v-if="dataType===0">
+            默认可查看全部数据
+          </Alert>
+          <Alert show-icon v-if="dataType===1">
+            请点击选择下方数据
+          </Alert>
+          <Alert show-icon v-if="dataType===2">
+            仅能查看自己添加的数据
           </Alert>
           <div v-if="dataType===1" style="margin-top:15px">
             <Tree ref="depTree" :data="depData" show-checkbox style="margin-top:15px"></Tree>
