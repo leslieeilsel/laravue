@@ -158,38 +158,70 @@
   </Card>
 </template>
 <script>
-  import {getAllWarning,getAllProjects} from '../../../api/project';
-  
+  import {getAllWarning, getAllProjects} from '../../../api/project';
+
   export default {
     data() {
       return {
         data: [],
-        previewForm: {},
-        projectPlan:[],
+        previewForm: {
+          title: '',
+          num: '',
+          subject: '',
+          type: '',
+          build_type: '',
+          money_from: '',
+          status: '',
+          unit: '',
+          amount: null,
+          land_amount: null,
+          is_gc: '',
+          nep_type: '',
+          plan_start_at: '',
+          plan_end_at: '',
+          center_point: '',
+          description: '',
+          positions: '',
+          projectPlan: [
+            {
+              date: '2019',
+              amount: null,
+              image_progress: '',
+              month: [
+                {
+                  date: 1,
+                  amount: null,
+                  image_progress: ''
+                }
+              ]
+            },
+          ],
+        },
+        projectPlan: [],
         previewModal: false,
         isReadOnly: false,
         index: 1,
         columns: [{
           title: '项目名称',
           key: 'title',
-        },{
+        }, {
           title: '项目填报时间',
           key: 'shedeule_at',
         }, {
           title: '预警类型',
           key: 'tags',
           render: (h, params) => {
-            let button_rbg='success';
-            let war_title='已经超额';
-            if(params.row.tags==0){
-              button_rbg='success';
-              war_title='已经超额';
-            }else if(params.row.tags==1){
-              button_rbg='warning';
-              war_title='警告超额';
-            }else if(params.row.tags==2){
-              button_rbg='error'
-              war_title='严重超额';
+            let button_rbg = 'success';
+            let war_title = '已经超额';
+            if (params.row.tags == 0) {
+              button_rbg = 'success';
+              war_title = '已经超额';
+            } else if (params.row.tags == 1) {
+              button_rbg = 'warning';
+              war_title = '警告超额';
+            } else if (params.row.tags == 2) {
+              button_rbg = 'error'
+              war_title = '严重超额';
             }
             return h("div", [
               h(
@@ -227,7 +259,7 @@
                       this.showAuditButton = false;
                     }
                     if (groupId === 4 || groupId === 7) {
-                        this.showAuditButton = params.row.is_audit === 0;
+                      this.showAuditButton = params.row.is_audit === 0;
                     }
                     this.formId = params.row.project_id;
                     getAllProjects().then(e => {
@@ -237,9 +269,10 @@
                           _this.previewForm = em_id;
                         }
                       });
-                    });                    
-                    this.isReadOnly = true;
-                    this.previewModal = true;
+                      this.isReadOnly = true;
+                      this.previewModal = true;
+                      this.init();
+                    });
                   }
                 }
               }, '查看详情')
@@ -248,15 +281,16 @@
         }],
         loadingTable: true,
         formId: '',
-        project_list : []
+        project_list: []
       }
     },
     methods: {
-      init () {
+      init() {
+        this.$refs.previewFormValidate.resetFields();
         getAllWarning().then(res => {
           this.data = res.result;
           this.loadingTable = false;
-          
+
         });
       },
     },
