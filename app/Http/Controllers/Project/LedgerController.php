@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Http\Request;
 use App\Models\ZipDownload;
+use PhpOffice\PhpSpreadsheet\Reader\Xls\ErrorCode;
 class LedgerController extends Controller
 {
     /**
@@ -251,7 +252,12 @@ class LedgerController extends Controller
         $zip = new ZipDownload();
         $path = 'storage/project/project-schedule';
         $url=$zip->downloadImages($path,$data);
-        return response()->download($url);
+        $is_file=file_exists($url);
+        if($is_file){
+            return response()->download($url);
+        }else{
+            return response()->download('storage/noPic.zip');
+        }
     }
     /**
     * 导出填报
@@ -292,7 +298,7 @@ class LedgerController extends Controller
             ->setCellValue('L4', '存在问题')
             ->setCellValue('M4', '开工/计划开工时间')
             ->setCellValue('N4', '土地征收情况及前期手续办理情况')
-            ->setCellValue('P4', '资金来源（企业自筹、政府投资、中省资金）')
+            ->setCellValue('P4', '资金来源')
             ->setCellValue('Q4', '形象进度照片')
             ->setCellValue('R4', '备注');
         $num=5;

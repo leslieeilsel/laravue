@@ -66,13 +66,14 @@ class ProjectController extends Controller
         if ($this->office === 2) {
             $query = $query->where('is_audit', 1);
         }
+        $c=$this->seeIds;
         $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
         return response()->json(['result' => $projects], 200);
     }
 
     /**
      * 创建项目信息
-     *
+     * 
      * @param Request $request
      * @return JsonResponse
      */

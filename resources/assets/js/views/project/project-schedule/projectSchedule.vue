@@ -1086,13 +1086,13 @@
         if(start_at){
           let start_time_0 = new Date(start_at);  
           let month_start_time_0=(start_time_0.getMonth() + 1)>9?(start_time_0.getMonth() + 1):'0'+(start_time_0.getMonth() + 1);
-          start_time=start_time.getFullYear() + '-' + month_start_time_0; 
+          start_time=start_time_0.getFullYear() + '-' + month_start_time_0; 
         }
         let end_time='';
         if(end_at){
           let end_time_0 = new Date(end_at); 
           let month_end_time_0=(end_time_0.getMonth() + 1)>9?(end_time_0.getMonth() + 1):'0'+(end_time_0.getMonth() + 1);
-          end_time=end_time.getFullYear() + '-' + month_end_time_0;
+          end_time=end_time_0.getFullYear() + '-' + month_end_time_0;
         };         
         window.location.href="/api/project/exportSchedule?project_id="+project_id+"&project_num="+project_num+"&subject="+subject+"&start_at="+start_time+"&end_at="+end_time;
       },//下载
@@ -1106,13 +1106,13 @@
         if(start_at){
           let start_time_0 = new Date(start_at);  
           let month_start_time_0=(start_time_0.getMonth() + 1)>9?(start_time_0.getMonth() + 1):'0'+(start_time_0.getMonth() + 1);
-          start_time=start_time.getFullYear() + '-' + month_start_time_0; 
+          start_time=start_time_0.getFullYear() + '-' + month_start_time_0; 
         }
         let end_time='';
         if(end_at){
           let end_time_0 = new Date(end_at); 
           let month_end_time_0=(end_time_0.getMonth() + 1)>9?(end_time_0.getMonth() + 1):'0'+(end_time_0.getMonth() + 1);
-          end_time=end_time.getFullYear() + '-' + month_end_time_0;
+          end_time=end_time_0.getFullYear() + '-' + month_end_time_0;
         };         
         window.location.href="/api/project/downLoadSchedule?project_id="+project_id+"&project_num="+project_num+"&subject="+subject+"&start_at="+start_time+"&end_at="+end_time;
       }
