@@ -188,11 +188,8 @@
       getProjectLedgerList() {        
         let search_project_id = this.searchForm.project_id;
         let start_at = this.searchForm.start_at;
-        console.log(start_at);
         let end_at = this.searchForm.end_at;
-        if(search_project_id||start_at||end_at){
-          this.btnDisable=false;
-        }
+        
         this.tableLoading = true;
         projectLedgerList({
           search_project_id: search_project_id,
@@ -200,6 +197,11 @@
           end_at: end_at
         }).then(res => {
           this.data = res.result;
+          if(res.result.length>0){
+            if(search_project_id||start_at||end_at){
+              this.btnDisable=false;
+            }
+          }     
           this.tableLoading = false;
         })
       },

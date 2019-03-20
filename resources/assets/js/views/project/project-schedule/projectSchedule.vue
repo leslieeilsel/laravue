@@ -891,12 +891,14 @@
         this.getProjectScheduleList();
       },
       getProjectScheduleList() {
-        if(this.searchForm.project_id||this.searchForm.project_num||this.searchForm.subject||this.searchForm.start_at||this.searchForm.end_at){
-          this.btnDisable=false;
-        }
         this.tableLoading = true;
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
+          if(res.result.length>0){
+            if(this.searchForm.project_id||this.searchForm.project_num||this.searchForm.subject||this.searchForm.start_at||this.searchForm.end_at){
+              this.btnDisable=false;
+            }
+          } 
           this.tableLoading = false;
         });
       },

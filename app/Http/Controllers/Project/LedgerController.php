@@ -87,7 +87,7 @@ class LedgerController extends Controller
         // $start_year = date('Y', strtotime($params['start_at']));
         $data=$this->listData($params);
         
-        return $this->downLoadSchedule($data);
+        // return $this->downLoadSchedule($data);
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性
