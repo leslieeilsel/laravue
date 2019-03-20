@@ -389,19 +389,22 @@ class ProjectController extends Controller
         $result = ProjectSchedule::insert($data);
 
         $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
-        $plans_amount = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $month)->value('amount');
-        $Percentage = ($plans_amount - $data['month_act_complete']) / $plans_amount;
-        if ($Percentage <= 0.1) {
-            $warData['warning_type'] = 0;
-        } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
-            $warData['warning_type'] = 1;
-        } elseif ($Percentage > 0.2) {
-            $warData['warning_type'] = 2;
+        $m=intval($month);
+        $plans_amount = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $m)->value('amount');
+        if($plans_amount){
+            $Percentage = ($plans_amount - $data['month_act_complete']) / $plans_amount;
+            if ($Percentage <= 0.1) {
+                $warData['warning_type'] = 0;
+            } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
+                $warData['warning_type'] = 1;
+            } elseif ($Percentage > 0.2) {
+                $warData['warning_type'] = 2;
+            }
+            $warData['project_id'] = $data['project_id'];
+            $warData['shedeule_at'] = $year . '-' . $month;
+            $warData['title'] = Projects::where('id', $data['project_id'])->value('title');
+            $warResult = ProjectEarlyWarning::insert($warData);
         }
-        $warData['project_id'] = $data['project_id'];
-        $warData['shedeule_at'] = $year . '-' . $month;
-        $warData['title'] = Projects::where('id', $data['project_id'])->value('title');
-        $warResult = ProjectEarlyWarning::insert($warData);
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '投资项目进度填报');
@@ -427,10 +430,20 @@ class ProjectController extends Controller
         if (isset($data['subject'])) {
             $query = $query->where('subject', $data['subject']);
         }
-        if (isset($data['start_at']) && isset($data['end_at'])) {
-            $data['start_at'] = date('Y-m', strtotime($data['start_at']));
-            $data['end_at'] = date('Y-m', strtotime($data['end_at']));
-            $query = $query->whereBetween('month', [$data['start_at'], $data['end_at']]);
+        if(isset($data['start_at']) || isset($data['end_at'])){
+            if (isset($data['start_at']) && isset($data['end_at'])) {
+                $data['start_at'] = date('Y-m', strtotime($data['start_at']));
+                $data['end_at'] = date('Y-m', strtotime($data['end_at']));
+                $query = $query->whereBetween('month', [$data['start_at'], $data['end_at']]);
+            }else{
+                if(isset($data['start_at']) ){
+                    $data['start_at'] = date('Y-m', strtotime($data['start_at']));
+                    $query = $query->where('month', $data['start_at']);
+                }else if(isset($data['end_at']) ){
+                    $data['end_at'] = date('Y-m', strtotime($data['end_at']));
+                    $query = $query->where('month', $data['end_at']);
+                }
+            }
         }
         $group_id = Auth::user()->group_id;
         if ($group_id === 4 || $group_id === 7) {
@@ -465,7 +478,7 @@ class ProjectController extends Controller
         $params = $request->all();
         $suffix=$params['img_pic']->getClientOriginalExtension();
         $path = Storage::putFileAs(
-            'app/public/project/project-schedule/'.$params['month']."_".$params['project_num'],
+            'public/project/project-schedule/'.$params['month']."_".$params['project_num'],
             $request->file('img_pic'),
             $params['project_num'].'_'.rand(1000000,time()).'.'.$suffix
         );

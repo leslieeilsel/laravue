@@ -1052,6 +1052,7 @@
         this.drop = !this.drop;
       },//导出
       exportSchedule(){
+        this.picDisable=false;
         let project_id = this.searchForm.project_id;
         let project_num = this.searchForm.project_num;
         let subject = this.searchForm.subject;

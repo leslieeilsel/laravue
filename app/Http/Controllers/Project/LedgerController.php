@@ -244,7 +244,10 @@ class LedgerController extends Controller
     * @param Request $request
     * @return JsonResponse
     */
-    public function downLoadSchedule($data){
+    public function downLoadSchedule(Request $request){
+        $params = $request->input();
+        $ProjectC=new ProjectController();
+        $data=$ProjectC->projectProgressM($params);
         $zip = new ZipDownload();
         $path = 'storage/project/project-schedule';
         $url=$zip->downloadImages($path,$data);
