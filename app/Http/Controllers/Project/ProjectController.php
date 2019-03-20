@@ -462,12 +462,14 @@ class ProjectController extends Controller
      */
     public function uploadPic(Request $request)
     {
-        $path = Storage::putFile(
-            'public/project/project-schedule',
-            $request->file('img_pic')
+        $params = $request->all();
+        $suffix=$params['img_pic']->getClientOriginalExtension();
+        $path = Storage::putFileAs(
+            'app/public/project/project-schedule/'.$params['month']."_".$params['project_num'],
+            $request->file('img_pic'),
+            $params['project_num'].'_'.rand(1000000,time()).'.'.$suffix
         );
-
-        $path = 'storage/' . substr($path, 7);
+        $path = 'storage/' .substr($path, 7);
 
         return response()->json(['result' => $path], 200);
     }

@@ -9,6 +9,7 @@ use App\Models\Dict;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Http\Request;
+use App\Models\ZipDownload;
 class LedgerController extends Controller
 {
     /**
@@ -84,6 +85,8 @@ class LedgerController extends Controller
         $params = $request->input();
         $start_year = date('Y', strtotime($params['start_at']));
         $data=$this->listData($params);
+        
+        return $this->downLoadSchedule($data);
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性
@@ -236,6 +239,18 @@ class LedgerController extends Controller
         exit;
     }
     /**
+    * 下载图片
+    *
+    * @param Request $request
+    * @return JsonResponse
+    */
+    public function downLoadSchedule($data){
+        $zip = new ZipDownload();
+        $path = 'storage/project/project-schedule';
+        $url=$zip->downloadImages($path,$data);
+        return response()->download($url);
+    }
+    /**
     * 导出填报
     *
     * @param Request $request
@@ -276,17 +291,20 @@ class LedgerController extends Controller
             ->setCellValue('N4', '土地征收情况及前期手续办理情况')
             ->setCellValue('P4', '资金来源（企业自筹、政府投资、中省资金）')
             ->setCellValue('Q4', '形象进度照片')
-            ->setCellValue('R4', '备注')
-            ->setCellValue('A5', '合计：'.count($data).' 个')
             ->setCellValue('R4', '备注');
-        $num=6;
+        $num=5;
         $total_investors=0;
         $plan_investors=0;
         for($i=0;$i<count($data);$i++){
-            $num=$num+$i*1;
             $total_investors=$total_investors+$data[$i]['total_investors'];
             $plan_investors=$plan_investors+$data[$i]['plan_investors'];
             $money_from=Dict::getOptionsByName('资金来源');
+            //图片
+            $pics=explode(',',$data[$i]['img_progress_pic']);
+            $pic=[];
+            for($p=0;$p<count($pics);$p++){
+                $pic[$p]=$_SERVER["HTTP_HOST"].'/'.$pics[$p];
+            }
             $spreadsheet->getActiveSheet()->setCellValue('A'.$num,$i+1);
             $spreadsheet->getActiveSheet()->setCellValue('B'.$num,$data[$i]['project_id']);
             $spreadsheet->getActiveSheet()->setCellValue('C'.$num,$data[$i]['subject']);
@@ -301,11 +319,13 @@ class LedgerController extends Controller
             $spreadsheet->getActiveSheet()->setCellValue('M'.$num,$data[$i]['plan_build_start_at']);
             $spreadsheet->getActiveSheet()->setCellValue('N'.$num,$data[$i]['exp_preforma']);
             $spreadsheet->getActiveSheet()->setCellValue('P'.$num,$money_from[$data[$i]['money_from']]['title']);
-            $spreadsheet->getActiveSheet()->setCellValue('Q'.$num,$data[$i]['img_progress_pic']);
+            $spreadsheet->getActiveSheet()->setCellValue('Q'.$num,$data[$i]['month']);
             $spreadsheet->getActiveSheet()->setCellValue('R'.$num,$data[$i]['marker']);
+            $num++;
         }
-        $spreadsheet->getActiveSheet()->setCellValue('E5',$total_investors);
-        $spreadsheet->getActiveSheet()->setCellValue('F5',$plan_investors);
+        $spreadsheet->getActiveSheet()->setCellValue('A'.$num,'合计：'.count($data).' 个');
+        $spreadsheet->getActiveSheet()->setCellValue('E'.$num,$total_investors);
+        $spreadsheet->getActiveSheet()->setCellValue('F'.$num,$plan_investors);
         // 合并行、列
         $spreadsheet->getActiveSheet()
             ->mergeCells('A1:R1')
@@ -313,22 +333,22 @@ class LedgerController extends Controller
             ->mergeCells('A3:N3')
             ->mergeCells('O3:R3')
             ->mergeCells('N4:O4')
-            ->mergeCells('H4:I4')
-            ->mergeCells('A5:C5')
-            ->mergeCells('H5:I5');
-        $num=6;
+            ->mergeCells('H4:I4');
+        $num=5;
         for($i=0;$i<count($data);$i++){
-            $num=$num+$i*1;
             $spreadsheet->getActiveSheet()->mergeCells('N'.$num.":O".$num);
-            $spreadsheet->getActiveSheet()->mergeCells('H'.$num.":i".$num);
+            $spreadsheet->getActiveSheet()->mergeCells('H'.$num.":I".$num);
+            $num++;
         }
+        $spreadsheet->getActiveSheet()->mergeCells('A'.$num.":C".$num);
+        $spreadsheet->getActiveSheet()->mergeCells('H'.$num.":I".$num);
         //  设置宽度
         $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(8.38);
         $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(18.13);
         $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(12.38);
         $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(16.38);
-        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(8.38);
-        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(8.38);
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(11.29);
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(11.29);
         $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(27.63);
         $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(18.88);
         // $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(1);
@@ -346,12 +366,12 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->getRowDimension('2')->setRowHeight(52);
         $spreadsheet->getActiveSheet()->getRowDimension('3')->setRowHeight(41);
         $spreadsheet->getActiveSheet()->getRowDimension('4')->setRowHeight(93.75);
-        $spreadsheet->getActiveSheet()->getRowDimension('5')->setRowHeight(55);
-        $num=6;
+        $num=5;
         for($i=0;$i<count($data);$i++){
-            $num=$num+$i*1;
             $spreadsheet->getActiveSheet()->getRowDimension($num)->setRowHeight(147);
+            $num++;
         }
+        $spreadsheet->getActiveSheet()->getRowDimension($num)->setRowHeight(55);
         //居中
         $numberStyleCenter = [
             'alignment' => [
@@ -392,13 +412,9 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->getStyle('P4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
         $spreadsheet->getActiveSheet()->getStyle('Q4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
         $spreadsheet->getActiveSheet()->getStyle('R4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle('A5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle('E5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle('F5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
         
-        $num=6;
+        $num=5;
         for($i=0;$i<count($data);$i++){
-            $num=$num+$i*1;
             $spreadsheet->getActiveSheet()->getStyle('A'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
             $spreadsheet->getActiveSheet()->getStyle('B'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
             $spreadsheet->getActiveSheet()->getStyle('C'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
@@ -415,7 +431,12 @@ class LedgerController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('P'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
             $spreadsheet->getActiveSheet()->getStyle('Q'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
             $spreadsheet->getActiveSheet()->getStyle('R'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $num++;
         }
+        $spreadsheet->getActiveSheet()->getStyle('A'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('E'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('F'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        
         // 设置边框
         $borderStyleArray = [
             'borders' => [
