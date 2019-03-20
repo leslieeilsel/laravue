@@ -785,9 +785,7 @@
             align: 'center',
             render: (h, params) => {
               let editButton;
-              editButton = this.office === 0
-                ? !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4)
-                : false;
+              editButton = this.office === 0 ? !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4) : this.office === 1;
               return h('div', [
                 h('Button', {
                   props: {
@@ -962,6 +960,7 @@
         if (this.office === 2) {
           this.showLandMoney = true;
         }
+        this.isShowButton = this.office === 0;
         this.$refs.formValidate.resetFields();
         initProjectInfo().then(res => {
           if (res.result) {
@@ -1073,7 +1072,12 @@
         auditProject({id: this.formId, status: name}).then(res => {
           if (res.result === true) {
             this.previewModal = false;
-            this.$Message.success('审核状态修改成功!');
+            console.log(name)
+            if (parseInt(name) === 1) {
+              this.$Message.success('审核通过!');
+            } else {
+              this.$Message.error('审核不通过!');
+            }
             this.getProject();
           }
         });

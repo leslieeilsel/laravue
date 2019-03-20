@@ -84,7 +84,6 @@ class ProjectController extends Controller
         $data['positions'] = self::buildPositions($data['positions']);
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['is_audit'] = 4;
-        $data['is_edit'] = 0;
         $data['user_id'] = Auth::id();
 
         $planData = $data['projectPlan'];
@@ -190,7 +189,11 @@ class ProjectController extends Controller
         $data = $request->input();
         $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
         $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
-        $data['is_audit'] = 0;
+        if ($this->office === 0) {
+            if ($data['is_audit'] === 2) {
+                $data['is_audit'] = 4;
+            }
+        }
         $id = $data['id'];
         $projectPlan = $data['projectPlan'];
         unset($data['id'], $data['projectPlan'], $data['positions'], $data['center_point']);
@@ -651,9 +654,15 @@ class ProjectController extends Controller
         return response()->json(['result' => $data], 200);
     }
 
+    /**
+     * 审核项目库信息
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function auditProject(Request $request)
     {
-        $data = $request->input('status');
+        $data = $request->input('params');
         $result = Projects::where('id', $data['id'])->update(['is_audit' => $data['status']]);
 
         $result = $result ? true : false;
