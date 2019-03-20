@@ -199,7 +199,7 @@ class ProjectController extends Controller
         $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
         $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
         if ($this->office === 0) {
-            if ($data['is_audit'] === 2) {
+            if ($data['is_audit'] === 2 || $data['is_audit'] === 3) {
                 $data['is_audit'] = 4;
             }
         }
@@ -595,13 +595,16 @@ class ProjectController extends Controller
     {
         $data = $request->input();
         $data = $data['dictName'];
+        $data['month'] = date('Y-m', strtotime($data['month']));
+        $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
+        $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
+        $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
+        if ($this->office === 0) {
+            if ($data['is_audit'] === 2 || $data['is_audit'] === 3) {
+                $data['is_audit'] = 4;
+            }
+        }
         $id = $data['id'];
-        if ($data['start_at']) {
-            $data['start_at'] = date('Y-m', strtotime($data['start_at']));
-        }
-        if ($data['img_progress_pic']) {
-            $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
-        }
         unset($data['id'], $data['updated_at'], $data['project_id'], $data['subject'], $data['project_num'], $data['build_start_at'], $data['build_end_at'], $data['total_investors'], $data['plan_start_at'], $data['plan_investors'], $data['plan_img_progress'], $data['month']);
 
         $result = ProjectSchedule::where('id', $id)->update($data);

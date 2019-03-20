@@ -497,16 +497,13 @@
         </Row>
       </Form>
       <div slot="footer">
-        
         <Button
           @click="editSubmit('editForm')"
           :loading="submitLoading"
           type="primary"
-          icon="ios-create-outline"
           style="margin-left:8px"
         >保存
         </Button>
-        <Button @click="handleReset('editform')" :loading="loading">重置</Button>
       </div>
     </Modal>
   </Card>
@@ -671,13 +668,7 @@
             align: 'center',
             render: (h, params) => {
               let editButton;
-              const groupId = this.$store.getters.user.group_id;
-              if (groupId === 6) {
-                editButton = !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4);
-              }
-              if (groupId === 4 || groupId === 7) {
-                editButton = false;
-              }
+              editButton = this.office === 0 ? !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4) : this.office === 1;
               return h('div', [
                 h('Button', {
                   props: {
@@ -693,13 +684,7 @@
                       this.month_act = params.row.month + ' 月实际完成投资';
                       this.year_investors = params.row.month.substring(0, 4) + '年计划投资';
                       this.year_img = params.row.month.substring(0, 4) + '年形象进度';
-                      const groupId = this.$store.getters.user.group_id;
-                      if (groupId === 6) {
-                        this.showAuditButton = false;
-                      }
-                      if (groupId === 4 || groupId === 7) {
-                        this.showAuditButton = params.row.is_audit === 0;
-                      }
+                      this.showAuditButton = this.office === 1 ? params.row.is_audit === 0 : false;
                       this.formId = params.row.id;
                       let _seeThis = this;
                       this.data.forEach(function (em) {
@@ -781,8 +766,10 @@
                           _editThis.editForm.acc_img_progress = em.acc_img_progress;
                           _editThis.editForm.acc_complete = em.acc_complete;
                           _editThis.editForm.problem = em.problem;
+                          _editThis.editForm.is_audit = em.is_audit;
                           _editThis.editForm.plan_build_start_at = em.plan_build_start_at;
                           _editThis.editForm.exp_preforma = em.exp_preforma;
+                          _editThis.editForm.img_progress_pic = em.img_progress_pic;
 
                           let img_pic = [];
                           if (em.img_progress_pic) {
@@ -849,9 +836,6 @@
           month_act_complete: [
             {required: true, message: '月底即完成投资不能为空', trigger: 'blur'}
           ],
-          // acc_complete: [
-          //   {required: true, message: '累计完成投资不能为空', trigger: 'blur'}
-          // ],
         },
         project_id: [],
         imgName: '',
@@ -867,7 +851,6 @@
             let date_at = new Date();
             const disabledMonth = date.getMonth();
             return disabledMonth < date_at.getMonth();
-            ;
           }
         },
         scheduleMonth: []
@@ -879,17 +862,10 @@
         this.month_ac = '-月实际完成投资';
         this.year_investor = '--年计划投资';
         this.year_im = '--年形象进度';
-        const groupId = this.$store.getters.user.group_id;
-        if (groupId === 6) {
-          this.showAuditButton = false;
-          this.editButton = false;
-          this.isShowButton = true;
-        }
-        if (groupId === 4 || groupId === 7) {
-          this.showAuditButton = true;
-          this.editButton = true;
-          this.isShowButton = false;
-        }
+
+        this.office = this.$store.getters.user.office;
+        this.isShowButton = this.office === 0;
+
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
         this.getProjectScheduleList();
@@ -910,7 +886,11 @@
         auditProjectProgress({id: this.formId, status: name}).then(res => {
           if (res.result) {
             this.seeModal = false;
-            this.$Message.success('审核状态修改成功!');
+            if (parseInt(name) === 1) {
+              this.$Message.success('审核通过!');
+            } else {
+              this.$Message.error('审核不通过!');
+            }
             this.getProjectScheduleList();
           }
         });
