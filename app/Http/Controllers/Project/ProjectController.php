@@ -499,7 +499,7 @@ class ProjectController extends Controller
         if ($data['month']) {
             $year = date('Y', strtotime($data['month']));
         }
-        $plans = DB::table('iba_project_plan')->where('date', $year)->first();
+        $plans = DB::table('iba_project_plan')->where('date', $year)->where('project_id',$data['project_id'])->where('parent_id',0)->first();
 
         return response()->json(['result' => $plans], 200);
     }
@@ -681,6 +681,19 @@ class ProjectController extends Controller
 
         $result = $result ? true : false;
 
+        return response()->json(['result' => $result], 200);
+    }
+    /**
+     * 填报，当当月实际投资发生改变时，修改累计投资
+     * @returns {*}
+     */
+    public function actCompleteMoney(Request $request){
+        $params = $request->input();
+        if ($params['month']) {
+            $year = date('Y', strtotime($params['month']));
+        }
+        $result = ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like',$year.'%')->sum('month_act_complete');
+        
         return response()->json(['result' => $result], 200);
     }
 }

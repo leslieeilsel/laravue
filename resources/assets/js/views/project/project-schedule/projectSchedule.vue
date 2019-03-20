@@ -70,7 +70,7 @@
           </Col>
           <Col span="12">
             <FormItem label="填报时间" prop="month">
-              <DatePicker @on-change="changeMonth" type="month" placeholder="请选择" format="yyyy-MM"
+              <DatePicker @on-change="changeMonth" type="month" :options="month_options_0" placeholder="请选择" format="yyyy-MM"
                           v-model="form.month"></DatePicker>
             </FormItem>
           </Col>
@@ -124,8 +124,8 @@
         <Divider />
         <Row>
           <Col span="12">
-            <FormItem :label="month_act" prop="month_act_complete">
-              <Input v-model="form.month_act_complete" placeholder="万元"></Input>
+            <FormItem :label="month_act"  prop="month_act_complete">
+              <Input @on-blur="changeMonthActComplete" v-model="form.month_act_complete" placeholder="万元"></Input>
             </FormItem>
           </Col>
           <Col span="12">
@@ -425,7 +425,7 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_act" prop="month_act_complete">
-              <Input v-model="editForm.month_act_complete" placeholder="万元"></Input>
+              <Input v-model="editForm.month_act_complete" @on-blur="changeMonthActComplete" placeholder="万元"></Input>
             </FormItem>
           </Col>
           <Col span="12">
@@ -517,7 +517,8 @@
     editProjectProgress,
     getData,
     auditProjectProgress,
-    toAuditSchedule
+    toAuditSchedule,
+    actCompleteMoney
   } from '../../../api/project';
   import './projectSchedule.css'
 
@@ -857,7 +858,15 @@
         defaultList: [],
         is_audit: [],
         editButton: false,
-        upData:{}
+        upData:{},
+        month_options_0:{
+          disabledDate (date) {
+            let date_at = new Date();
+            const disabledMonth = date.getMonth();
+            return disabledMonth < date_at.getMonth();;
+          }
+        },
+        scheduleMonth:[]
       }
     },
     methods: {
@@ -947,11 +956,26 @@
         this.year_investors = e.substring(0, 4) + '年计划投资';
         this.year_img = e.substring(0, 4) + '年形象进度';
         if (this.form.project_id) {
-          projectPlanInfo(e).then(res => {
+          projectPlanInfo({month:this.form.month,project_id:this.form.project_id}).then(res => {
             this.form.plan_investors = res.result.amount;
             this.form.plan_img_progress = res.result.image_progress;
           });
         }
+      },// 月实际完成投资发生改变时 改变累计投资
+      changeMonthActComplete(e){
+        if (this.form.project_id === '') {
+          this.$Message.error('请先选择填报项目!');
+          this.form.month_act_complete = '';
+          return;
+        }
+        if (this.form.month === '') {
+          this.$Message.error('请先选择填报时间!');
+          this.form.month_act_complete = '';
+          return;
+        }       
+        actCompleteMoney({month:this.form.month,project_id:this.form.project_id}).then(res => {
+          this.form.acc_complete = parseFloat(res.result)+parseFloat(this.form.month_act_complete);
+        });
       },
       handleReset(name) {
         this.$refs[name].resetFields();

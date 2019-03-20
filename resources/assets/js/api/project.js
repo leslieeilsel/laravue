@@ -134,11 +134,11 @@ export function uploadPic(form) {
  * 查询项目计划
  * @returns {*}
  */
-export function projectPlanInfo(month) {
+export function projectPlanInfo(form) {
   return request({
     url: '/api/project/projectPlanInfo',
     method: 'post',
-    data: {month}
+    data: {...form}
   });
 }
 
@@ -295,5 +295,16 @@ export function toAuditSchedule(id) {
     url: '/api/project/toAuditSchedule',
     method: 'post',
     data: {id}
+  });
+}
+/**
+ * 填报，当当月实际投资发生改变时，修改累计投资
+ * @returns {*}
+ */
+export function actCompleteMoney(form) {
+  return request({
+    url: '/api/project/actCompleteMoney',
+    method: 'post',
+    data: {...form}
   });
 }
