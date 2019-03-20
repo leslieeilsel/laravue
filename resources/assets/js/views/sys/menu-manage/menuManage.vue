@@ -316,7 +316,7 @@
         this.iconModalVisible = true;
       },
       handleSelectIcon(v) {
-        if (this.iconType == 0) {
+        if (this.iconType === 0) {
           this.menuForm.icon = v;
         } else {
           this.menuFormAdd.icon = v;
@@ -338,7 +338,7 @@
         }
       },
       addChildMenu() {
-        if (this.menuForm.id == "" || this.menuForm.id == null) {
+        if (this.menuForm.id === "" || this.menuForm.id == null) {
           this.$Message.warning("请先点击选择一个菜单权限节点");
           return;
         }

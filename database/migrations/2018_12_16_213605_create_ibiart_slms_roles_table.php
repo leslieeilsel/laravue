@@ -18,6 +18,7 @@ class CreateIbiartSlmsRolesTable extends Migration
             $table->string('name')->nullable();         // 角色名称
             $table->string('description')->nullable();  // 描述
             $table->integer('is_default')->default(0);  // 是否设置为注册用户默认角色
+            $table->integer('data_type')->default(null);   // 数据权限类型
             $table->timestamps();
         });
     }

@@ -63,7 +63,7 @@
 </template>
 <script>
   import {registUser, getUsers} from '../../api/user';
-  import {initDepartment, loadDepartment} from 'api/system';
+  import {initDepartment, loadDepartment} from '../../api/system';
   import {getRoles} from '../../api/role';
   import './users.css';
 
@@ -85,9 +85,9 @@
         callback();
       };
       const pwdCheckValidate = (rule, value, callback) => {
-        if (this.form.password != '' && value == '') {
+        if (this.form.password !== '' && value === '') {
           callback(new Error('确认密码不能为空'));
-        } else if (this.form.password != value) {
+        } else if (this.form.password !== value) {
           callback(new Error('新密码和确认密码应相同'));
         } else {
           callback();
