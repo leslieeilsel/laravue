@@ -127,7 +127,7 @@
             {required: true, validator: pwdCheckValidate, trigger: 'blur'}
           ],
           department_title: [
-            {required: true, message: '所属部门不能为空', trigger: 'blur'}
+            {required: true, message: '所属部门不能为空', trigger: 'change'}
           ]
         },
         columns: [
@@ -194,7 +194,7 @@
       getRoles().then((data) => {
         this.roleList = data.result;
         this.roleList.forEach(e => {
-          if (e.is_default == 1) {
+          if (e.is_default === 1) {
             this.checkedDefaultRole = e.id;
             this.form.group_id = this.checkedDefaultRole;
           }
