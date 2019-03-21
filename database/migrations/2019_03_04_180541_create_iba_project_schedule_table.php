@@ -34,6 +34,7 @@ class CreateIbaProjectScheduleTable extends Migration
             $table->string('img_progress_pic')->nullable();             // 形象进度照片
             $table->string('marker')->nullable();                       // 备注
             $table->integer('is_audit')->default(0);                    // 审核状态
+            $table->integer('plan_id')->nullable();                     // 计划id
             $table->integer('user_id')->nullable();                     // 用户id
             $table->timestamps();
         });

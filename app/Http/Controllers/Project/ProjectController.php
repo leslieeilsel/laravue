@@ -365,7 +365,7 @@ class ProjectController extends Controller
             $data[$k]['project_id'] = $res->project_id;
             $data[$k]['problem'] = $res->problem;
             $data[$k]['tags'] = $row['warning_type'];
-            $data[$k]['shedeule_at'] = $row['shedeule_at'];
+            $data[$k]['schedule_at'] = $row['schedule_at'];
         }
 
         return response()->json(['result' => $data], 200);
@@ -399,32 +399,27 @@ class ProjectController extends Controller
      */
     public function projectProgress(Request $request)
     {
-        $data = $request->input();
-        if ($data['month']) {
-            $data['month'] = date('Y-m', strtotime($data['month']));
-            $year = date('Y', strtotime($data['month']));
-            $month = date('m', strtotime($data['month']));
-        }
-        if ($data['build_start_at']) {
-            $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
-        }
-        if ($data['build_end_at']) {
-            $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
-        }
-        if ($data['plan_build_start_at']) {
-            $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
-        }
+        $data = $request->all();
+        $data['month'] = date('Y-m', strtotime($data['month']));
+        $year = date('Y', strtotime($data['month']));
+        $month = date('m', strtotime($data['month']));
+        $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
+
+        $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
+        $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
+        $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
         if ($data['img_progress_pic']) {
             $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
         }
         $data['is_audit'] = 4;
+        $data['plan_id'] = $plan_id;
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['user_id'] = Auth::id();
         $schedule_id = DB::table('iba_project_schedule')->insertGetId($data);
 
-        $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
         $m = intval($month);
         $plans_amount = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $m)->value('amount');
+        $warResult = true;
         if ($plans_amount) {
             $Percentage = ($plans_amount - $data['month_act_complete']) / $plans_amount;
             if ($Percentage <= 0.1) {
@@ -435,10 +430,10 @@ class ProjectController extends Controller
                 $warData['warning_type'] = 2;
             }
             $warData['schedule_id'] = $schedule_id;
-            $warData['shedeule_at'] = $year . '-' . $month;
+            $warData['schedule_at'] = $year . '-' . $month;
             $warResult = ProjectEarlyWarning::insert($warData);
         }
-        $result = $schedule_id && $warResult >= 0;
+        $result = $schedule_id && $warResult;
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '投资项目进度填报');
@@ -604,8 +599,7 @@ class ProjectController extends Controller
      */
     public function editProjectProgress(Request $request)
     {
-        $data = $request->input();
-        $data = $data['dictName'];
+        $data = $request->all();
         $data['month'] = date('Y-m', strtotime($data['month']));
         $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
         $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
