@@ -206,11 +206,11 @@ export function projectQuarter(dictName) {
  * 修改填报
  * @returns {*}
  */
-export function editProjectProgress(dictName) {
+export function editProjectProgress(form) {
   return request({
     url: '/api/project/editProjectProgress',
     method: 'post',
-    data: {dictName}
+    data: {...form}
   });
 }
 
