@@ -6,17 +6,54 @@ use App\Http\Controllers\Controller;
 use App\Models\Project\ProjectSchedule;
 use App\Models\Project\Projects;
 use App\Models\Dict;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Http\Request;
 use App\Models\ZipDownload;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Models\Role;
 
 class LedgerController extends Controller
 {
+    public $seeIds;
+    public $office;
+
+    public function __construct()
+    {
+        $this->getSeeIds();
+    }
+
+    public function getSeeIds()
+    {
+        if (Auth::check()) {
+            $roleId = Auth::user()->group_id;
+            $this->office = Auth::user()->office;
+            $userId = Auth::id();
+            $dataType = Role::where('id', $roleId)->first()->data_type;
+
+            if ($dataType === 0) {
+                $userIds = User::all()->toArray();
+                $this->seeIds = array_column($userIds, 'id');
+            }
+            if ($dataType === 1) {
+                $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
+                $departmentIds = array_column($departmentIds, 'department_id');
+                $userIds = User::whereIn('department_id', $departmentIds)->get()->toArray();
+                $this->seeIds = array_column($userIds, 'id');
+            }
+            if ($dataType === 2) {
+                $this->seeIds = [$userId];
+            }
+        }
+    }
+
     /**
      * 获取台账进度列表
      *
-     * @return JsonResponse
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function projectLedgerList(Request $request)
     {
@@ -46,7 +83,7 @@ class LedgerController extends Controller
         if ($params['search_project_id']) {
             $sql = $sql->where('project_id', $params['search_project_id']);
         }
-        $sql = $sql->get()->toArray();
+        $sql = $sql->where('is_audit', 1)->whereIn('user_id', $this->seeIds)->get()->toArray();
 
         foreach ($sql as $k => $row) {
             $projects = Projects::where('id', $row['project_id'])->first();
@@ -230,7 +267,7 @@ class LedgerController extends Controller
      * 下载图片
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function downLoadSchedule(Request $request)
     {
