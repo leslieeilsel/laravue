@@ -83,18 +83,6 @@ export function edit(form) {
 }
 
 /**
- * 删除项目
- * @returns {*}
- */
-export function deleteProject(parentsIds, yearIds, monthIds) {
-  return request({
-    url: '/api/project/deleteProject',
-    method: 'post',
-    data: {parentsIds, yearIds, monthIds}
-  });
-}
-
-/**
  * 投资项目进度填报
  * @returns {*}
  */

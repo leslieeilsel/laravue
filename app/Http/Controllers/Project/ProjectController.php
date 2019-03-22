@@ -321,33 +321,6 @@ class ProjectController extends Controller
         return $data;
     }
 
-    /**
-     * 删除项目
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function delete(Request $request)
-    {
-        $allIds = $request->all();
-        if ($allIds['parentsIds']) {
-            $parentsIds = explode(',', $allIds['parentsIds']);
-            Projects::destroy($parentsIds);
-            DB::table('iba_project_plan')->whereIn('project_id', $parentsIds)->delete();
-        }
-        if ($allIds['yearIds']) {
-            $yearIds = explode(',', $allIds['yearIds']);
-            ProjectPlan::destroy($yearIds);
-            DB::table('iba_project_plan')->whereIn('parent_id', $yearIds)->delete();
-        }
-        if ($allIds['monthIds']) {
-            $monthIds = explode(',', $allIds['monthIds']);
-            ProjectPlan::destroy($monthIds);
-        }
-
-        return response()->json(['result' => true], 200);
-    }
-
     public function getAllWarning()
     {
         $data = [];
@@ -523,7 +496,7 @@ class ProjectController extends Controller
         $img_h = $img->height();
         $img = $img->resize($img_w * 0.5, $img_h * 0.5)->save($path);
         $c = $img->response($suffix);
-        
+
         return response()->json(['result' => $path], 200);
     }
 
