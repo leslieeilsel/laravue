@@ -79,8 +79,8 @@
         });
       },
       createMap() {
-        // 百度地图API功能
-        let map = new BMap.Map("map", {enableMapClick: false}, {minZoom: 13, maxZoom: 16});// 构造底图时，关闭底图可点功能
+        // enableMapClick: false 构造底图时，关闭底图可点功能
+        let map = new BMap.Map("map", {enableMapClick: false, minZoom: 13, maxZoom: 17});
         map.centerAndZoom(new BMap.Point(108.720027, 34.298497), 15);
         map.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
         this.getDictData();
