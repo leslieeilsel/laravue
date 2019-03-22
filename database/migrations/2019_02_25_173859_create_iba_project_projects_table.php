@@ -28,6 +28,7 @@ class CreateIbaProjectProjectsTable extends Migration
             $table->integer('is_gc');                               // 改创项目
             $table->integer('nep_type')->nullable();                // 国民经济计划分类(nec:national economic plan)
             $table->integer('is_audit');                            // 审核状态
+            $table->string('reason')->nullable();                   // 审核不通过原因
             $table->string('description');                          // 投资概况
             $table->string('center_point');                         // 项目中心点坐标
             $table->string('positions');                            // 项目坐标集

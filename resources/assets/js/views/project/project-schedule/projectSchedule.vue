@@ -1,4 +1,3 @@
-
 <template>
   <Card>
     <Row>
@@ -64,7 +63,8 @@
       :styles="{top: '20px'}"
       width="550"
       title="项目进度当月没填报项目">
-      <Table type="selection" stripe border :columns="scheduleColumns" :data="scheduleData" :loading="tableLoading"></Table>
+      <Table type="selection" stripe border :columns="scheduleColumns" :data="scheduleData" :loading="tableLoading">
+      </Table>
     </Modal>
     <Modal
       v-model="modal"
@@ -139,7 +139,8 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_act" prop="month_act_complete">
-              <InputNumber @on-blur="changeMonthActComplete" :min="0" :step="1.2" v-model="form.month_act_complete" placeholder="必填项"></InputNumber>
+              <InputNumber @on-blur="changeMonthActComplete" :min="0" :step="1.2" v-model="form.month_act_complete"
+                           placeholder="必填项"></InputNumber>
             </FormItem>
           </Col>
           <Col span="12">
@@ -223,6 +224,12 @@
       :styles="{top: '20px'}"
       width="850"
       title="查看项目进度信息">
+      <Alert type="error" show-icon v-if="openErrorAlert">
+        审核意见
+        <span slot="desc">
+          {{seeForm.reason}}
+        </span>
+      </Alert>
       <Form ref="seeForm" :model="seeForm" :label-width="150">
         <Row>
           <Col span="12">
@@ -325,12 +332,13 @@
           <Col span="12">
             <FormItem label="存在问题" prop="problem">
               <Input v-model="seeForm.problem" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder=""
-                    readonly></Input>
+                     readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="备注" prop="marker">
-              <Input v-model="seeForm.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}"placeholder="" readonly></Input>
+              <Input v-model="seeForm.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder=""
+                     readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -373,6 +381,12 @@
       :styles="{top: '20px'}"
       width="850"
       title="编辑项目进度">
+      <Alert type="error" show-icon v-if="openErrorAlert">
+        审核意见
+        <span slot="desc">
+          {{editForm.reason}}
+        </span>
+      </Alert>
       <Form ref="editForm" :model="editForm" :label-width="150" :rules="formValidate">
         <Row>
           <Col span="12">
@@ -437,7 +451,8 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_act" prop="month_act_complete">
-              <InputNumber @on-blur="changeEditMonthActComplete" :min="0" :step="1.2" v-model="editForm.month_act_complete" placeholder="必填项"></InputNumber>
+              <InputNumber @on-blur="changeEditMonthActComplete" :min="0" :step="1.2"
+                           v-model="editForm.month_act_complete" placeholder="必填项"></InputNumber>
             </FormItem>
           </Col>
           <Col span="12">
@@ -515,6 +530,18 @@
         </Button>
       </div>
     </Modal>
+    <Modal
+      v-model="reasonModal"
+      title="审核不通过原因">
+      <Form ref="reasonForm" :model="reasonForm">
+        <FormItem prop="reason">
+          <Input type="textarea" size="large" v-model="reasonForm.reason" placeholder="请输入"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="primary" @click="reasonAudit()" :loading="reasonAuditLoading">确定</Button>
+      </div>
+    </Modal>
   </Card>
 </template>
 <script>
@@ -536,6 +563,12 @@
     data() {
       return {
         isShowButton: true,
+        reasonModal: false,
+        reasonAuditLoading: false,
+        reasonForm: {
+          reason: ''
+        },
+        openErrorAlert: false,
         showAuditButton: false,
         formId: '',
         dropDownContent: '展开',
@@ -554,7 +587,7 @@
         noSchedule: false,
         seeModal: false,
         editModal: false,
-        scheduleColumns:[
+        scheduleColumns: [
           {
             title: '项目名称',
             key: 'title',
@@ -570,7 +603,7 @@
         columns: [
           {
             title: '项目名称',
-            key: 'project_id',
+            key: 'project_title',
             width: 250,
             fixed: 'left'
           },
@@ -735,6 +768,8 @@
                           _seeThis.seeForm.problem = em.problem;
                           _seeThis.seeForm.plan_build_start_at = em.plan_build_start_at;
                           _seeThis.seeForm.exp_preforma = em.exp_preforma;
+                          _seeThis.seeForm.is_audit = em.is_audit;
+                          _seeThis.seeForm.reason = em.reason;
 
                           let img_pic = [];
                           if (em.img_progress_pic) {
@@ -749,6 +784,7 @@
                           _seeThis.seeForm.marker = em.marker;
                         }
                       });
+                      this.openErrorAlert = (this.seeForm.reason !== '' && this.seeForm.is_audit === 2);
                       this.seeModal = true;
                     }
                   }
@@ -768,6 +804,7 @@
                       this.month_act = params.row.month + ' 月实际完成投资(万元)';
                       this.year_investors = params.row.month.substring(0, 4) + '年计划投资(万元)';
                       this.year_img = params.row.month.substring(0, 4) + '年形象进度';
+                      this.formId = params.row.id;
                       this.editForm.id = params.row.id;
                       let _editThis = this;
                       this.data.forEach(function (em) {
@@ -788,6 +825,7 @@
                           _editThis.editForm.acc_complete = em.acc_complete;
                           _editThis.editForm.problem = em.problem;
                           _editThis.editForm.is_audit = em.is_audit;
+                          _editThis.editForm.reason = em.reason;
                           _editThis.editForm.plan_build_start_at = em.plan_build_start_at;
                           _editThis.editForm.exp_preforma = em.exp_preforma;
                           _editThis.editForm.img_progress_pic = em.img_progress_pic;
@@ -805,6 +843,7 @@
                           _editThis.editForm.marker = em.marker;
                         }
                       });
+                      this.openErrorAlert = (this.editForm.reason !== '' && this.editForm.is_audit === 2);
                       this.editModal = true;
                     }
                   }
@@ -814,7 +853,7 @@
           }
         ],
         data: [],
-        scheduleData:[],
+        scheduleData: [],
         tableLoading: true,
         loading: false,
         month_img: '-月形象进度',
@@ -872,8 +911,8 @@
           disabledDate(date) {
             let date_at = new Date();
             const disabledMonth = date.getMonth();
-            
-            return disabledMonth != date_at.getMonth();
+
+            return disabledMonth !== date_at.getMonth();
           }
         },
         scheduleMonth: []
@@ -898,31 +937,46 @@
         this.tableLoading = true;
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
-          if(res.result){
-            if(this.searchForm.project_id||this.searchForm.project_num||this.searchForm.subject||this.searchForm.start_at||this.searchForm.end_at){
-              this.btnDisable=false;
-          }
-          this.tableLoading = false;
+          if (res.result) {
+            if (this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
+              this.btnDisable = false;
+            }
+            this.tableLoading = false;
           }
         });
-      },getProjectNoScheduleList() {
+      },
+      getProjectNoScheduleList() {
         this.tableLoading = true;
         getProjectNoScheduleList().then(res => {
-          console.log(res);
-          
           this.scheduleData = res.result;
           this.tableLoading = false;
         });
       },
       audit(name) {
-        auditProjectProgress({id: this.formId, status: name}).then(res => {
-          if (res.result) {
-            this.seeModal = false;
-            if (parseInt(name) === 1) {
+        if (parseInt(name) === 1) {
+          let params = {id: this.formId, status: parseInt(name), reason: ''};
+          this.toAuditProject(params)
+        } else {
+          this.reasonModal = true;
+          this.reasonForm.id = this.formId;
+          this.reasonForm.status = parseInt(name);
+        }
+      },
+      reasonAudit() {
+        this.reasonAuditLoading = true;
+        this.toAuditProject(this.reasonForm);
+      },
+      toAuditProject(params) {
+        auditProjectProgress(params).then(res => {
+          if (res.result === true) {
+            if (params.status === 1) {
               this.$Message.success('审核通过!');
             } else {
+              this.reasonAuditLoading = false;
+              this.reasonModal = false;
               this.$Message.error('审核不通过!');
             }
+            this.seeModal = false;
             this.getProjectScheduleList();
           }
         });
@@ -985,7 +1039,7 @@
           this.$Message.error('请先选择填报项目!');
           this.form.month_act_complete = null;
           return;
-        }null
+        }
         if (this.form.month === '') {
           this.$Message.error('请先选择填报时间!');
           this.form.month_act_complete = null;

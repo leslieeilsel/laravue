@@ -279,6 +279,12 @@
       :styles="{top: '20px'}"
       width="850"
       title="修改项目">
+      <Alert type="error" show-icon v-if="openErrorAlert">
+        审核意见
+        <span slot="desc">
+              {{editForm.reason}}
+          </span>
+      </Alert>
       <Form ref="editFormValidate" :model="editForm" :rules="ruleValidate" :label-width="110">
         <Divider><h4>基础信息</h4></Divider>
         <Row>
@@ -454,6 +460,12 @@
       :styles="{top: '20px'}"
       width="850"
       title="查看项目">
+      <Alert type="error" show-icon v-if="openErrorAlert">
+        审核意见
+        <span slot="desc">
+              {{previewForm.reason}}
+          </span>
+      </Alert>
       <Form ref="previewFormValidate" :model="previewForm" :label-width="110">
         <Divider><h4>基础信息</h4></Divider>
         <Row>
@@ -615,6 +627,18 @@
         </Dropdown>
       </div>
     </Modal>
+    <Modal
+      v-model="reasonModal"
+      title="审核不通过原因">
+      <Form ref="reasonForm" :model="reasonForm">
+        <FormItem prop="reason">
+          <Input type="textarea" size="large" v-model="reasonForm.reason" placeholder="请输入"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="primary" @click="reasonAudit()" :loading="reasonAuditLoading">确定</Button>
+      </div>
+    </Modal>
   </Card>
 </template>
 <script>
@@ -635,6 +659,8 @@
     data: function () {
       return {
         isShowButton: true,
+        reasonModal: false,
+        reasonAuditLoading: false,
         dropDownContent: '展开',
         drop: false,
         dropDownIcon: "ios-arrow-down",
@@ -642,6 +668,10 @@
         isAdjustReadOnly: false,
         btnDisable: true,
         editFormLoading: false,
+        reasonForm: {
+          reason: ''
+        },
+        openErrorAlert: false,
         searchForm: {
           title: '',
           subject: '',
@@ -801,6 +831,7 @@
                       this.previewForm = params.row;
                       this.formId = params.row.id;
                       this.isReadOnly = true;
+                      this.openErrorAlert = (this.previewForm.reason !== '' && this.previewForm.is_audit === 2);
                       this.previewModal = true;
                     }
                   }
@@ -831,6 +862,7 @@
                         this.formId = params.row.id;
                         this.isAdjustReadOnly = params.row.is_audit === 3;
                         this.isReadOnly = false;
+                        this.openErrorAlert = (this.editForm.reason !== '' && this.editForm.is_audit === 2);
                         this.editModal = true;
                         // this.editFormLoading = false;
                       });
@@ -1069,14 +1101,30 @@
         });
       },
       audit(name) {
-        auditProject({id: this.formId, status: name}).then(res => {
+        if (parseInt(name) === 1) {
+          let params = {id: this.formId, status: parseInt(name), reason: ''};
+          this.toAuditProject(params)
+        } else {
+          this.reasonModal = true;
+          this.reasonForm.id = this.formId;
+          this.reasonForm.status = parseInt(name);
+        }
+      },
+      reasonAudit() {
+        this.reasonAuditLoading = true;
+        this.toAuditProject(this.reasonForm);
+      },
+      toAuditProject(params) {
+        auditProject(params).then(res => {
           if (res.result === true) {
-            this.previewModal = false;
-            if (parseInt(name) === 1) {
+            if (params.status === 1) {
               this.$Message.success('审核通过!');
             } else {
+              this.reasonAuditLoading = false;
+              this.reasonModal = false;
               this.$Message.error('审核不通过!');
             }
+            this.previewModal = false;
             this.getProject();
           }
         });

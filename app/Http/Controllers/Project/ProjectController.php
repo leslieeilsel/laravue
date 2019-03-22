@@ -16,8 +16,8 @@ use App\Models\ProjectEarlyWarning;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Dict;
 use Illuminate\Support\Facades\Auth;
-// use Intervention\Image\Image;
 use Intervention\Image\ImageManagerStatic as Image;
+
 class ProjectController extends Controller
 {
     public $seeIds;
@@ -205,6 +205,7 @@ class ProjectController extends Controller
             }
         }
         $id = $data['id'];
+        $data['reason'] = '';
         $projectPlan = $data['projectPlan'];
         unset($data['id'], $data['projectPlan'], $data['positions'], $data['center_point']);
         $result = Projects::where('id', $id)->update($data);
@@ -359,7 +360,7 @@ class ProjectController extends Controller
             $data[$k]['key'] = $row['id'];
             $res = ProjectSchedule::where('id', $row['schedule_id'])->first();
             foreach ($projects as $kk => $v) {
-                if ($v['id'] === (int) $res->project_id) {
+                if ($v['id'] === (int)$res->project_id) {
                     $data[$k]['title'] = $v['title'];
                 }
             }
@@ -402,18 +403,21 @@ class ProjectController extends Controller
     {
         $data = $request->all();
         $data['month'] = date('Y-m', strtotime($data['month']));
-        $year = date('Y', strtotime($data['month']));
-        $month = date('m', strtotime($data['month']));
+        $year = (int)date('Y', strtotime($data['month']));
+        $month = (int)date('m', strtotime($data['month']));
         $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
+        $plan_month_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $month)->value('id');
 
         $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
         $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
-        $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
+        if ($data['plan_build_start_at']) {
+            $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
+        }
         if ($data['img_progress_pic']) {
             $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
         }
         $data['is_audit'] = 4;
-        $data['plan_id'] = $plan_id;
+        $data['plan_id'] = $plan_month_id;
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['user_id'] = Auth::id();
         $schedule_id = DB::table('iba_project_schedule')->insertGetId($data);
@@ -485,16 +489,17 @@ class ProjectController extends Controller
         foreach ($ProjectSchedules as $k => $row) {
             $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->value('title');
-            $ProjectSchedules[$k]['project_id'] = $Projects;
+            $ProjectSchedules[$k]['project_title'] = $Projects;
         }
+
         return $ProjectSchedules;
     }
 
     public function projectProgressList(Request $request)
     {
         $params = $request->all();
-        $sql = $this->projectProgressM($params);
-        return response()->json(['result' => $sql], 200);
+        $result = $this->projectProgressM($params);
+        return response()->json(['result' => $result], 200);
     }
 
     /**
@@ -510,14 +515,15 @@ class ProjectController extends Controller
         $path = Storage::putFileAs(
             'public/project/project-schedule/' . $params['month'] . "_" . $params['project_num'],
             $request->file('img_pic'),
-            rand(1000000, time()). '_' .$params['project_num']. '.' . $suffix
+            rand(1000000, time()) . '_' . $params['project_num'] . '.' . $suffix
         );
         $path = 'storage/' . substr($path, 7);
-        $img=Image::make($path);
-        $img_w=$img->width();
-        $img_h=$img->height();
-        $img = $img->resize($img_w*0.5, $img_h*0.5)->save($path);
-        $c=$img->response($suffix);
+        $img = Image::make($path);
+        $img_w = $img->width();
+        $img_h = $img->height();
+        $img = $img->resize($img_w * 0.5, $img_h * 0.5)->save($path);
+        $c = $img->response($suffix);
+        
         return response()->json(['result' => $path], 200);
     }
 
@@ -591,7 +597,6 @@ class ProjectController extends Controller
         $result['projects'] = Projects::where('id', $project_id)->first();
 
         $result['ProjectSchedules'] = ProjectSchedule::where('project_id', $project_id)->where('month', $date)->first();
-        // $ProjectLedger = ProjectLedger::all()->toArray();
 
         return response()->json(['result' => $result], 200);
     }
@@ -608,14 +613,20 @@ class ProjectController extends Controller
         $data['month'] = date('Y-m', strtotime($data['month']));
         $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
         $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
-        $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
+        if ($data['plan_build_start_at']) {
+            $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
+        }
         if ($this->office === 0) {
             if ($data['is_audit'] === 2 || $data['is_audit'] === 3) {
                 $data['is_audit'] = 4;
             }
         }
         $id = $data['id'];
-        unset($data['id'], $data['updated_at'], $data['project_id'], $data['subject'], $data['project_num'], $data['build_start_at'], $data['build_end_at'], $data['total_investors'], $data['plan_start_at'], $data['plan_investors'], $data['plan_img_progress'], $data['month']);
+        unset(
+            $data['id'], $data['updated_at'], $data['project_id'], $data['subject'], $data['project_num'],
+            $data['build_start_at'], $data['build_end_at'], $data['total_investors'], $data['plan_start_at'],
+            $data['plan_investors'], $data['plan_img_progress'], $data['month'], $data['project_title']
+        );
 
         $result = ProjectSchedule::where('id', $id)->update($data);
 
@@ -635,9 +646,10 @@ class ProjectController extends Controller
      */
     public function auditProjectProgress(Request $request)
     {
-        $data = $request->input();
-        $id = $data['id'];
-        $result = ProjectSchedule::where('id', $id)->update(['is_audit' => $data['status']]);
+        $data = $request->all();
+        $result = ProjectSchedule::where('id', $data['id'])->update(['is_audit' => $data['status'], 'reason' => $data['reason']]);
+
+        $result = $result || $result >= 0;
 
         return response()->json(['result' => $result], 200);
     }
@@ -684,9 +696,9 @@ class ProjectController extends Controller
     public function auditProject(Request $request)
     {
         $data = $request->input('params');
-        $result = Projects::where('id', $data['id'])->update(['is_audit' => $data['status']]);
+        $result = Projects::where('id', $data['id'])->update(['is_audit' => $data['status'], 'reason' => $data['reason']]);
 
-        $result = $result ? true : false;
+        $result = $result || $result >= 0;
 
         return response()->json(['result' => $result], 200);
     }
@@ -730,7 +742,9 @@ class ProjectController extends Controller
 
     /**
      * 填报，当当月实际投资发生改变时，修改累计投资
-     * @returns {*}
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function actCompleteMoney(Request $request)
     {
@@ -742,17 +756,18 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 当月项目未填报列表
-     * @returns {*}
+     *
+     * @return JsonResponse
      */
     public function getProjectNoScheduleList()
     {
-        $Project_id=ProjectSchedule::where('month','=',date('Y-m'))->pluck('project_id')->toArray();
-        
-        $result=Projects::whereNotIn('id',$Project_id)->get()->toArray();
-        
+        $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->pluck('project_id')->toArray();
+        $result = Projects::whereNotIn('id', $Project_id)->get()->toArray();
+
         return response()->json(['result' => $result], 200);
     }
-    
+
 }
