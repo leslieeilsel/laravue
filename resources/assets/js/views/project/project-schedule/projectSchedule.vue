@@ -49,6 +49,7 @@
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">填报</Button>
+      <Button type="primary" @click="noSchedule = true">查看当月未填报项目</Button>
       <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="btnDisable" icon="md-cloud-upload">
         导出台账
       </Button>
@@ -57,9 +58,14 @@
       </Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
-    <!-- <template>
-        <Page :total="100" show-total style="float:right"/>
-    </template> -->
+    <Modal
+      v-model="noSchedule"
+      @on-cancel="cancel"
+      :styles="{top: '20px'}"
+      width="550"
+      title="项目进度当月没填报项目">
+      <Table type="selection" stripe border :columns="scheduleColumns" :data="scheduleData" :loading="tableLoading"></Table>
+    </Modal>
     <Modal
       v-model="modal"
       @on-cancel="cancel"
@@ -523,7 +529,8 @@
     getData,
     auditProjectProgress,
     toAuditSchedule,
-    actCompleteMoney
+    actCompleteMoney,
+    getProjectNoScheduleList
   } from '../../../api/project';
   import './projectSchedule.css'
 
@@ -546,12 +553,26 @@
           start_at: '',
           end_at: ''
         },
+        noSchedule: false,
         seeModal: false,
         editModal: false,
+        scheduleColumns:[
+          {
+            title: '项目名称',
+            key: 'title',
+            width: 250,
+            fixed: 'left'
+          },
+          {
+            title: '项目编号',
+            key: 'num',
+            width: 100
+          }
+        ],
         columns: [
           {
             title: '项目名称',
-            key: 'project_title',
+            key: 'project_id',
             width: 250,
             fixed: 'left'
           },
@@ -795,6 +816,7 @@
           }
         ],
         data: [],
+        scheduleData:[],
         tableLoading: true,
         loading: false,
         month_img: '-月形象进度',
@@ -852,7 +874,8 @@
           disabledDate(date) {
             let date_at = new Date();
             const disabledMonth = date.getMonth();
-            return disabledMonth < date_at.getMonth();
+            
+            return disabledMonth != date_at.getMonth();
           }
         },
         scheduleMonth: []
@@ -871,6 +894,7 @@
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
         this.getProjectScheduleList();
+        this.getProjectNoScheduleList();
       },
       getProjectScheduleList() {
         this.tableLoading = true;
@@ -882,6 +906,14 @@
           }
           this.tableLoading = false;
           }
+        });
+      },getProjectNoScheduleList() {
+        this.tableLoading = true;
+        getProjectNoScheduleList().then(res => {
+          console.log(res);
+          
+          this.scheduleData = res.result;
+          this.tableLoading = false;
         });
       },
       audit(name) {

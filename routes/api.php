@@ -62,6 +62,8 @@ Route::post('project/getEditFormData', 'Project\ProjectController@getEditFormDat
 Route::post('project/toAudit', 'Project\ProjectController@toAudit');
 Route::post('project/toAuditSchedule', 'Project\ProjectController@toAuditSchedule');
 Route::post('project/actCompleteMoney', 'Project\ProjectController@actCompleteMoney');
+Route::post('project/getProjectNoScheduleList', 'Project\ProjectController@getProjectNoScheduleList');
+
 // 添加台账导出
 Route::get('project/exportSchedule', 'Project\LedgerController@exportSchedule');
 Route::get('project/exportLedger', 'Project\LedgerController@export');

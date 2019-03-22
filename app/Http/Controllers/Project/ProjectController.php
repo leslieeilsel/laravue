@@ -16,7 +16,8 @@ use App\Models\ProjectEarlyWarning;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Dict;
 use Illuminate\Support\Facades\Auth;
-
+// use Intervention\Image\Image;
+use Intervention\Image\ImageManagerStatic as Image;
 class ProjectController extends Controller
 {
     public $seeIds;
@@ -509,10 +510,14 @@ class ProjectController extends Controller
         $path = Storage::putFileAs(
             'public/project/project-schedule/' . $params['month'] . "_" . $params['project_num'],
             $request->file('img_pic'),
-            $params['project_num'] . '_' . rand(1000000, time()) . '.' . $suffix
+            rand(1000000, time()). '_' .$params['project_num']. '.' . $suffix
         );
         $path = 'storage/' . substr($path, 7);
-
+        $img=Image::make($path);
+        $img_w=$img->width();
+        $img_h=$img->height();
+        $img = $img->resize($img_w*0.5, $img_h*0.5)->save($path);
+        $c=$img->response($suffix);
         return response()->json(['result' => $path], 200);
     }
 
@@ -737,4 +742,17 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+    /**
+     * 当月项目未填报列表
+     * @returns {*}
+     */
+    public function getProjectNoScheduleList()
+    {
+        $Project_id=ProjectSchedule::where('month','=',date('Y-m'))->pluck('project_id')->toArray();
+        
+        $result=Projects::whereNotIn('id',$Project_id)->get()->toArray();
+        
+        return response()->json(['result' => $result], 200);
+    }
+    
 }

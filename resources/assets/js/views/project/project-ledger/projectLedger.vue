@@ -51,8 +51,13 @@
             fixed: 'left'
           },
           {
+            title: '填报时间',
+            key: 'month',
+            width: 100
+          },
+          {
             title: '项目名称',
-            key: 'project_id',
+            key: 'title',
             width: 220,
           },
           {
@@ -89,11 +94,6 @@
             title: '2019年主要建设内容',
             key: 'plan_con',
             width: 200
-          },
-          {
-            title: '季度项目进度',
-            key: 'quarter_progress',
-            width: 180
           },
           {
             title: '存在问题',
@@ -156,11 +156,18 @@
         let search_project_id = this.searchForm.project_id;
         let start_at = this.searchForm.start_at;
         let end_at = this.searchForm.end_at;
-        let start_time = new Date(start_at);
-        start_time = start_time.getFullYear() + '-' + (start_time.getMonth() + 1) + '-' + start_time.getDate();
-        let end_time = new Date(end_at);
-        end_time = end_time.getFullYear() + '-' + (end_time.getMonth() + 1) + '-' + end_time.getDate();
-        console.log(start_at);
+        let start_time = '';
+        if (start_at) {
+          let start_time_0 = new Date(start_at);
+          let month_start_time_0 = (start_time_0.getMonth() + 1) > 9 ? (start_time_0.getMonth() + 1) : '0' + (start_time_0.getMonth() + 1);
+          start_time = start_time_0.getFullYear() + '-' + month_start_time_0;
+        }
+        let end_time = '';
+        if (end_at) {
+          let end_time_0 = new Date(end_at);
+          let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
+          end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
+        }
         window.location.href = "/api/project/exportLedger?search_project_id=" + search_project_id + "&start_at=" + start_time + "&end_at=" + end_time;
       }
     },

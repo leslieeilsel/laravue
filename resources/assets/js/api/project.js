@@ -320,3 +320,14 @@ export function getAuditedProjects() {
     method: 'get'
   });
 }
+/**
+ * 获取项目进度未填报项目列表
+ * @returns {*}
+ */
+export function getProjectNoScheduleList(form) {
+  return request({
+    url: '/api/project/getProjectNoScheduleList',
+    method: 'post',
+    data: {...form}
+  });
+}
