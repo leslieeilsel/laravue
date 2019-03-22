@@ -157,7 +157,7 @@
         <Row>
           <Col span="12">
             <FormItem label="计划开工时间" prop="plan_build_start_at">
-              <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
+              <DatePicker type="month" placeholder="请选择" format="yyyy-MM"
                           v-model="form.plan_build_start_at"></DatePicker>
             </FormItem>
           </Col>
@@ -293,40 +293,38 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_img" prop="month_img_progress">
-              <Input type="textarea" v-model="seeForm.month_img_progress" placeholder="请输入..." readonly/>
+              <Input type="textarea" v-model="seeForm.month_img_progress" placeholder="" readonly/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="累计形象进度" prop="acc_img_progress">
-              <Input type="textarea" v-model="seeForm.acc_img_progress" placeholder="请输入..." readonly/>
+              <Input type="textarea" v-model="seeForm.acc_img_progress" placeholder="" readonly/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="计划开工时间" prop="plan_build_start_at">
-              <DatePicker type="month" placeholder="" format="yyyy-MM"
-                          v-model="seeForm.plan_build_start_at" readonly></DatePicker>
+              <Input v-model="seeForm.plan_build_start_at" placeholder="" readonly/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="土地征收情况及前期手续办理情况" prop="exp_preforma">
               <Input v-model="seeForm.exp_preforma" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="请输入..." readonly></Input>
+                     placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="存在问题" prop="problem">
-              <Input v-model="seeForm.problem" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入.."
-                     readonly></Input>
+              <Input v-model="seeForm.problem" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder=""
+                    readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="备注" prop="marker">
-              <Input v-model="seeForm.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="请输入..." readonly></Input>
+              <Input v-model="seeForm.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}"placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -457,8 +455,8 @@
         <Row>
           <Col span="12">
             <FormItem label="计划开工时间" prop="plan_build_start_at">
-              <DatePicker type="month" placeholder="开始时间" format="yyyy-MM"
-                          v-model="editForm.plan_build_start_at" readonly></DatePicker>
+              <DatePicker type="month" placeholder="请选择" format="yyyy-MM" v-model="editForm.plan_build_start_at">
+              </DatePicker>
             </FormItem>
           </Col>
           <Col span="12">
