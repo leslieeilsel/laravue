@@ -1072,7 +1072,6 @@
         auditProject({id: this.formId, status: name}).then(res => {
           if (res.result === true) {
             this.previewModal = false;
-            console.log(name)
             if (parseInt(name) === 1) {
               this.$Message.success('审核通过!');
             } else {

@@ -66,14 +66,22 @@ class ProjectController extends Controller
         if ($this->office === 2) {
             $query = $query->where('is_audit', 1);
         }
-        $c=$this->seeIds;
+
         $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
+
+        return response()->json(['result' => $projects], 200);
+    }
+
+    public function getAuditedProjects()
+    {
+        $projects = Projects::where('is_audit', 1)->whereIn('user_id', $this->seeIds)->get()->toArray();
+
         return response()->json(['result' => $projects], 200);
     }
 
     /**
      * 创建项目信息
-     * 
+     *
      * @param Request $request
      * @return JsonResponse
      */
@@ -191,7 +199,7 @@ class ProjectController extends Controller
         $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
         $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
         if ($this->office === 0) {
-            if ($data['is_audit'] === 2) {
+            if ($data['is_audit'] === 2 || $data['is_audit'] === 3) {
                 $data['is_audit'] = 4;
             }
         }
@@ -341,14 +349,25 @@ class ProjectController extends Controller
     public function getAllWarning()
     {
         $data = [];
-        $result = ProjectEarlyWarning::all()->toArray();
+        $projects = Projects::whereIn('user_id', $this->seeIds)->get()->toArray();
+        $projectIds = array_column($projects, 'id');
+        $projectSchedules = ProjectSchedule::whereIn('project_id', $projectIds)->get()->toArray();
+        $scheduleIds = array_column($projectSchedules, 'id');
+        $result = ProjectEarlyWarning::whereIn('schedule_id', $scheduleIds)->get()->toArray();
         foreach ($result as $k => $row) {
             $data[$k]['key'] = $row['id'];
-            $data[$k]['project_id'] = $row['project_id'];
-            $data[$k]['title'] = $row['title'];
+            $res = ProjectSchedule::where('id', $row['schedule_id'])->first();
+            foreach ($projects as $kk => $v) {
+                if ($v['id'] === (int) $res->project_id) {
+                    $data[$k]['title'] = $v['title'];
+                }
+            }
+            $data[$k]['project_id'] = $res->project_id;
+            $data[$k]['problem'] = $res->problem;
             $data[$k]['tags'] = $row['warning_type'];
-            $data[$k]['shedeule_at'] = $row['shedeule_at'];
+            $data[$k]['schedule_at'] = $row['schedule_at'];
         }
+
         return response()->json(['result' => $data], 200);
     }
 
@@ -380,32 +399,27 @@ class ProjectController extends Controller
      */
     public function projectProgress(Request $request)
     {
-        $data = $request->input();
-        if ($data['month']) {
-            $data['month'] = date('Y-m', strtotime($data['month']));
-            $year = date('Y', strtotime($data['month']));
-            $month = date('m', strtotime($data['month']));
-        }
-        if ($data['build_start_at']) {
-            $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
-        }
-        if ($data['build_end_at']) {
-            $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
-        }
-        if ($data['plan_build_start_at']) {
-            $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
-        }
+        $data = $request->all();
+        $data['month'] = date('Y-m', strtotime($data['month']));
+        $year = date('Y', strtotime($data['month']));
+        $month = date('m', strtotime($data['month']));
+        $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
+
+        $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
+        $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
+        $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
         if ($data['img_progress_pic']) {
             $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
         }
         $data['is_audit'] = 4;
+        $data['plan_id'] = $plan_id;
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['user_id'] = Auth::id();
-        $result = ProjectSchedule::insert($data);
+        $schedule_id = DB::table('iba_project_schedule')->insertGetId($data);
 
-        $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
         $m = intval($month);
         $plans_amount = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $m)->value('amount');
+        $warResult = true;
         if ($plans_amount) {
             $Percentage = ($plans_amount - $data['month_act_complete']) / $plans_amount;
             if ($Percentage <= 0.1) {
@@ -415,11 +429,11 @@ class ProjectController extends Controller
             } elseif ($Percentage > 0.2) {
                 $warData['warning_type'] = 2;
             }
-            $warData['project_id'] = $data['project_id'];
-            $warData['shedeule_at'] = $year . '-' . $month;
-            $warData['title'] = Projects::where('id', $data['project_id'])->value('title');
+            $warData['schedule_id'] = $schedule_id;
+            $warData['schedule_at'] = $year . '-' . $month;
             $warResult = ProjectEarlyWarning::insert($warData);
         }
+        $result = $schedule_id && $warResult;
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '投资项目进度填报');
@@ -460,14 +474,13 @@ class ProjectController extends Controller
                 }
             }
         }
-        $group_id = Auth::user()->group_id;
-        if ($group_id === 4 || $group_id === 7) {
-            $user_id = [1, 2, 3, 4, 5, 6, 7, 8];
+        if ($this->office === 1) {
+            $query = $query->where('is_audit', '!=', 4);
         }
-        if ($group_id === 6) {
-            $user_id = [7];
+        if ($this->office === 2) {
+            $query = $query->where('is_audit', 1);
         }
-        $ProjectSchedules = $query->whereIn('user_id', $user_id)->get()->toArray();
+        $ProjectSchedules = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
             $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->value('title');
@@ -586,15 +599,17 @@ class ProjectController extends Controller
      */
     public function editProjectProgress(Request $request)
     {
-        $data = $request->input();
-        $data = $data['dictName'];
+        $data = $request->all();
+        $data['month'] = date('Y-m', strtotime($data['month']));
+        $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
+        $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
+        $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
+        if ($this->office === 0) {
+            if ($data['is_audit'] === 2 || $data['is_audit'] === 3) {
+                $data['is_audit'] = 4;
+            }
+        }
         $id = $data['id'];
-        if ($data['start_at']) {
-            $data['start_at'] = date('Y-m', strtotime($data['start_at']));
-        }
-        if ($data['img_progress_pic']) {
-            $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
-        }
         unset($data['id'], $data['updated_at'], $data['project_id'], $data['subject'], $data['project_num'], $data['build_start_at'], $data['build_end_at'], $data['total_investors'], $data['plan_start_at'], $data['plan_investors'], $data['plan_img_progress'], $data['month']);
 
         $result = ProjectSchedule::where('id', $id)->update($data);

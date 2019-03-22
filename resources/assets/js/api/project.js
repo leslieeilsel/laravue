@@ -206,11 +206,11 @@ export function projectQuarter(dictName) {
  * 修改填报
  * @returns {*}
  */
-export function editProjectProgress(dictName) {
+export function editProjectProgress(form) {
   return request({
     url: '/api/project/editProjectProgress',
     method: 'post',
-    data: {dictName}
+    data: {...form}
   });
 }
 
@@ -297,6 +297,7 @@ export function toAuditSchedule(id) {
     data: {id}
   });
 }
+
 /**
  * 填报，当当月实际投资发生改变时，修改累计投资
  * @returns {*}
@@ -306,5 +307,16 @@ export function actCompleteMoney(form) {
     url: '/api/project/actCompleteMoney',
     method: 'post',
     data: {...form}
+  });
+}
+
+/**
+ * 获取项目进度填报已审核的项目列表（附加权限控制）
+ * @returns {*}
+ */
+export function getAuditedProjects() {
+  return request({
+    url: '/api/project/getAuditedProjects',
+    method: 'get'
   });
 }
