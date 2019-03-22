@@ -112,15 +112,15 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="总投资" prop="total_investors">
-              <Input v-model="form.total_investors" placeholder="万元" readonly></Input>
+            <FormItem label="总投资(万元)" prop="total_investors">
+              <Input v-model="form.total_investors" placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem :label="year_investors" prop="plan_investors">
-              <Input v-model="form.plan_investors" placeholder="万元" readonly></Input>
+              <Input v-model="form.plan_investors" placeholder="" readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
@@ -133,24 +133,24 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_act" prop="month_act_complete">
-              <Input @on-blur="changeMonthActComplete" v-model="form.month_act_complete" placeholder="万元"></Input>
+              <InputNumber @on-blur="changeMonthActComplete" :min="0" :step="1.2" v-model="form.month_act_complete" placeholder="必填项"></InputNumber>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="累计完成投资" prop="acc_complete">
-              <Input v-model="form.acc_complete" placeholder="万元" readonly/>
+            <FormItem label="累计完成投资(万元)" prop="acc_complete">
+              <Input v-model="form.acc_complete" placeholder="" readonly/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem :label="month_img" prop="month_img_progress">
-              <Input type="textarea" v-model="form.month_img_progress" placeholder=""/>
+              <Input type="textarea" v-model="form.month_img_progress" placeholder="请输入..."/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="累计形象进度" prop="acc_img_progress">
-              <Input type="textarea" v-model="form.acc_img_progress" placeholder=""/>
+              <Input type="textarea" v-model="form.acc_img_progress" placeholder="请输入..."/>
             </FormItem>
           </Col>
         </Row>
@@ -221,7 +221,7 @@
         <Row>
           <Col span="12">
             <FormItem label="填报项目" prop="project_id">
-              <Input v-model="seeForm.project_id" placeholder="" readonly></Input>
+              <Input v-model="seeForm.project_title" placeholder="" readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
@@ -260,7 +260,7 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="总投资" prop="total_investors">
+            <FormItem label="总投资(万元)" prop="total_investors">
               <Input v-model="seeForm.total_investors" placeholder="" readonly></Input>
             </FormItem>
           </Col>
@@ -285,7 +285,7 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="累计完成投资" prop="acc_complete">
+            <FormItem label="累计完成投资(万元)" prop="acc_complete">
               <Input v-model="seeForm.acc_complete" placeholder="" readonly/>
             </FormItem>
           </Col>
@@ -293,12 +293,12 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_img" prop="month_img_progress">
-              <Input type="textarea" v-model="seeForm.month_img_progress" placeholder="" readonly/>
+              <Input type="textarea" v-model="seeForm.month_img_progress" placeholder="请输入..." readonly/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="累计形象进度" prop="acc_img_progress">
-              <Input type="textarea" v-model="seeForm.acc_img_progress" placeholder="" readonly/>
+              <Input type="textarea" v-model="seeForm.acc_img_progress" placeholder="请输入..." readonly/>
             </FormItem>
           </Col>
         </Row>
@@ -373,7 +373,7 @@
         <Row>
           <Col span="12">
             <FormItem label="填报项目" prop="">
-              <Input v-model="editForm.project_id" placeholder="必填项" readonly></Input>
+              <Input v-model="editForm.project_title" placeholder="必填项" readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
@@ -412,20 +412,20 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="总投资" prop="total_investors">
-              <Input v-model="editForm.total_investors" placeholder="万元"></Input>
+            <FormItem label="总投资(万元)" prop="total_investors">
+              <Input v-model="editForm.total_investors" placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem :label="year_investors" prop="plan_investors">
-              <Input v-model="editForm.plan_investors" placeholder="万元" readonly></Input>
+              <Input v-model="editForm.plan_investors" placeholder="" readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem :label="year_img" prop="plan_img_progress">
-              <Input type="textarea" v-model="editForm.plan_img_progress" placeholder=""></Input>
+              <Input type="textarea" v-model="editForm.plan_img_progress" placeholder="请输入..." readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -433,24 +433,24 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_act" prop="month_act_complete">
-              <Input v-model="editForm.month_act_complete" @on-blur="changeMonthActComplete" placeholder="万元"></Input>
+              <InputNumber @on-blur="changeEditMonthActComplete" :min="0" :step="1.2" v-model="editForm.month_act_complete" placeholder="必填项"></InputNumber>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="累计完成投资" prop="acc_complete">
-              <Input v-model="editForm.acc_complete" placeholder="万元" readonly/>
+            <FormItem label="累计完成投资(万元)" prop="acc_complete">
+              <Input v-model="editForm.acc_complete" placeholder="" readonly/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem :label="month_img" prop="month_img_progress">
-              <Input type="textarea" v-model="editForm.month_img_progress" placeholder=""/>
+              <Input type="textarea" v-model="editForm.month_img_progress" placeholder="请输入..."/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="累计形象进度" prop="acc_img_progress">
-              <Input type="textarea" v-model="editForm.acc_img_progress" placeholder=""/>
+              <Input type="textarea" v-model="editForm.acc_img_progress" placeholder="请输入..."/>
             </FormItem>
           </Col>
         </Row>
@@ -551,7 +551,7 @@
         columns: [
           {
             title: '项目名称',
-            key: 'project_id',
+            key: 'project_title',
             width: 250,
             fixed: 'left'
           },
@@ -686,8 +686,8 @@
                   on: {
                     click: () => {
                       this.month_img = params.row.month + ' 月形象进度';
-                      this.month_act = params.row.month + ' 月实际完成投资';
-                      this.year_investors = params.row.month.substring(0, 4) + '年计划投资';
+                      this.month_act = params.row.month + ' 月实际完成投资(万元)';
+                      this.year_investors = params.row.month.substring(0, 4) + '年计划投资(万元)';
                       this.year_img = params.row.month.substring(0, 4) + '年形象进度';
                       this.showAuditButton = this.office === 1 ? params.row.is_audit === 0 : false;
                       this.formId = params.row.id;
@@ -701,6 +701,7 @@
                               _seeThis.seeForm.project_id = em_id.title;
                             }
                           });
+                          _seeThis.seeForm.project_title = em.project_title;
                           _seeThis.seeForm.project_num = em.project_num;
                           _seeThis.seeForm.subject = em.subject;
                           _seeThis.seeForm.build_start_at = em.build_start_at;
@@ -745,21 +746,17 @@
                   on: {
                     click: () => {
                       this.month_img = params.row.month + ' 月形象进度';
-                      this.month_act = params.row.month + ' 月实际完成投资';
-                      this.year_investors = params.row.month.substring(0, 4) + '年计划投资';
+                      this.month_act = params.row.month + ' 月实际完成投资(万元)';
+                      this.year_investors = params.row.month.substring(0, 4) + '年计划投资(万元)';
                       this.year_img = params.row.month.substring(0, 4) + '年形象进度';
                       this.editForm.id = params.row.id;
                       let _editThis = this;
                       this.data.forEach(function (em) {
                         if (em.id === params.row.id) {
                           _editThis.editForm.month = em.month;
-                          let em_project_id = em.project_id;
-                          _editThis.project_id.forEach(function (em_id) {
-                            if (em_project_id === em_id.title) {
-                              _editThis.editForm.project_id = em_id.title;
-                            }
-                          });
+                          _editThis.editForm.project_id = em.project_id;
                           _editThis.editForm.project_num = em.project_num;
+                          _editThis.editForm.project_title = em.project_title;
                           _editThis.editForm.subject = em.subject;
                           _editThis.editForm.build_start_at = em.build_start_at;
                           _editThis.editForm.build_end_at = em.build_end_at;
@@ -767,7 +764,7 @@
                           _editThis.editForm.plan_investors = em.plan_investors;
                           _editThis.editForm.plan_img_progress = em.plan_img_progress;
                           _editThis.editForm.month_img_progress = em.month_img_progress;
-                          _editThis.editForm.month_act_complete = em.month_act_complete;
+                          _editThis.editForm.month_act_complete = parseFloat(em.month_act_complete);
                           _editThis.editForm.acc_img_progress = em.acc_img_progress;
                           _editThis.editForm.acc_complete = em.acc_complete;
                           _editThis.editForm.problem = em.problem;
@@ -801,8 +798,8 @@
         tableLoading: true,
         loading: false,
         month_img: '-月形象进度',
-        month_act: '-月实际完成投资',
-        year_investors: '--年计划投资',
+        month_act: '-月实际完成投资(万元)',
+        year_investors: '--年计划投资(万元)',
         year_img: '--年形象进度',
         form: {
           month: '',
@@ -814,7 +811,7 @@
           total_investors: '',
           plan_investors: '',
           plan_img_progress: '',
-          month_act_complete: '',
+          month_act_complete: null,
           month_img_progress: '',
           acc_complete: '',
           acc_img_progress: '',
@@ -839,7 +836,7 @@
             {required: true, message: '项目名称不能为空', trigger: 'change', type: 'number'}
           ],
           month_act_complete: [
-            {required: true, message: '月底即完成投资不能为空', trigger: 'blur'}
+            {required: true, message: '实际完成投资不能为空', trigger: 'blur', type: 'number'}
           ],
         },
         project_id: [],
@@ -864,8 +861,8 @@
     methods: {
       init() {
         this.month_im = '-月形象进度';
-        this.month_ac = '-月实际完成投资';
-        this.year_investor = '--年计划投资';
+        this.month_ac = '-月实际完成投资(万元)';
+        this.year_investor = '--年计划投资(万元)';
         this.year_im = '--年形象进度';
 
         this.office = this.$store.getters.user.office;
@@ -943,8 +940,8 @@
         month_time = month_time.getFullYear() + '-' + month_time_0;
         this.upData = {month: month_time, project_num: this.form.project_num, project_id: this.form.project_id};
         this.month_img = e + ' 月形象进度';
-        this.month_act = e + ' 月实际完成投资';
-        this.year_investors = e.substring(0, 4) + '年计划投资';
+        this.month_act = e + ' 月实际完成投资(万元)';
+        this.year_investors = e.substring(0, 4) + '年计划投资(万元)';
         this.year_img = e.substring(0, 4) + '年形象进度';
         if (this.form.project_id) {
           projectPlanInfo({month: this.form.month, project_id: this.form.project_id}).then(res => {
@@ -956,16 +953,21 @@
       changeMonthActComplete(e) {
         if (this.form.project_id === '') {
           this.$Message.error('请先选择填报项目!');
-          this.form.month_act_complete = '';
+          this.form.month_act_complete = null;
           return;
-        }
+        }null
         if (this.form.month === '') {
           this.$Message.error('请先选择填报时间!');
-          this.form.month_act_complete = '';
+          this.form.month_act_complete = null;
           return;
         }
         actCompleteMoney({month: this.form.month, project_id: this.form.project_id}).then(res => {
           this.form.acc_complete = parseFloat(res.result) + parseFloat(this.form.month_act_complete);
+        });
+      },
+      changeEditMonthActComplete(e) {
+        actCompleteMoney({month: this.editForm.month, project_id: this.editForm.project_id}).then(res => {
+          this.editForm.acc_complete = parseFloat(res.result) + parseFloat(this.editForm.month_act_complete);
         });
       },
       handleReset(name) {
@@ -1014,8 +1016,8 @@
         this.$refs.form.resetFields();
         this.handleClearFiles();
         this.month_im = '-月形象进度';
-        this.month_ac = '-月实际完成投资';
-        this.year_investor = '--年计划投资';
+        this.month_ac = '-月实际完成投资(万元)';
+        this.year_investor = '--年计划投资(万元)';
         this.year_im = '--年形象进度';
       },//上传图片
       handleView(url) {

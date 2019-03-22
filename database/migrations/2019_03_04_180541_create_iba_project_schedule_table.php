@@ -15,7 +15,7 @@ class CreateIbaProjectScheduleTable extends Migration
     {
         Schema::create('iba_project_schedule', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('project_id')->nullable();                   // 项目名称->项目表id
+            $table->integer('project_id');                              // 项目名称->项目表id
             $table->string('month')->nullable();                        // 填报月份
             $table->string('project_num')->nullable();                  // 项目编号
             $table->string('subject')->nullable();                      // 投资主体
