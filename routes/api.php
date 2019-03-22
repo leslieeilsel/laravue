@@ -44,7 +44,6 @@ Route::get('project/getAllWarning', 'Project\ProjectController@getAllWarning');
 Route::post('project/getAllProjects', 'Project\ProjectController@getAllProjects');
 Route::post('project/getProjectDictData', 'Project\ProjectController@getProjectDictData');
 Route::post('project/addProject', 'Project\ProjectController@add');
-Route::post('project/addProjectPlan', 'Project\ProjectController@addProjectPlan');
 Route::post('project/edit', 'Project\ProjectController@edit');
 Route::post('project/projectProgress', 'Project\ProjectController@projectProgress');
 Route::post('project/projectProgressList', 'Project\ProjectController@projectProgressList');

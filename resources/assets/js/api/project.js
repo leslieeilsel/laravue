@@ -59,18 +59,6 @@ export function addProject(form) {
 }
 
 /**
- * 新增项目计划
- * @returns {*}
- */
-export function addProjectPlan(form) {
-  return request({
-    url: '/api/project/addProjectPlan',
-    method: 'post',
-    data: {...form}
-  });
-}
-
-/**
  * 修改项目信息，项目计划信息
  * @returns {*}
  */

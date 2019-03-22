@@ -175,19 +175,6 @@ class ProjectController extends Controller
         return $data;
     }
 
-    public function addProjectPlan(Request $request)
-    {
-        $data = $request->input();
-        $result = ProjectPlan::insert($data);
-
-        // if ($result) {
-        //     $log = new OperationLog();
-        //     $log->eventLog($request, '创建项目计划');
-        // }
-
-        return response()->json(['result' => $result], 200);
-    }
-
     /**
      * 修改项目信息
      *
