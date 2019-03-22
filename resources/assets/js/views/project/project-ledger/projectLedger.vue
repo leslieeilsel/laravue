@@ -16,8 +16,8 @@
             </Row>
         </Form-item>
         <Form-item label="项目名称" prop="project_id">
-          <Select v-model="searchForm.project_id"
-                  style="width: 200px">
+          <Select v-model="searchForm.project_id" style="width: 200px">
+            <Option value="0" key="0">全部</Option>
             <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
           </Select>
         </Form-item>
@@ -197,7 +197,7 @@
           end_at: end_at
         }).then(res => {
           this.data = res.result;
-          if(res.result.length>0){
+          if(res.result){
             if(search_project_id||start_at||end_at){
               this.btnDisable=false;
             }

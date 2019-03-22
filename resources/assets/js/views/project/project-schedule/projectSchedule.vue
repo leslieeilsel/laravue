@@ -1,9 +1,11 @@
+
 <template>
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
         <FormItem label="项目名称" prop="project_id">
           <Select v-model="searchForm.project_id" filterable style="width: 200px">
+            <Option value="0" key="0">全部</Option>
             <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
           </Select>
         </FormItem>
@@ -53,6 +55,9 @@
       </Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
+    <!-- <template>
+        <Page :total="100" show-total style="float:right"/>
+    </template> -->
     <Modal
       v-model="modal"
       @on-cancel="cancel"
@@ -894,7 +899,7 @@
         this.tableLoading = true;
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
-          if(res.result.length>0){
+          if(res.result){
             if(this.searchForm.project_id||this.searchForm.project_num||this.searchForm.subject||this.searchForm.start_at||this.searchForm.end_at){
               this.btnDisable=false;
             }

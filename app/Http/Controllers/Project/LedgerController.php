@@ -25,39 +25,22 @@ class LedgerController extends Controller
         return response()->json(['result' => $sql], 200);
     }
     public function listData($params=[]){
-        $sql = ProjectSchedule::where('id', '>', 0);
-        $start_year = date('Y', strtotime($params['start_at']));
-        $end_year = date('Y', strtotime($params['end_at']));
-        $start_month = date('m', strtotime($params['start_at']));
-        $end_month = date('m', strtotime($params['end_at']));
-        $month_num=$end_month-$start_month;
-        $month=[];
-        if ($start_year==$end_year) {
-            if($end_month==$start_month){
-                $month[0]=$start_year.'-'.$start_month;
-            }else{
-                for($i=0;$i<$month_num;$i++){
-                    if(($start_month+$i)<10){
-                        $month[$i]=$start_year.'-0'.($start_month+$i);
-                    }else{
-                        $month[$i]=$start_year.'-'.($start_month+$i);
-                    }
-                }
-            }
-        }else{
-            if($end_month==$start_month){
-                $month[0]=$start_year.'-'.$start_month;
-            }else{
-                for($i=0;$i<(12-$start_year);$i++){
-                    if(($start_month+$i)<10){
-                        $month[$i]=$start_year.'-0'.($start_month+$i);
-                    }else{
-                        $month[$i]=$start_year.'-'.($start_month+$i);
-                    }
+        $sql = new ProjectSchedule;
+        if (isset($params['start_at']) || isset($params['end_at'])) {
+            if (isset($params['start_at']) && isset($params['end_at'])) {
+                $params['start_at'] = date('Y-m', strtotime($params['start_at']));
+                $params['end_at'] = date('Y-m', strtotime($params['end_at']));
+                $sql = $sql->whereBetween('month', [$params['start_at'], $params['end_at']]);
+            } else {
+                if (isset($params['start_at'])) {
+                    $params['start_at'] = date('Y-m', strtotime($params['start_at']));
+                    $sql = $sql->where('month', $params['start_at']);
+                } elseif (isset($params['end_at'])) {
+                    $params['end_at'] = date('Y-m', strtotime($params['end_at']));
+                    $sql = $sql->where('month', $params['end_at']);
                 }
             }
         }
-        $sql = $sql->whereIn('month', $month);
         if ($params['search_project_id']) {
             $sql = $sql->where('project_id', $params['search_project_id']);
         }
@@ -267,10 +250,6 @@ class LedgerController extends Controller
     */
     public function exportSchedule(Request $request){
         $params = $request->input();
-        // $start_year = date('Y', strtotime($params['start_at']));
-        // if($start_year=='1970'){
-        //     $start_year=date('Y');
-        // }
         $ProjectC=new ProjectController();
         $data=$ProjectC->projectProgressM($params);
         // 创建一个Spreadsheet对象
