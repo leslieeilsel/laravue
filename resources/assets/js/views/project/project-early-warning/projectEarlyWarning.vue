@@ -228,6 +228,15 @@
         index: 1,
         columns: [
           {
+            type: 'index2',
+            width: 60,
+            align: 'center',
+            fixed: 'left',
+            render: (h, params) => {
+              return h('span', params.index + (this.pageCurrent- 1) * this.pageSize + 1);
+            }
+          },
+          {
             title: '项目名称',
             key: 'title',
           },
