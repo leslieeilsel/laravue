@@ -42,6 +42,11 @@
         </Form>
       </Col>
     </Row>
+<!--    <Footer class="layout-footer-center">-->
+<!--      <p>版权所有：陕西微软创新中心有限公司 陕ICP备15012717号</p>-->
+<!--      <p>地址：陕西省西咸新区沣西新城康定路与兴咸路十字西南角（西部云谷B3楼5层）</p>-->
+<!--      <p>E-mail：mic@micshaanxi.com 邮编：712000 电话：（029）38020667</p>-->
+<!--    </Footer>-->
   </div>
 </template>
 
