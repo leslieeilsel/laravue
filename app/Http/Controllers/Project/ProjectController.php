@@ -196,12 +196,35 @@ class ProjectController extends Controller
         $projectPlan = $data['projectPlan'];
         unset($data['id'], $data['projectPlan'], $data['positions'], $data['center_point']);
         $result = Projects::where('id', $id)->update($data);
-        $deleteRes = ProjectPlan::where('project_id', $id)->delete();
-        $this->insertPlan($id, $projectPlan);
+        $this->updatePlan($id, $projectPlan);
 
-        $result = ($result >= 0 && $deleteRes >= 0) ? true : false;
+        $result = ($result >= 0) ? true : false;
 
         return response()->json(['result' => $result], 200);
+    }
+
+    public function updatePlan($projectId, $planData)
+    {
+        foreach ($planData as $k => $v) {
+            $v['project_id'] = $projectId;
+            $planYearId = ProjectPlan::where('project_id', $projectId)->where('date', $v['date'])->first()->id;
+
+            $v['parent_id'] = 0;
+            $v['updated_at'] = date('Y-m-d H:i:s');
+            $monthArr = $v['month'];
+            unset($v['month']);
+            $yearRes = ProjectPlan::where('id', $planYearId)->update($v);
+            foreach ($monthArr as $k => $month) {
+                $planMonthId = ProjectPlan::where('project_id', $projectId)
+                    ->where('date', $month['date'])
+                    ->where('parent_id', $planYearId)
+                    ->first()
+                    ->id;
+                $month['updated_at'] = date('Y-m-d H:i:s');
+                unset($month['date']);
+                $monthRes = ProjectPlan::where('id', $planMonthId)->update($month);
+            }
+        }
     }
 
     /**
