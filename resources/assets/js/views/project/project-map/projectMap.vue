@@ -87,58 +87,60 @@
         getAllProjects(this.searchForm).then(e => {
           let _this = this;
           e.result.forEach(function (project) {
-            // 添加标注
-            let center = project.center_point;
-            let centerArr = center.split(",");
-            let marker = new BMap.Marker(
-              new BMap.Point(centerArr[0], centerArr[1])
-            );
-            map.addOverlay(marker);
-            // 添加多边形
-            let positions = project.positions;
-            let positionsArr = positions.split(";");
-            let pointArr = [];
-            positionsArr.forEach(function (e, i) {
-              let pArr = e.split(",");
-              pointArr[i] = new BMap.Point(pArr[0], pArr[1]);
-            });
-            let polygon = new BMap.Polygon(pointArr, {
-              strokeColor: "blue",
-              strokeWeight: 2,
-              strokeOpacity: 0.5
-            });
-            map.addOverlay(polygon);
-            // 添加label
-            var label = new BMap.Label(project.title, {
-              offset: new BMap.Size(25, 3)
-            });
-            label.setStyle({
-              border: "1px solid #2196F3"
-            });
-            marker.setLabel(label);
-            // 添加弹窗
-            let statusColor = '';
-            switch (project.status) {
-              case '计划':
-                statusColor = 'yellowcircle';
-                break;
-              case '在建':
-                statusColor = 'greencircle';
-                break;
-              case '完成':
-                statusColor = 'graycircle';
-                break;
+            if (project.is_audit === 1 || project.is_audit === 3) {
+              // 添加标注
+              let center = project.center_point;
+              let centerArr = center.split(",");
+              let marker = new BMap.Marker(
+                new BMap.Point(centerArr[0], centerArr[1])
+              );
+              map.addOverlay(marker);
+              // 添加多边形
+              let positions = project.positions;
+              let positionsArr = positions.split(";");
+              let pointArr = [];
+              positionsArr.forEach(function (e, i) {
+                let pArr = e.split(",");
+                pointArr[i] = new BMap.Point(pArr[0], pArr[1]);
+              });
+              let polygon = new BMap.Polygon(pointArr, {
+                strokeColor: "blue",
+                strokeWeight: 2,
+                strokeOpacity: 0.5
+              });
+              map.addOverlay(polygon);
+              // 添加label
+              var label = new BMap.Label(project.title, {
+                offset: new BMap.Size(25, 3)
+              });
+              label.setStyle({
+                border: "1px solid #2196F3"
+              });
+              marker.setLabel(label);
+              // 添加弹窗
+              let statusColor = '';
+              switch (project.status) {
+                case '计划':
+                  statusColor = 'yellowcircle';
+                  break;
+                case '在建':
+                  statusColor = 'greencircle';
+                  break;
+                case '完成':
+                  statusColor = 'graycircle';
+                  break;
+              }
+              let description = project.description;
+              description = description === null ? '' : description;
+              description = description === undefined ? '' : description;
+              let sContent =
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目名称：" + project.title + "</h5>" +
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>" + project.status + "</span></h5>" +
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：<span class='redcircle'></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>已完成53万，比预期延缓10%</span></h5>";
+              _this.addClickHandler(sContent, marker, map);
             }
-            let description = project.description;
-            description = description === null ? '' : description;
-            description = description === undefined ? '' : description;
-            var sContent =
-              "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目名称：" + project.title + "</h5>" +
-              "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
-              "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>" + project.status + "</span></h5>" +
-              "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
-              "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：<span class='redcircle'></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>已完成53万，比预期延缓10%</span></h5>";
-            _this.addClickHandler(sContent, marker, map);
           });
         });
       },
