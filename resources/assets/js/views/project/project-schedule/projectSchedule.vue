@@ -48,7 +48,7 @@
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">填报</Button>
-      <Button type="primary" @click="noSchedule = true" >查看当月未填报项目</Button>
+      <Button type="primary" @click="noSchedule = true" v-if="noScheduleButton">查看当月未填报项目</Button>
       <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="btnDisable" icon="md-cloud-upload">
         导出台账
       </Button>
@@ -601,7 +601,7 @@
             title: '项目名称',
             key: 'title',
             width: 250,
-            // fixed: 'left'
+            fixed: 'left'
           },
           {
             title: '项目编号',
