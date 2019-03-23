@@ -24,13 +24,14 @@ export function getAllProjects(searchForm) {
 }
 
 /**
- * 获取所有部门
+ * 获取所有预警信息
  * @returns {*}
  */
-export function getAllWarning() {
+export function getAllWarning(searchForm) {
   return request({
     url: '/api/project/getAllWarning',
-    method: 'get'
+    method: 'post',
+    data: {searchForm}
   });
 }
 

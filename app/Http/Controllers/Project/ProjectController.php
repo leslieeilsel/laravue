@@ -331,14 +331,25 @@ class ProjectController extends Controller
         return $data;
     }
 
-    public function getAllWarning()
+    public function getAllWarning(Request $request)
     {
+        $params = $request->input('searchForm');
         $data = [];
         $projects = Projects::whereIn('user_id', $this->seeIds)->get()->toArray();
         $projectIds = array_column($projects, 'id');
         $projectSchedules = ProjectSchedule::whereIn('project_id', $projectIds)->get()->toArray();
         $scheduleIds = array_column($projectSchedules, 'id');
-        $result = ProjectEarlyWarning::whereIn('schedule_id', $scheduleIds)->get()->toArray();
+
+        $earlyWarning = new ProjectEarlyWarning;
+        if (isset($params['warning_type'])) {
+            $earlyWarning = $earlyWarning->where('warning_type', $params['warning_type']);
+        }
+        if (isset($params['start_at']) && isset($params['end_at'])) {
+            $params['start_at'] = date('Y-m', strtotime($params['start_at']));
+            $params['end_at'] = date('Y-m', strtotime($params['end_at']));
+            $earlyWarning = $earlyWarning->whereBetween('schedule_at', [$params['start_at'], $params['end_at']]);
+        }
+        $result = $earlyWarning->whereIn('schedule_id', $scheduleIds)->get()->toArray();
         foreach ($result as $k => $row) {
             $data[$k]['key'] = $row['id'];
             $res = ProjectSchedule::where('id', $row['schedule_id'])->first();

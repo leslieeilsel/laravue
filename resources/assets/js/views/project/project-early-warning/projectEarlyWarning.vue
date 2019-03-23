@@ -14,6 +14,32 @@
         <span>：相比预期延缓>20%</span>
       </Row>
     </Alert>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="90" class="search-form">
+        <Form-item label="预警类型" prop="warning_type">
+          <Select v-model="searchForm.warning_type" style="width: 200px">
+            <Option v-for="item in warnings" :value="item.value" :key="item.value">{{ item.name }}</Option>
+          </Select>
+        </Form-item>
+        <FormItem label="填报起止时间" prop="schedule_at">
+          <Row style="width: 220px">
+            <Col span="11">
+              <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
+              </DatePicker>
+            </Col>
+            <Col span="2" style="text-align: center">-</Col>
+            <Col span="11">
+              <DatePicker type="month" placeholder="结束时间" format="yyyy-MM" v-model="searchForm.end_at">
+              </DatePicker>
+            </Col>
+          </Row>
+        </FormItem>
+        <Form-item style="margin-left:-70px;" class="br">
+          <Button @click="getWarnings" type="primary" icon="ios-search">搜索</Button>
+          <Button @click="handleResetSearch">重置</Button>
+        </Form-item>
+      </Form>
+    </Row>
     <Table border :columns="columns" :data="nowData" :loading="loadingTable"></Table>
     <Row type="flex" justify="end" class="page">
       <Page :total="dataCount" :page-size="pageSize" @on-change="changePage" @on-page-size-change="_nowPageSize"
@@ -189,6 +215,25 @@
         pageCurrent: 1, // 当前页
         nowData: [],
         data: [],
+        warnings: [
+          {
+            name: '已经超额',
+            value: 0
+          },
+          {
+            name: '警告超额',
+            value: 1
+          },
+          {
+            name: '严重超额',
+            value: 2
+          },
+        ],
+        searchForm: {
+          warning_type: '',
+          start_at: '',
+          end_at: ''
+        },
         previewForm: {
           title: '',
           num: '',
@@ -314,8 +359,11 @@
     methods: {
       init() {
         this.$refs.previewFormValidate.resetFields();
-        getAllWarning().then(res => {
-          this.data = res.result;
+        this.getWarnings();
+      },
+      getWarnings() {
+        this.loadingTable = true;
+        getAllWarning(this.searchForm).then(res => {
           this.data = res.result;
           //分页显示所有数据总数
           this.dataCount = this.data.length;
@@ -328,8 +376,14 @@
           }
           this.pageCurrent = 1;
           this.loadingTable = false;
-
         });
+      },
+      handleResetSearch() {
+        this.searchForm = {
+          warning_type: ''
+        };
+        this.pageCurrent = 1;
+        this.getWarnings();
       },
       changePage(index) {
         //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
