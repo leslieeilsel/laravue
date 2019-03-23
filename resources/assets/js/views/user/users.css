@@ -5,3 +5,7 @@
 .page-align {
     float: right;
 }
+
+.page {
+    margin-top: 2vh;
+}

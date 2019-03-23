@@ -43,8 +43,12 @@
             </Alert>
           </Row>
           <Row>
-            <Table :loading="loading" border :columns="columns" :data="data" sortable="custom"
+            <Table :loading="loading" border :columns="columns" :data="nowData" sortable="custom"
                    @on-sort-change="changeSort" @on-selection-change="showSelect" ref="table"></Table>
+          </Row>
+          <Row type="flex" justify="end" class="page">
+            <Page :total="dataCount" :page-size="pageSize" @on-change="changePage" @on-page-size-change="_nowPageSize"
+                  show-total show-sizer :current="pageCurrent"/>
           </Row>
         </Col>
       </Row>
@@ -121,6 +125,11 @@
     name: "dictManage",
     data() {
       return {
+        //分页
+        pageSize: 10,//每页显示多少条
+        dataCount: 0,//总条数
+        pageCurrent: 1,//当前页
+        nowData: [],
         treeData: [],
         loading: false,
         treeLoading: false,
@@ -293,7 +302,6 @@
           }
         ],
         data: [],   //表单数据
-        total: 0    // 表单数据总数
       }
     },
     methods: {
@@ -306,8 +314,8 @@
       getAllDict() {
         this.treeLoading = true;
         getAllDictList().then(res => {
-          this.treeLoading = false;
           this.treeData = res.result;
+          this.treeLoading = false;
         });
       },
       addDict() {
@@ -397,15 +405,15 @@
         }
       },
       handleDropdown(name) {
-        if (name == "editDict") {
+        if (name === "editDict") {
           if (!this.selectNode.id) {
             this.$Message.warning("您还未选择要编辑的字典");
             return;
           }
           this.editDict();
-        } else if (name == "delDict") {
+        } else if (name === "delDict") {
           this.delDict();
-        } else if (name == "refreshDict") {
+        } else if (name === "refreshDict") {
           this.refreshDict();
         }
       },
@@ -462,8 +470,17 @@
           this.loading = false;
           if (res.result) {
             this.data = res.result;
-            this.total = res.result.length;
+            //分页显示所有数据总数
+            this.dataCount = this.data.length;
+            //循环展示页面刚加载时需要的数据条数
+            this.nowData = [];
+            for (let i = 0; i < this.pageSize; i++) {
+              if (this.data[i]) {
+                this.nowData.push(this.data[i]);
+              }
+            }
           }
+          this.pageCurrent = 1;
         });
       },
       changeExpand() {
@@ -560,13 +577,32 @@
         }
         this.getDataList();
       },
+      changePage(index) {
+        //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
+        let _start = (index - 1) * this.pageSize;
+        //需要显示结束数据的index
+        let _end = index * this.pageSize;
+        //截取需要显示的数据
+        this.nowData = this.data.slice(_start, _end);
+        //储存当前页
+        this.pageCurrent = index;
+      },
+      _nowPageSize(index) {
+        //实时获取当前需要显示的条数
+        this.pageSize = index;
+        this.loadingTable = true;
+        this.nowData = [];
+        for (let i = 0; i < this.pageSize; i++) {
+          if (this.data[i]) {
+            this.nowData.push(this.data[i]);
+          }
+        }
+        this.pageCurrent = 1;
+        this.loadingTable = false;
+      },
     },
     mounted() {
       this.init();
     }
   }
 </script>
-
-<style scoped>
-
-</style>

@@ -56,7 +56,11 @@
         下载形象进度照片
       </Button>
     </p>
-    <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
+    <Table type="selection" stripe border :columns="columns" :data="nowData" :loading="tableLoading"></Table>
+    <Row type="flex" justify="end" class="page">
+      <Page :total="dataCount" :page-size="pageSize" @on-change="changePage" @on-page-size-change="_nowPageSize"
+            show-total show-sizer :current="pageCurrent"/>
+    </Row>
     <Modal
       v-model="noSchedule"
       @on-cancel="cancel"
@@ -562,6 +566,10 @@
   export default {
     data() {
       return {
+        pageSize: 10,   // 每页显示多少条
+        dataCount: 0,   // 总条数
+        pageCurrent: 1, // 当前页
+        nowData: [],
         isShowButton: true,
         noScheduleButton: false,
         reasonModal: false,
@@ -939,6 +947,16 @@
         this.tableLoading = true;
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
+          //分页显示所有数据总数
+          this.dataCount = this.data.length;
+          //循环展示页面刚加载时需要的数据条数
+          this.nowData = [];
+          for (let i = 0; i < this.pageSize; i++) {
+            if (this.data[i]) {
+              this.nowData.push(this.data[i]);
+            }
+          }
+          this.pageCurrent = 1;
           if (res.result) {
             if (this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
               this.btnDisable = false;
@@ -1194,7 +1212,30 @@
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
         window.location.href = "/api/project/downLoadSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time;
-      }
+      },
+      changePage(index) {
+        //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
+        let _start = (index - 1) * this.pageSize;
+        //需要显示结束数据的index
+        let _end = index * this.pageSize;
+        //截取需要显示的数据
+        this.nowData = this.data.slice(_start, _end);
+        //储存当前页
+        this.pageCurrent = index;
+      },
+      _nowPageSize(index) {
+        //实时获取当前需要显示的条数
+        this.pageSize = index;
+        this.loadingTable = true;
+        this.nowData = [];
+        for (let i = 0; i < this.pageSize; i++) {
+          if (this.data[i]) {
+            this.nowData.push(this.data[i]);
+          }
+        }
+        this.pageCurrent = 1;
+        this.loadingTable = false;
+      },
     },
     mounted() {
       this.init();
