@@ -48,7 +48,7 @@
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">填报</Button>
-      <Button type="primary" @click="noSchedule = true">查看当月未填报项目</Button>
+      <Button type="primary" @click="noSchedule = true" v-if="noScheduleButton">查看当月未填报项目</Button>
       <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="btnDisable" icon="md-cloud-upload">
         导出台账
       </Button>
@@ -563,6 +563,7 @@
     data() {
       return {
         isShowButton: true,
+        noScheduleButton: false,
         reasonModal: false,
         reasonAuditLoading: false,
         reasonForm: {
@@ -927,6 +928,7 @@
 
         this.office = this.$store.getters.user.office;
         this.isShowButton = this.office === 0;
+        this.noScheduleButton = this.office === 1;
 
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
