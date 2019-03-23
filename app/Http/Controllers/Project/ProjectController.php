@@ -726,7 +726,11 @@ class ProjectController extends Controller
     {
         $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->pluck('project_id')->toArray();
         $result = Projects::whereNotIn('id', $Project_id)->get()->toArray();
-
+        foreach ($result as $k => $val) {
+            $users = User::select('username','phone')->where('id', $val['user_id'])->get()->toArray();
+            $result[$k]['username']=$users[0]['username'];
+            $result[$k]['phone']=$users[0]['phone'];
+        }
         return response()->json(['result' => $result], 200);
     }
 
