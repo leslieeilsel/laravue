@@ -9,20 +9,8 @@
           @on-cancel="cancel"
           title="添加用户">
           <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
-            <FormItem label="用户名" prop="username">
-              <Input v-model="form.username" placeholder="必填项"></Input>
-            </FormItem>
-            <FormItem label="姓名" prop="name">
-              <Input v-model="form.name" placeholder="可选项"></Input>
-            </FormItem>
-            <FormItem label="邮箱" prop="email">
-              <Input v-model="form.email" placeholder="可选项"></Input>
-            </FormItem>
-            <FormItem label="联系电话" prop="phone">
-              <Input v-model="form.phone" placeholder="可选项"></Input>
-            </FormItem>
             <Form-item label="所属部门" prop="department_title">
-              <Poptip trigger="click" placement="right" title="选择部门" width="250">
+              <Poptip trigger="click" placement="right" title="选择部门" width="340">
                 <div style="display:flex;">
                   <Input v-model="form.department_title" readonly style="margin-right:10px;" placeholder=""/>
                   <Button icon="md-trash" @click="clearSelectDep">清空已选</Button>
@@ -33,6 +21,20 @@
                 </div>
               </Poptip>
             </Form-item>
+            <FormItem label="姓名" prop="name">
+              <Input v-model="form.name" placeholder="可选项"></Input>
+            </FormItem>
+            <Form-item label="职位" prop="office">
+              <Select v-model="form.office">
+                <Option v-for="item in dict.office" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </Form-item>
+            <FormItem label="邮箱" prop="email">
+              <Input v-model="form.email" placeholder="可选项"></Input>
+            </FormItem>
+            <FormItem label="联系电话" prop="phone">
+              <Input v-model="form.phone" placeholder="可选项"></Input>
+            </FormItem>
             <FormItem label="角色分配" prop="group_id">
               <Select v-model="form.group_id" aria-label="">
                 <Option v-for="item in roleList" :value="item.id" :label="item.name" :key="item.id">
@@ -41,16 +43,14 @@
                 </Option>
               </Select>
             </FormItem>
-            <Form-item label="职位" prop="office">
-              <Select v-model="form.office">
-                <Option v-for="item in dict.office" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
-            </Form-item>
+            <FormItem label="用户名" prop="username">
+              <Input v-model="form.username" placeholder="必填项"></Input>
+            </FormItem>
             <FormItem label="密码" prop="password">
-              <Input v-model="form.password" type="password" placeholder="必填项"/>
+              <Input v-model="form.password" :type="passwordType" @on-focus="changePasswordType('password')" autocomplete="off" placeholder="必填项"/>
             </FormItem>
             <FormItem label="确认密码" prop="pwdCheck">
-              <Input v-model="form.pwdCheck" type="password" placeholder="必填项"/>
+              <Input v-model="form.pwdCheck" :type="checkPasswordType" @on-focus="changePasswordType('pwdCheck')" autocomplete="off" placeholder="必填项"/>
             </FormItem>
             <FormItem label="备注" prop="desc">
               <Input v-model="form.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
@@ -99,6 +99,8 @@
         }
       };
       return {
+        passwordType: 'text',
+        checkPasswordType: 'text',
         loadingTable: true,
         loading: false,
         dpLoading: false,
@@ -126,6 +128,9 @@
           desc: ''
         },
         ruleValidate: {
+          name: [
+            {required: true, message: '姓名不能为空', trigger: 'blur'}
+          ],
           username: [
             {required: true, message: '用户名不能为空', trigger: 'blur'}
           ],
@@ -313,6 +318,13 @@
           this.form.department_title = data.title;
         }
       },
+      changePasswordType(name) {
+        if (name === 'password') {
+          this.passwordType = 'password';
+        } else {
+          this.checkPasswordType = 'password';
+        }
+      }
     }
   }
 </script>
