@@ -559,7 +559,8 @@
     auditProjectProgress,
     toAuditSchedule,
     actCompleteMoney,
-    getProjectNoScheduleList
+    getProjectNoScheduleList,
+    projectScheduleMonth
   } from '../../../api/project';
   import './projectSchedule.css'
 
@@ -909,7 +910,26 @@
           marker: '',
           is_audit: ''
         },
-        editForm: {},
+        editForm: {
+          month: '',
+          project_id: '',
+          project_num: '',
+          subject: '',
+          build_start_at: '',
+          build_end_at: '',
+          total_investors: '',
+          plan_investors: '',
+          plan_img_progress: '',
+          month_act_complete: null,
+          month_img_progress: '',
+          acc_complete: '',
+          acc_img_progress: '',
+          problem: '',
+          plan_build_start_at: '',
+          exp_preforma: '',
+          img_progress_pic: '',
+          marker: '',
+          is_audit: ''},
         seeForm: {},
         index: 1,
         modal: false,
@@ -1039,7 +1059,7 @@
         });
       },
       changeProject(e) {
-        this.project_id.forEach((em) => {
+        this.project_id.forEach((em) => {          
           if (em.id === e) {
             this.form.subject = em.subject;
             this.form.project_num = em.num;
@@ -1048,6 +1068,27 @@
             this.form.total_investors = em.amount;
             this.form.plan_img_progress = em.image_progress;
           }
+        });
+        projectScheduleMonth({project:e}).then(res => {
+            if(res.result){
+              this.month_options_0={
+                disabledDate(date) {
+                  let date_at = new Date();
+                  const disabledMonth = date.getMonth();
+
+                  return date_at<disabledMonth<=date_at;
+                }
+              }
+            }else{
+              this.month_options_0={
+                  disabledDate(date) {
+                    let date_at = new Date();
+                    const disabledMonth = date.getMonth();
+
+                    return disabledMonth !== date_at.getMonth();
+                  }
+              }
+            }
         });
       },
       changeMonth(e) {
@@ -1084,13 +1125,15 @@
           this.form.month_act_complete = null;
           return;
         }
-        actCompleteMoney({month: this.form.month, project_id: this.form.project_id}).then(res => {
-          this.form.acc_complete = parseFloat(res.result) + parseFloat(this.form.month_act_complete);
+        actCompleteMoney({month: this.form.month, project_id: this.form.project_id,month_act_complete:this.form.month_act_complete,type:'add'}).then(res => {
+          this.form.acc_complete = res.result;
         });
       },
       changeEditMonthActComplete(e) {
-        actCompleteMoney({month: this.editForm.month, project_id: this.editForm.project_id}).then(res => {
-          this.editForm.acc_complete = parseFloat(res.result) + parseFloat(this.editForm.month_act_complete);
+        actCompleteMoney({month: this.editForm.month, project_id: this.editForm.project_id,month_act_complete:this.editForm.month_act_complete,type:'edit'}).then(res => {        
+          this.editForm.acc_complete = res.result;
+          console.log(this.editForm.acc_complete);
+          
         });
       },
       handleReset(name) {

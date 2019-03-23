@@ -710,10 +710,16 @@ class ProjectController extends Controller
     {
         $params = $request->input();
         if ($params['month']) {
+            $month = date('Y-m', strtotime($params['month']));
             $year = date('Y', strtotime($params['month']));
         }
         $result = ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $year . '%')->sum('month_act_complete');
-
+        $result=$result+$params['month_act_complete'];
+        
+        if($params['type']=='edit'){
+            $month_money = ProjectSchedule::where('project_id', $params['project_id'])->where('month', $month)->value('month_act_complete');
+            $result=$result-$month_money;
+        }
         return response()->json(['result' => $result], 200);
     }
 
@@ -733,5 +739,20 @@ class ProjectController extends Controller
         }
         return response()->json(['result' => $result], 200);
     }
-
+    /**
+     * 当前项目当月是否填报
+     *
+     * @return JsonResponse
+     */
+    public function projectScheduleMonth(Request $request)
+    {
+        $params = $request->input();
+        $a=date('Y-m');
+        $month = ProjectSchedule::where('month', '=', date('Y-m'))
+        ->where('project_id', $params['project'])
+        ->value('month');
+        
+        return response()->json(['result' => $month], 200);
+    }
+    
 }

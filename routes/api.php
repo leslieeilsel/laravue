@@ -61,6 +61,7 @@ Route::post('project/toAudit', 'Project\ProjectController@toAudit');
 Route::post('project/toAuditSchedule', 'Project\ProjectController@toAuditSchedule');
 Route::post('project/actCompleteMoney', 'Project\ProjectController@actCompleteMoney');
 Route::post('project/getProjectNoScheduleList', 'Project\ProjectController@getProjectNoScheduleList');
+Route::post('project/projectScheduleMonth', 'Project\ProjectController@projectScheduleMonth');
 
 // 添加台账导出
 Route::get('project/exportSchedule', 'Project\LedgerController@exportSchedule');

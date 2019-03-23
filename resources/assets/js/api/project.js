@@ -307,3 +307,15 @@ export function getProjectNoScheduleList(form) {
     data: {...form}
   });
 }
+
+/**
+ * 获取项目进度填报月份
+ * @returns {*}
+ */
+export function projectScheduleMonth(form) {
+  return request({
+    url: '/api/project/projectScheduleMonth',
+    method: 'post',
+    data: {...form}
+  });
+}
