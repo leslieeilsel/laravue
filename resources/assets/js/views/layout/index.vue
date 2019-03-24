@@ -55,11 +55,11 @@
           <router-view></router-view>
         </keep-alive>
       </div>
-      <Footer class="layout-footer-center">
-        <p>版权所有：陕西微软创新中心有限公司 陕ICP备15012717号</p>
-        <p>地址：陕西省西咸新区沣西新城康定路与兴咸路十字西南角（西部云谷B3楼5层）</p>
-        <p>E-mail：mic@micshaanxi.com 邮编：712000 电话：（029）38020667</p>
-      </Footer>
+<!--      <Footer class="layout-footer-center">-->
+<!--        <p>版权所有：陕西微软创新中心有限公司 陕ICP备15012717号</p>-->
+<!--        <p>地址：陕西省西咸新区沣西新城康定路与兴咸路十字西南角（西部云谷B3楼5层）</p>-->
+<!--        <p>E-mail：mic@micshaanxi.com 邮编：712000 电话：（029）38020667</p>-->
+<!--      </Footer>-->
     </div>
     <!-- router-view end -->
     <!-- layout footer -->
@@ -74,15 +74,13 @@
   import {getRouter} from '../../api/system';
   import layout from '../../views/layout';
   import {logout} from "../../api/login";
-  import GlobalFooter from '../../components/GlobalFooter';
 
   export default {
     components: {
       shrinkableMenu,
       tagsPageOpened,
       breadcrumbNav,
-      messageTip,
-      GlobalFooter
+      messageTip
     },
     data() {
       return {
@@ -163,7 +161,7 @@
         }
       },
       filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符串，转换为组件对象
-        const accessedRouters = asyncRouterMap.filter(route => {
+        return asyncRouterMap.filter(route => {
           if (route.component) {
             if (route.component === 'layout') { //Layout组件特殊处理
               route.component = layout;
@@ -176,8 +174,6 @@
           }
           return true;
         });
-
-        return accessedRouters;
       },
       checkTag(name) {
         let openpageHasTag = this.pageTagsList.some(item => {
