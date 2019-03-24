@@ -31,6 +31,9 @@ Route::post('user/regist', 'User\RegistController@registUser');
 Route::get('user/users', 'User\RegistController@getUsers');
 Route::post('user/resetPassword', 'User\RegistController@resetPassword');
 Route::post('user/getUserDictData', 'User\RegistController@getUserDictData');
+Route::post('user/deleteUserData', 'User\RegistController@deleteUserData');
+Route::post('user/editRegistUser', 'User\RegistController@editRegistUser');
+Route::post('user/getUser', 'User\RegistController@getUser');
 
 Route::get('department/getByParentId/{id}', 'System\DepartmentController@getByParentId');
 Route::get('department/getAllDepartment', 'System\DepartmentController@getAllDepartment');

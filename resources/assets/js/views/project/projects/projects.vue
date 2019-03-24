@@ -220,13 +220,13 @@
           </Col>
         </Row>
         <Divider><h4>项目投资计划</h4></Divider>
-        <div v-for="(item, index) in form.projectPlan">
+        <div v-for="(item, index_t) in form.projectPlan">
           <Divider orientation="left"><h5 style="color: #2d8cf0;">{{item.date}}年项目投资计划</h5></Divider>
           <Row>
             <Col span="12">
               <FormItem
                 label="计划投资金额（万元）"
-                :prop="'projectPlan.' + index + '.amount'"
+                :prop="'projectPlan.' + index_t + '.amount'"
                 :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'}">
                 <InputNumber :min="1" :step="1.2" v-model="item.amount" placeholder="必填项"></InputNumber>
               </FormItem>
@@ -235,7 +235,7 @@
               <FormItem
                 label="计划形象进度"
                 :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
-                :prop="'projectPlan.' + index + '.image_progress'">
+                :prop="'projectPlan.' + index_t + '.image_progress'">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."></Input>
               </FormItem>
             </Col>
@@ -259,7 +259,7 @@
                       <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
                     </Col>
                     <Col span="8">
-                      <InputNumber :min="1" :step="1.2" v-model="ite.amount" placeholder=""
+                      <InputNumber :min="1" :step="1.2" v-model="ite.amount" @on-blur="totalAmount(index_t,index)" placeholder=""
                                    class="monthInput"></InputNumber>
                     </Col>
                     <Col span="8">
@@ -408,13 +408,13 @@
           </FormItem>
         </Row>
         <Divider><h4>投资计划</h4></Divider>
-        <div v-for="(item, index) in editForm.projectPlan">
+        <div v-for="(item, index_t) in editForm.projectPlan">
           <Divider orientation="left"><h5 style="color: #2d8cf0;">{{item.date}}年项目投资计划</h5></Divider>
           <Row>
             <Col span="12">
               <FormItem
                 label="计划投资金额（万元）"
-                :prop="'projectPlan.' + index + '.amount'"
+                :prop="'projectPlan.' + index_t + '.amount'"
                 :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'}">
                 <InputNumber :min="1" :step="1.2" v-model="item.amount" placeholder="" v-bind:disabled="isReadOnly">
                 </InputNumber>
@@ -424,7 +424,7 @@
               <FormItem
                 label="计划形象进度"
                 :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
-                :prop="'projectPlan.' + index + '.image_progress'">
+                :prop="'projectPlan.' + index_t + '.image_progress'">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."
                        v-bind:readonly="isReadOnly"></Input>
               </FormItem>
@@ -445,7 +445,7 @@
                 <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
               </Col>
               <Col span="8">
-                <InputNumber :min="1" :step="1.2" v-model="ite.amount" placeholder="" class="monthInput"></InputNumber>
+                <InputNumber :min="1" :step="1.2" v-model="ite.amount"  @on-blur="totalAmountE(index_t,index)" placeholder="" class="monthInput"></InputNumber>
               </Col>
               <Col span="8">
                 <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
@@ -1195,7 +1195,45 @@
         }
         this.pageCurrent = 1;
         this.loadingTable = false;
-      },
+      },//月投资计划金额   大于计划金额时不能填写
+      totalAmount(index_t,index){
+        let amount_total=this.form.projectPlan[index_t].amount;
+        let month_total=this.form.projectPlan[index_t].month;
+        if(!amount_total){
+          this.$Message.error('请先填写年计划金额!');
+          month_total[index].amount = 0;
+          return;
+        }
+        let amounts=0;
+        for(let i=0;i<month_total.length;i++){
+          if(month_total[i].amount){
+            amounts=parseFloat(amounts)+parseFloat(month_total[i].amount);
+          }
+        }
+        if(amounts>amount_total){
+          this.$Message.error('月计划总金额不能超过年计划');
+          month_total[index].amount=0;
+        }
+      },//修改月投资计划金额   大于计划金额时不能填写
+      totalAmountE(index_t,index){
+        let amount_total=this.editForm.projectPlan[index_t].amount;
+        let month_total=this.editForm.projectPlan[index_t].month;
+        if(!amount_total){
+          this.$Message.error('请先填写年计划金额!');
+          month_total[index].amount = 0;
+          return;
+        }
+        let amounts=0;
+        for(let i=0;i<month_total.length;i++){
+          if(month_total[i].amount){
+            amounts=parseFloat(amounts)+parseFloat(month_total[i].amount);
+          }
+        }
+        if(amounts>amount_total){
+          this.$Message.error('月计划总金额不能超过年计划');
+          month_total[index].amount=0;
+        }
+      }
     },
     mounted() {
       this.init();

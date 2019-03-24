@@ -23,7 +23,7 @@ class RegistController extends Controller
      */
     public function getUsers()
     {
-        $data = DB::table('users')->select('name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id', 'office')->get()->toArray();
+        $data = DB::table('users')->select('id','name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id', 'office')->get()->toArray();
 
         foreach ($data as $k => $row) {
             if (!isset($row['department_id'])) {
@@ -113,6 +113,62 @@ class RegistController extends Controller
         $nameArr = $request->input('dictName');
         $result = Projects::getDictDataByName($nameArr);
 
+        return response()->json(['result' => $result], 200);
+    }
+    /**
+     * 删除用户
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function deleteUserData(Request $request)
+    {
+        $ids = $request->input('id');
+        if ($ids) {
+            $result = DB::table('users')->whereIn('id', explode(',',$ids))->delete();
+            $result = $result ? true : false;
+        } else {
+            $result = false;
+        }
+
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '删除用户');
+        }
+
+        return response()->json(['result' => $result], 200);
+    }
+
+    /**
+     * 修改用户
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function editRegistUser(Request $request)
+    {
+        $params = $request->input();
+        unset($params['department_title']);
+        $params['created_at'] = date('Y-m-d H:i:s');
+        $result = DB::table('users')->where('id',$params['id'])->update($params);
+
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '修改用户');
+        }
+
+        return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
+    }
+    /**
+     * 获取单挑用户
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getUser(Request $request)
+    {
+        $params = $request->input();
+        $result = DB::table('users')->where('id',$params['id'])->first();
         return response()->json(['result' => $result], 200);
     }
 }

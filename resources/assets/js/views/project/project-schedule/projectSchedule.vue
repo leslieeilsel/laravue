@@ -1131,9 +1131,7 @@
       },
       changeEditMonthActComplete(e) {
         actCompleteMoney({month: this.editForm.month, project_id: this.editForm.project_id,month_act_complete:this.editForm.month_act_complete,type:'edit'}).then(res => {        
-          this.editForm.acc_complete = res.result;
-          console.log(this.editForm.acc_complete);
-          
+          this.editForm.acc_complete = res.result;          
         });
       },
       handleReset(name) {

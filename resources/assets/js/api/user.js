@@ -46,3 +46,37 @@ export function getUserDictData(dictName) {
     data: {dictName}
   });
 }
+/**
+ * 删除用户
+ * @returns {*}
+ */
+export function deleteUserData(id) {
+  return request({
+    url: '/api/user/deleteUserData',
+    method: 'post',
+    data: { id }
+  });
+}
+/**
+ * 修改用户
+ * @returns {*}
+ */
+export function editRegistUser(form) {
+  return request({
+    url: '/api/user/editRegistUser',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 获取单条用户
+ * @returns {*}
+ */
+export function getUser(form) {
+  return request({
+    url: '/api/user/getUser',
+    method: 'post',
+    data: { ...form }
+  });
+}
+
