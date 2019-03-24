@@ -2,11 +2,8 @@
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="90" class="search-form">
-        <FormItem label="项目名称" prop="project_id">
-          <Select v-model="searchForm.project_id" filterable style="width: 200px">
-            <Option value="0" key="0">全部</Option>
-            <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
-          </Select>
+        <FormItem label="项目名称" prop="title">
+          <Input clearable v-model="searchForm.title" placeholder="支持模糊搜索" style="width: 200px"/>
         </FormItem>
         <FormItem label="填报起止时间" prop="build_at">
           <Row style="width: 220px">
@@ -23,17 +20,10 @@
         </FormItem>
         <span v-if="drop">
           <Form-item label="项目编号" prop="project_num">
-            <Input
-              type="text"
-              v-model="searchForm.project_num"
-              placeholder="请输入项目编号"
-              style="width: 200px"
-            />
+            <Input v-model="searchForm.project_num" placeholder="请输入项目编号" style="width: 200px"/>
           </Form-item>
           <Form-item label="投资主体" prop="subject">
-            <Select v-model="searchForm.subject" filterable style="width: 200px">
-              <Option v-for="item in data" :value="item.subject" :key="item.id">{{ item.subject }}</Option>
-            </Select>
+            <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
         </span>
         <FormItem style="margin-left:-70px;" class="br">
@@ -588,7 +578,7 @@
         upbtnDisabled: true,
         picDisable: true,
         searchForm: {
-          project_id: '',
+          title: '',
           project_num: '',
           subject: '',
           start_at: '',
@@ -627,7 +617,7 @@
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
-              return h('span', params.index + (this.pageCurrent- 1) * this.pageSize + 1);
+              return h('span', params.index + (this.pageCurrent - 1) * this.pageSize + 1);
             }
           },
           {
@@ -929,7 +919,8 @@
           exp_preforma: '',
           img_progress_pic: '',
           marker: '',
-          is_audit: ''},
+          is_audit: ''
+        },
         seeForm: {},
         index: 1,
         modal: false,
@@ -1059,7 +1050,7 @@
         });
       },
       changeProject(e) {
-        this.project_id.forEach((em) => {          
+        this.project_id.forEach((em) => {
           if (em.id === e) {
             this.form.subject = em.subject;
             this.form.project_num = em.num;
@@ -1069,26 +1060,26 @@
             this.form.plan_img_progress = em.image_progress;
           }
         });
-        projectScheduleMonth({project:e}).then(res => {
-            if(res.result){
-              this.month_options_0={
-                disabledDate(date) {
-                  let date_at = new Date();
-                  const disabledMonth = date.getMonth();
+        projectScheduleMonth({project: e}).then(res => {
+          if (res.result) {
+            this.month_options_0 = {
+              disabledDate(date) {
+                let date_at = new Date();
+                const disabledMonth = date.getMonth();
 
-                  return date_at<disabledMonth<=date_at;
-                }
-              }
-            }else{
-              this.month_options_0={
-                  disabledDate(date) {
-                    let date_at = new Date();
-                    const disabledMonth = date.getMonth();
-
-                    return disabledMonth !== date_at.getMonth();
-                  }
+                return date_at < disabledMonth <= date_at;
               }
             }
+          } else {
+            this.month_options_0 = {
+              disabledDate(date) {
+                let date_at = new Date();
+                const disabledMonth = date.getMonth();
+
+                return disabledMonth !== date_at.getMonth();
+              }
+            }
+          }
         });
       },
       changeMonth(e) {
@@ -1125,13 +1116,24 @@
           this.form.month_act_complete = null;
           return;
         }
-        actCompleteMoney({month: this.form.month, project_id: this.form.project_id,month_act_complete:this.form.month_act_complete,type:'add'}).then(res => {
+        actCompleteMoney({
+          month: this.form.month,
+          project_id: this.form.project_id,
+          month_act_complete: this.form.month_act_complete,
+          type: 'add'
+        }).then(res => {
           this.form.acc_complete = res.result;
         });
       },
       changeEditMonthActComplete(e) {
-        actCompleteMoney({month: this.editForm.month, project_id: this.editForm.project_id,month_act_complete:this.editForm.month_act_complete,type:'edit'}).then(res => {        
-          this.editForm.acc_complete = res.result;          
+        actCompleteMoney({
+          month: this.editForm.month,
+          project_id: this.editForm.project_id,
+          month_act_complete: this.editForm.month_act_complete,
+          type: 'edit'
+        }).then(res => {
+          this.editForm.acc_complete = res.result;
+
         });
       },
       handleReset(name) {

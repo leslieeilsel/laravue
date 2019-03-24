@@ -36,7 +36,7 @@
                   <DropdownItem name="logout" divided>退出登录</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-              <Avatar :src="avatorPath" style="background: #d3eaec;margin-left: 10px;"></Avatar>
+              <Avatar src="/images/avatar.png" style="margin-left: 10px;"></Avatar>
             </Row>
           </div>
           <!-- dropdown end -->
@@ -55,11 +55,11 @@
           <router-view></router-view>
         </keep-alive>
       </div>
-<!--      <Footer class="layout-footer-center">-->
-<!--        <p>版权所有：陕西微软创新中心有限公司 陕ICP备15012717号</p>-->
-<!--        <p>地址：陕西省西咸新区沣西新城康定路与兴咸路十字西南角（西部云谷B3楼5层）</p>-->
-<!--        <p>E-mail：mic@micshaanxi.com 邮编：712000 电话：（029）38020667</p>-->
-<!--      </Footer>-->
+      <!--      <Footer class="layout-footer-center">-->
+      <!--        <p>版权所有：陕西微软创新中心有限公司 陕ICP备15012717号</p>-->
+      <!--        <p>地址：陕西省西咸新区沣西新城康定路与兴咸路十字西南角（西部云谷B3楼5层）</p>-->
+      <!--        <p>E-mail：mic@micshaanxi.com 邮编：712000 电话：（029）38020667</p>-->
+      <!--      </Footer>-->
     </div>
     <!-- router-view end -->
     <!-- layout footer -->
@@ -98,9 +98,6 @@
       },
       currentPath() {
         return this.$store.state.app.currentPath; // 当前面包屑数组
-      },
-      avatorPath() {
-        return localStorage.avatorImgPath;
       },
       cachePage() {
         return this.$store.state.app.cachePage;

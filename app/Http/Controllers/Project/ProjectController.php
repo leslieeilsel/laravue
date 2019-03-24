@@ -238,13 +238,13 @@ class ProjectController extends Controller
         $params = $request->input('searchForm');
         $query = new Projects;
         if (isset($params['title'])) {
-            $query = $query->where('title', $params['title']);
+            $query = $query->where('title', 'like', '%' . $params['title'] . '%');
         }
         if (isset($params['subject'])) {
-            $query = $query->where('subject', $params['subject']);
+            $query = $query->where('subject', 'like', '%' . $params['subject'] . '%');
         }
         if (isset($params['unit'])) {
-            $query = $query->where('unit', $params['unit']);
+            $query = $query->where('unit', 'like', '%' . $params['unit'] . '%');
         }
         if (isset($params['num'])) {
             $query = $query->where('num', $params['num']);
@@ -449,14 +449,17 @@ class ProjectController extends Controller
     public function projectProgressM($data)
     {
         $query = new ProjectSchedule;
-        if (isset($data['project_id'])) {
-            $query = $query->where('project_id', $data['project_id']);
+        if (isset($data['title'])) {
+            $projects = Projects::select('id')->where('title', 'like', '%' . $data['title'] . '%')->get()->toArray();
+            $ids = array_column($projects, 'id');
+            $ids = array_intersect($ids, $this->seeIds);
+            $query = $query->whereIn('project_id', $ids);
         }
         if (isset($data['project_num'])) {
             $query = $query->where('project_num', $data['project_num']);
         }
         if (isset($data['subject'])) {
-            $query = $query->where('subject', $data['subject']);
+            $query = $query->where('subject', 'like', '%' . $data['subject'] . '%');
         }
         if (isset($data['start_at']) || isset($data['end_at'])) {
             if (isset($data['start_at']) && isset($data['end_at'])) {
@@ -748,11 +751,11 @@ class ProjectController extends Controller
             $year = date('Y', strtotime($params['month']));
         }
         $result = ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $year . '%')->sum('month_act_complete');
-        $result=$result+$params['month_act_complete'];
-        
-        if($params['type']=='edit'){
+        $result = $result + $params['month_act_complete'];
+
+        if ($params['type'] == 'edit') {
             $month_money = ProjectSchedule::where('project_id', $params['project_id'])->where('month', $month)->value('month_act_complete');
-            $result=$result-$month_money;
+            $result = $result - $month_money;
         }
         return response()->json(['result' => $result], 200);
     }
@@ -767,12 +770,13 @@ class ProjectController extends Controller
         $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->pluck('project_id')->toArray();
         $result = Projects::whereNotIn('id', $Project_id)->get()->toArray();
         foreach ($result as $k => $val) {
-            $users = User::select('username','phone')->where('id', $val['user_id'])->get()->toArray();
-            $result[$k]['username']=$users[0]['username'];
-            $result[$k]['phone']=$users[0]['phone'];
+            $users = User::select('username', 'phone')->where('id', $val['user_id'])->get()->toArray();
+            $result[$k]['username'] = $users[0]['username'];
+            $result[$k]['phone'] = $users[0]['phone'];
         }
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 当前项目当月是否填报
      *
@@ -781,12 +785,12 @@ class ProjectController extends Controller
     public function projectScheduleMonth(Request $request)
     {
         $params = $request->input();
-        $a=date('Y-m');
+        $a = date('Y-m');
         $month = ProjectSchedule::where('month', '=', date('Y-m'))
-        ->where('project_id', $params['project'])
-        ->value('month');
-        
+            ->where('project_id', $params['project'])
+            ->value('month');
+
         return response()->json(['result' => $month], 200);
     }
-    
+
 }
