@@ -12,8 +12,7 @@
         </FormItem>
         <span v-if="drop">
           <Form-item label="项目编号" prop="num">
-            <Input clearable v-model="searchForm.num" placeholder="请输入项目编号" style="width: 200px"
-            />
+            <Input clearable v-model="searchForm.num" placeholder="请输入项目编号" style="width: 200px"/>
           </Form-item>
           <Form-item label="投资主体" prop="subject">
             <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
