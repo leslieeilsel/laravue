@@ -3,7 +3,7 @@
     <Card>
       <p class="btnGroup">
         <Button type="primary" @click="modal = true" icon="md-add">添加用户</Button>
-        <Button type="error" @click="delAll" icon="md-trash">删除</Button>
+        <Button @click="delAll" icon="md-trash">删除</Button>
         <Modal
           v-model="modal"
           @on-cancel="cancel"
@@ -171,6 +171,7 @@
         dpLoading: false,
         modal: false,
         editModal: false,
+        btnDisable:true,
         selectDep: [],
         dataDep: [],
         dictName: {
@@ -326,7 +327,7 @@
                   },
                   on: {
                     click: () => {
-                      console.log();
+                      this.$refs.editFormValidate.resetFields();
                       this.editForm.id=params.row.id;
                       this.editForm.username=params.row.username;
                       this.editForm.name=params.row.name;
@@ -411,8 +412,16 @@
               this.loadingTable = true;
               getUsers().then((data) => {
                 this.data = data.result;
+                //分页显示所有数据总数
+                this.dataCount = this.data.length;
+                //循环展示页面刚加载时需要的数据条数
+                this.nowData = [];
+                for (let i = 0; i < this.pageSize; i++) {
+                  if (this.data[i]) {
+                    this.nowData.push(this.data[i]);
+                  }
+                }
                 this.loadingTable = false;
-                this.init();
               });
             });
           } else {
@@ -431,8 +440,16 @@
               this.loadingTable = true;
               getUsers().then((data) => {
                 this.data = data.result;
+                //分页显示所有数据总数
+                this.dataCount = this.data.length;
+                //循环展示页面刚加载时需要的数据条数
+                this.nowData = [];
+                for (let i = 0; i < this.pageSize; i++) {
+                  if (this.data[i]) {
+                    this.nowData.push(this.data[i]);
+                  }
+                }
                 this.loadingTable = false;
-                this.init();
               });
             });
           } else {
@@ -548,11 +565,18 @@
               this.$Modal.remove();
               if (res.result === true) {
                 this.$Message.success("操作成功");
-                this.getDataList();
                 getUsers().then((data) => {
                   this.data = data.result;
+                  //分页显示所有数据总数
+                  this.dataCount = this.data.length;
+                  //循环展示页面刚加载时需要的数据条数
+                  this.nowData = [];
+                  for (let i = 0; i < this.pageSize; i++) {
+                    if (this.data[i]) {
+                      this.nowData.push(this.data[i]);
+                    }
+                  }
                   this.loadingTable = false;
-                  this.init();
                 });
               }
             });

@@ -3,7 +3,7 @@
     <Card>
       <p class="btnGroup">
         <Button type="primary" @click="modal = true" icon="md-add">添加角色</Button>
-        <Button type="error" disabled icon="md-trash">删除</Button>
+        <Button @click="delAll" icon="md-trash">删除</Button>
         <!-- 菜单权限 -->
         <Modal
           v-model="modal"
@@ -26,6 +26,28 @@
           <div slot="footer">
             <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
             <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
+          </div>
+        </Modal><Modal
+          v-model="editModal"
+          @on-cancel="cancel"
+          title="编辑角色">
+          <Form ref="editFormValidate" :model="editForm" :rules="editRuleValidate" :label-width="130">
+            <FormItem label="角色名称" prop="name">
+              <Input v-model="editForm.name" placeholder="必填项"></Input>
+            </FormItem>
+            <FormItem label="是否设置为默认角色" prop="is_default">
+              <i-switch v-model="editForm.is_default" size="large" :true-value="1" :false-value="0">
+                <span slot="open">是</span>
+                <span slot="close">否</span>
+              </i-switch>
+            </FormItem>
+            <FormItem label="备注" prop="description">
+              <Input type="textarea" v-model="editForm.description" placeholder="可选项"></Input>
+            </FormItem>
+          </Form>
+          <div slot="footer">
+            <Button @click="handleReset('editFormValidate')" style="margin-left: 8px">重置</Button>
+            <Button type="primary" @click="handleSubmitE('editFormValidate')" :loading="loading">提交</Button>
           </div>
         </Modal>
         <Modal
@@ -68,7 +90,7 @@
           </div>
         </Modal>
       </p>
-      <Table border :columns="columns" :data="nowData" :loading="loadingTable"></Table>
+      <Table border :columns="columns" :data="nowData" @on-selection-change="showSelect" :loading="loadingTable"></Table>
       <Row type="flex" justify="end" class="page">
         <Page :total="dataCount" :page-size="pageSize" :current="pageCurrent" @on-change="changePage" @on-page-size-change="_nowPageSize"
               show-total show-sizer/>
@@ -78,7 +100,7 @@
 </template>
 <script>
   import './users.css';
-  import {add, getRoles, setRoleMenus, setDefaultRole, getDepartmentTree, editRoleDep} from '../../api/role';
+  import {add, getRoles, setRoleMenus, setDefaultRole, getDepartmentTree, editRoleDep,deleteRoleData,edit} from '../../api/role';
   import {getMenuTree} from '../../api/system';
 
   export default {
@@ -94,13 +116,26 @@
         treeSubmitLoading: false,
         operationLoading: false,
         modal: false,
+        editModal: false,
         treeModal: false,
         form: {
+          id:'',
+          name: '',
+          description: '',
+          is_default: 0,
+        },
+        editForm: {
+          id:'',
           name: '',
           description: '',
           is_default: 0,
         },
         ruleValidate: {
+          name: [
+            {required: true, message: '角色名不能为空', trigger: 'blur'}
+          ],
+        },
+        editRuleValidate: {
           name: [
             {required: true, message: '角色名不能为空', trigger: 'blur'}
           ],
@@ -227,6 +262,35 @@
                 ),
               ]);
             }
+          },
+          {
+            title: '编辑',
+            key: 'action',
+            width: 100,
+            align: 'center',
+            render: (h, params) => {
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$refs.editFormValidate.resetFields();
+                      this.editForm.id=params.row.id;
+                      this.editForm.name=params.row.name;
+                      this.editForm.description=params.row.description;
+                      this.editForm.is_default=params.row.is_default;
+                      this.editModal = true;
+                    }
+                  }
+                }, '编辑')
+              ]);
+            }
           }
         ],
         data: [],
@@ -240,6 +304,8 @@
         submitDepLoading: false,
         depData: [],
         depModalVisible: false,
+        selectCount: 0, // 多选计数
+        selectList: [], // 多选数据
       }
     },
     mounted() {
@@ -275,13 +341,29 @@
                 this.$Message.success('创建成功');
                 this.$refs[name].resetFields();
                 this.modal = false;
-                this.loadingTable = true;
-                getRoles().then((data) => {
-                  this.data = data.result;
-                  this.loadingTable = false;
-                });
+                this.init();
               } else {
                 this.$Message.error('创建失败');
+              }
+            });
+          } else {
+            this.$Message.error('发生错误！');
+          }
+        })
+      },
+      handleSubmitE(name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            this.loading = true;
+            edit(this.editForm).then(res => {
+              if (res.result) {
+                this.loading = false;
+                this.$Message.success('修改成功');
+                this.$refs[name].resetFields();
+                this.editModal = false;
+                this.init();
+              } else {
+                this.$Message.error('修改失败');
               }
             });
           } else {
@@ -395,7 +477,37 @@
           }
         }
         this.loadingTable = false;
+      },//删除
+      delAll() {
+        if (this.selectCount <= 0) {
+          this.$Message.warning("您还未选择要删除的数据");
+          return;
+        }
+        this.$Modal.confirm({
+          title: "确认删除",
+          loading: true,
+          content: "您确认要删除所选的 " + this.selectCount + " 条数据？",
+          onOk: () => {
+            let ids = "";
+            this.selectList.forEach(function (e) {
+              ids += e.id + ",";
+            });
+            ids = ids.substring(0, ids.length - 1);
+            // 批量删除
+            deleteRoleData(ids).then(res => {
+              this.$Modal.remove();
+              if (res.result === true) {
+                this.$Message.success("操作成功");
+                this.init();
+              }
+            });
+          }
+        });
       },
+      showSelect(e) {
+        this.selectList = e;
+        this.selectCount = e.length;
+      }
     }
   }
 </script>

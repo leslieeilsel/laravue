@@ -93,8 +93,10 @@ Route::post('menu/addMenu', 'System\MenuController@addMenu');
 Route::post('menu/editMenu', 'System\MenuController@editMenu');
 Route::post('menu/deleteMenu', 'System\MenuController@deleteMenu');
 
+Route::post('role/deleteRoleData', 'System\RoleController@deleteRoleData');
 Route::get('role/roles', 'System\RoleController@getRoles');
 Route::post('role/add', 'System\RoleController@add');
+Route::post('role/edit', 'System\RoleController@edit');
 Route::post('role/setDefaultRole', 'System\RoleController@setDefaultRole');
 Route::post('role/setrolemenus', 'System\RoleController@setRoleMenus');
 Route::post('role/getDepartmentTree', 'System\RoleController@getDepartmentTree');

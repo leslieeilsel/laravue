@@ -180,4 +180,56 @@ class RoleController
 
         return response()->json(['result' => $result], 200);
     }
+    /**
+     * 删除角色
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function deleteRoleData(Request $request)
+    {
+        $ids = $request->input('id');
+        if ($ids) {
+            $result = DB::table('ibiart_slms_roles')->whereIn('id', explode(',',$ids))->delete();
+            $menuResult = DB::table('ibiart_slms_role_menus')->whereIn('role_id', explode(',',$ids))->delete();
+            $departmentResult = DB::table('iba_role_department')->whereIn('role_id', explode(',',$ids))->delete();
+            $usersResult = DB::table('users')->whereIn('group_id', explode(',',$ids))->delete();
+            // DB::rollBack();
+            $result = $result ? true : false;
+        } else {
+            $result = false;
+        }
+
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '删除角色');
+        }
+
+        return response()->json(['result' => $result], 200);
+    }
+    
+    /**
+     * 编辑角色
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function edit(Request $request)
+    {
+        $params = $request->input();
+        $roles = DB::table('ibiart_slms_roles')->where('id',$params['id'])->first();
+        $result = DB::table('ibiart_slms_roles')->where('id',$params['id'])->update($params);
+        if($roles['name']!=$params['name']){
+            $menuResult = DB::table('ibiart_slms_role_menus')->where('role_id', $params['id'])->delete();
+            $departmentResult = DB::table('iba_role_department')->where('role_id', $params['id'])->delete();
+            $usersResult = DB::table('users')->where('group_id', $params['id'])->delete();
+        }
+        $result = $result ? true : false;
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '删除角色');
+        }
+
+        return response()->json(['result' => $result], 200);
+    }
 }

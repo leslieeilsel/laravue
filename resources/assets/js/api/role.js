@@ -70,3 +70,25 @@ export function editRoleDep(params) {
     data: {params}
   });
 }
+/**
+ * 删除角色
+ * @returns {*}
+ */
+export function deleteRoleData(id) {
+  return request({
+    url: '/api/role/deleteRoleData',
+    method: 'post',
+    data: {id}
+  });
+}
+/**
+ * 编辑角色
+ * @returns {*}
+ */
+export function edit(form) {
+  return request({
+    url: '/api/role/edit',
+    method: 'post',
+    data: {...form}
+  });
+}
