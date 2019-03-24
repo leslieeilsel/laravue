@@ -3,28 +3,18 @@
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
         <Form-item label="项目名称" prop="title">
-          <Select v-model="searchForm.title" filterable style="width: 200px">
-            <Option v-for="item in project_list" :value="item.title" :key="item.id">{{ item.title }}</Option>
-          </Select>
+          <Input clearable v-model="searchForm.title" placeholder="支持模糊搜索" style="width: 200px"/>
         </Form-item>
         <Form-item label="项目编号" prop="num">
-          <Input
-            type="text"
-            v-model="searchForm.num"
-            placeholder="请输入项目编号"
-            style="width: 200px"
+          <Input clearable v-model="searchForm.num" placeholder="请输入项目编号" style="width: 200px"
           />
         </Form-item>
         <span v-if="drop">
           <Form-item label="投资主体" prop="subject">
-            <Select v-model="searchForm.subject" filterable style="width: 200px">
-              <Option v-for="item in data" :value="item.subject" :key="item.id">{{ item.subject }}</Option>
-            </Select>
+            <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
           <Form-item label="承建单位" prop="unit">
-            <Select v-model="searchForm.unit" filterable style="width: 200px">
-              <Option v-for="item in data" :value="item.unit" :key="item.id">{{ item.unit }}</Option>
-            </Select>
+            <Input clearable v-model="searchForm.unit" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
           <FormItem label="项目类型" prop="type">
             <Select v-model="searchForm.type" style="width: 200px">
@@ -700,7 +690,7 @@
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
-              return h('span', params.index + (this.pageCurrent- 1) * this.pageSize + 1);
+              return h('span', params.index + (this.pageCurrent - 1) * this.pageSize + 1);
             }
           },
           {

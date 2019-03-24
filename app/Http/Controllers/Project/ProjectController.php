@@ -238,13 +238,13 @@ class ProjectController extends Controller
         $params = $request->input('searchForm');
         $query = new Projects;
         if (isset($params['title'])) {
-            $query = $query->where('title', $params['title']);
+            $query = $query->where('title', 'like', '%' . $params['title'] . '%');
         }
         if (isset($params['subject'])) {
-            $query = $query->where('subject', $params['subject']);
+            $query = $query->where('subject', 'like', '%' . $params['subject'] . '%');
         }
         if (isset($params['unit'])) {
-            $query = $query->where('unit', $params['unit']);
+            $query = $query->where('unit', 'like', '%' . $params['unit'] . '%');
         }
         if (isset($params['num'])) {
             $query = $query->where('num', $params['num']);

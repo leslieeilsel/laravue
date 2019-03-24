@@ -7,9 +7,54 @@
             <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
           </Select>
         </FormItem>
+        <FormItem label="项目名称" prop="title">
+          <Input clearable v-model="searchForm.title" placeholder="支持模糊搜索" style="width: 200px"/>
+        </FormItem>
+        <span v-if="drop">
+          <Form-item label="项目编号" prop="num">
+            <Input clearable v-model="searchForm.num" placeholder="请输入项目编号" style="width: 200px"
+            />
+          </Form-item>
+          <Form-item label="投资主体" prop="subject">
+            <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
+          </Form-item>
+          <Form-item label="承建单位" prop="unit">
+            <Input clearable v-model="searchForm.unit" placeholder="支持模糊搜索" style="width: 200px"/>
+          </Form-item>
+          <FormItem label="项目类型" prop="type">
+            <Select v-model="searchForm.type" style="width: 200px">
+              <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="建设性质" prop="build_type">
+            <Select v-model="searchForm.build_type" style="width: 200px" filterable>
+              <Option v-for="item in dict.build_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="资金来源">
+            <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
+              <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="项目标识" prop="is_gc">
+            <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
+                    placeholder="是否为国民经济计划">
+              <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="国民经济计划分类" prop="nep_type">
+            <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
+              <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
+            </Select>
+          </FormItem>
+        </span>
         <Form-item style="margin-left:-70px;" class="br">
           <Button @click="createMap" type="primary" icon="ios-search">搜索</Button>
           <Button @click="handleResetSearch">重置</Button>
+          <a class="drop-down" @click="dropDown">
+            {{dropDownContent}}
+            <Icon :type="dropDownIcon"></Icon>
+          </a>
         </Form-item>
       </Form>
     </Row>
@@ -25,13 +70,28 @@
       return {
         searchForm: {
           status: 0,
+          title: '',
         },
         dict: {
+          type: [],
+          is_gc: [],
+          nep_type: [],
           status: [],
+          money_from: [],
+          build_type: []
         },
         dictName: {
-          status: '项目状态'
+          type: '工程类项目分类',
+          is_gc: '是否为国民经济计划',
+          nep_type: '国民经济计划分类',
+          status: '项目状态',
+          money_from: '资金来源',
+          build_type: '建设性质'
         },
+        dropDownContent: '展开',
+        drop: false,
+        dropDownIcon: "ios-arrow-down",
+        searchNepDisabled: true,
       };
     },
     mounted() {
@@ -77,6 +137,12 @@
             this.dict = res.result;
           }
         });
+      },
+      onSearchIsGcChange(value) {
+        this.searchNepDisabled = value !== 1;
+        if (this.searchNepDisabled) {
+          this.searchForm.nep_type = '';
+        }
       },
       createMap() {
         // enableMapClick: false 构造底图时，关闭底图可点功能
@@ -161,7 +227,17 @@
         let point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
         let infoWindow = new BMap.InfoWindow(content); // 创建信息窗口对象
         map.openInfoWindow(infoWindow, point); //开启信息窗口
-      }
+      },
+      dropDown() {
+        if (this.drop) {
+          this.dropDownContent = "展开";
+          this.dropDownIcon = "ios-arrow-down";
+        } else {
+          this.dropDownContent = "收起";
+          this.dropDownIcon = "ios-arrow-up";
+        }
+        this.drop = !this.drop;
+      },
     }
   };
 </script>
