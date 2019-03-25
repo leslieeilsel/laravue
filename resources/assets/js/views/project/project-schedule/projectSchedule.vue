@@ -37,6 +37,22 @@
             <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
         </span>
+        <FormItem label="资金来源">
+          <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
+            <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="项目标识" prop="is_gc">
+          <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
+                  placeholder="是否为国民经济计划">
+            <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="国民经济计划分类" prop="nep_type">
+          <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
+            <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
+          </Select>
+        </FormItem>
         <FormItem style="margin-left:-70px;" class="br">
           <Button @click="getProjectScheduleList" type="primary" icon="ios-search">搜索</Button>
           <Button @click="handleResetSearch">重置</Button>
@@ -561,7 +577,8 @@
     toAuditSchedule,
     actCompleteMoney,
     getProjectNoScheduleList,
-    projectScheduleMonth
+    projectScheduleMonth,
+    getProjectDictData,
   } from '../../../api/project';
   import {initDepartment,loadDepartment} from '../../../api/system';
   import './projectSchedule.css'
@@ -598,7 +615,10 @@
           start_at: '',
           end_at: '',
           department_id:'',
-          department_title:''
+          department_title:'',
+          money_from: '',
+          is_gc: '',
+          nep_type: '',
         },
         noSchedule: false,
         seeModal: false,
@@ -971,6 +991,17 @@
           }
         },
         scheduleMonth: [],
+        searchNepDisabled: true,
+        dictName: {
+          is_gc: '是否为国民经济计划',
+          nep_type: '国民经济计划分类',
+          money_from: '资金来源',
+        },
+        dict: {
+          is_gc: [],
+          nep_type: [],
+          money_from: []
+        }
       }
     },
     methods: {
@@ -996,6 +1027,7 @@
             }
           });
           this.dataDep = res.result;
+          this.getDictData();
         });
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
@@ -1017,7 +1049,7 @@
           }
           this.pageCurrent = 1;
           if (res.result) {
-            if (this.searchForm.department_id||this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
+            if (this.searchForm.is_gc||this.searchForm.nep_type||this.searchForm.money_from||this.searchForm.department_id||this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
               this.btnDisable = false;
             }
             this.tableLoading = false;
@@ -1359,6 +1391,19 @@
           this.searchForm.department_id = data.id;
           this.searchForm.department_title = data.title;
         }
+      },
+      onSearchIsGcChange(value) {
+        this.searchNepDisabled = value !== 1;
+        if (this.searchNepDisabled) {
+          this.searchForm.nep_type = '';
+        }
+      },
+      getDictData() {
+        getProjectDictData(this.dictName).then(res => {
+          if (res.result) {
+            this.dict = res.result;
+          }
+        });
       }
     },
     mounted() {

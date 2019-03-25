@@ -99,7 +99,6 @@
     },
     methods: {
       init() {
-        console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
         const timestamp = new Date().getTime();
@@ -152,14 +151,66 @@
         this.getDictData();
         getAllProjects(this.searchForm).then(e => {
           let _this = this;
+          let date=new Date();
+          let y=date.getFullYear();
+          let m=date.getMonth();
+          let plan_amount=0;
           e.result.forEach(function (project) {
+              project.projectPlan.forEach(function (year) {                
+                  if(year.date==y){
+                    year.month.forEach(function (month) {
+                      if(m>month.date){
+                        plan_amount=parseFloat(plan_amount)+parseFloat(month.amount);
+                      }
+                    })
+                  }
+              })
+            let acc_complete=0
+            if(project.scheduleInfo){
+              acc_complete=project.scheduleInfo.acc_complete;
+            }else{
+              acc_complete=0;
+            }
+            let Percentage = 0;
+            if(plan_amount>0&&plan_amount>acc_complete){
+              Percentage = (plan_amount - acc_complete) / plan_amount;
+            }
+            let Percentage_con='';
+            Percentage=parseFloat(Percentage);
+            let war_color='greencircle';
+            let point_color='#19be6b';
+            if(Percentage<=0){
+              Percentage_con="已完成"+acc_complete+"万，"+"和预期一样";
+            }else{
+              Percentage=Percentage.toFixed(2);
+              if(Percentage>0.1&&Percentage<0.2){
+                war_color='yellowcircle';
+                point_color='#ff9900';
+              }else if(Percentage>0.3){
+                war_color='redcircle';
+                point_color='#ed4014';
+              }
+              Percentage_con="已完成"+acc_complete+"万，"+"比预期延缓"+Percentage*100+"%";
+            }
             if (project.is_audit === 1 || project.is_audit === 3) {
               // 添加标注
               let center = project.center_point;
               let centerArr = center.split(",");
-              let marker = new BMap.Marker(
-                new BMap.Point(centerArr[0], centerArr[1])
-              );
+              
+              let marker = new BMap.Marker(new BMap.Point(centerArr[0], centerArr[1]), {
+                // 指定Marker的icon属性为Symbol
+                icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+                  scale: 1.2,//图标缩放大小
+                  fillColor: point_color,//填充颜色
+                  fillOpacity: 1//填充透明度
+                })
+              });
+              // let marker = new BMap.Marker(
+              //   new BMap.Point(centerArr[0], centerArr[1])
+              // );
+              // new BMap.Point.setStyle({
+              //   color:'#eee'
+              // })
               map.addOverlay(marker);
               // 添加多边形
               let positions = project.positions;
@@ -204,7 +255,7 @@
                 "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
                 "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>" + project.status + "</span></h5>" +
                 "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
-                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：<span class='redcircle'></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>已完成53万，比预期延缓10%</span></h5>";
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：<span class='"+war_color+"'></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>"+Percentage_con+"</span></h5>";
               _this.addClickHandler(sContent, marker, map);
             }
           });

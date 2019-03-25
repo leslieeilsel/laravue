@@ -84,9 +84,29 @@ class LedgerController extends Controller
                 }
             }
         }
-        if ($params['search_project_id']) {
-            $sql = $sql->where('iba_project_schedule.project_id', $params['search_project_id']);
+        
+        if (isset($params['project_id'])||isset($params['money_from'])||isset($params['is_gc'])||isset($params['nep_type'])) {
+            $projects = Projects::select('id');
+            if(isset($params['project_id'])){
+                $projects = $projects->where('project_id', $params['project_id']);
+            }
+            if(isset($params['money_from'])){
+                $projects = $projects->where('money_from', $params['money_from']);
+            }
+            if(isset($params['is_gc'])){
+                $projects = $projects->where('is_gc', $params['is_gc']);
+            }
+            if(isset($params['nep_type'])){
+                $projects = $projects->where('nep_type', $params['nep_type']);
+            }
+            $projects=$projects->get()->toArray();
+            $ids = array_column($projects, 'id');
+            $ids = array_intersect($ids, $this->seeIds);
+            $sql = $sql->whereIn('project_id', $ids);
         }
+        // if ($params['search_project_id']) {
+        //     $sql = $sql->where('iba_project_schedule.project_id', $params['search_project_id']);
+        // }
         return $sql;
     }
     /**

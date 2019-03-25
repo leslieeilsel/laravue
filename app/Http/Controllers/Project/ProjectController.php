@@ -284,6 +284,7 @@ class ProjectController extends Controller
             $projects[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? Dict::getOptionsArrByName('国民经济计划分类')[$row['nep_type']] : '';
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
+            $projects[$k]['scheduleInfo']=ProjectSchedule::where('project_id',$row['id'])->orderBy('id','desc')->first();
         }
 
         return response()->json(['result' => $projects], 200);
@@ -454,8 +455,21 @@ class ProjectController extends Controller
             $user_id = array_column($user_ids, 'id');
             $query = $query->whereIn('user_id', $user_id);
         }
-        if (isset($data['title'])) {
-            $projects = Projects::select('id')->where('title', 'like', '%' . $data['title'] . '%')->get()->toArray();
+        if (isset($data['title'])||isset($data['money_from'])||isset($data['is_gc'])||isset($data['nep_type'])) {
+            $projects = Projects::select('id');
+            if(isset($data['title'])){
+                $projects = $projects->where('title', 'like', '%' . $data['title'] . '%');
+            }
+            if(isset($data['money_from'])){
+                $projects = $projects->where('money_from', $data['money_from']);
+            }
+            if(isset($data['is_gc'])){
+                $projects = $projects->where('is_gc', $data['is_gc']);
+            }
+            if(isset($data['nep_type'])){
+                $projects = $projects->where('nep_type', $data['nep_type']);
+            }
+            $projects=$projects->get()->toArray();
             $ids = array_column($projects, 'id');
             $ids = array_intersect($ids, $this->seeIds);
             $query = $query->whereIn('project_id', $ids);
