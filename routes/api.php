@@ -44,12 +44,12 @@ Route::get('project/getProjects', 'Project\ProjectController@getProjects');
 Route::get('project/getAuditedProjects', 'Project\ProjectController@getAuditedProjects');
 Route::get('project/loadPlan/{id}', 'Project\ProjectController@loadPlan');
 Route::post('project/getAllWarning', 'Project\ProjectController@getAllWarning');
-Route::post('project/getAllProjects', 'Project\ProjectController@getAllProjects');
+Route::any('project/getAllProjects', 'Project\ProjectController@getAllProjects');
 Route::post('project/getProjectDictData', 'Project\ProjectController@getProjectDictData');
 Route::post('project/addProject', 'Project\ProjectController@add');
 Route::post('project/edit', 'Project\ProjectController@edit');
 Route::post('project/projectProgress', 'Project\ProjectController@projectProgress');
-Route::post('project/projectProgressList', 'Project\ProjectController@projectProgressList');
+Route::any('project/projectProgressList', 'Project\ProjectController@projectProgressList');
 Route::post('project/uploadPic', 'Project\ProjectController@uploadPic');
 Route::post('project/projectPlanInfo', 'Project\ProjectController@projectPlanInfo');
 Route::post('project/getData', 'Project\ProjectController@getData');
@@ -65,7 +65,7 @@ Route::post('project/toAuditSchedule', 'Project\ProjectController@toAuditSchedul
 Route::post('project/actCompleteMoney', 'Project\ProjectController@actCompleteMoney');
 Route::post('project/getProjectNoScheduleList', 'Project\ProjectController@getProjectNoScheduleList');
 Route::post('project/projectScheduleMonth', 'Project\ProjectController@projectScheduleMonth');
-
+Route::post('project/noAudit', 'Project\ProjectController@noAudit');
 // 添加台账导出
 Route::get('project/exportSchedule', 'Project\LedgerController@exportSchedule');
 Route::get('project/exportLedger', 'Project\LedgerController@export');

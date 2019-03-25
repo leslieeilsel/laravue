@@ -267,11 +267,15 @@ class ProjectController extends Controller
         if (isset($params['status'])) {
             $query = $query->where('status', $params['status']);
         }
-        if ($this->office === 1) {
-            $query = $query->where('is_audit', '!=', 4);
-        }
-        if ($this->office === 2) {
-            $query = $query->where('is_audit', 1);
+        if (isset($params['is_audit'])) {
+            $query = $query->where('is_audit', 0);
+        }else{
+            if ($this->office === 1) {
+                $query = $query->where('is_audit', '!=', 4);
+            }
+            if ($this->office === 2) {
+                $query = $query->where('is_audit', 1);
+            }
         }
         $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
         foreach ($projects as $k => $row) {
@@ -495,11 +499,15 @@ class ProjectController extends Controller
                 }
             }
         }
-        if ($this->office === 1) {
-            $query = $query->where('is_audit', '!=', 4);
-        }
-        if ($this->office === 2) {
-            $query = $query->where('is_audit', 1);
+        if (isset($data['is_audit'])) {
+            $query = $query->where('is_audit', 0);
+        }else{
+            if ($this->office === 1) {
+                $query = $query->where('is_audit', '!=', 4);
+            }
+            if ($this->office === 2) {
+                $query = $query->where('is_audit', 1);
+            }
         }
         $ProjectSchedules = $query->whereIn('user_id', $this->seeIds);
 
@@ -834,6 +842,27 @@ class ProjectController extends Controller
             ->value('month');
 
         return response()->json(['result' => $month], 200);
+    }
+    /**
+     * 通知信息，获取未审核的填报信息和项目信息
+     *
+     * @return JsonResponse
+     */
+    public function noAudit()
+    {
+        $projectsQuery = new Projects();
+        $scheduleQuery = new ProjectSchedule();
+        // if ($this->office === 1) {
+        //     $query = $query->where('is_audit', '!=', 4);
+        // }
+        // if ($this->office === 2) {
+        //     $query = $query->where('is_audit', 1);
+        // }
+        
+        $data['projects'] = $projectsQuery->whereIn('user_id', $this->seeIds)->where('is_audit', 0)->count();
+        $data['schedule'] = $scheduleQuery->whereIn('user_id', $this->seeIds)->where('is_audit', 0)->count();
+
+        return response()->json(['result' => $data], 200);
     }
 
 }

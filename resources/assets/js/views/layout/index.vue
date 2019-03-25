@@ -22,7 +22,12 @@
           </div>
         </div>
         <div class="header-avator-con">
-          
+          <!-- -->
+            <Badge dot style="top: 20px;left: 110px;color：#fff">
+              <a href="/#/sys-manage/notify">
+                <Icon type="ios-notifications" size="26" color="#fff"></Icon>
+              </a>
+            </Badge>
           <!--dropdown start -->
           <div class="user-dropdown-menu-con">
             <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
@@ -133,7 +138,7 @@
       toggleClick() {
         this.shrink = !this.shrink;
       },
-      clickDropdown(name) {
+      clickDropdown(name) {        
         if (name === 'userCenter') {
           // 用户中心
           // util.openNewPage(this, 'home');

@@ -1004,6 +1004,8 @@
       },
       getProject() {
         this.tableLoading = true;
+        console.log(this.$route.params.is_audit);
+        this.searchForm.is_audit=this.$route.params.is_audit;
         getAllProjects(this.searchForm).then(e => {
           this.data = e.result;
           //分页显示所有数据总数
@@ -1043,6 +1045,7 @@
           is_gc: '',
           nep_type: '',
           status: '',
+          is_audit:''
         };
         this.pageCurrent = 1;
         this.getProject();

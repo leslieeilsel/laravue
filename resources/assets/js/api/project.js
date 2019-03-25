@@ -320,3 +320,14 @@ export function projectScheduleMonth(form) {
     data: {...form}
   });
 }
+/**
+ * 通知信息，获取未审核的填报信息和项目信息
+ * @returns {*}
+ */
+export function getNoAudit(form) {
+  return request({
+    url: '/api/project/noAudit',
+    method: 'post',
+    data: {...form}
+  });
+}

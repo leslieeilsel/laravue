@@ -619,6 +619,7 @@
           money_from: '',
           is_gc: '',
           nep_type: '',
+          is_audit:''
         },
         noSchedule: false,
         seeModal: false,
@@ -1014,7 +1015,7 @@
         this.office = this.$store.getters.user.office;
         this.isShowButton = this.office === 0;
         this.noScheduleButton = this.office === 1;
-
+        
         initDepartment().then(res => {
           res.result.forEach(function (e) {
             if (e.is_parent) {
@@ -1032,10 +1033,12 @@
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
         this.getProjectScheduleList();
-        this.getProjectNoScheduleList();
+        this.getProjectNoScheduleList();   
       },
       getProjectScheduleList() {
         this.tableLoading = true;
+        console.log(this.$route.params.is_audit);
+        this.searchForm.is_audit=this.$route.params.is_audit;
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
           //分页显示所有数据总数
