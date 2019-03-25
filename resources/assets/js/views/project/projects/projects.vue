@@ -872,7 +872,7 @@
                 }, '编辑'),
                   h('Button', {
                     props: {
-                      type: 'primary',
+                      type: 'error',
                       size: 'small',
                       disabled: editButton,
                       // loading: _this.editFormLoading
