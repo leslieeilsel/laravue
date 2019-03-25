@@ -21,22 +21,24 @@
             <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
           </Select>
         </Form-item>
-        <FormItem label="资金来源">
-          <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
-            <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="项目标识" prop="is_gc">
-          <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
-                  placeholder="是否为国民经济计划">
-            <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="国民经济计划分类" prop="nep_type">
-          <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
-            <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
-          </Select>
-        </FormItem>
+        <span v-if="drop">
+          <FormItem label="资金来源">
+            <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
+              <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="项目标识" prop="is_gc">
+            <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
+                    placeholder="是否为国民经济计划">
+              <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="国民经济计划分类" prop="nep_type">
+            <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
+              <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
+            </Select>
+          </FormItem>
+        </span>
         <Form-item style="margin-left:-35px;" class="br">
           <Button @click="getProjectLedgerList" type="primary" icon="ios-search">搜索</Button>
           <Button @click="cancel">重置</Button>
@@ -60,8 +62,10 @@
   </Card>
 </template>
 <script>
-  import {initProjectInfo, getData, projectLedgerList, projectQuarter, projectLedgerAdd,
-    getProjectDictData} from '../../../api/project';
+  import {
+    initProjectInfo, getData, projectLedgerList, projectQuarter, projectLedgerAdd,
+    getProjectDictData
+  } from '../../../api/project';
   import './projectLedger.css'
 
   export default {
@@ -78,7 +82,7 @@
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
-              return h('span', params.index + (this.pageCurrent- 1) * this.pageSize + 1);
+              return h('span', params.index + (this.pageCurrent - 1) * this.pageSize + 1);
             }
           },
           {
@@ -156,7 +160,7 @@
           nep_type: [],
           money_from: []
         },
-        searchNepDisabled:true,
+        searchNepDisabled: true,
         dropDownIcon: "ios-arrow-down",
         dropDownContent: '展开',
         drop: false,
@@ -185,7 +189,7 @@
           }
           this.pageCurrent = 1;
           if (res.result) {
-            if (this.searchForm.is_gc||this.searchForm.nep_type||this.searchForm.money_from||this.searchForm.search_project_id || this.searchForm.start_at || this.searchForm.end_at) {
+            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.search_project_id || this.searchForm.start_at || this.searchForm.end_at) {
               this.btnDisable = false;
             }
           }

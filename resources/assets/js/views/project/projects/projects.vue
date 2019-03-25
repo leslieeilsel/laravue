@@ -248,7 +248,8 @@
                       <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
                     </Col>
                     <Col span="8">
-                      <InputNumber :min="1" :step="1.2" v-model="ite.amount" @on-blur="totalAmount(index_t,index)" placeholder=""
+                      <InputNumber :min="1" :step="1.2" v-model="ite.amount" @on-blur="totalAmount(index_t,index)"
+                                   placeholder=""
                                    class="monthInput"></InputNumber>
                     </Col>
                     <Col span="8">
@@ -434,7 +435,8 @@
                 <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
               </Col>
               <Col span="8">
-                <InputNumber :min="1" :step="1.2" v-model="ite.amount"  @on-blur="totalAmountE(index_t,index)" placeholder="" class="monthInput"></InputNumber>
+                <InputNumber :min="1" :step="1.2" v-model="ite.amount" @on-blur="totalAmountE(index_t,index)"
+                             placeholder="" class="monthInput"></InputNumber>
               </Col>
               <Col span="8">
                 <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
@@ -817,6 +819,8 @@
             render: (h, params) => {
               let editButton;
               editButton = this.office === 0 ? !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4) : this.office === 1;
+              let delButton;
+              delButton = this.office === 0 ? !(params.row.is_audit === 2 || params.row.is_audit === 4) : true;
               return h('div', [
                 h('Button', {
                   props: {
@@ -870,38 +874,37 @@
                     }
                   }
                 }, '编辑'),
-                  h('Button', {
-                    props: {
-                      type: 'error',
-                      size: 'small',
-                      disabled: editButton,
-                      // loading: _this.editFormLoading
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.$Modal.confirm({
-                          title: "确认删除",
-                          loading: true,
-                          content: "您确认要删除这个项目？",
-                          onOk: () => {
-                            console.log(params.row.id);
-                            projectDelete({id:params.row.id}).then(res => {
-                              if(res.result === true){
-                                this.$Message.success("删除成功");
-                                this.init();
-                              }else{
-                                this.$Message.error("项目不能删除");
-                              }
-                              this.$Modal.remove();
-                            });
-                          }
-                        });
-                      }
+                h('Button', {
+                  props: {
+                    type: 'error',
+                    size: 'small',
+                    disabled: delButton,
+                    // loading: _this.editFormLoading
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$Modal.confirm({
+                        title: "确认删除",
+                        loading: true,
+                        content: "您确认要删除这个项目？",
+                        onOk: () => {
+                          projectDelete({id: params.row.id}).then(res => {
+                            if (res.result === true) {
+                              this.$Message.success("删除成功");
+                              this.init();
+                            } else {
+                              this.$Message.error("项目不能删除");
+                            }
+                            this.$Modal.remove();
+                          });
+                        }
+                      });
                     }
-                  }, '删除')
+                  }
+                }, '删除')
               ]);
             }
           }
@@ -1037,8 +1040,7 @@
       },
       getProject() {
         this.tableLoading = true;
-        console.log(this.$route.params.is_audit);
-        this.searchForm.is_audit=this.$route.params.is_audit;
+        this.searchForm.is_audit = this.$route.params.is_audit;
         getAllProjects(this.searchForm).then(e => {
           this.data = e.result;
           //分页显示所有数据总数
@@ -1078,7 +1080,7 @@
           is_gc: '',
           nep_type: '',
           status: '',
-          is_audit:''
+          is_audit: ''
         };
         this.pageCurrent = 1;
         this.getProject();
@@ -1221,42 +1223,42 @@
         this.pageCurrent = 1;
         this.loadingTable = false;
       },//月投资计划金额   大于计划金额时不能填写
-      totalAmount(index_t,index){
-        let amount_total=this.form.projectPlan[index_t].amount;
-        let month_total=this.form.projectPlan[index_t].month;
-        if(!amount_total){
+      totalAmount(index_t, index) {
+        let amount_total = this.form.projectPlan[index_t].amount;
+        let month_total = this.form.projectPlan[index_t].month;
+        if (!amount_total) {
           this.$Message.error('请先填写年计划金额!');
           month_total[index].amount = 0;
           return;
         }
-        let amounts=0;
-        for(let i=0;i<month_total.length;i++){
-          if(month_total[i].amount){
-            amounts=parseFloat(amounts)+parseFloat(month_total[i].amount);
+        let amounts = 0;
+        for (let i = 0; i < month_total.length; i++) {
+          if (month_total[i].amount) {
+            amounts = parseFloat(amounts) + parseFloat(month_total[i].amount);
           }
         }
-        if(amounts>amount_total){
+        if (amounts > amount_total) {
           this.$Message.error('月计划总金额不能超过年计划');
-          month_total[index].amount=0;
+          month_total[index].amount = 0;
         }
       },//修改月投资计划金额   大于计划金额时不能填写
-      totalAmountE(index_t,index){
-        let amount_total=this.editForm.projectPlan[index_t].amount;
-        let month_total=this.editForm.projectPlan[index_t].month;
-        if(!amount_total){
+      totalAmountE(index_t, index) {
+        let amount_total = this.editForm.projectPlan[index_t].amount;
+        let month_total = this.editForm.projectPlan[index_t].month;
+        if (!amount_total) {
           this.$Message.error('请先填写年计划金额!');
           month_total[index].amount = 0;
           return;
         }
-        let amounts=0;
-        for(let i=0;i<month_total.length;i++){
-          if(month_total[i].amount){
-            amounts=parseFloat(amounts)+parseFloat(month_total[i].amount);
+        let amounts = 0;
+        for (let i = 0; i < month_total.length; i++) {
+          if (month_total[i].amount) {
+            amounts = parseFloat(amounts) + parseFloat(month_total[i].amount);
           }
         }
-        if(amounts>amount_total){
+        if (amounts > amount_total) {
           this.$Message.error('月计划总金额不能超过年计划');
-          month_total[index].amount=0;
+          month_total[index].amount = 0;
         }
       }
     },

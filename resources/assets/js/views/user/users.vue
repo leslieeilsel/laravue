@@ -2,17 +2,17 @@
   <div>
     <Card>
       <Row>
-        <Form ref="searchForm" :model="searchForm" inline :label-width="90" class="search-form">
+        <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
           <FormItem label="部门" prop="department_title">
-              <Poptip trigger="click" placement="right" title="选择部门" width="340">
-                <div style="display:flex;">
-                  <Input v-model="searchForm.department_title" readonly style="margin-right:10px;" placeholder=""/>
-                </div>
-                <div slot="content" class="tree-bar">
-                  <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeS"></Tree>
-                  <Spin size="large" fix v-if="dpLoading"></Spin>
-                </div>
-              </Poptip>
+            <Poptip trigger="click" placement="right" title="选择部门" width="340">
+              <div style="display:flex;">
+                <Input v-model="searchForm.department_title" readonly style="margin-right:10px;" placeholder=""/>
+              </div>
+              <div slot="content" class="tree-bar">
+                <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeS"></Tree>
+                <Spin size="large" fix v-if="dpLoading"></Spin>
+              </div>
+            </Poptip>
           </FormItem>
           <FormItem label="姓名" prop="name">
             <Input clearable v-model="searchForm.name" placeholder="支持模糊搜索" style="width: 200px"/>
@@ -86,10 +86,12 @@
               <Input v-model="form.username" placeholder="必填项"></Input>
             </FormItem>
             <FormItem label="密码" prop="password">
-              <Input v-model="form.password" :type="passwordType" @on-focus="changePasswordType('password')" autocomplete="off" placeholder="必填项"/>
+              <Input v-model="form.password" :type="passwordType" @on-focus="changePasswordType('password')"
+                     autocomplete="off" placeholder="必填项"/>
             </FormItem>
             <FormItem label="确认密码" prop="pwdCheck">
-              <Input v-model="form.pwdCheck" :type="checkPasswordType" @on-focus="changePasswordType('pwdCheck')" autocomplete="off" placeholder="必填项"/>
+              <Input v-model="form.pwdCheck" :type="checkPasswordType" @on-focus="changePasswordType('pwdCheck')"
+                     autocomplete="off" placeholder="必填项"/>
             </FormItem>
             <FormItem label="备注" prop="desc">
               <Input v-model="form.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
@@ -149,7 +151,8 @@
               <Input v-model="editForm.pwdCheck" :type="checkPasswordType" @on-focus="changePasswordType('pwdCheck')" autocomplete="off" placeholder="必填项"/>
             </FormItem> -->
             <FormItem label="备注" prop="desc">
-              <Input v-model="editForm.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="可选项"></Input>
+              <Input v-model="editForm.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
+                     placeholder="可选项"></Input>
             </FormItem>
           </Form>
           <div slot="footer">
@@ -158,7 +161,8 @@
           </div>
         </Modal>
       </p>
-      <Table type="selection" border :columns="columns" :data="nowData" @on-selection-change="showSelect" :loading="loadingTable"></Table>
+      <Table type="selection" border :columns="columns" :data="nowData" @on-selection-change="showSelect"
+             :loading="loadingTable"></Table>
       <Row type="flex" justify="end" class="page">
         <Page :total="dataCount" :page-size="pageSize" @on-change="changePage" @on-page-size-change="_nowPageSize"
               show-total show-sizer/>
@@ -167,7 +171,7 @@
   </div>
 </template>
 <script>
-  import {registUser, getUsers, getUserDictData,deleteUserData,editRegistUser,getUser} from '../../api/user';
+  import {registUser, getUsers, getUserDictData, deleteUserData, editRegistUser, getUser} from '../../api/user';
   import {initDepartment, loadDepartment} from '../../api/system';
   import {getRoles} from '../../api/role';
   import './users.css';
@@ -210,7 +214,7 @@
         dpLoading: false,
         modal: false,
         editModal: false,
-        btnDisable:true,
+        btnDisable: true,
         selectDep: [],
         dataDep: [],
         dictName: {
@@ -232,7 +236,7 @@
           password: '',
           pwdCheck: '',
           desc: ''
-        },editForm:{
+        }, editForm: {
           id: '',
           username: '',
           name: '',
@@ -244,7 +248,7 @@
           group_id: '',
           // password: '',
           // pwdCheck: '',
-          desc:''
+          desc: ''
         },
         ruleValidate: {
           name: [
@@ -367,19 +371,19 @@
                   on: {
                     click: () => {
                       this.$refs.editFormValidate.resetFields();
-                      this.editForm.id=params.row.id;
-                      this.editForm.username=params.row.username;
-                      this.editForm.name=params.row.name;
-                      this.editForm.email=params.row.email;
-                      this.editForm.phone=params.row.phone;                  
-                      this.editForm.department_title=params.row.department;
-                      this.editForm.password=params.row.password;
-                      this.editForm.pwdCheck=params.row.pwdCheck;
-                      this.editForm.desc=params.row.desc;
-                      getUser({id:params.row.id}).then((data) => {
-                        this.editForm.department_id=data.result.department_id;
-                        this.editForm.group_id=data.result.group_id;
-                        this.editForm.office=data.result.office;
+                      this.editForm.id = params.row.id;
+                      this.editForm.username = params.row.username;
+                      this.editForm.name = params.row.name;
+                      this.editForm.email = params.row.email;
+                      this.editForm.phone = params.row.phone;
+                      this.editForm.department_title = params.row.department;
+                      this.editForm.password = params.row.password;
+                      this.editForm.pwdCheck = params.row.pwdCheck;
+                      this.editForm.desc = params.row.desc;
+                      getUser({id: params.row.id}).then((data) => {
+                        this.editForm.department_id = data.result.department_id;
+                        this.editForm.group_id = data.result.group_id;
+                        this.editForm.office = data.result.office;
                       })
                       this.editModal = true;
                     }
@@ -402,7 +406,7 @@
           username: '',
           department_id: '',
           group_id: '',
-          department_title:''
+          department_title: ''
         },
       }
     },
@@ -474,7 +478,7 @@
             this.$Message.error('发生错误!');
           }
         })
-      },handleSubmitE(name) {
+      }, handleSubmitE(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.loading = true;
@@ -571,7 +575,7 @@
             }
           }
           console.log(v);
-          
+
           let str = JSON.stringify(v[0]);
           let data = JSON.parse(str);
           this.searchForm.department_id = data.id;
@@ -679,7 +683,7 @@
           name: '',
           username: '',
           department_id: '',
-          department_title:'',
+          department_title: '',
           group_id: ''
         };
         this.getUserList();
