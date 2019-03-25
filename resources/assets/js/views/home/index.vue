@@ -1,7 +1,13 @@
 <template>
-  <iframe src="http://139.217.129.66:3000/public/dashboard/1eb6cf5f-c2e2-45b7-91e2-2f9b5e0f79e8" frameborder="0"
-          width="100%" height="1000" allowtransparency></iframe>
+  <div id="homePageImage"></div>
 </template>
 <script>
   export default {}
 </script>
+<style scoped>
+  #homePageImage {
+    width: 100%;
+    height: 800px;
+    background: url(http://r.photo.store.qq.com/psb?/V12ol6gx2nrILn/AzaC*Wc7Yl9xRfBmsQdclPukregrUgu6qGWJsOte2K4!/r/dL8AAAAAAAAA) round;
+  }
+</style>
