@@ -21,9 +21,29 @@
             <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
           </Select>
         </Form-item>
+        <FormItem label="资金来源">
+          <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
+            <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="项目标识" prop="is_gc">
+          <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
+                  placeholder="是否为国民经济计划">
+            <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="国民经济计划分类" prop="nep_type">
+          <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
+            <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
+          </Select>
+        </FormItem>
         <Form-item style="margin-left:-35px;" class="br">
           <Button @click="getProjectLedgerList" type="primary" icon="ios-search">搜索</Button>
           <Button @click="cancel">重置</Button>
+          <a class="drop-down" @click="dropDown">
+            {{dropDownContent}}
+            <Icon :type="dropDownIcon"></Icon>
+          </a>
         </Form-item>
       </Form>
     </Row>
@@ -40,7 +60,8 @@
   </Card>
 </template>
 <script>
-  import {initProjectInfo, getData, projectLedgerList, projectQuarter, projectLedgerAdd} from '../../../api/project';
+  import {initProjectInfo, getData, projectLedgerList, projectQuarter, projectLedgerAdd,
+    getProjectDictData} from '../../../api/project';
   import './projectLedger.css'
 
   export default {
@@ -125,6 +146,20 @@
         quarter: [],
         project_id: [],
         modal: false,
+        dictName: {
+          is_gc: '是否为国民经济计划',
+          nep_type: '国民经济计划分类',
+          money_from: '资金来源',
+        },
+        dict: {
+          is_gc: [],
+          nep_type: [],
+          money_from: []
+        },
+        searchNepDisabled:true,
+        dropDownIcon: "ios-arrow-down",
+        dropDownContent: '展开',
+        drop: false,
       }
     },
     methods: {
@@ -133,18 +168,11 @@
         this.getProjectId();
         // this.getQuarter();
         // this.getNature();
+        this.getDictData();
       },
       getProjectLedgerList() {
-        let search_project_id = this.searchForm.project_id;
-        let start_at = this.searchForm.start_at;
-        let end_at = this.searchForm.end_at;
-
         this.tableLoading = true;
-        projectLedgerList({
-          search_project_id: search_project_id,
-          start_at: start_at,
-          end_at: end_at
-        }).then(res => {
+        projectLedgerList(this.searchForm).then(res => {
           this.data = res.result;
           //分页显示所有数据总数
           this.dataCount = this.data.length;
@@ -157,7 +185,7 @@
           }
           this.pageCurrent = 1;
           if (res.result) {
-            if (search_project_id || start_at || end_at) {
+            if (this.searchForm.is_gc||this.searchForm.nep_type||this.searchForm.money_from||this.searchForm.search_project_id || this.searchForm.start_at || this.searchForm.end_at) {
               this.btnDisable = false;
             }
           }
@@ -213,6 +241,29 @@
         this.pageCurrent = 1;
         this.loadingTable = false;
       },
+      getDictData() {
+        getProjectDictData(this.dictName).then(res => {
+          if (res.result) {
+            this.dict = res.result;
+          }
+        });
+      },
+      onSearchIsGcChange(value) {
+        this.searchNepDisabled = value !== 1;
+        if (this.searchNepDisabled) {
+          this.searchForm.nep_type = '';
+        }
+      },
+      dropDown() {
+        if (this.drop) {
+          this.dropDownContent = "展开";
+          this.dropDownIcon = "ios-arrow-down";
+        } else {
+          this.dropDownContent = "收起";
+          this.dropDownIcon = "ios-arrow-up";
+        }
+        this.drop = !this.drop;
+      }
     },
     mounted() {
       this.init();

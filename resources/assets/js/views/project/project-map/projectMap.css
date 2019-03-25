@@ -11,27 +11,27 @@
     position: absolute;
     width: 18px;
     height: 18px;
-    background: #228B22;
+    background: #19be6b;
     border-radius: 50%;
-    border: 1px solid #228B22;
+    border: 1px solid #19be6b;
 }
 
 .yellowcircle {
     position: absolute;
     width: 18px;
     height: 18px;
-    background: #f5c613;
+    background: #ff9900;
     border-radius: 50%;
-    border: 1px solid #f5c613;
+    border: 1px solid #ff9900;
 }
 
 .redcircle {
     position: absolute;
     width: 18px;
     height: 18px;
-    background: #f55213;
+    background: #ed4014;
     border-radius: 50%;
-    border: 1px solid #f55213;
+    border: 1px solid #ed4014;
 }
 
 .anchorBL {
