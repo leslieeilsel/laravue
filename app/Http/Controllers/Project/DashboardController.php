@@ -134,6 +134,7 @@ class DashboardController extends Controller
         $warningType = [
             '已经超额', '警告超额', '严重超额',
         ];
+        $data = [];
         foreach ($result as $k => $row) {
             $data[$k]['key'] = $row['id'];
             $res = ProjectSchedule::where('id', $row['schedule_id'])->first();
