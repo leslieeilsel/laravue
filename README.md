@@ -13,7 +13,7 @@
 git clone https://github.com/leslieeilsel/Laravue.git
 
 # 安装composer依赖
-cd laravue
+cd Laravue
 composer install
 
 # 推荐使用yarn安装扩展包
