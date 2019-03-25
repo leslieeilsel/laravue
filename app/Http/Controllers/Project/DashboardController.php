@@ -125,6 +125,7 @@ class DashboardController extends Controller
         }
 
         // 项目预警列表
+        $projectIds = array_column($projects, 'id');
         $projectSchedules = ProjectSchedule::whereIn('project_id', $projectIds)->get()->toArray();
         $scheduleIds = array_column($projectSchedules, 'id');
 
