@@ -2,6 +2,17 @@
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="90" class="search-form">
+        <FormItem label="部门" prop="department_title">
+            <Poptip trigger="click" placement="right" title="选择部门" width="340">
+              <div style="display:flex;">
+                <Input v-model="searchForm.department_title" readonly style="margin-right:10px;" placeholder=""/>
+              </div>
+              <div slot="content" class="tree-bar">
+                <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeS"></Tree>
+                <Spin size="large" fix v-if="dpLoading"></Spin>
+              </div>
+            </Poptip>
+        </FormItem>
         <FormItem label="项目名称" prop="title">
           <Input clearable v-model="searchForm.title" placeholder="支持模糊搜索" style="width: 200px"/>
         </FormItem>
@@ -159,7 +170,7 @@
           <Col span="12">
             <FormItem label="计划开工时间" prop="plan_build_start_at">
               <DatePicker type="month" placeholder="请选择" format="yyyy-MM"
-                          v-model="form.plan_build_start_at"></DatePicker>
+                          v-model="form.plan_build_start_at" readonly></DatePicker>
             </FormItem>
           </Col>
           <Col span="12">
@@ -552,6 +563,7 @@
     getProjectNoScheduleList,
     projectScheduleMonth
   } from '../../../api/project';
+  import {initDepartment,loadDepartment} from '../../../api/system';
   import './projectSchedule.css'
 
   export default {
@@ -577,12 +589,16 @@
         btnDisable: true,
         upbtnDisabled: true,
         picDisable: true,
+        dataDep: [],
+        dpLoading: false,
         searchForm: {
           title: '',
           project_num: '',
           subject: '',
           start_at: '',
-          end_at: ''
+          end_at: '',
+          department_id:'',
+          department_title:''
         },
         noSchedule: false,
         seeModal: false,
@@ -954,7 +970,7 @@
             return disabledMonth !== date_at.getMonth();
           }
         },
-        scheduleMonth: []
+        scheduleMonth: [],
       }
     },
     methods: {
@@ -968,6 +984,19 @@
         this.isShowButton = this.office === 0;
         this.noScheduleButton = this.office === 1;
 
+        initDepartment().then(res => {
+          res.result.forEach(function (e) {
+            if (e.is_parent) {
+              e.loading = false;
+              e.children = [];
+            }
+            if (e.status === 0) {
+              e.title = "[已禁用] " + e.title;
+              e.disabled = true;
+            }
+          });
+          this.dataDep = res.result;
+        });
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
         this.getProjectScheduleList();
@@ -988,7 +1017,7 @@
           }
           this.pageCurrent = 1;
           if (res.result) {
-            if (this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
+            if (this.searchForm.department_id||this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
               this.btnDisable = false;
             }
             this.tableLoading = false;
@@ -1058,6 +1087,7 @@
             this.form.build_end_at = em.plan_end_at;
             this.form.total_investors = em.amount;
             this.form.plan_img_progress = em.image_progress;
+            this.form.plan_build_start_at = em.plan_start_at;
           }
         });
         projectScheduleMonth({project: e}).then(res => {
@@ -1241,6 +1271,7 @@
         let subject = this.searchForm.subject;
         let start_at = this.searchForm.start_at;
         let end_at = this.searchForm.end_at;
+        let department_id = this.searchForm.department_id;
         let start_time = '';
         if (start_at) {
           let start_time_0 = new Date(start_at);
@@ -1253,7 +1284,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/exportSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time;
+        window.location.href = "/api/project/exportSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time+"&department_id="+department_id;
       },//下载
       downloadPic() {
         let project_id = this.searchForm.project_id;
@@ -1261,6 +1292,7 @@
         let subject = this.searchForm.subject;
         let start_at = this.searchForm.start_at;
         let end_at = this.searchForm.end_at;
+        let department_id = this.searchForm.department_id;
         let start_time = '';
         if (start_at) {
           let start_time_0 = new Date(start_at);
@@ -1273,7 +1305,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/downLoadSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time;
+        window.location.href = "/api/project/downLoadSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time+"&department_id="+department_id;
       },
       changePage(index) {
         //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
@@ -1298,6 +1330,36 @@
         this.pageCurrent = 1;
         this.loadingTable = false;
       },
+      loadDataTree(item, callback) {
+        loadDepartment(item.id).then(res => {
+          res.result.forEach(function (e) {
+            if (e.is_parent) {
+              e.loading = false;
+              e.children = [];
+            }
+            if (e.status === 0) {
+              e.title = "[已禁用] " + e.title;
+              e.disabled = true;
+            }
+          });
+          callback(res.result);
+        });
+      },
+      selectTreeS(v) {
+        if (v.length > 0) {
+          // 转换null为""
+          for (let attr in v[0]) {
+            if (v[0][attr] === null) {
+              v[0][attr] = "";
+            }
+          }
+          let str = JSON.stringify(v[0]);
+          let data = JSON.parse(str);
+          console.log(data);
+          this.searchForm.department_id = data.id;
+          this.searchForm.department_title = data.title;
+        }
+      }
     },
     mounted() {
       this.init();

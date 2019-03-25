@@ -449,6 +449,11 @@ class ProjectController extends Controller
     public function projectProgressM($data)
     {
         $query = new ProjectSchedule;
+        if (isset($data['department_id'])) {
+            $user_ids = DB::table('users')->select('id')->where('department_id', $data['department_id'])->get()->toArray();
+            $user_id = array_column($user_ids, 'id');
+            $query = $query->whereIn('user_id', $user_id);
+        }
         if (isset($data['title'])) {
             $projects = Projects::select('id')->where('title', 'like', '%' . $data['title'] . '%')->get()->toArray();
             $ids = array_column($projects, 'id');
@@ -482,12 +487,7 @@ class ProjectController extends Controller
         if ($this->office === 2) {
             $query = $query->where('is_audit', 1);
         }
-        $ProjectSchedules = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
-        foreach ($ProjectSchedules as $k => $row) {
-            $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
-            $Projects = Projects::where('id', $row['project_id'])->value('title');
-            $ProjectSchedules[$k]['project_title'] = $Projects;
-        }
+        $ProjectSchedules = $query->whereIn('user_id', $this->seeIds);
 
         return $ProjectSchedules;
     }
@@ -496,7 +496,13 @@ class ProjectController extends Controller
     {
         $params = $request->all();
         $result = $this->projectProgressM($params);
-        return response()->json(['result' => $result], 200);
+        $ProjectSchedules=$result->orderBy('is_audit','desc')->get()->toArray();
+        foreach ($ProjectSchedules as $k => $row) {
+            $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
+            $Projects = Projects::where('id', $row['project_id'])->value('title');
+            $ProjectSchedules[$k]['project_title'] = $Projects;
+        }
+        return response()->json(['result' => $ProjectSchedules], 200);
     }
 
     /**

@@ -21,10 +21,25 @@ class RegistController extends Controller
      *
      * @return JsonResponse
      */
-    public function getUsers()
+    public function getUsers(Request $request)
     {
-        $data = DB::table('users')->select('id','name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id', 'office')->get()->toArray();
-
+        $params = $request->input();
+        $query = DB::table('users')
+                ->select('id','name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id', 'office');
+                
+        if($params['department_id']){
+            $query=$query->where('department_id',$params['department_id']);
+        }
+        if($params['username']){
+            $query = $query->where('username', 'like', '%' . $params['username'] . '%');
+        }
+        if($params['name']){
+            $query = $query->where('name', 'like', '%' . $params['name'] . '%');
+        }
+        if($params['group_id']){
+            $query = $query->where('group_id', $params['group_id']);
+        }
+        $data = $query->get()->toArray();
         foreach ($data as $k => $row) {
             if (!isset($row['department_id'])) {
                 $data[$k]['department'] = '无';

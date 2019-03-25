@@ -4,10 +4,11 @@ import request from '../utils/request'
  * 获取用户列表
  * @returns {*}
  */
-export function getUsers() {
+export function getUsers(form) {
   return request({
     url: '/api/user/users',
-    method: 'get'
+    method: 'post',
+    data: {...form}
   });
 }
 

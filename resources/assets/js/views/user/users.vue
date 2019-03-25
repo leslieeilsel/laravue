@@ -1,6 +1,45 @@
 <template>
   <div>
     <Card>
+      <Row>
+        <Form ref="searchForm" :model="searchForm" inline :label-width="90" class="search-form">
+          <FormItem label="部门" prop="department_title">
+              <Poptip trigger="click" placement="right" title="选择部门" width="340">
+                <div style="display:flex;">
+                  <Input v-model="searchForm.department_title" readonly style="margin-right:10px;" placeholder=""/>
+                </div>
+                <div slot="content" class="tree-bar">
+                  <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeS"></Tree>
+                  <Spin size="large" fix v-if="dpLoading"></Spin>
+                </div>
+              </Poptip>
+          </FormItem>
+          <FormItem label="姓名" prop="name">
+            <Input clearable v-model="searchForm.name" placeholder="支持模糊搜索" style="width: 200px"/>
+          </FormItem>
+          <span v-if="drop">
+            <Form-item label="角色" prop="group_id">
+              <Select v-model="searchForm.group_id" aria-label="" style="width: 200px">
+                <Option v-for="item in roleList" :value="item.id" :label="item.name" :key="item.id">
+                  <span>{{ item.name }}</span>
+                  <span style="float:right;padding-right:15px;color:#ccc">{{ item.description }}</span>
+                </Option>
+              </Select>
+            </Form-item>
+            <Form-item label="用户名" prop="username">
+              <Input clearable v-model="searchForm.username" placeholder="支持模糊搜索" style="width: 200px"/>
+            </Form-item>
+          </span>
+          <FormItem style="margin-left:-70px;" class="br">
+            <Button @click="getUserList" type="primary" icon="ios-search">搜索</Button>
+            <Button @click="handleResetSearch">重置</Button>
+            <a class="drop-down" @click="dropDown">
+              {{dropDownContent}}
+              <Icon :type="dropDownIcon"></Icon>
+            </a>
+          </FormItem>
+        </Form>
+      </Row>
       <p class="btnGroup">
         <Button type="primary" @click="modal = true" icon="md-add">添加用户</Button>
         <Button @click="delAll" icon="md-trash">删除</Button>
@@ -358,11 +397,18 @@
         dropDownIcon: "ios-arrow-down",
         selectCount: 0, // 多选计数
         selectList: [], // 多选数据
+        searchForm: {
+          name: '',
+          username: '',
+          department_id: '',
+          group_id: '',
+          department_title:''
+        },
       }
     },
     mounted() {
       this.init();
-      getUsers().then((data) => {
+      getUsers(this.searchForm).then((data) => {
         this.data = data.result;
         //分页显示所有数据总数
         this.dataCount = this.data.length;
@@ -516,6 +562,22 @@
           this.form.department_title = data.title;
         }
       },
+      selectTreeS(v) {
+        if (v.length > 0) {
+          // 转换null为""
+          for (let attr in v[0]) {
+            if (v[0][attr] === null) {
+              v[0][attr] = "";
+            }
+          }
+          console.log(v);
+          
+          let str = JSON.stringify(v[0]);
+          let data = JSON.parse(str);
+          this.searchForm.department_id = data.id;
+          this.searchForm.department_title = data.title;
+        }
+      },
       changePasswordType(name) {
         if (name === 'password') {
           this.passwordType = 'password';
@@ -586,6 +648,51 @@
       showSelect(e) {
         this.selectList = e;
         this.selectCount = e.length;
+      },
+      getUserList() {
+        this.init();
+        getUsers(this.searchForm).then((data) => {
+          this.data = data.result;
+          //分页显示所有数据总数
+          this.dataCount = this.data.length;
+          //循环展示页面刚加载时需要的数据条数
+          this.nowData = [];
+          for (let i = 0; i < this.pageSize; i++) {
+            if (this.data[i]) {
+              this.nowData.push(this.data[i]);
+            }
+          }
+          this.loadingTable = false;
+        });
+        getRoles().then((data) => {
+          this.roleList = data.result;
+          this.roleList.forEach(e => {
+            if (e.is_default === 1) {
+              this.checkedDefaultRole = e.id;
+              this.form.group_id = this.checkedDefaultRole;
+            }
+          });
+        });
+      },
+      handleResetSearch() {
+        this.searchForm = {
+          name: '',
+          username: '',
+          department_id: '',
+          department_title:'',
+          group_id: ''
+        };
+        this.getUserList();
+      },
+      dropDown() {
+        if (this.drop) {
+          this.dropDownContent = "展开";
+          this.dropDownIcon = "ios-arrow-down";
+        } else {
+          this.dropDownContent = "收起";
+          this.dropDownIcon = "ios-arrow-up";
+        }
+        this.drop = !this.drop;
       }
     }
   }
