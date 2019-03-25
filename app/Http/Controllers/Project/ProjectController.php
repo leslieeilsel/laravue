@@ -416,23 +416,23 @@ class ProjectController extends Controller
         $data['user_id'] = Auth::id();
         $schedule_id = DB::table('iba_project_schedule')->insertGetId($data);
 
-        $m = intval($month);
-        $plans_amount = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $m)->value('amount');
-        $warResult = true;
-        if ($plans_amount) {
-            $Percentage = ($plans_amount - $data['month_act_complete']) / $plans_amount;
-            if ($Percentage <= 0.1) {
-                $warData['warning_type'] = 0;
-            } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
-                $warData['warning_type'] = 1;
-            } elseif ($Percentage > 0.2) {
-                $warData['warning_type'] = 2;
-            }
-            $warData['schedule_id'] = $schedule_id;
-            $warData['schedule_at'] = $year . '-' . $month;
-            $warResult = ProjectEarlyWarning::insert($warData);
-        }
-        $result = $schedule_id && $warResult;
+        // $m = intval($month);
+        // $plans_amount = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $m)->value('amount');
+        // $warResult = true;
+        // if ($plans_amount) {
+        //     $Percentage = ($plans_amount - $data['month_act_complete']) / $plans_amount;
+        //     if ($Percentage <= 0.1) {
+        //         $warData['warning_type'] = 0;
+        //     } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
+        //         $warData['warning_type'] = 1;
+        //     } elseif ($Percentage > 0.2) {
+        //         $warData['warning_type'] = 2;
+        //     }
+        //     $warData['schedule_id'] = $schedule_id;
+        //     $warData['schedule_at'] = $year . '-' . $month;
+        //     $warResult = ProjectEarlyWarning::insert($warData);
+        // } && $warResult
+        $result = $schedule_id;
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '投资项目进度填报');
@@ -645,7 +645,30 @@ class ProjectController extends Controller
     {
         $data = $request->all();
         $result = ProjectSchedule::where('id', $data['id'])->update(['is_audit' => $data['status'], 'reason' => $data['reason']]);
-
+        $projects=ProjectSchedule::where('id', $data['id'])->first();
+        $year = (int)date('Y', strtotime($projects['month']));
+        $month = (int)date('m', strtotime($projects['month']));
+        $y = intval($year);        
+        $m = intval($month);        
+        $plans_amount_y = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', 0)->where('date', $y)->value('id');
+        $plans_amount = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', $plans_amount_y)->where('date', $m)->value('amount');
+        if($data['status']==1){
+            $warResult = true;
+            $warData=[];
+            if ($plans_amount) {
+                $Percentage = ($plans_amount - $projects['month_act_complete']) / $plans_amount;
+                if ($Percentage <= 0.1) {
+                    $warData['warning_type'] = 0;
+                } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
+                    $warData['warning_type'] = 1;
+                } elseif ($Percentage > 0.2) {
+                    $warData['warning_type'] = 2;
+                }
+                $warData['schedule_id'] = $data['id'];
+                $warData['schedule_at'] = date('Y-m');
+                $warResult = ProjectEarlyWarning::insert($warData);
+            }
+        }
         $result = $result || $result >= 0;
 
         return response()->json(['result' => $result], 200);

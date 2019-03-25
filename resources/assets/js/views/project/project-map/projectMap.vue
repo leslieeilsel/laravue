@@ -4,6 +4,7 @@
       <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
         <FormItem label="项目状态" prop="status">
           <Select v-model="searchForm.status" style="width: 200px">
+            <Option value="0" key="0">全部</Option>
             <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
           </Select>
         </FormItem>
