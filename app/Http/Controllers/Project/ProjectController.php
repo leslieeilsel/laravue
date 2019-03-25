@@ -864,5 +864,59 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $data], 200);
     }
+    /**
+     * 删除项目
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function projectDelete(Request $request)
+    {
+        $id = $request->input('id');
+        if ($id){
+            $is_audit=Projects::where('id', $id)->value('is_audit');
+            if ($is_audit===4) {
+                $result = Projects::where('id', $id)->delete();
+                $result = $result ? true : false;
+            } else {
+                $result = false;
+            }
+            if ($result) {
+                $log = new OperationLog();
+                $log->eventLog($request, '删除项目');
+            }
+        }else{
+            $result = false;
+        }
+
+        return response()->json(['result' => $result], 200);
+    }
+    /**
+     * 删除项目进度，填报
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function projectScheduleDelete(Request $request)
+    {
+        $id = $request->input('id');
+        if($id){
+            $is_audit=ProjectSchedule::where('id', $id)->value('is_audit');
+            if ($is_audit===4||$is_audit===2) {
+                $result = ProjectSchedule::where('id', $id)->delete();
+                $result = $result ? true : false;
+            } else {
+                $result = false;
+            }
+            if ($result) {
+                $log = new OperationLog();
+                $log->eventLog($request, '删除项目进度');
+            }
+        }else{
+            $result = false;
+        }
+
+        return response()->json(['result' => $result], 200);
+    }
 
 }

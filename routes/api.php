@@ -66,6 +66,8 @@ Route::post('project/actCompleteMoney', 'Project\ProjectController@actCompleteMo
 Route::post('project/getProjectNoScheduleList', 'Project\ProjectController@getProjectNoScheduleList');
 Route::post('project/projectScheduleMonth', 'Project\ProjectController@projectScheduleMonth');
 Route::post('project/noAudit', 'Project\ProjectController@noAudit');
+Route::post('project/projectDelete', 'Project\ProjectController@projectDelete');
+Route::post('project/projectScheduleDelete', 'Project\ProjectController@projectScheduleDelete');
 // 添加台账导出
 Route::get('project/exportSchedule', 'Project\LedgerController@exportSchedule');
 Route::get('project/exportLedger', 'Project\LedgerController@export');

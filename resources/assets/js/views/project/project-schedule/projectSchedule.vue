@@ -579,6 +579,7 @@
     getProjectNoScheduleList,
     projectScheduleMonth,
     getProjectDictData,
+    projectScheduleDelete
   } from '../../../api/project';
   import {initDepartment,loadDepartment} from '../../../api/system';
   import './projectSchedule.css'
@@ -776,7 +777,7 @@
           {
             title: '操作',
             key: 'action',
-            width: 150,
+            width: 200,
             fixed: 'right',
             align: 'center',
             render: (h, params) => {
@@ -903,7 +904,39 @@
                       this.editModal = true;
                     }
                   }
-                }, '编辑')
+                }, '编辑'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small',
+                      disabled: editButton,
+                      // loading: _this.editFormLoading
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.$Modal.confirm({
+                          title: "确认删除",
+                          loading: true,
+                          content: "您确认要删除这个项目进度？",
+                          onOk: () => {
+                            console.log(params.row.id);
+                            projectScheduleDelete({id:params.row.id}).then(res => {
+                              if(res.result === true){
+                                this.$Message.success("删除成功");
+                                this.init();
+                              }else{
+                                this.$Message.error("项目进度不能删除");
+                              }
+                              this.$Modal.remove();
+                            });
+                          }
+                        });
+                      }
+                    }
+                  }, '删除')
               ]);
             }
           }

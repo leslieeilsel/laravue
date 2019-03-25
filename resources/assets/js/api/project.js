@@ -331,3 +331,26 @@ export function getNoAudit(form) {
     data: {...form}
   });
 }
+/**
+ * 删除项目
+ * @returns {*}
+ */
+export function projectDelete(form) {
+  return request({
+    url: '/api/project/projectDelete',
+    method: 'post',
+    data: {...form}
+  });
+}
+/**
+ * 删除项目进度，填报
+ * @returns {*}
+ */
+export function projectScheduleDelete(form) {
+  return request({
+    url: '/api/project/projectScheduleDelete',
+    method: 'post',
+    data: {...form}
+  });
+}
+

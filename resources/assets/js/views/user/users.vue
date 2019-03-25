@@ -456,7 +456,7 @@
               this.$refs[name].resetFields();
               this.modal = false;
               this.loadingTable = true;
-              getUsers().then((data) => {
+              getUsers(this.searchForm).then((data) => {
                 this.data = data.result;
                 //分页显示所有数据总数
                 this.dataCount = this.data.length;
