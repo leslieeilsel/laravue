@@ -2,8 +2,8 @@ const app = {
   state: {
     tags: [{
       name: 'home',
-      path: '/projectMap',
-      title: '挂图作战'
+      path: '/home',
+      title: '首页'
     }],
     collapse: true, //菜单栏伸缩
   },
