@@ -31,6 +31,10 @@
     methods: {
       // name 是路由名，此方法为子组件 emit 的方法
       handleChange(name) {
+        if (name === 'dashboard') {
+          window.open('http://localhost:5788/dashboard', '_blank');
+          return;
+        }
         let willpush = true;
         if (this.beforePush !== undefined) {
           if (!this.beforePush(name)) {
