@@ -45,7 +45,7 @@ php artisan db:seed
 
 ```bash
 # 开发环境编译
-npm run dev (或 npm run watch 监控文件修改)
+npm run dev、npm run watch(监控文件修改)
 # 生产环境编译，压缩JS文件
 npm run prod
 ```
