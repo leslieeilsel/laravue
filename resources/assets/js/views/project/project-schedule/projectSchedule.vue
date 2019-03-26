@@ -1159,7 +1159,7 @@
           }
         });
         projectScheduleMonth({project: e}).then(res => {
-          if (res.result) {
+          if (res.result===true) {
             this.month_options_0 = {
               disabledDate(date) {
                 let date_at = new Date();

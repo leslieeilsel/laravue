@@ -836,14 +836,17 @@ class ProjectController extends Controller
     public function projectScheduleMonth(Request $request)
     {
         $params = $request->input();
-        $a = date('Y-m');
-        $month = ProjectSchedule::where('month', '=', date('Y-m'))
+        if(isset($params['project'])){
+            $month = ProjectSchedule::where('month', '=', date('Y-m'))
             ->where('project_id', $params['project'])
             ->value('month');
-
-        return response()->json(['result' => $month], 200);
+            $result = $month ? true : false;
+        }else{
+            $result = false;
+        }
+        return response()->json(['result' => $result], 200);
     }
-    /**
+    /** 
      * 通知信息，获取未审核的填报信息和项目信息
      *
      * @return JsonResponse
