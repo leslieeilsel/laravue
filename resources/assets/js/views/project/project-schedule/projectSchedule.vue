@@ -2,17 +2,6 @@
   <Card>
     <Row>
       <Form ref="searchForm" :model="searchForm" inline :label-width="90" class="search-form">
-        <FormItem label="部门" prop="department_title">
-            <Poptip trigger="click" placement="right" title="选择部门" width="340">
-              <div style="display:flex;">
-                <Input v-model="searchForm.department_title" readonly style="margin-right:10px;" placeholder=""/>
-              </div>
-              <div slot="content" class="tree-bar">
-                <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeS"></Tree>
-                <Spin size="large" fix v-if="dpLoading"></Spin>
-              </div>
-            </Poptip>
-        </FormItem>
         <FormItem label="项目名称" prop="title">
           <Input clearable v-model="searchForm.title" placeholder="支持模糊搜索" style="width: 200px"/>
         </FormItem>
@@ -36,23 +25,34 @@
           <Form-item label="投资主体" prop="subject">
             <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
+        <FormItem label="部门" prop="department_title">
+          <Poptip trigger="click" placement="right" title="选择部门" width="340">
+            <div style="display:flex;">
+              <Input v-model="searchForm.department_title" readonly style="width: 200px;" placeholder=""/>
+            </div>
+            <div slot="content" class="tree-bar">
+              <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeS"></Tree>
+              <Spin size="large" fix v-if="dpLoading"></Spin>
+            </div>
+          </Poptip>
+        </FormItem>
+          <FormItem label="资金来源">
+            <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
+              <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="项目标识" prop="is_gc">
+            <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
+                    placeholder="是否为国民经济计划">
+              <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
+            </Select>
+          </FormItem>
+          <FormItem label="国民经济计划分类" prop="nep_type">
+            <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
+              <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
+            </Select>
+          </FormItem>
         </span>
-        <FormItem label="资金来源">
-          <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
-            <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="项目标识" prop="is_gc">
-          <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
-                  placeholder="是否为国民经济计划">
-            <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="国民经济计划分类" prop="nep_type">
-          <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
-            <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
-          </Select>
-        </FormItem>
         <FormItem style="margin-left:-70px;" class="br">
           <Button @click="getProjectScheduleList" type="primary" icon="ios-search">搜索</Button>
           <Button @click="handleResetSearch">重置</Button>
@@ -581,7 +581,7 @@
     getProjectDictData,
     projectScheduleDelete
   } from '../../../api/project';
-  import {initDepartment,loadDepartment} from '../../../api/system';
+  import {initDepartment, loadDepartment} from '../../../api/system';
   import './projectSchedule.css'
 
   export default {
@@ -615,12 +615,12 @@
           subject: '',
           start_at: '',
           end_at: '',
-          department_id:'',
-          department_title:'',
+          department_id: '',
+          department_title: '',
           money_from: '',
           is_gc: '',
           nep_type: '',
-          is_audit:''
+          is_audit: ''
         },
         noSchedule: false,
         seeModal: false,
@@ -783,6 +783,8 @@
             render: (h, params) => {
               let editButton;
               editButton = this.office === 0 ? !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4) : this.office === 1;
+              let delButton;
+              delButton = this.office === 0 ? !(params.row.is_audit === 2 || params.row.is_audit === 4) : true;
               return h('div', [
                 h('Button', {
                   props: {
@@ -905,38 +907,38 @@
                     }
                   }
                 }, '编辑'),
-                  h('Button', {
-                    props: {
-                      type: 'error',
-                      size: 'small',
-                      disabled: editButton,
-                      // loading: _this.editFormLoading
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.$Modal.confirm({
-                          title: "确认删除",
-                          loading: true,
-                          content: "您确认要删除这个项目进度？",
-                          onOk: () => {
-                            console.log(params.row.id);
-                            projectScheduleDelete({id:params.row.id}).then(res => {
-                              if(res.result === true){
-                                this.$Message.success("删除成功");
-                                this.init();
-                              }else{
-                                this.$Message.error("项目进度不能删除");
-                              }
-                              this.$Modal.remove();
-                            });
-                          }
-                        });
-                      }
+                h('Button', {
+                  props: {
+                    type: 'error',
+                    size: 'small',
+                    disabled: delButton,
+                    // loading: _this.editFormLoading
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$Modal.confirm({
+                        title: "确认删除",
+                        loading: true,
+                        content: "您确认要删除这个项目进度？",
+                        onOk: () => {
+                          console.log(params.row.id);
+                          projectScheduleDelete({id: params.row.id}).then(res => {
+                            if (res.result === true) {
+                              this.$Message.success("删除成功");
+                              this.init();
+                            } else {
+                              this.$Message.error("项目进度不能删除");
+                            }
+                            this.$Modal.remove();
+                          });
+                        }
+                      });
                     }
-                  }, '删除')
+                  }
+                }, '删除')
               ]);
             }
           }
@@ -1048,7 +1050,7 @@
         this.office = this.$store.getters.user.office;
         this.isShowButton = this.office === 0;
         this.noScheduleButton = this.office === 1;
-        
+
         initDepartment().then(res => {
           res.result.forEach(function (e) {
             if (e.is_parent) {
@@ -1066,12 +1068,12 @@
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
         this.getProjectScheduleList();
-        this.getProjectNoScheduleList();   
+        this.getProjectNoScheduleList();
       },
       getProjectScheduleList() {
         this.tableLoading = true;
         console.log(this.$route.params.is_audit);
-        this.searchForm.is_audit=this.$route.params.is_audit;
+        this.searchForm.is_audit = this.$route.params.is_audit;
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
           //分页显示所有数据总数
@@ -1085,7 +1087,7 @@
           }
           this.pageCurrent = 1;
           if (res.result) {
-            if (this.searchForm.is_gc||this.searchForm.nep_type||this.searchForm.money_from||this.searchForm.department_id||this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
+            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.department_id || this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
               this.btnDisable = false;
             }
             this.tableLoading = false;
@@ -1352,7 +1354,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/exportSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time+"&department_id="+department_id;
+        window.location.href = "/api/project/exportSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
       },//下载
       downloadPic() {
         let project_id = this.searchForm.project_id;
@@ -1373,7 +1375,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/downLoadSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time+"&department_id="+department_id;
+        window.location.href = "/api/project/downLoadSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
       },
       changePage(index) {
         //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)

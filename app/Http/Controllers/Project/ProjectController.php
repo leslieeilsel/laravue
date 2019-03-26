@@ -269,7 +269,7 @@ class ProjectController extends Controller
         }
         if (isset($params['is_audit'])) {
             $query = $query->where('is_audit', 0);
-        }else{
+        } else {
             if ($this->office === 1) {
                 $query = $query->where('is_audit', '!=', 4);
             }
@@ -288,7 +288,7 @@ class ProjectController extends Controller
             $projects[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? Dict::getOptionsArrByName('国民经济计划分类')[$row['nep_type']] : '';
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
-            $projects[$k]['scheduleInfo']=ProjectSchedule::where('project_id',$row['id'])->orderBy('id','desc')->first();
+            $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
         }
 
         return response()->json(['result' => $projects], 200);
@@ -420,23 +420,6 @@ class ProjectController extends Controller
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['user_id'] = Auth::id();
         $schedule_id = DB::table('iba_project_schedule')->insertGetId($data);
-
-        // $m = intval($month);
-        // $plans_amount = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $m)->value('amount');
-        // $warResult = true;
-        // if ($plans_amount) {
-        //     $Percentage = ($plans_amount - $data['month_act_complete']) / $plans_amount;
-        //     if ($Percentage <= 0.1) {
-        //         $warData['warning_type'] = 0;
-        //     } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
-        //         $warData['warning_type'] = 1;
-        //     } elseif ($Percentage > 0.2) {
-        //         $warData['warning_type'] = 2;
-        //     }
-        //     $warData['schedule_id'] = $schedule_id;
-        //     $warData['schedule_at'] = $year . '-' . $month;
-        //     $warResult = ProjectEarlyWarning::insert($warData);
-        // } && $warResult
         $result = $schedule_id;
         if ($result) {
             $log = new OperationLog();
@@ -459,21 +442,21 @@ class ProjectController extends Controller
             $user_id = array_column($user_ids, 'id');
             $query = $query->whereIn('user_id', $user_id);
         }
-        if (isset($data['title'])||isset($data['money_from'])||isset($data['is_gc'])||isset($data['nep_type'])) {
+        if (isset($data['title']) || isset($data['money_from']) || isset($data['is_gc']) || isset($data['nep_type'])) {
             $projects = Projects::select('id');
-            if(isset($data['title'])){
+            if (isset($data['title'])) {
                 $projects = $projects->where('title', 'like', '%' . $data['title'] . '%');
             }
-            if(isset($data['money_from'])){
+            if (isset($data['money_from'])) {
                 $projects = $projects->where('money_from', $data['money_from']);
             }
-            if(isset($data['is_gc'])){
+            if (isset($data['is_gc'])) {
                 $projects = $projects->where('is_gc', $data['is_gc']);
             }
-            if(isset($data['nep_type'])){
+            if (isset($data['nep_type'])) {
                 $projects = $projects->where('nep_type', $data['nep_type']);
             }
-            $projects=$projects->get()->toArray();
+            $projects = $projects->get()->toArray();
             $ids = array_column($projects, 'id');
             $ids = array_intersect($ids, $this->seeIds);
             $query = $query->whereIn('project_id', $ids);
@@ -501,7 +484,7 @@ class ProjectController extends Controller
         }
         if (isset($data['is_audit'])) {
             $query = $query->where('is_audit', 0);
-        }else{
+        } else {
             if ($this->office === 1) {
                 $query = $query->where('is_audit', '!=', 4);
             }
@@ -518,7 +501,7 @@ class ProjectController extends Controller
     {
         $params = $request->all();
         $result = $this->projectProgressM($params);
-        $ProjectSchedules=$result->orderBy('is_audit','desc')->get()->toArray();
+        $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
             $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->value('title');
@@ -673,16 +656,16 @@ class ProjectController extends Controller
     {
         $data = $request->all();
         $result = ProjectSchedule::where('id', $data['id'])->update(['is_audit' => $data['status'], 'reason' => $data['reason']]);
-        $projects=ProjectSchedule::where('id', $data['id'])->first();
+        $projects = ProjectSchedule::where('id', $data['id'])->first();
         $year = (int)date('Y', strtotime($projects['month']));
         $month = (int)date('m', strtotime($projects['month']));
-        $y = intval($year);        
-        $m = intval($month);        
+        $y = intval($year);
+        $m = intval($month);
         $plans_amount_y = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', 0)->where('date', $y)->value('id');
         $plans_amount = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', $plans_amount_y)->where('date', $m)->value('amount');
-        if($data['status']==1){
+        if ($data['status'] == 1) {
             $warResult = true;
-            $warData=[];
+            $warData = [];
             if ($plans_amount) {
                 $Percentage = ($plans_amount - $projects['month_act_complete']) / $plans_amount;
                 if ($Percentage <= 0.1) {
@@ -861,12 +844,13 @@ class ProjectController extends Controller
         // if ($this->office === 2) {
         //     $query = $query->where('is_audit', 1);
         // }
-        
+
         $data['projects'] = $projectsQuery->whereIn('user_id', $this->seeIds)->where('is_audit', 0)->count();
         $data['schedule'] = $scheduleQuery->whereIn('user_id', $this->seeIds)->where('is_audit', 0)->count();
 
         return response()->json(['result' => $data], 200);
     }
+
     /**
      * 删除项目
      *
@@ -876,9 +860,9 @@ class ProjectController extends Controller
     public function projectDelete(Request $request)
     {
         $id = $request->input('id');
-        if ($id){
-            $is_audit=Projects::where('id', $id)->value('is_audit');
-            if ($is_audit===4) {
+        if ($id) {
+            $is_audit = Projects::where('id', $id)->value('is_audit');
+            if ($is_audit === 4) {
                 $result = Projects::where('id', $id)->delete();
                 $result = $result ? true : false;
             } else {
@@ -888,12 +872,13 @@ class ProjectController extends Controller
                 $log = new OperationLog();
                 $log->eventLog($request, '删除项目');
             }
-        }else{
+        } else {
             $result = false;
         }
 
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 删除项目进度，填报
      *
@@ -903,9 +888,9 @@ class ProjectController extends Controller
     public function projectScheduleDelete(Request $request)
     {
         $id = $request->input('id');
-        if($id){
-            $is_audit=ProjectSchedule::where('id', $id)->value('is_audit');
-            if ($is_audit===4||$is_audit===2) {
+        if ($id) {
+            $is_audit = ProjectSchedule::where('id', $id)->value('is_audit');
+            if ($is_audit === 4 || $is_audit === 2) {
                 $result = ProjectSchedule::where('id', $id)->delete();
                 $result = $result ? true : false;
             } else {
@@ -915,7 +900,7 @@ class ProjectController extends Controller
                 $log = new OperationLog();
                 $log->eventLog($request, '删除项目进度');
             }
-        }else{
+        } else {
             $result = false;
         }
 
