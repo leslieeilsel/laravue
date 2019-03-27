@@ -31,7 +31,7 @@ class CreateIbaProjectScheduleTable extends Migration
             $table->string('problem')->nullable();                      // 存在问题
             $table->string('plan_build_start_at')->nullable();          // 计划开工时间
             $table->string('exp_preforma')->nullable();                 // 土地征收情况及前期手续办理情况
-            $table->string('img_progress_pic')->nullable();             // 形象进度照片
+            $table->text('img_progress_pic')->nullable();               // 形象进度照片
             $table->string('marker')->nullable();                       // 备注
             $table->integer('is_audit')->default(0);                    // 审核状态
             $table->string('reason')->nullable();                       // 审核不通过原因
