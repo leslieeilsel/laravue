@@ -50,7 +50,7 @@
         </span>
         <Form-item style="margin-left:-70px;" class="br">
           <Button @click="createMap" type="primary" icon="ios-search">搜索</Button>
-          <Button @click="handleResetSearch">重置</Button>
+          <Button @click="handleResetSearch('searchForm')">重置</Button>
           <a class="drop-down" @click="dropDown">
             {{dropDownContent}}
             <Icon :type="dropDownIcon"></Icon>
@@ -71,6 +71,14 @@
         searchForm: {
           status: 0,
           title: '',
+          num: '',
+          subject: '',
+          unit: '',
+          type: '',
+          build_type: '',
+          money_from: '',
+          is_gc: '',
+          nep_type: ''
         },
         dict: {
           type: [],
@@ -99,6 +107,7 @@
     },
     methods: {
       init() {
+        console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
         const timestamp = new Date().getTime();
@@ -145,9 +154,11 @@
       },
       createMap() {
         // enableMapClick: false 构造底图时，关闭底图可点功能
-        let map = new BMap.Map("map", {enableMapClick: false, minZoom: 13, maxZoom: 17});
+        let map = new BMap.Map("map", {enableMapClick: false});
         map.centerAndZoom(new BMap.Point(108.720027, 34.298497), 15);
         map.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
+        map.addControl(new BMap.NavigationControl());
+        map.addControl(new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]}));
         this.getDictData();
         getAllProjects(this.searchForm).then(e => {
           let _this = this;
@@ -155,17 +166,18 @@
           let y = date.getFullYear();
           let m = date.getMonth();
           let plan_amount = 0;
+          let points = [];
           e.result.forEach(function (project) {
             project.projectPlan.forEach(function (year) {
-              if (year.date == y) {
+              if (year.date === y) {
                 year.month.forEach(function (month) {
                   if (m > month.date) {
                     plan_amount = parseFloat(plan_amount) + parseFloat(month.amount);
                   }
                 })
               }
-            })
-            let acc_complete = 0
+            });
+            let acc_complete = 0;
             if (project.scheduleInfo) {
               acc_complete = project.scheduleInfo.acc_complete;
             } else {
@@ -205,12 +217,7 @@
                   fillOpacity: 1//填充透明度
                 })
               });
-              // let marker = new BMap.Marker(
-              //   new BMap.Point(centerArr[0], centerArr[1])
-              // );
-              // new BMap.Point.setStyle({
-              //   color:'#eee'
-              // })
+              points.push(marker.point);
               map.addOverlay(marker);
               // 添加多边形
               let positions = project.positions;
@@ -259,12 +266,11 @@
               _this.addClickHandler(sContent, marker, map);
             }
           });
+          this.setZoom(points, map);
         });
       },
-      handleResetSearch() {
-        this.searchForm = {
-          status: 0,
-        };
+      handleResetSearch(name) {
+        this.$refs[name].resetFields();
         this.createMap();
       },
       addClickHandler(content, marker, map) {
@@ -278,6 +284,12 @@
         let point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
         let infoWindow = new BMap.InfoWindow(content); // 创建信息窗口对象
         map.openInfoWindow(infoWindow, point); //开启信息窗口
+      },
+      setZoom(bPoints, map) {
+        let view = map.getViewport(eval(bPoints));
+        let mapZoom = view.zoom;
+        let centerPoint = view.center;
+        map.centerAndZoom(centerPoint, mapZoom);
       },
       dropDown() {
         if (this.drop) {
