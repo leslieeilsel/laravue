@@ -1,12 +1,16 @@
 <template>
   <div id="background" class="content">
-    <p class="user-layout-title">沣西集团投资云平台</p>
+  
+    <Row class="header">
+      <img src="../../images/logo.png" width="200px" />
+      <p class="description">沣西集团投资云平台</p>
+    </Row>
     <Row type="flex" justify="center" class-name="row">
       <br>
       <Col class="loginFrom">
-        <Tabs value="name1">
-          <TabPane label="账户密码登录" name="name1"></TabPane>
-        </Tabs>
+<!--        <Tabs value="name1">-->
+<!--          <TabPane label="账户密码登录" name="name1"></TabPane>-->
+<!--        </Tabs>-->
         <Form ref="form" :model="form" :rules="ruleInline">
           <FormItem prop="email">
             <Input type="text" size="large" v-model="form.email" :placeholder="$t('login.username')">

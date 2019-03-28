@@ -18,7 +18,8 @@
       <div class="main-header">
         <div class="header-middle-con">
           <div class="main-breadcrumb">
-            沣西集团投资云平台
+            <img src="../../images/xixian.png" width="30px"/>
+            <span>沣西集团投资云平台</span>
           </div>
         </div>
         <div class="header-avator-con">
