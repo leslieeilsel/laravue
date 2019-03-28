@@ -19,50 +19,39 @@ class RegistController extends Controller
     /**
      * 获取用户列表
      *
+     * @param Request $request
      * @return JsonResponse
      */
     public function getUsers(Request $request)
     {
         $params = $request->input();
         $query = DB::table('users')
-                ->select('id','name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id', 'office');
-                
-        if($params['department_id']){
-            $query=$query->where('department_id',$params['department_id']);
+            ->select('id', 'name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id', 'office', 'phone');
+
+        if ($params['department_id']) {
+            $query = $query->where('department_id', $params['department_id']);
         }
-        if($params['username']){
+        if ($params['username']) {
             $query = $query->where('username', 'like', '%' . $params['username'] . '%');
         }
-        if($params['name']){
+        if ($params['name']) {
             $query = $query->where('name', 'like', '%' . $params['name'] . '%');
         }
-        if($params['group_id']){
+        if ($params['group_id']) {
             $query = $query->where('group_id', $params['group_id']);
         }
         $data = $query->get()->toArray();
+        $office = Dict::getOptionsArrByName('职位');
         foreach ($data as $k => $row) {
-            if (!isset($row['department_id'])) {
-                $data[$k]['department'] = '无';
-            } else {
-                $department = Departments::where('id', $row['department_id'])->first()->title;
-                $data[$k]['department'] = $department;
-            }
-            unset($data[$k]['department_id']);
+            $data[$k]['department_title'] = isset($row['department_id'])
+                ? Departments::where('id', $row['department_id'])->first()->title
+                : '无';
 
-            if (!isset($row['group_id'])) {
-                $data[$k]['group'] = '无';
-            } else {
-                $group = Role::where('id', $row['group_id'])->first()->name;
-                $data[$k]['group'] = $group;
-            }
-            unset($data[$k]['group_id']);
+            $data[$k]['group'] = isset($row['group_id'])
+                ? Role::where('id', $row['group_id'])->first()->name
+                : '无';
 
-            if (!isset($row['office'])) {
-                $data[$k]['office'] = '无';
-            } else {
-                $group = Dict::getOptionsArrByName('职位');
-                $data[$k]['office'] = $group[$row['office']];
-            }
+            $data[$k]['office_name'] = isset($row['office']) ? $office[$row['office']] : '无';
         }
 
         return response()->json(['result' => $data], 200);
@@ -130,6 +119,7 @@ class RegistController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 删除用户
      *
@@ -140,7 +130,7 @@ class RegistController extends Controller
     {
         $ids = $request->input('id');
         if ($ids) {
-            $result = DB::table('users')->whereIn('id', explode(',',$ids))->delete();
+            $result = DB::table('users')->whereIn('id', explode(',', $ids))->delete();
             $result = $result ? true : false;
         } else {
             $result = false;
@@ -164,16 +154,27 @@ class RegistController extends Controller
     {
         $params = $request->input();
         unset($params['department_title']);
-        $params['created_at'] = date('Y-m-d H:i:s');
-        $result = DB::table('users')->where('id',$params['id'])->update($params);
+        $params['updated_at'] = date('Y-m-d H:i:s');
+        $id = $params['id'];
+
+        if (isset($params['password'])) {
+            $params['password'] = bcrypt($params['password']);
+        } else {
+            unset($params['password']);
+        }
+        unset($params['id'], $params['department_title'], $params['group'], $params['office_name'], $params['_index'], $params['_rowKey'], $params['pwdCheck']);
+        $result = DB::table('users')->where('id', $id)->update($params);
+
+        $result = isset($result) ? true : false;
 
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '修改用户');
         }
 
-        return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
+        return response()->json(['result' => $result], 200);
     }
+
     /**
      * 获取单挑用户
      *
@@ -183,7 +184,8 @@ class RegistController extends Controller
     public function getUser(Request $request)
     {
         $params = $request->input();
-        $result = DB::table('users')->where('id',$params['id'])->first();
+        $result = DB::table('users')->where('id', $params['id'])->first();
+
         return response()->json(['result' => $result], 200);
     }
 }
