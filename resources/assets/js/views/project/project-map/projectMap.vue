@@ -260,9 +260,10 @@
               let sContent =
                 "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目名称：" + project.title + "</h5>" +
                 "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
-                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>" + project.status + "</span></h5>" +
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span><span class='project-status'>" + project.status + "</span></h5>" +
                 "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
-                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：<span class='" + war_color + "'></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>" + Percentage_con + "</span></h5>";
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：<span class='" + war_color + "'></span><span class='project-stage'>" + Percentage_con + "</span></h5>" +
+                "<a href='http://www.baidu.com' target='blank'>查看详情</a>";
               _this.addClickHandler(sContent, marker, map);
             }
           });

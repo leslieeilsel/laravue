@@ -1,39 +1,39 @@
-.graycircle {
+.greencircle,
+.graycircle,
+.yellowcircle,
+.redcircle {
+    margin-top: 3px;
     position: absolute;
-    width: 18px;
-    height: 18px;
-    background: #d0ceca;
+    width: 13px;
+    height: 13px;
     border-radius: 50%;
+}
+
+.graycircle {
+    background: #d0ceca;
     border: 1px solid #d0ceca;
 }
 
 .greencircle {
-    position: absolute;
-    width: 18px;
-    height: 18px;
     background: #19be6b;
-    border-radius: 50%;
     border: 1px solid #19be6b;
 }
 
 .yellowcircle {
-    position: absolute;
-    width: 18px;
-    height: 18px;
     background: #ff9900;
-    border-radius: 50%;
     border: 1px solid #ff9900;
 }
 
 .redcircle {
-    position: absolute;
-    width: 18px;
-    height: 18px;
     background: #ed4014;
-    border-radius: 50%;
     border: 1px solid #ed4014;
 }
 
 .anchorBL {
     display: none;
+}
+
+.project-status,
+.project-stage {
+    padding-left: 16px;
 }
