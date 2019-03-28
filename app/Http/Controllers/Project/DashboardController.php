@@ -221,4 +221,9 @@ class DashboardController extends Controller
 
         return $data;
     }
+
+    public function slogan()
+    {
+        return view('slogan');
+    }
 }
