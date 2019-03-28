@@ -808,7 +808,7 @@ class ProjectController extends Controller
     public function getProjectNoScheduleList()
     {
         $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->pluck('project_id')->toArray();
-        $result = Projects::whereNotIn('id', $Project_id)->get()->toArray();
+        $result = Projects::whereNotIn('id', $Project_id)->where('is_audit',1)->get()->toArray();
         foreach ($result as $k => $val) {
             $users = User::select('username', 'phone')->where('id', $val['user_id'])->get()->toArray();
             $result[$k]['username'] = $users[0]['username'];

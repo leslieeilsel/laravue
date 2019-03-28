@@ -592,37 +592,18 @@ class LedgerController extends Controller
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A2', '沣西新城重点项目表')
             ->setCellValue('A3', '责任部门：'.$department_title)
-            ->setCellValue('AM3', '单位：万元')
-            ->setCellValue('A4', '序号')
-            ->setCellValue('B4', '项目名称')
-            ->setCellValue('C4', '项目编号')
-            ->setCellValue('D4', '建设状态')
-            ->setCellValue('E4', '投资主体')
-            ->setCellValue('F4', '项目类型')
-            ->setCellValue('G4', '承建单位')
-            ->setCellValue('H4', '建设性质')
-            ->setCellValue('I4', '资金来源')
-            ->setCellValue('J4', '项目金额(万元)')
-            ->setCellValue('K4', '土地费用(万元)')
-            ->setCellValue('L4', '是否为国民经济计划')
-            ->setCellValue('M4', '国民经济计划分类')
-            ->setCellValue('N4', '计划开始时间/结束时间')
-            ->setCellValue('O4', '项目概况')
-            ->setCellValue('P4', date('Y').'年计划投资')
-            ->setCellValue('Q4', date('Y').'年计划形象进度')
-            ->setCellValue('R4', '任务分解')
-            ->setCellValue('R5', '1-1月')
-            ->setCellValue('T5', '1-2月')
-            ->setCellValue('V5', '1-3月')
-            ->setCellValue('X5', '1-4月')
-            ->setCellValue('Z5', '1-5月')
-            ->setCellValue('AB5', '1-6月')
-            ->setCellValue('AD5', '1-7月')
-            ->setCellValue('AF5', '1-8月')
-            ->setCellValue('AH5', '1-9月')
-            ->setCellValue('AJ5', '1-10月')
-            ->setCellValue('AL5', '1-11月')
-            ->setCellValue('AN5', '1-12月')
+            ->setCellValue('AM3', '单位：万元')->setCellValue('A4', '序号')
+            ->setCellValue('B4', '项目名称')->setCellValue('C4', '项目编号')->setCellValue('D4', '建设状态')
+            ->setCellValue('E4', '投资主体')->setCellValue('F4', '项目类型')->setCellValue('G4', '承建单位')
+            ->setCellValue('H4', '建设性质')->setCellValue('I4', '资金来源')->setCellValue('J4', '项目金额(万元)')
+            ->setCellValue('K4', '土地费用(万元)')->setCellValue('L4', '是否为国民经济计划')
+            ->setCellValue('M4', '国民经济计划分类')->setCellValue('N4', '计划开始时间/结束时间')
+            ->setCellValue('O4', '项目概况')->setCellValue('P4', date('Y').'年计划投资')
+            ->setCellValue('Q4', date('Y').'年计划形象进度')->setCellValue('R4', '任务分解')
+            ->setCellValue('R5', '1-1月')->setCellValue('T5', '1-2月')->setCellValue('V5', '1-3月')
+            ->setCellValue('X5', '1-4月')->setCellValue('Z5', '1-5月')->setCellValue('AB5', '1-6月')
+            ->setCellValue('AD5', '1-7月')->setCellValue('AF5', '1-8月')->setCellValue('AH5', '1-9月')
+            ->setCellValue('AJ5', '1-10月')->setCellValue('AL5', '1-11月')->setCellValue('AN5', '1-12月')
             ->setCellValue('R6', '计划投资')->setCellValue('S6', '计划形象进度')
             ->setCellValue('T6', '计划投资')->setCellValue('U6', '计划形象进度')
             ->setCellValue('V6', '计划投资')->setCellValue('W6', '计划形象进度')
@@ -837,10 +818,6 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->getStyle('L4')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle('M4')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle('N4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle('O4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle('P4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle('Q4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle('R4')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle('O4')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle('P4')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle('Q4')->getFont()->setBold(true);
