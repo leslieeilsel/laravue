@@ -32,7 +32,7 @@ class ZipDownload{
         while (($filename = readdir($handler)) !== false) {
             if ($filename != "." && $filename != "..") {
                 for($i=0;$i<count($data);$i++){
-                    $filename_data=$data[$i]['month'].'_'.$data[$i]['project_num'];
+                    $filename_data=$data[$i]['project_title'];
                     if($filename==$filename_data){
                         $zip->folder($filename_data)->add($path.'/'.$filename_data);
                     }

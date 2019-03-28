@@ -220,9 +220,12 @@
               multiple
               :data="upData"
               :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
-              :max-size="5120"
+              :max-size="600"
+              :on-format-error="handleFormatError"
+              :on-exceeded-size="handleMaxSize"
               action="/api/project/uploadPic">
               <Button icon="ios-cloud-upload-outline">上传</Button>
+              <div style="color:#a7a5a5">文件大小不能超过600KB</div>
             </Upload>
           </FormItem>
         </Row>
@@ -1021,9 +1024,14 @@
         month_options_0: {
           disabledDate(date) {
             let date_at = new Date();
-            const disabledMonth = date.getMonth();
-
-            return disabledMonth !== date_at.getMonth();
+            let curr_time_0 = (date_at.getMonth() + 1) > 9 ? (date_at.getMonth() + 1) : '0' + (date_at.getMonth() + 1);
+            let curr_time = date_at.getFullYear() + '-' + curr_time_0;
+            
+            let time_0 = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1);            
+            let time = date.getFullYear() + '-' + time_0;
+            const disabledMonth = time;
+            // return disabledMonth !== date_at.getMonth();
+            return disabledMonth > curr_time;
           }
         },
         scheduleMonth: [],
@@ -1160,29 +1168,31 @@
             this.form.plan_build_start_at = em.plan_start_at;
           }
         });
-        projectScheduleMonth({project: e}).then(res => {
-          if (res.result===true) {
-            this.month_options_0 = {
-              disabledDate(date) {
-                let date_at = new Date();
-                const disabledMonth = date.getMonth();
+        // projectScheduleMonth({project: e}).then(res => {
+        //   if (res.result===true) {
+        //     this.month_options_0 = {
+        //       disabledDate(date) {
+        //         let date_at = new Date();
+        //         const disabledMonth = date.getMonth();
 
-                return date_at < disabledMonth <= date_at;
-              }
-            }
-          } else {
-            this.month_options_0 = {
-              disabledDate(date) {
-                let date_at = new Date();
-                const disabledMonth = date.getMonth();
+        //         return date_at < disabledMonth <= date_at;
+        //       }
+        //     }
+        //   } else {
+        //     this.month_options_0 = {
+        //       disabledDate(date) {
+        //         let date_at = new Date();
+        //         const disabledMonth = date.getMonth();
 
-                return disabledMonth !== date_at.getMonth();
-              }
-            }
-          }
-        });
+        //         return disabledMonth !== date_at.getMonth();
+        //       }
+        //     }
+        //   }
+        // });
       },
       changeMonth(e) {
+        console.log(this.form);
+        
         if (this.form.project_id === '') {
           this.$Message.error('请先选择填报项目!');
           this.form.month = '';
@@ -1302,7 +1312,7 @@
       handleMaxSize(file) {
         this.$Notice.warning({
           title: '超出文件大小限制',
-          desc: '文件太大，不能超过5M'
+          desc: '文件太大，不能超过600KB'
         });
       },
       handleBeforeUpload() {

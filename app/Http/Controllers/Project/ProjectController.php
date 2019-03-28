@@ -233,9 +233,8 @@ class ProjectController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function getAllProjects(Request $request)
+    public function allProjects($params)
     {
-        $params = $request->input('searchForm');
         $query = new Projects;
         if (isset($params['title'])) {
             $query = $query->where('title', 'like', '%' . $params['title'] . '%');
@@ -290,6 +289,12 @@ class ProjectController extends Controller
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
         }
+        return  $projects;
+    }
+    public function getAllProjects(Request $request)
+    {
+        $params = $request->input('searchForm');
+        $projects=$this->allProjects($params);
 
         return response()->json(['result' => $projects], 200);
     }
@@ -519,9 +524,10 @@ class ProjectController extends Controller
     public function uploadPic(Request $request)
     {
         $params = $request->all();
+        $project_title=Projects::where('id',$params['project_id'])->value('title');
         $suffix = $params['img_pic']->getClientOriginalExtension();
         $path = Storage::putFileAs(
-            'public/project/project-schedule/' . $params['month'] . "_" . $params['project_num'],
+            'public/project/project-schedule/'.$project_title.'/' . $params['month'],
             $request->file('img_pic'),
             rand(1000000, time()) . '_' . $params['project_num'] . '.' . $suffix
         );

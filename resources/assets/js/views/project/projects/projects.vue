@@ -59,6 +59,9 @@
     </Row>
     <p class="btnGroup" v-if="isShowButton">
       <Button type="primary" @click="modal = true" icon="md-add">添加项目</Button>
+      <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="exportBtnDisable" icon="md-cloud-upload">
+        导出项目
+      </Button>
       <!--      <Button type="error" disabled icon="md-trash">删除</Button>-->
     </p>
     <Row>
@@ -667,6 +670,7 @@
         isReadOnly: false,
         isAdjustReadOnly: false,
         btnDisable: true,
+        exportBtnDisable:true,
         editFormLoading: false,
         reasonForm: {
           reason: ''
@@ -1053,6 +1057,10 @@
             }
           }
           this.pageCurrent = 1;
+          
+          if (this.searchForm.title ||this.searchForm.subject ||this.searchForm.office ||this.searchForm.unit ||this.searchForm.num || this.searchForm.type || this.searchForm.build_type || this.searchForm.money_from || this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.status) {
+            this.exportBtnDisable = false;
+          }
           this.tableLoading = false;
         });
       },
@@ -1073,6 +1081,10 @@
       },
       handleResetSearch() {
         this.searchForm = {
+          title: '',
+          subject: '',
+          office: '',
+          unit: '',
           num: '',
           type: '',
           build_type: '',
@@ -1260,6 +1272,20 @@
           this.$Message.error('月计划总金额不能超过年计划');
           month_total[index].amount = 0;
         }
+      },//导出
+      exportSchedule() {        
+        let title = this.searchForm.title;
+        let subject = this.searchForm.subject;
+        let office = this.searchForm.office;
+        let unit = this.searchForm.unit;
+        let num = this.searchForm.num;
+        let type = this.searchForm.type;
+        let build_type = this.searchForm.build_type;
+        let money_from = this.searchForm.money_from;
+        let is_gc = this.searchForm.is_gc;
+        let nep_type = this.searchForm.nep_type;
+        let status = this.searchForm.status;
+        window.location.href = "/api/project/exportProject?title=" + title + "&subject=" + subject + "&office=" + office + "&unit=" + unit + "&num=" + num + "&type=" + type + "&build_type=" + build_type + "&money_from=" + money_from + "&is_gc=" + is_gc + "&nep_type=" + nep_type + "&status=" + status;
       }
     },
     mounted() {

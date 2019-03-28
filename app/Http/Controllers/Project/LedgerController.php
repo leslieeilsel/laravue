@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Project;
 use App\Http\Controllers\Controller;
 use App\Models\Project\ProjectSchedule;
 use App\Models\Project\Projects;
+use App\Models\Project\ProjectPlan;
 use App\Models\Dict;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -274,7 +275,7 @@ class LedgerController extends Controller
             // 将活动工作表索引设置为第一个工作表，以便Excel将其作为第一个工作表打开
             $spreadsheet->setActiveSheetIndex($k);
             // 重命名 worksheet
-            $spreadsheet->getActiveSheet()->setTitle('sheet'.$k);
+            $spreadsheet->getActiveSheet()->setTitle($row['title']);
         }
         // 将输出重定向到客户端的Web浏览器 (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -291,7 +292,6 @@ class LedgerController extends Controller
         $writer->save('php://output');
         exit;
     }
-
     /**
      * 下载图片
      *
@@ -302,7 +302,11 @@ class LedgerController extends Controller
     {
         $params = $request->input();
         $ProjectC = new ProjectController();
-        $data = $ProjectC->projectProgressM($params);
+        $data = $ProjectC->projectProgressM($params)->get()->toArray();
+        foreach ($data as $k => $row) {
+            $Projects = Projects::where('id', $row['project_id'])->value('title');
+            $data[$k]['project_title'] = $Projects;
+        }
         $zip = new ZipDownload();
         $path = 'storage/project/project-schedule';
         $url = $zip->downloadImages($path, $data);
@@ -313,7 +317,6 @@ class LedgerController extends Controller
             return response()->download('storage/noPic.zip');
         }
     }
-
     /**
      * 导出填报
      *
@@ -541,12 +544,329 @@ class LedgerController extends Controller
             $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+6].'4')->getFont()->setBold(true);
             $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+7].'4')->getFont()->setBold(true);
         // 重命名 worksheet
-        $spreadsheet->getActiveSheet()->setTitle('sheet');
+        $spreadsheet->getActiveSheet()->setTitle('项目进度报表');
         // 将活动工作表索引设置为第一个工作表，以便Excel将其作为第一个工作表打开
         $spreadsheet->setActiveSheetIndex(0);
         // 将输出重定向到客户端的Web浏览器 (Xlsx)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="投资项目进度报表.xlsx"');
+        header('Cache-Control: max-age=0');
+        // 如果正在使用IE 9
+        header('Cache-Control: max-age=1');
+        // If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+    }
+    
+    /**
+     * 导出项目
+     *
+     * @param Request $request
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function exportProject(Request $request)
+    {
+        $Letter=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO'];
+        $params = $request->input();
+        $ProjectC = new ProjectController();
+        $data=$ProjectC->allProjects($params);
+        $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
+        $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
+        // 创建一个Spreadsheet对象
+        $spreadsheet = new Spreadsheet();
+        // 设置文档属性
+        $spreadsheet->getProperties()->setCreator('Maarten Balliauw')
+            ->setLastModifiedBy('Maarten Balliauw')
+            ->setTitle('Office 2007 XLSX Test Document')
+            ->setSubject('Office 2007 XLSX Test Document')
+            ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+            ->setKeywords('office 2007 openxml php')
+            ->setCategory('Test result file');
+        // 添加表头
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('A2', '沣西新城重点项目表')
+            ->setCellValue('A3', '责任部门：'.$department_title)
+            ->setCellValue('AM3', '单位：万元')
+            ->setCellValue('A4', '序号')
+            ->setCellValue('B4', '项目名称')
+            ->setCellValue('C4', '项目编号')
+            ->setCellValue('D4', '建设状态')
+            ->setCellValue('E4', '投资主体')
+            ->setCellValue('F4', '项目类型')
+            ->setCellValue('G4', '承建单位')
+            ->setCellValue('H4', '建设性质')
+            ->setCellValue('I4', '资金来源')
+            ->setCellValue('J4', '项目金额(万元)')
+            ->setCellValue('K4', '土地费用(万元)')
+            ->setCellValue('L4', '是否为国民经济计划')
+            ->setCellValue('M4', '国民经济计划分类')
+            ->setCellValue('N4', '计划开始时间/结束时间')
+            ->setCellValue('O4', '项目概况')
+            ->setCellValue('P4', date('Y').'年计划投资')
+            ->setCellValue('Q4', date('Y').'年计划形象进度')
+            ->setCellValue('R4', '任务分解')
+            ->setCellValue('R5', '1-1月')
+            ->setCellValue('T5', '1-2月')
+            ->setCellValue('V5', '1-3月')
+            ->setCellValue('X5', '1-4月')
+            ->setCellValue('Z5', '1-5月')
+            ->setCellValue('AB5', '1-6月')
+            ->setCellValue('AD5', '1-7月')
+            ->setCellValue('AF5', '1-8月')
+            ->setCellValue('AH5', '1-9月')
+            ->setCellValue('AJ5', '1-10月')
+            ->setCellValue('AL5', '1-11月')
+            ->setCellValue('AN5', '1-12月')
+            ->setCellValue('R6', '计划投资')->setCellValue('S6', '计划形象进度')
+            ->setCellValue('T6', '计划投资')->setCellValue('U6', '计划形象进度')
+            ->setCellValue('V6', '计划投资')->setCellValue('W6', '计划形象进度')
+            ->setCellValue('X6', '计划投资')->setCellValue('Y6', '计划形象进度')
+            ->setCellValue('Z6', '计划投资')->setCellValue('AA6', '计划形象进度')
+            ->setCellValue('AB6', '计划投资')->setCellValue('AC6', '计划形象进度')
+            ->setCellValue('AD6', '计划投资')->setCellValue('AE6', '计划形象进度')
+            ->setCellValue('AF6', '计划投资')->setCellValue('AG6', '计划形象进度')
+            ->setCellValue('AH6', '计划投资')->setCellValue('AI6', '计划形象进度')
+            ->setCellValue('AJ6', '计划投资')->setCellValue('AK6', '计划形象进度')
+            ->setCellValue('AL6', '计划投资')->setCellValue('AM6', '计划形象进度')
+            ->setCellValue('AN6', '计划投资')->setCellValue('AO6', '计划形象进度');
+            
+        //居中
+        $numberStyleCenter = [
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ];
+        //右
+        $numberStyleRight = [
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ];
+        //左
+        $numberStyleLeft = [
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ];
+        $num = 7;
+        for ($i = 0; $i < count($data); $i++) {
+            $spreadsheet->getActiveSheet()->setCellValue('A'.$num, $i + 1);
+            $spreadsheet->getActiveSheet()->setCellValue('B'.$num, $data[$i]['title']);
+            $spreadsheet->getActiveSheet()->setCellValue('C'.$num, $data[$i]['num']);
+            $spreadsheet->getActiveSheet()->setCellValue('D'.$num, $data[$i]['status']);
+            $spreadsheet->getActiveSheet()->setCellValue('E'.$num, $data[$i]['subject']);
+            $spreadsheet->getActiveSheet()->setCellValue('F'.$num, $data[$i]['type']);
+            $spreadsheet->getActiveSheet()->setCellValue('G'.$num, $data[$i]['unit']);
+            $spreadsheet->getActiveSheet()->setCellValue('H'.$num, $data[$i]['build_type']);
+            $spreadsheet->getActiveSheet()->setCellValue('I'.$num, $data[$i]['money_from']);
+            $spreadsheet->getActiveSheet()->setCellValue('J'.$num, $data[$i]['amount']);
+            $spreadsheet->getActiveSheet()->setCellValue('K'.$num, $data[$i]['land_amount']);
+            $spreadsheet->getActiveSheet()->setCellValue('L'.$num, $data[$i]['is_gc']);
+            $spreadsheet->getActiveSheet()->setCellValue('M'.$num, $data[$i]['nep_type']);
+            $spreadsheet->getActiveSheet()->setCellValue('N'.$num, $data[$i]['plan_start_at'].'/'.$data[$i]['plan_end_at']);
+            $spreadsheet->getActiveSheet()->setCellValue('O'.$num, $data[$i]['description']);
+            $projectPlan=$data[$i]['projectPlan'];
+            foreach($projectPlan as $k=>$v){
+                if($v['date']==date('Y')){
+                    $spreadsheet->getActiveSheet()->setCellValue('P'.$num, $v['amount']);
+                    $spreadsheet->getActiveSheet()->setCellValue('Q'.$num, $v['image_progress']);
+                    $month=$v['month'];
+                    foreach($month as $m=>$vm){
+                        $Le=17+($vm['date']-1)*2;
+                        $spreadsheet->getActiveSheet()->setCellValue($Letter[$Le].$num, $v['amount']);
+                        $spreadsheet->getActiveSheet()->setCellValue($Letter[$Le+1].$num, $v['image_progress']);
+                    }
+                }
+            }
+            $num++;
+        }
+        // 合并行、列
+        $spreadsheet->getActiveSheet()->mergeCells('A1:AO1')->mergeCells('A2:AO2')->mergeCells('A3:AL3')->mergeCells('AM3:AO3')
+            ->mergeCells('A4:A5')->mergeCells('B4:B5')->mergeCells('C4:C5')->mergeCells('D4:D5')
+            ->mergeCells('E4:E5')->mergeCells('F4:F5')->mergeCells('G4:G5')->mergeCells('H4:H5')
+            ->mergeCells('I4:I5')->mergeCells('J4:J5')->mergeCells('K4:K5')->mergeCells('L4:L5')
+            ->mergeCells('M4:M5')->mergeCells('N4:N5')->mergeCells('O4:O5')->mergeCells('P4:P5')
+            ->mergeCells('Q4:Q5')->mergeCells('R4:AO4')->mergeCells('R5:S5')->mergeCells('T5:U5')
+            ->mergeCells('V5:W5')->mergeCells('X5:Y5')->mergeCells('Z5:AA5')->mergeCells('AB5:AC5')
+            ->mergeCells('AD5:AE5')->mergeCells('AF5:AG5')->mergeCells('AH5:AI5')->mergeCells('AJ5:AK5')
+            ->mergeCells('AL5:AM5')->mergeCells('AN5:AO5');
+            
+        //  设置宽度
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(8.38);
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(18.13);
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(12.38);
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(16.38);
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(11.29);
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(11.29);
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(27.63);
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(18.88);
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(9.75);
+        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(27.63);
+        $spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(18.88);
+        $spreadsheet->getActiveSheet()->getColumnDimension('L')->setWidth(9.75);
+        $spreadsheet->getActiveSheet()->getColumnDimension('M')->setWidth(9.75);
+        $spreadsheet->getActiveSheet()->getColumnDimension('N')->setWidth(18.88);
+        $spreadsheet->getActiveSheet()->getColumnDimension('O')->setWidth(9.75);
+        $spreadsheet->getActiveSheet()->getColumnDimension('P')->setWidth(18.88);
+        $spreadsheet->getActiveSheet()->getColumnDimension('Q')->setWidth(18.88);
+        // 设置高度
+        $spreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(19);
+        $spreadsheet->getActiveSheet()->getRowDimension('2')->setRowHeight(52);
+        $spreadsheet->getActiveSheet()->getRowDimension('3')->setRowHeight(41);
+        $spreadsheet->getActiveSheet()->getRowDimension('4')->setRowHeight(52);
+        $spreadsheet->getActiveSheet()->getRowDimension('5')->setRowHeight(41);
+        $spreadsheet->getActiveSheet()->getRowDimension('6')->setRowHeight(52);
+        $num = 7;
+        for ($i = 0; $i < count($data); $i++) {
+            $spreadsheet->getActiveSheet()->getRowDimension($num)->setRowHeight(81);
+            $num++;
+        }
+        // $spreadsheet->getActiveSheet()->getRowDimension($num)->setRowHeight(55);
+        $spreadsheet->getActiveSheet()->getStyle('A2')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('A3')->applyFromArray($numberStyleLeft)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('AM3')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('A4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('B4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('C4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('D4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('E4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('F4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('G4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('H4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('I4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('J4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('K4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('L4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('M4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('N4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('O4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('P4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('Q4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('R4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('R5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('T5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('V5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('X5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('Z5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('AB5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('AD5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('AF5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('AH5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('AJ5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('AL5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('AN5')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+
+        $num = 6;
+        $count=count($data)+1;
+        for ($i = 0; $i < $count; $i++) {
+            $spreadsheet->getActiveSheet()->getStyle('A'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('C'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('D'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('E'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('F'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('G'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('H'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('I'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('J'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('K'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('L'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('M'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('N'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('O'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('P'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('Q'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('R'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('S'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('T'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('U'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('V'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('W'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('X'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('Y'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('Z'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AA'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AB'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AC'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AD'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AE'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AF'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AG'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AH'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AI'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AJ'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AK'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AL'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AM'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AN'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('AO'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $num++;
+        }
+
+        // 设置边框
+        $borderStyleArray = [
+            'borders' => [
+                'buttomBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_NONE,
+                ],
+            ],
+        ];
+        // $spreadsheet->getActiveSheet()->getStyle('B1')->applyFromArray($borderStyleArray);
+        //设置字体
+        $spreadsheet->getActiveSheet()->getStyle('A2')->getFont()->setSize(20);
+        $spreadsheet->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('B4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('C4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('D4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('E4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('F4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('G4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('H4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('I4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('J4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('K4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('L4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('M4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('N4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('O4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('P4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('Q4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('R4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('O4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('P4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('Q4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('R4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('R5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('T5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('V5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('X5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('Z5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('AB5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('AD5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('AF5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('AH5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('AJ5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('AL5')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('AN5')->getFont()->setBold(true);
+        for ($i = 0; $i < count($Letter); $i++) {
+            $spreadsheet->getActiveSheet()->getStyle($Letter[$i].'6')->getFont()->setBold(true);
+        }
+        // 重命名 worksheet
+        $spreadsheet->getActiveSheet()->setTitle('项目报表');
+        // 将活动工作表索引设置为第一个工作表，以便Excel将其作为第一个工作表打开
+        $spreadsheet->setActiveSheetIndex(0);
+        // 将输出重定向到客户端的Web浏览器 (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="投资项目报表.xlsx"');
         header('Cache-Control: max-age=0');
         // 如果正在使用IE 9
         header('Cache-Control: max-age=1');
