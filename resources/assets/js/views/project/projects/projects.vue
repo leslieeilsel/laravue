@@ -87,7 +87,7 @@
           </Col>
           <Col span="12">
             <FormItem label="项目编号" prop="num">
-              <Input v-model="form.num" placeholder="必填项"></Input>
+              <Input v-model="form.num" placeholder="非必填"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -115,7 +115,7 @@
           </Col>
           <Col span="12">
             <FormItem label="承建单位" prop="unit">
-              <Input v-model="form.unit" placeholder="必填项"></Input>
+              <Input v-model="form.unit" placeholder="子公司或部门"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -292,7 +292,7 @@
           </Col>
           <Col span="12">
             <FormItem label="项目编号" prop="num">
-              <Input v-model="editForm.num" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"></Input>
+              <Input v-model="editForm.num" placeholder="非必填" v-bind:disabled="isAdjustReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -320,7 +320,7 @@
           </Col>
           <Col span="12">
             <FormItem label="承建单位" prop="unit">
-              <Input v-model="editForm.unit" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"></Input>
+              <Input v-model="editForm.unit" placeholder="子公司或部门" v-bind:disabled="isAdjustReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -986,9 +986,6 @@
         ruleValidate: {
           title: [
             {required: true, message: '项目名称不能为空', trigger: 'blur'}
-          ],
-          num: [
-            {required: true, message: '项目编号不能为空', trigger: 'blur'}
           ],
           status: [
             {required: true, message: '建设状态不能为空', trigger: 'change', type: 'number'}
