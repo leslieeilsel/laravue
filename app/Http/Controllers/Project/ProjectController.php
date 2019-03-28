@@ -674,16 +674,18 @@ class ProjectController extends Controller
             $warData = [];
             if ($plans_amount) {
                 $Percentage = ($plans_amount - $projects['month_act_complete']) / $plans_amount;
-                if ($Percentage <= 0.1) {
-                    $warData['warning_type'] = 0;
-                } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
-                    $warData['warning_type'] = 1;
-                } elseif ($Percentage > 0.2) {
-                    $warData['warning_type'] = 2;
+                if($Percentage > 0){
+                    if ($Percentage <= 0.1&&$Percentage > 0) {
+                        $warData['warning_type'] = 0;
+                    } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
+                        $warData['warning_type'] = 1;
+                    } elseif ($Percentage > 0.2) {
+                        $warData['warning_type'] = 2;
+                    }
+                    $warData['schedule_id'] = $data['id'];
+                    $warData['schedule_at'] = date('Y-m');
+                    $warResult = ProjectEarlyWarning::insert($warData);
                 }
-                $warData['schedule_id'] = $data['id'];
-                $warData['schedule_at'] = date('Y-m');
-                $warResult = ProjectEarlyWarning::insert($warData);
             }
         }
         $result = $result || $result >= 0;

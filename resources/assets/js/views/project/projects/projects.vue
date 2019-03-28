@@ -57,8 +57,8 @@
         </Form-item>
       </Form>
     </Row>
-    <p class="btnGroup" v-if="isShowButton">
-      <Button type="primary" @click="modal = true" icon="md-add">添加项目</Button>
+    <p class="btnGroup">
+      <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">添加项目</Button>
       <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="exportBtnDisable" icon="md-cloud-upload">
         导出项目
       </Button>
