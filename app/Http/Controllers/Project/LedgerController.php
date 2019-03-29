@@ -173,7 +173,7 @@ class LedgerController extends Controller
             foreach($month_data as $m=>$m_val){
                 $num = $num + $m * 11;
                 $spreadsheet->getActiveSheet()->setCellValue('B' . $num, $m_val['month'] . '项目进度（需详细说明完成投资额、完成形象进度及相关手续办理情况）');
-                $spreadsheet->getActiveSheet()->setCellValue('D' . $num, $m_val['month_img_progress']);
+                $spreadsheet->getActiveSheet()->setCellValue('D' . $num, $m_val['month_act_complete'].','.$m_val['month_img_progress']);
                 $spreadsheet->getActiveSheet()->setCellValue('K' . $num, '存在问题（详细描述项目建设中需协调解决的手续办理、征地拆迁及影响项目施工进度的其他问题）');
                 $spreadsheet->getActiveSheet()->setCellValue('M' . $num, $m_val['problem']);
             }
@@ -578,6 +578,27 @@ class LedgerController extends Controller
         $data=$ProjectC->allProjects($params);
         $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
         $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
+        $countAmount=0;
+        foreach ($data as $k => $row) {
+            $countAmount=$countAmount+$row['amount'];
+            $data[$k]['amount'] = number_format($row['amount'], 2);
+            $data[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
+            $data[$k]['type'] = Dict::getOptionsArrByName('工程类项目分类')[$row['type']];
+            $data[$k]['is_gc'] = Dict::getOptionsArrByName('是否为国民经济计划')[$row['is_gc']];
+            $data[$k]['status'] = Dict::getOptionsArrByName('项目状态')[$row['status']];
+            $data[$k]['money_from'] = Dict::getOptionsArrByName('资金来源')[$row['money_from']];
+            $data[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
+            $data[$k]['nep_type'] = isset($row['nep_type']) ? Dict::getOptionsArrByName('国民经济计划分类')[$row['nep_type']] : '';
+            $data[$k]['projectPlan'] = $ProjectC->getPlanData($row['id'], '');
+            $data[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
+            $planAmount=$data[$k]['projectPlan'];
+            $countPlanAmount=0;
+            foreach($planAmount as $k=>$v){
+                $countPlanAmount=$countPlanAmount+$v['amount'];
+            }
+        }
+        
+        
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性
@@ -590,12 +611,12 @@ class LedgerController extends Controller
             ->setCategory('Test result file');
         // 添加表头
         $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('A2', '沣西新城重点项目表')
+            ->setCellValue('A2', date('Y').'年沣西新城重点项目表')
             ->setCellValue('A3', '责任部门：'.$department_title)
             ->setCellValue('AM3', '单位：万元')->setCellValue('A4', '序号')
             ->setCellValue('B4', '项目名称')->setCellValue('C4', '项目编号')->setCellValue('D4', '建设状态')
             ->setCellValue('E4', '投资主体')->setCellValue('F4', '项目类型')->setCellValue('G4', '承建单位')
-            ->setCellValue('H4', '建设性质')->setCellValue('I4', '资金来源')->setCellValue('J4', '项目金额(万元)')
+            ->setCellValue('H4', '建设性质')->setCellValue('I4', '资金来源')->setCellValue('J4', '总投资(万元)')
             ->setCellValue('K4', '土地费用(万元)')->setCellValue('L4', '是否为国民经济计划')
             ->setCellValue('M4', '国民经济计划分类')->setCellValue('N4', '计划开始时间/结束时间')
             ->setCellValue('O4', '项目概况')->setCellValue('P4', date('Y').'年计划投资')
@@ -604,6 +625,7 @@ class LedgerController extends Controller
             ->setCellValue('X5', '1-4月')->setCellValue('Z5', '1-5月')->setCellValue('AB5', '1-6月')
             ->setCellValue('AD5', '1-7月')->setCellValue('AF5', '1-8月')->setCellValue('AH5', '1-9月')
             ->setCellValue('AJ5', '1-10月')->setCellValue('AL5', '1-11月')->setCellValue('AN5', '1-12月')
+            ->setCellValue('A6', '合计：'.count($data).'个')->setCellValue('J6', $countAmount)->setCellValue('P6', $countPlanAmount)
             ->setCellValue('R6', '计划投资')->setCellValue('S6', '计划形象进度')
             ->setCellValue('T6', '计划投资')->setCellValue('U6', '计划形象进度')
             ->setCellValue('V6', '计划投资')->setCellValue('W6', '计划形象进度')
@@ -661,10 +683,12 @@ class LedgerController extends Controller
                     $spreadsheet->getActiveSheet()->setCellValue('P'.$num, $v['amount']);
                     $spreadsheet->getActiveSheet()->setCellValue('Q'.$num, $v['image_progress']);
                     $month=$v['month'];
+                    $amount=0;
                     foreach($month as $m=>$vm){
                         $Le=17+($vm['date']-1)*2;
-                        $spreadsheet->getActiveSheet()->setCellValue($Letter[$Le].$num, $v['amount']);
-                        $spreadsheet->getActiveSheet()->setCellValue($Letter[$Le+1].$num, $v['image_progress']);
+                        $amount=floatval($vm['amount'])+floatval($amount);
+                        $spreadsheet->getActiveSheet()->setCellValue($Letter[$Le].$num, $amount);
+                        $spreadsheet->getActiveSheet()->setCellValue($Letter[$Le+1].$num, $vm['image_progress']);
                     }
                 }
             }
@@ -679,7 +703,7 @@ class LedgerController extends Controller
             ->mergeCells('Q4:Q5')->mergeCells('R4:AO4')->mergeCells('R5:S5')->mergeCells('T5:U5')
             ->mergeCells('V5:W5')->mergeCells('X5:Y5')->mergeCells('Z5:AA5')->mergeCells('AB5:AC5')
             ->mergeCells('AD5:AE5')->mergeCells('AF5:AG5')->mergeCells('AH5:AI5')->mergeCells('AJ5:AK5')
-            ->mergeCells('AL5:AM5')->mergeCells('AN5:AO5');
+            ->mergeCells('AL5:AM5')->mergeCells('AN5:AO5')->mergeCells('A6:I6');
             
         //  设置宽度
         $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(8.38);

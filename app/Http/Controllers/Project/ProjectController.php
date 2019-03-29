@@ -277,6 +277,12 @@ class ProjectController extends Controller
             }
         }
         $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
+        return  $projects;
+    }
+    public function getAllProjects(Request $request)
+    {
+        $params = $request->input('searchForm');
+        $projects=$this->allProjects($params);
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
@@ -289,13 +295,6 @@ class ProjectController extends Controller
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
         }
-        return  $projects;
-    }
-    public function getAllProjects(Request $request)
-    {
-        $params = $request->input('searchForm');
-        $projects=$this->allProjects($params);
-
         return response()->json(['result' => $projects], 200);
     }
 

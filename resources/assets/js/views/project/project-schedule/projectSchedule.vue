@@ -1095,7 +1095,7 @@
           }
           this.pageCurrent = 1;
           if (res.result) {
-            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.department_id || this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at) {
+            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.department_id || this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at || this.searchForm.title) {
               this.btnDisable = false;
             }
             this.tableLoading = false;
@@ -1346,6 +1346,7 @@
       },//导出
       exportSchedule() {
         this.picDisable = false;
+        let title = this.searchForm.title;
         let project_id = this.searchForm.project_id;
         let project_num = this.searchForm.project_num;
         let subject = this.searchForm.subject;
@@ -1364,7 +1365,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/exportSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
+        window.location.href = "/api/project/exportSchedule?title="+title+"&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
       },//下载
       downloadPic() {
         let project_id = this.searchForm.project_id;
