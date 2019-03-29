@@ -318,7 +318,7 @@ class LedgerController extends Controller
         }
     }
     /**
-     * 导出填报
+     * 导出进度填报
      *
      * @param Request $request
      * @throws \PhpOffice\PhpSpreadsheet\Exception
@@ -360,8 +360,8 @@ class LedgerController extends Controller
             ->setCellValue('F4', '年计划投资')
             ->setCellValue('G4', '年计划形象进度');
 
-        $schedule_count = $ProjectC->projectProgressM($params)->groupBy('month')->count();
-        $s_count=$schedule_count*2+6;
+        $schedule_count = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('id')->toArray();
+        $s_count=count($schedule_count)*2+6;
         $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1].'4', '自开始累积完成投资');
         $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+2].'4', '存在问题');
         $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+3].'4', '开工/计划开工时间');
@@ -391,42 +391,44 @@ class LedgerController extends Controller
             ],
         ];
         $num = 5;
-        $total_investors = 0;
-        $plan_investors = 0;
+        $total_investors=0;
+        $plan_investors=0;
         for ($i = 0; $i < count($data); $i++) {
+            $total_investor = $ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->where('is_audit',1)->max('total_investors');
+            $plan_investor = ProjectPlan::where('project_id',$data[$i]['project_id'])->where('date',date('Y'))->value('amount');
             $schedule_data = $ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->get()->toArray();
             $l=7;
             foreach($schedule_data as $k=>$v){
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k].'4', $v['month'].'月形象进度');
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', $v['month'].'月实际完成投资');
+                $m = (int)date('m', strtotime($v['month']));
+                $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k].'4', '1-'.$m.'月形象进度');
+                $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', '1-'.$m.'月实际完成投资');
                 $l=$l+1;
             }
-
-            $total_investors = $total_investors + $data[$i]['total_investors'];
-            $plan_investors = $plan_investors + $data[$i]['plan_investors'];
+            $total_investors=$total_investors+$total_investor;
+            $plan_investors=$plan_investors+$plan_investor;
             $money_from = Dict::getOptionsByName('资金来源');
             $spreadsheet->getActiveSheet()->setCellValue('A' . $num, $i + 1);
             $spreadsheet->getActiveSheet()->setCellValue('B' . $num, $data[$i]['project_title']);
             $spreadsheet->getActiveSheet()->setCellValue('C' . $num, $data[$i]['subject']);
             $spreadsheet->getActiveSheet()->setCellValue('D' . $num, $data[$i]['build_start_at'] . "/" . $data[$i]['build_end_at']);
-            $spreadsheet->getActiveSheet()->setCellValue('E' . $num, $data[$i]['total_investors']);
-            $spreadsheet->getActiveSheet()->setCellValue('F' . $num, $data[$i]['plan_investors']);
+            $spreadsheet->getActiveSheet()->setCellValue('E' . $num, $total_investor);
+            $spreadsheet->getActiveSheet()->setCellValue('F' . $num, $plan_investor);
             $spreadsheet->getActiveSheet()->setCellValue('G' . $num, $data[$i]['plan_img_progress']);
-            $l=7;
+            $le=7;
             foreach($schedule_data as $k=>$v){
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k] . $num, $v['month_img_progress']);
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1] . $num, $v['month_act_complete']);
+                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$k] . $num, $v['month_img_progress']);
+                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$k+1] . $num, $v['acc_complete']);
                 
-                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$l+$k])->setWidth(18.88);
-                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$l+$k+1])->setWidth(9.75);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$l+$k].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$l+$k+1].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$k])->setWidth(18.88);
+                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$k+1])->setWidth(9.75);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k+1].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
                 
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$l+$k]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$l+$k+1]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$l+$k]. '4')->getFont()->setBold(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$l+$k+1].'4')->getFont()->setBold(true);
-                $l=$l+1;
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k+1]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k]. '4')->getFont()->setBold(true);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k+1].'4')->getFont()->setBold(true);
+                $le=$le+1;
             }
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1] . $num, $data[$i]['acc_complete']);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+2] . $num, $data[$i]['problem']);
