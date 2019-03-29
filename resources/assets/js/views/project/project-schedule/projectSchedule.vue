@@ -594,7 +594,7 @@
         dataCount: 0,   // 总条数
         pageCurrent: 1, // 当前页
         nowData: [],
-        isShowButton: true,
+        isShowButton: false,
         noScheduleButton: false,
         reasonModal: false,
         reasonAuditLoading: false,
@@ -927,7 +927,6 @@
                         loading: true,
                         content: "您确认要删除这个项目进度？",
                         onOk: () => {
-                          console.log(params.row.id);
                           projectScheduleDelete({id: params.row.id}).then(res => {
                             if (res.result === true) {
                               this.$Message.success("删除成功");
@@ -1026,8 +1025,8 @@
             let date_at = new Date();
             let curr_time_0 = (date_at.getMonth() + 1) > 9 ? (date_at.getMonth() + 1) : '0' + (date_at.getMonth() + 1);
             let curr_time = date_at.getFullYear() + '-' + curr_time_0;
-            
-            let time_0 = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1);            
+
+            let time_0 = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1);
             let time = date.getFullYear() + '-' + time_0;
             const disabledMonth = time;
             // return disabledMonth !== date_at.getMonth();
@@ -1168,31 +1167,8 @@
             this.form.plan_build_start_at = em.plan_start_at;
           }
         });
-        // projectScheduleMonth({project: e}).then(res => {
-        //   if (res.result===true) {
-        //     this.month_options_0 = {
-        //       disabledDate(date) {
-        //         let date_at = new Date();
-        //         const disabledMonth = date.getMonth();
-
-        //         return date_at < disabledMonth <= date_at;
-        //       }
-        //     }
-        //   } else {
-        //     this.month_options_0 = {
-        //       disabledDate(date) {
-        //         let date_at = new Date();
-        //         const disabledMonth = date.getMonth();
-
-        //         return disabledMonth !== date_at.getMonth();
-        //       }
-        //     }
-        //   }
-        // });
       },
       changeMonth(e) {
-        console.log(this.form);
-        
         if (this.form.project_id === '') {
           this.$Message.error('请先选择填报项目!');
           this.form.month = '';

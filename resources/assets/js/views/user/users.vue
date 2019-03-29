@@ -3,13 +3,13 @@
     <Card>
       <Row>
         <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
-          <FormItem label="部门" prop="department_title">
-            <Poptip trigger="click" placement="right" title="选择部门" width="340">
+          <FormItem label="所属部门" prop="department_title">
+            <Poptip trigger="click" placement="bottom" title="选择部门" width="340">
               <div style="display:flex;">
                 <Input v-model="searchForm.department_title" readonly style="margin-right:10px;" placeholder=""/>
               </div>
               <div slot="content" class="tree-bar">
-                <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeS"></Tree>
+                <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeSearch"></Tree>
                 <Spin size="large" fix v-if="dpLoading"></Spin>
               </div>
             </Poptip>
@@ -41,15 +41,15 @@
         </Form>
       </Row>
       <p class="btnGroup">
-        <Button type="primary" @click="modal = true" icon="md-add">添加用户</Button>
+        <Button type="primary" @click="add" icon="md-add">添加用户</Button>
         <Button @click="delAll" icon="md-trash">删除</Button>
         <Modal
           v-model="modal"
           @on-cancel="cancel"
-          title="添加用户">
+          :title="modalTitle">
           <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="80">
             <Form-item label="所属部门" prop="department_title">
-              <Poptip trigger="click" placement="right" title="选择部门" width="340">
+              <Poptip trigger="click" placement="right" title="选择部门" width="400">
                 <div style="display:flex;">
                   <Input v-model="form.department_title" readonly style="margin-right:10px;" placeholder=""/>
                   <Button icon="md-trash" @click="clearSelectDep">清空已选</Button>
@@ -98,66 +98,8 @@
             </FormItem>
           </Form>
           <div slot="footer">
-            <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-            <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
-          </div>
-        </Modal>
-        <Modal
-          v-model="editModal"
-          @on-cancel="cancel"
-          title="编辑用户">
-          <Form ref="editFormValidate" :model="editForm" :rules="editRuleValidate" :label-width="80">
-            <Form-item label="所属部门" prop="department_title">
-              <Poptip trigger="click" placement="right" title="选择部门" width="340">
-                <div style="display:flex;">
-                  <Input v-model="editForm.department_title" readonly style="margin-right:10px;" placeholder=""/>
-                  <Button icon="md-trash" @click="clearSelectDepE">清空已选</Button>
-                </div>
-                <div slot="content" class="tree-bar">
-                  <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTree"></Tree>
-                  <Spin size="large" fix v-if="dpLoading"></Spin>
-                </div>
-              </Poptip>
-            </Form-item>
-            <FormItem label="姓名" prop="name">
-              <Input v-model="editForm.name" placeholder="可选项"></Input>
-            </FormItem>
-            <Form-item label="职位" prop="office">
-              <Select v-model="editForm.office">
-                <Option v-for="item in dict.office" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
-            </Form-item>
-            <FormItem label="邮箱" prop="email">
-              <Input v-model="editForm.email" placeholder="可选项"></Input>
-            </FormItem>
-            <FormItem label="联系电话" prop="phone">
-              <Input v-model="editForm.phone" placeholder="可选项"></Input>
-            </FormItem>
-            <FormItem label="角色分配" prop="group_id">
-              <Select v-model="editForm.group_id" aria-label="">
-                <Option v-for="item in roleList" :value="item.id" :label="item.name" :key="item.id">
-                  <span>{{ item.name }}</span>
-                  <span style="float:right;padding-right:15px;color:#ccc">{{ item.description }}</span>
-                </Option>
-              </Select>
-            </FormItem>
-            <FormItem label="用户名" prop="username">
-              <Input v-model="editForm.username" placeholder="必填项"></Input>
-            </FormItem>
-            <!-- <FormItem label="密码" prop="password">
-              <Input v-model="editForm.password" :type="passwordType" @on-focus="changePasswordType('password')" autocomplete="off" placeholder="必填项"/>
-            </FormItem>
-            <FormItem label="确认密码" prop="pwdCheck">
-              <Input v-model="editForm.pwdCheck" :type="checkPasswordType" @on-focus="changePasswordType('pwdCheck')" autocomplete="off" placeholder="必填项"/>
-            </FormItem> -->
-            <FormItem label="备注" prop="desc">
-              <Input v-model="editForm.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="可选项"></Input>
-            </FormItem>
-          </Form>
-          <div slot="footer">
-            <Button @click="handleReset('editFormValidate')" style="margin-left: 8px">重置</Button>
-            <Button type="primary" @click="handleSubmitE('editFormValidate')" :loading="loading">提交</Button>
+            <Button @click="handleReset('formValidate')" style="margin-left: 8px" v-if="showResetButton">重置</Button>
+            <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">保存</Button>
           </div>
         </Modal>
       </p>
@@ -171,7 +113,7 @@
   </div>
 </template>
 <script>
-  import {registUser, getUsers, getUserDictData, deleteUserData, editRegistUser, getUser} from '../../api/user';
+  import {deleteUserData, editRegistUser, getUserDictData, getUsers, registUser} from '../../api/user';
   import {initDepartment, loadDepartment} from '../../api/system';
   import {getRoles} from '../../api/role';
   import './users.css';
@@ -188,7 +130,7 @@
     },
   };
   export default {
-    data() {
+    data: function () {
       const pwdValidate = (rule, value, callback) => {
         this.$refs.formValidate.validateField('pwdCheck');
         callback();
@@ -203,6 +145,9 @@
         }
       };
       return {
+        pwdValidate,
+        pwdCheckValidate,
+        showResetButton: false,
         pageSize: 10,   // 每页显示多少条
         dataCount: 0,   // 总条数
         pageCurrent: 1, // 当前页
@@ -213,8 +158,8 @@
         loading: false,
         dpLoading: false,
         modal: false,
-        editModal: false,
         btnDisable: true,
+        modalTitle: '',
         selectDep: [],
         dataDep: [],
         dictName: {
@@ -223,7 +168,7 @@
         dict: {
           office: [],
         },
-        checkedDefaultRole: '',
+        checkedDefaultRole: 0,
         form: {
           username: '',
           name: '',
@@ -235,19 +180,6 @@
           group_id: '',
           password: '',
           pwdCheck: '',
-          desc: ''
-        }, editForm: {
-          id: '',
-          username: '',
-          name: '',
-          email: '',
-          office: '',
-          phone: '',
-          department_id: '',
-          department_title: '',
-          group_id: '',
-          // password: '',
-          // pwdCheck: '',
           desc: ''
         },
         ruleValidate: {
@@ -273,33 +205,7 @@
             {required: true, message: '职位不能为空', trigger: 'change', type: 'number'}
           ],
           group_id: [
-            {required: true, message: '职位不能为空', trigger: 'change', type: 'number'}
-          ]
-        },
-        editRuleValidate: {
-          name: [
-            {required: true, message: '姓名不能为空', trigger: 'blur'}
-          ],
-          username: [
-            {required: true, message: '用户名不能为空', trigger: 'blur'}
-          ],
-          email: [
-            {type: 'email', message: '邮箱格式不正确', trigger: 'blur'}
-          ],
-          // password: [
-          //   {required: true, validator: pwdValidate, trigger: 'blur'}
-          // ],
-          // pwdCheck: [
-          //   {required: true, validator: pwdCheckValidate, trigger: 'blur'}
-          // ],
-          department_title: [
-            {required: true, message: '所属部门不能为空', trigger: 'change'}
-          ],
-          office: [
-            {required: true, message: '职位不能为空', trigger: 'change', type: 'number'}
-          ],
-          group_id: [
-            {required: true, message: '职位不能为空', trigger: 'change', type: 'number'}
+            {required: true, message: '角色不能为空', trigger: 'change', type: 'number'}
           ]
         },
         columns: [
@@ -328,7 +234,7 @@
           },
           {
             title: '所属部门',
-            key: 'department'
+            key: 'department_title'
           },
           {
             title: '角色',
@@ -336,7 +242,11 @@
           },
           {
             title: '职位',
-            key: 'office'
+            key: 'office_name'
+          },
+          {
+            title: '联系电话',
+            key: 'phone'
           },
           {
             title: '邮箱',
@@ -370,22 +280,7 @@
                   },
                   on: {
                     click: () => {
-                      this.$refs.editFormValidate.resetFields();
-                      this.editForm.id = params.row.id;
-                      this.editForm.username = params.row.username;
-                      this.editForm.name = params.row.name;
-                      this.editForm.email = params.row.email;
-                      this.editForm.phone = params.row.phone;
-                      this.editForm.department_title = params.row.department;
-                      this.editForm.password = params.row.password;
-                      this.editForm.pwdCheck = params.row.pwdCheck;
-                      this.editForm.desc = params.row.desc;
-                      getUser({id: params.row.id}).then((data) => {
-                        this.editForm.department_id = data.result.department_id;
-                        this.editForm.group_id = data.result.group_id;
-                        this.editForm.office = data.result.office;
-                      })
-                      this.editModal = true;
+                      this.edit(params.row);
                     }
                   }
                 }, '编辑')
@@ -408,37 +303,18 @@
           group_id: '',
           department_title: ''
         },
+        modalType: 0
       }
     },
     mounted() {
       this.init();
-      getUsers(this.searchForm).then((data) => {
-        this.data = data.result;
-        //分页显示所有数据总数
-        this.dataCount = this.data.length;
-        //循环展示页面刚加载时需要的数据条数
-        this.nowData = [];
-        for (let i = 0; i < this.pageSize; i++) {
-          if (this.data[i]) {
-            this.nowData.push(this.data[i]);
-          }
-        }
-        this.loadingTable = false;
-      });
-      getRoles().then((data) => {
-        this.roleList = data.result;
-        this.roleList.forEach(e => {
-          if (e.is_default === 1) {
-            this.checkedDefaultRole = e.id;
-            this.form.group_id = this.checkedDefaultRole;
-          }
-        });
-      });
     },
     methods: {
       init() {
         this.initDepartmentTreeData();
         this.getDictData();
+        this.getUserList();
+        this.getDefaultRole();
       },
       getDictData() {
         getUserDictData(this.dictName).then(res => {
@@ -454,56 +330,26 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.loading = true;
-            registUser(this.form).then((response) => {
-              this.loading = false;
-              this.$Message.success('创建成功');
-              this.$refs[name].resetFields();
-              this.modal = false;
-              this.loadingTable = true;
-              getUsers(this.searchForm).then((data) => {
-                this.data = data.result;
-                //分页显示所有数据总数
-                this.dataCount = this.data.length;
-                //循环展示页面刚加载时需要的数据条数
-                this.nowData = [];
-                for (let i = 0; i < this.pageSize; i++) {
-                  if (this.data[i]) {
-                    this.nowData.push(this.data[i]);
-                  }
-                }
-                this.loadingTable = false;
+            if (this.modalType === 0) {
+              registUser(this.form).then((response) => {
+                this.loading = false;
+                this.$Message.success('创建成功');
+                this.$refs[name].resetFields();
+                this.modal = false;
+                this.getUserList();
               });
-            });
-          } else {
-            this.$Message.error('发生错误!');
-          }
-        })
-      }, handleSubmitE(name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            this.loading = true;
-            editRegistUser(this.editForm).then((response) => {
-              this.loading = false;
-              this.$Message.success('修改成功');
-              this.$refs[name].resetFields();
-              this.editModal = false;
-              this.loadingTable = true;
-              getUsers().then((data) => {
-                this.data = data.result;
-                //分页显示所有数据总数
-                this.dataCount = this.data.length;
-                //循环展示页面刚加载时需要的数据条数
-                this.nowData = [];
-                for (let i = 0; i < this.pageSize; i++) {
-                  if (this.data[i]) {
-                    this.nowData.push(this.data[i]);
-                  }
+            } else if (this.modalType === 1) {
+              editRegistUser(this.form).then((res) => {
+                this.loading = false;
+                if (res.result === true) {
+                  this.$Message.success('修改成功');
+                  this.modal = false;
+                  this.getUserList();
+                } else {
+                  this.$Message.error('修改失败');
                 }
-                this.loadingTable = false;
               });
-            });
-          } else {
-            this.$Message.error('发生错误!');
+            }
           }
         })
       },
@@ -512,15 +358,10 @@
       },
       cancel() {
         this.$refs.formValidate.resetFields();
-        this.form.group_id = this.checkedDefaultRole;
       },
       clearSelectDep() {
         this.form.department_id = "";
         this.form.department_title = "";
-      },
-      clearSelectDepE() {
-        this.editForm.department_id = "";
-        this.editForm.department_title = "";
       },
       initDepartmentTreeData() {
         initDepartment().then(res => {
@@ -566,7 +407,38 @@
           this.form.department_title = data.title;
         }
       },
-      selectTreeS(v) {
+      add() {
+        this.form.group_id = this.checkedDefaultRole;
+        this.modalType = 0;
+        this.modalTitle = "添加用户";
+        this.showResetButton = true;
+        this.ruleValidate.password = [{required: true, validator: this.pwdValidate, trigger: 'blur'}];
+        this.$refs.formValidate.$children[7].$el.className = 'ivu-form-item ivu-form-item-required';
+        this.ruleValidate.pwdCheck = [{required: true, validator: this.pwdCheckValidate, trigger: 'blur'}];
+        this.$refs.formValidate.$children[8].$el.className = 'ivu-form-item ivu-form-item-required';
+        this.$refs.formValidate.resetFields();
+        this.modal = true;
+      },
+      edit(v) {
+        this.modalType = 1;
+        this.modalTitle = "编辑用户";
+        this.showResetButton = false;
+        this.ruleValidate.password = [{required: false, validator: this.pwdValidate, trigger: 'blur'}];
+        this.$refs.formValidate.$children[7].$el.className = 'ivu-form-item';
+        this.ruleValidate.pwdCheck = [{required: false, validator: this.pwdCheckValidate, trigger: 'blur'}];
+        this.$refs.formValidate.$children[8].$el.className = 'ivu-form-item';
+        this.$refs.formValidate.resetFields();
+        // 转换null为""
+        for (let attr in v) {
+          if (v[attr] === null) {
+            v[attr] = "";
+          }
+        }
+        let str = JSON.stringify(v);
+        this.form = JSON.parse(str);
+        this.modal = true;
+      },
+      selectTreeSearch(v) {
         if (v.length > 0) {
           // 转换null为""
           for (let attr in v[0]) {
@@ -574,8 +446,6 @@
               v[0][attr] = "";
             }
           }
-          console.log(v);
-
           let str = JSON.stringify(v[0]);
           let data = JSON.parse(str);
           this.searchForm.department_id = data.id;
@@ -631,19 +501,7 @@
               this.$Modal.remove();
               if (res.result === true) {
                 this.$Message.success("操作成功");
-                getUsers().then((data) => {
-                  this.data = data.result;
-                  //分页显示所有数据总数
-                  this.dataCount = this.data.length;
-                  //循环展示页面刚加载时需要的数据条数
-                  this.nowData = [];
-                  for (let i = 0; i < this.pageSize; i++) {
-                    if (this.data[i]) {
-                      this.nowData.push(this.data[i]);
-                    }
-                  }
-                  this.loadingTable = false;
-                });
+                this.getUserList();
               }
             });
           }
@@ -654,7 +512,8 @@
         this.selectCount = e.length;
       },
       getUserList() {
-        this.init();
+        this.passwordType = this.checkPasswordType = 'text';
+        this.loadingTable = true;
         getUsers(this.searchForm).then((data) => {
           this.data = data.result;
           //分页显示所有数据总数
@@ -668,12 +527,13 @@
           }
           this.loadingTable = false;
         });
+      },
+      getDefaultRole() {
         getRoles().then((data) => {
           this.roleList = data.result;
           this.roleList.forEach(e => {
             if (e.is_default === 1) {
               this.checkedDefaultRole = e.id;
-              this.form.group_id = this.checkedDefaultRole;
             }
           });
         });

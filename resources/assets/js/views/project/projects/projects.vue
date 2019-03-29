@@ -59,7 +59,7 @@
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">添加项目</Button>
-      <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="exportBtnDisable" icon="md-cloud-upload">
+      <Button class="exportReport" @click="exportSchedule" v-if="showExportButton" type="primary" :disabled="exportBtnDisable" icon="md-cloud-upload">
         导出项目
       </Button>
       <!--      <Button type="error" disabled icon="md-trash">删除</Button>-->
@@ -661,7 +661,8 @@
         dataCount: 0,   // 总条数
         pageCurrent: 1, // 当前页
         nowData: [],
-        isShowButton: true,
+        isShowButton: false,
+        showExportButton: false,
         reasonModal: false,
         reasonAuditLoading: false,
         dropDownContent: '展开',
@@ -1030,6 +1031,7 @@
           this.showLandMoney = true;
         }
         this.isShowButton = this.office === 0;
+        this.showExportButton = !(this.office === 0);
         this.$refs.formValidate.resetFields();
         initProjectInfo().then(res => {
           if (res.result) {
