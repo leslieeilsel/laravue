@@ -59,10 +59,10 @@
     </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">添加项目</Button>
-      <Button class="exportReport" @click="exportSchedule" v-if="showExportButton" type="primary" :disabled="exportBtnDisable" icon="md-cloud-upload">
+      <Button class="exportReport" @click="exportSchedule" v-if="showExportButton" type="primary"
+              :disabled="exportBtnDisable" icon="md-cloud-upload">
         导出项目
       </Button>
-      <!--      <Button type="error" disabled icon="md-trash">删除</Button>-->
     </p>
     <Row>
       <Table type="selection" stripe border :columns="columns" :data="nowData" :loading="tableLoading"></Table>
@@ -77,7 +77,7 @@
       :styles="{top: '20px'}"
       width="850"
       title="创建项目">
-      <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="110">
+      <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="130">
         <Divider><h4>基础信息</h4></Divider>
         <Row>
           <Col span="12">
@@ -179,15 +179,14 @@
         <Row>
           <Col span="12">
             <FormItem label="项目中心点坐标" prop="center_point">
-              <Input v-model="form.center_point" placeholder="必填项"/>
+              <Input v-model="form.center_point" placeholder="仅工程类项目填写"/>
             </FormItem>
             <FormItem
               v-for="(item, index) in form.positions"
               v-if="item.status"
               :key="index"
               :label="'项目轮廓坐标 ' + item.index"
-              :prop="'positions.' + index + '.value'"
-              :rules="{required: true, message: '坐标点 ' + item.index +' 不能为空', trigger: 'blur'}">
+              :prop="'positions.' + index + '.value'">
               <Row>
                 <Col span="18">
                   <Input type="text" v-model="item.value" placeholder="请输入坐标"></Input>
@@ -219,14 +218,13 @@
               <FormItem
                 label="计划投资金额（万元）"
                 :prop="'projectPlan.' + index_t + '.amount'"
-                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'}">
-                <InputNumber :min="1" :step="1.2" v-model="item.amount" placeholder="必填项"></InputNumber>
+                :rules="item.role">
+                <InputNumber :min="1" :step="1.2" v-model="item.amount" :placeholder="item.placeholder"></InputNumber>
               </FormItem>
             </Col>
             <Col span="12">
               <FormItem
                 label="计划形象进度"
-                :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
                 :prop="'projectPlan.' + index_t + '.image_progress'">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."></Input>
               </FormItem>
@@ -388,7 +386,7 @@
         </Row>
         <Row>
           <FormItem label="项目中心点坐标" prop="center_point">
-            <Input v-model="editForm.center_point" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"/>
+            <Input v-model="editForm.center_point" placeholder="" v-bind:disabled="isAdjustReadOnly"/>
           </FormItem>
           <FormItem label="项目轮廓点坐标" prop="positions">
             <Input v-model="editForm.positions" placeholder="必填项" disabled/>
@@ -627,10 +625,12 @@
     </Modal>
     <Modal
       v-model="reasonModal"
-      title="审核不通过原因">
+      title="请简要说明原因"
+      @on-cancel="cancelReasonForm"
+    >
       <Form ref="reasonForm" :model="reasonForm">
         <FormItem prop="reason">
-          <Input type="textarea" size="large" v-model="reasonForm.reason" placeholder="请输入"/>
+          <Input type="textarea" size="large" v-model="reasonForm.reason" :rows="4" placeholder="请输入"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -671,7 +671,7 @@
         isReadOnly: false,
         isAdjustReadOnly: false,
         btnDisable: true,
-        exportBtnDisable:true,
+        exportBtnDisable: true,
         editFormLoading: false,
         reasonForm: {
           reason: ''
@@ -769,16 +769,6 @@
             width: 150,
             align: "center"
           },
-          // {
-          //   title: '计划开始时间',
-          //   key: 'plan_start_at',
-          //   width: 120
-          // },
-          // {
-          //   title: '计划结束时间',
-          //   key: 'plan_end_at',
-          //   width: 120
-          // },
           {
             title: '审核状态',
             key: 'is_audit',
@@ -825,7 +815,7 @@
               let editButton;
               editButton = this.office === 0 ? !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4) : this.office === 1;
               let delButton;
-              delButton = this.office === 0 ? !(params.row.is_audit === 2 || params.row.is_audit === 4) : true;
+              delButton = this.office === 0 ? !((params.row.is_audit === 2 || params.row.is_audit === 4) && params.row.audited === null)  : true;
               return h('div', [
                 h('Button', {
                   props: {
@@ -1012,9 +1002,6 @@
           unit: [
             {required: true, message: '建设单位不能为空', trigger: 'blur'}
           ],
-          center_point: [
-            {required: true, message: '项目中心点坐标不能为空', trigger: 'blur'}
-          ],
           plan_start_at: [
             {required: true, message: '计划开始时间不能为空', trigger: 'change', type: 'date'},
           ],
@@ -1056,8 +1043,8 @@
             }
           }
           this.pageCurrent = 1;
-          
-          if (this.searchForm.title ||this.searchForm.subject ||this.searchForm.office ||this.searchForm.unit ||this.searchForm.num || this.searchForm.type || this.searchForm.build_type || this.searchForm.money_from || this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.status) {
+
+          if (this.searchForm.title || this.searchForm.subject || this.searchForm.office || this.searchForm.unit || this.searchForm.num || this.searchForm.type || this.searchForm.build_type || this.searchForm.money_from || this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.status) {
             this.exportBtnDisable = false;
           }
           this.tableLoading = false;
@@ -1151,14 +1138,38 @@
       cancel() {
         this.$refs.formValidate.resetFields();
       },
+      cancelReasonForm() {
+        this.$refs.reasonForm.resetFields();
+      },
       buildYearPlan() {
         let startDate = this.form.plan_start_at;
-        let endDate = this.form.plan_end_at;
-        buildPlanFields([startDate, endDate]).then(res => {
-          if (res.result) {
-            this.form.projectPlan = res.result;
+        if (startDate) {
+          let endDate = this.form.plan_end_at;
+          if (endDate >= startDate) {
+            buildPlanFields([startDate, endDate]).then(res => {
+              if (res.result) {
+                res.result.forEach(function (row, index) {
+                  let CurrentDate = new Date();
+                  let CurrentYear = CurrentDate.getFullYear();
+                  if (row.date === CurrentYear) {
+                    row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                    row.placeholder = '必填项';
+                  } else {
+                    row.role = {};
+                    row.placeholder = '非必填';
+                  }
+                });
+                this.form.projectPlan = res.result;
+              }
+            });
+          } else {
+            this.form.plan_end_at = null;
+            this.$Message.error('结束时间应 >= 开始时间!');
           }
-        });
+        } else {
+          this.form.plan_end_at = null;
+          this.$Message.error('请先选择开始时间!');
+        }
       },
       audit(name) {
         if (parseInt(name) === 1) {
@@ -1271,8 +1282,9 @@
           this.$Message.error('月计划总金额不能超过年计划');
           month_total[index].amount = 0;
         }
-      },//导出
-      exportSchedule() {        
+      },
+      //导出
+      exportSchedule() {
         let title = this.searchForm.title;
         let subject = this.searchForm.subject;
         let office = this.searchForm.office;

@@ -514,8 +514,7 @@
           }
         }
         let str = JSON.stringify(v);
-        let data = JSON.parse(str);
-        this.form = data;
+        this.form = JSON.parse(str);
         this.modalVisible = true;
       },
       remove(v) {

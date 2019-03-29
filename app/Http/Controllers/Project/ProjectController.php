@@ -127,6 +127,12 @@ class ProjectController extends Controller
             $v['created_at'] = date('Y-m-d H:i:s');
             $monthArr = $v['month'];
             unset($v['month']);
+            if (isset($v['role'])) {
+                unset($v['role']);
+            }
+            if (isset($v['placeholder'])) {
+                unset($v['placeholder']);
+            }
 
             $parentId = DB::table('iba_project_plan')->insertGetId($v);
 
@@ -230,8 +236,8 @@ class ProjectController extends Controller
     /**
      * 获取所有项目信息
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param $params
+     * @return mixed
      */
     public function allProjects($params)
     {
@@ -277,12 +283,14 @@ class ProjectController extends Controller
             }
         }
         $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
-        return  $projects;
+
+        return $projects;
     }
+
     public function getAllProjects(Request $request)
     {
         $params = $request->input('searchForm');
-        $projects=$this->allProjects($params);
+        $projects = $this->allProjects($params);
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
@@ -295,6 +303,7 @@ class ProjectController extends Controller
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
         }
+
         return response()->json(['result' => $projects], 200);
     }
 
@@ -327,12 +336,20 @@ class ProjectController extends Controller
         $data = [];
         foreach ($projectPlans as $k => $row) {
             $data[$k]['date'] = $row['date'];
-            $data[$k]['amount'] = $status === 'preview' ? number_format($row['amount'], 2) : (float)$row['amount'];
+            if ($status === 'preview') {
+                $data[$k]['amount'] = isset($row['amount']) ? number_format($row['amount'], 2) : null;
+            } else {
+                $data[$k]['amount'] = isset($row['amount']) ? (float)$row['amount'] : null;
+            }
             $data[$k]['image_progress'] = $row['image_progress'];
             $monthPlan = ProjectPlan::where('parent_id', $row['id'])->get()->toArray();
             foreach ($monthPlan as $key => $v) {
                 $data[$k]['month'][$key]['date'] = $v['date'];
-                $data[$k]['month'][$key]['amount'] = $status === 'preview' ? number_format($v['amount'], 2) : (float)$v['amount'];
+                if ($status === 'preview') {
+                    $data[$k]['month'][$key]['amount'] = isset($v['amount']) ? number_format($v['amount'], 2) : null;
+                } else {
+                    $data[$k]['month'][$key]['amount'] = isset($v['amount']) ? (float)$v['amount'] : null;
+                }
                 $data[$k]['month'][$key]['image_progress'] = $v['image_progress'];
             }
         }
@@ -523,10 +540,10 @@ class ProjectController extends Controller
     public function uploadPic(Request $request)
     {
         $params = $request->all();
-        $project_title=Projects::where('id',$params['project_id'])->value('title');
+        $project_title = Projects::where('id', $params['project_id'])->value('title');
         $suffix = $params['img_pic']->getClientOriginalExtension();
         $path = Storage::putFileAs(
-            'public/project/project-schedule/'.$project_title.'/' . $params['month'],
+            'public/project/project-schedule/' . $project_title . '/' . $params['month'],
             $request->file('img_pic'),
             rand(1000000, time()) . '_' . $params['project_num'] . '.' . $suffix
         );
@@ -673,8 +690,8 @@ class ProjectController extends Controller
             $warData = [];
             if ($plans_amount) {
                 $Percentage = ($plans_amount - $projects['month_act_complete']) / $plans_amount;
-                if($Percentage > 0){
-                    if ($Percentage <= 0.1&&$Percentage > 0) {
+                if ($Percentage > 0) {
+                    if ($Percentage <= 0.1 && $Percentage > 0) {
                         $warData['warning_type'] = 0;
                     } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
                         $warData['warning_type'] = 1;
@@ -734,7 +751,17 @@ class ProjectController extends Controller
     public function auditProject(Request $request)
     {
         $data = $request->input('params');
-        $result = Projects::where('id', $data['id'])->update(['is_audit' => $data['status'], 'reason' => $data['reason']]);
+        $audited = Projects::where('id', $data['id'])->first()->audited;
+        if ($audited !== 1) {
+            if ($data['status'] === 1) {
+                $audited = 1;
+            }
+        }
+        $result = Projects::where('id', $data['id'])->update([
+            'is_audit' => $data['status'],
+            'reason' => $data['reason'],
+            'audited' => $audited
+        ]);
 
         $result = $result || $result >= 0;
 
@@ -809,7 +836,7 @@ class ProjectController extends Controller
     public function getProjectNoScheduleList()
     {
         $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->pluck('project_id')->toArray();
-        $result = Projects::whereNotIn('id', $Project_id)->where('is_audit',1)->get()->toArray();
+        $result = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->get()->toArray();
         foreach ($result as $k => $val) {
             $users = User::select('username', 'phone')->where('id', $val['user_id'])->get()->toArray();
             $result[$k]['username'] = $users[0]['username'];
@@ -826,17 +853,18 @@ class ProjectController extends Controller
     public function projectScheduleMonth(Request $request)
     {
         $params = $request->input();
-        if(isset($params['project'])){
+        if (isset($params['project'])) {
             $month = ProjectSchedule::where('month', '=', date('Y-m'))
-            ->where('project_id', $params['project'])
-            ->value('month');
+                ->where('project_id', $params['project'])
+                ->value('month');
             $result = $month ? true : false;
-        }else{
+        } else {
             $result = false;
         }
         return response()->json(['result' => $result], 200);
     }
-    /** 
+
+    /**
      * 通知信息，获取未审核的填报信息和项目信息
      *
      * @return JsonResponse
@@ -845,12 +873,6 @@ class ProjectController extends Controller
     {
         $projectsQuery = new Projects();
         $scheduleQuery = new ProjectSchedule();
-        // if ($this->office === 1) {
-        //     $query = $query->where('is_audit', '!=', 4);
-        // }
-        // if ($this->office === 2) {
-        //     $query = $query->where('is_audit', 1);
-        // }
 
         $data['projects'] = $projectsQuery->whereIn('user_id', $this->seeIds)->where('is_audit', 0)->count();
         $data['schedule'] = $scheduleQuery->whereIn('user_id', $this->seeIds)->where('is_audit', 0)->count();
@@ -869,8 +891,9 @@ class ProjectController extends Controller
         $id = $request->input('id');
         if ($id) {
             $is_audit = Projects::where('id', $id)->value('is_audit');
-            if ($is_audit === 4) {
+            if ($is_audit === 4 || $is_audit === 2) {
                 $result = Projects::where('id', $id)->delete();
+                $planRes = ProjectPlan::where('project_id', $id)->delete();
                 $result = $result ? true : false;
             } else {
                 $result = false;
