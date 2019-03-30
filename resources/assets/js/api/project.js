@@ -354,3 +354,15 @@ export function projectScheduleDelete(form) {
   });
 }
 
+/**
+ * 转坐标
+ * @returns {*}
+ */
+export function locationPosition(position) {
+  return request({
+    url: '/api/project/locationPosition',
+    method: 'post',
+    data: {position}
+  });
+}
+

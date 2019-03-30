@@ -435,7 +435,7 @@ class LedgerController extends Controller
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+3] . $num, $data[$i]['plan_build_start_at']);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+4] . $num, $data[$i]['exp_preforma']);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+5] . $num, $money_from[$data[$i]['money_from']]['title']);
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+6] . $num, $data[$i]['month']);
+            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+6] . $num, $data[$i]['project_title']);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+7] . $num, $data[$i]['marker']);
             $num++;
         }

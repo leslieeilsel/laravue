@@ -936,5 +936,35 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
-
+    /**
+     * 转百度坐标
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function locationPosition(Request $request)
+    {
+        $position = $request->input('position');
+        $center_url ='http://api.map.baidu.com/geoconv/v1/?coords='.$position['center'].'&from=1&to=5&ak=ULD7Bs841R1vy18i61u2CnCRP65wlKRv';
+        $center_data = file_get_contents($center_url);
+        $center_data = str_replace('renderOption&&renderOption(', '', $center_data);
+        $center_data = str_replace(')', '', $center_data);
+        $positions_url ='http://api.map.baidu.com/geoconv/v1/?coords='.$position['positions'].'&from=1&to=5&ak=ULD7Bs841R1vy18i61u2CnCRP65wlKRv';
+        $positions_data = file_get_contents($positions_url);
+        $positions_data = str_replace('renderOption&&renderOption(', '', $positions_data);
+        $positions_data = str_replace(')', '', $positions_data);
+        $data['center'] = json_decode($center_data,true);
+        $data['positions'] = json_decode($positions_data,true);
+        $result=[];
+        foreach($data['center']['result'] as $k=>$v){
+            $result['center'][$k]['lng']=$v['x'];
+            $result['center'][$k]['lat']=$v['y'];
+        }
+        foreach($data['positions']['result'] as $k=>$v){
+            $result['positions'][$k]['lng']=$v['x'];
+            $result['positions'][$k]['lat']=$v['y'];
+        }
+        return response()->json(['result' => $result], 200);
+    }
+    
 }

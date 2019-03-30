@@ -68,6 +68,8 @@ Route::post('project/projectScheduleMonth', 'Project\ProjectController@projectSc
 Route::post('project/noAudit', 'Project\ProjectController@noAudit');
 Route::post('project/projectDelete', 'Project\ProjectController@projectDelete');
 Route::post('project/projectScheduleDelete', 'Project\ProjectController@projectScheduleDelete');
+Route::post('project/locationPosition', 'Project\ProjectController@locationPosition');
+
 // 添加台账导出
 Route::get('project/exportSchedule', 'Project\LedgerController@exportSchedule');
 Route::get('project/exportLedger', 'Project\LedgerController@export');
