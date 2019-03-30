@@ -64,7 +64,7 @@
       </Form>
     </Row>
     <p class="btnGroup">
-      <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">添加项目</Button>
+      <Button type="primary" @click="addProject" icon="md-add" v-if="isShowButton">添加项目</Button>
       <Button class="exportReport" @click="exportSchedule" v-if="showExportButton" type="primary"
               :disabled="exportBtnDisable" icon="md-cloud-upload">
         导出项目
@@ -216,7 +216,7 @@
             </FormItem>
           </Col>
         </Row>
-        <Divider><h4>项目投资计划</h4></Divider>
+        <Divider  :style="planDisplay"><h4>项目投资计划</h4></Divider>
         <div v-for="(item, index_t) in form.projectPlan">
           <Divider orientation="left"><h5 style="color: #2d8cf0;">{{item.date}}年项目投资计划</h5></Divider>
           <Row>
@@ -679,6 +679,7 @@
         btnDisable: true,
         exportBtnDisable: true,
         editFormLoading: false,
+        planDisplay:'display:none',
         reasonForm: {
           reason: ''
         },
@@ -1088,6 +1089,9 @@
         };
         this.pageCurrent = 1;
         this.getProject();
+      },addProject(){
+        this.modal=true;
+        this.form.projectPlan = '';
       },
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
@@ -1100,6 +1104,8 @@
                 this.modal = false;
                 this.$refs['formValidate'].resetFields();
                 this.getProject();
+                this.planDisplay='display:none',
+                this.form.projectPlan = '';
               } else {
                 this.$Message.error('添加失败!');
               }
@@ -1166,6 +1172,7 @@
                     row.placeholder = '非必填';
                   }
                 });
+                this.planDisplay='display:block',
                 this.form.projectPlan = res.result;
               }
             });
