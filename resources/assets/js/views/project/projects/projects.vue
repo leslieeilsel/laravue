@@ -129,14 +129,14 @@
           </Col>
           <Col span="12">
             <FormItem label="项目金额(万元)" prop="amount">
-              <InputNumber :min="1" :step="1.2" v-model="form.amount" placeholder="必填项"></InputNumber>
+              <InputNumber :min="0" :step="1.2" v-model="form.amount" placeholder="必填项"></InputNumber>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12" v-if="showLandMoney">
             <FormItem label="土地费用(万元)" prop="land_amount">
-              <InputNumber :min="1" :step="1.2" v-model="form.land_amount" placeholder=""></InputNumber>
+              <InputNumber :min="0" :step="1.2" v-model="form.land_amount" placeholder=""></InputNumber>
             </FormItem>
           </Col>
           <Col span="12">
@@ -219,7 +219,7 @@
                 label="计划投资金额（万元）"
                 :prop="'projectPlan.' + index_t + '.amount'"
                 :rules="item.role">
-                <InputNumber :min="1" :step="1.2" v-model="item.amount" :placeholder="item.placeholder"></InputNumber>
+                <InputNumber :min="0" :step="1.2" v-model="item.amount" :placeholder="item.placeholder"></InputNumber>
               </FormItem>
             </Col>
             <Col span="12">
@@ -249,7 +249,7 @@
                       <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
                     </Col>
                     <Col span="8">
-                      <InputNumber :min="1" :step="1.2" v-model="ite.amount" @on-blur="totalAmount(index_t,index)"
+                      <InputNumber :min="0" :step="1.2" v-model="ite.amount" @on-blur="totalAmount(index_t,index)"
                                    placeholder=""
                                    class="monthInput"></InputNumber>
                     </Col>
@@ -332,7 +332,7 @@
           </Col>
           <Col span="12">
             <FormItem label="项目金额(万元)" prop="amount">
-              <InputNumber :min="1" :step="1.2" v-model="editForm.amount" placeholder=""
+              <InputNumber :min="0" :step="1.2" v-model="editForm.amount" placeholder=""
                            v-bind:disabled="isAdjustReadOnly">
               </InputNumber>
             </FormItem>
@@ -341,7 +341,7 @@
         <Row>
           <Col span="12" v-if="showLandMoney">
             <FormItem label="土地费用(万元)" prop="land_amount">
-              <InputNumber :step="1.2" :min="1" v-model="editForm.land_amount" placeholder=""
+              <InputNumber :step="1.2" :min="0" v-model="editForm.land_amount" placeholder=""
                            v-bind:disabled="isAdjustReadOnly">
               </InputNumber>
             </FormItem>
@@ -436,7 +436,7 @@
                 <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
               </Col>
               <Col span="8">
-                <InputNumber :min="1" :step="1.2" v-model="ite.amount" @on-blur="totalAmountE(index_t,index)"
+                <InputNumber :min="0" :step="1.2" v-model="ite.amount" @on-blur="totalAmountE(index_t,index)"
                              placeholder="" class="monthInput"></InputNumber>
               </Col>
               <Col span="8">
@@ -1092,7 +1092,8 @@
               if (e.result) {
                 this.$Message.success('添加成功!');
                 this.modal = false;
-                this.init();
+                this.$refs['formValidate'].resetFields();
+                this.getProject();
               } else {
                 this.$Message.error('添加失败!');
               }
@@ -1136,7 +1137,7 @@
         this.form.positions[index].status = 0;
       },
       cancel() {
-        this.$refs.formValidate.resetFields();
+        this.$refs['formValidate'].resetFields();
       },
       cancelReasonForm() {
         this.$refs.reasonForm.resetFields();
@@ -1155,7 +1156,7 @@
                     row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
                     row.placeholder = '必填项';
                   } else {
-                    row.role = {};
+                    row.role = {required: false, type: 'number'};
                     row.placeholder = '非必填';
                   }
                 });

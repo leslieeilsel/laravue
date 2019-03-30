@@ -212,11 +212,14 @@
           {
             type: 'selection',
             width: 60,
+            fixed: 'left',
             align: 'center'
           },
           {
             title: '姓名',
             key: 'name',
+            width: 150,
+            fixed: 'left',
             render: (h, params) => {
               return h('div', [
                 h('Icon', {
@@ -230,37 +233,45 @@
           },
           {
             title: '用户名',
-            key: 'username'
+            key: 'username',
+            width: 130
           },
           {
             title: '所属部门',
-            key: 'department_title'
+            key: 'department_title',
+            width: 150
           },
           {
             title: '角色',
-            key: 'group'
+            key: 'group',
+            width: 150
           },
           {
             title: '职位',
-            key: 'office_name'
+            key: 'office_name',
+            width: 100
           },
           {
             title: '联系电话',
-            key: 'phone'
+            key: 'phone',
+            width: 150
           },
           {
             title: '邮箱',
-            key: 'email'
+            key: 'email',
+            width: 150
           },
           {
             title: '创建时间',
             key: 'created_at',
             sortable: true,
+            width: 150
           },
           {
             title: '最近登录时间',
             key: 'last_login',
             sortable: true,
+            width: 150
           },
           {
             title: '操作',
