@@ -37,7 +37,7 @@ class RegistController extends Controller
         if ($params['name']) {
             $query = $query->where('name', 'like', '%' . $params['name'] . '%');
         }
-        if ($params['group_id']) {
+        if ($params['group_id']&&$params['group_id']!=-1) {
             $query = $query->where('group_id', $params['group_id']);
         }
         $data = $query->get()->toArray();

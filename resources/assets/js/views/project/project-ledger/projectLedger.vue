@@ -17,24 +17,27 @@
         </Form-item>
         <Form-item label="项目名称" prop="project_id">
           <Select v-model="searchForm.project_id" style="width: 200px">
-            <Option value="0" key="0">全部</Option>
+            <Option value="-1" key="-1">全部</Option>
             <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
           </Select>
         </Form-item>
         <span v-if="drop">
           <FormItem label="资金来源">
             <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
+              <Option value="-1" key="-1">全部</Option>
               <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
             </Select>
           </FormItem>
           <FormItem label="项目标识" prop="is_gc">
             <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
                     placeholder="是否为国民经济计划">
+              <Option value="-1" key="-1">全部</Option>
               <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
             </Select>
           </FormItem>
           <FormItem label="国民经济计划分类" prop="nep_type">
             <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
+              <Option value="-1" key="-1">全部</Option>
               <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
             </Select>
           </FormItem>
@@ -178,19 +181,21 @@
         this.tableLoading = true;
         projectLedgerList(this.searchForm).then(res => {
           this.data = res.result;
-          //分页显示所有数据总数
-          this.dataCount = this.data.length;
-          //循环展示页面刚加载时需要的数据条数
-          this.nowData = [];
-          for (let i = 0; i < this.pageSize; i++) {
-            if (this.data[i]) {
-              this.nowData.push(this.data[i]);
+          if(this.data){
+            //分页显示所有数据总数
+            this.dataCount = this.data.length;
+            //循环展示页面刚加载时需要的数据条数
+            this.nowData = [];
+            for (let i = 0; i < this.pageSize; i++) {
+              if (this.data[i]) {
+                this.nowData.push(this.data[i]);
+              }
             }
-          }
-          this.pageCurrent = 1;
-          if (res.result) {
-            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.search_project_id || this.searchForm.start_at || this.searchForm.end_at) {
-              this.btnDisable = false;
+            this.pageCurrent = 1;
+            if (res.result) {
+              if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.search_project_id || this.searchForm.start_at || this.searchForm.end_at) {
+                this.btnDisable = false;
+              }
             }
           }
           this.tableLoading = false;

@@ -17,32 +17,38 @@
           </Form-item>
           <FormItem label="项目类型" prop="type">
             <Select v-model="searchForm.type" style="width: 200px">
+              <Option value='-1' key='-1'>全部</Option>
               <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
             </Select>
           </FormItem>
           <FormItem label="建设性质" prop="build_type">
             <Select v-model="searchForm.build_type" style="width: 200px" filterable>
+              <Option value='-1' key='-1'>全部</Option>
               <Option v-for="item in dict.build_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
             </Select>
           </FormItem>
           <FormItem label="资金来源">
             <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
+              <Option value='-1' key='-1'>全部</Option>
               <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
             </Select>
           </FormItem>
           <FormItem label="项目标识" prop="is_gc">
             <Select @on-change="onSearchIsGcChange" v-model="searchForm.is_gc" style="width: 200px"
                     placeholder="是否为国民经济计划">
+              <Option value='-1' key='-1'>全部</Option>
               <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
             </Select>
           </FormItem>
           <FormItem label="国民经济计划分类" prop="nep_type">
             <Select v-model="searchForm.nep_type" style="width: 200px" :disabled="searchNepDisabled">
+              <Option value='-1' key='-1'>全部</Option>
               <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
             </Select>
           </FormItem>
           <FormItem label="项目状态" prop="status">
             <Select v-model="searchForm.status" style="width: 200px">
+              <Option value='-1' key='-1'>全部</Option>
               <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
             </Select>
           </FormItem>

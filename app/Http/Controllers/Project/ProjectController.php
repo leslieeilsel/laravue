@@ -255,22 +255,34 @@ class ProjectController extends Controller
             $query = $query->where('num', $params['num']);
         }
         if (isset($params['type'])) {
-            $query = $query->where('type', $params['type']);
+            if($params['type']!=-1){
+                $query = $query->where('type', $params['type']);
+            }
         }
         if (isset($params['build_type'])) {
-            $query = $query->where('build_type', $params['build_type']);
+            if($params['build_type']!=-1){
+                $query = $query->where('build_type', $params['build_type']);
+            }
         }
         if (isset($params['money_from'])) {
-            $query = $query->where('money_from', $params['money_from']);
+            if($params['money_from']!=-1){
+                $query = $query->where('money_from', $params['money_from']);
+            }
         }
         if (isset($params['is_gc'])) {
-            $query = $query->where('is_gc', $params['is_gc']);
+            if($params['is_gc']!=-1){
+                $query = $query->where('is_gc', $params['is_gc']);
+            }
         }
         if (isset($params['nep_type'])) {
-            $query = $query->where('nep_type', $params['nep_type']);
+            if($params['nep_type']!=-1){
+                $query = $query->where('nep_type', $params['nep_type']);
+            }
         }
         if (isset($params['status'])) {
-            $query = $query->where('status', $params['status']);
+            if($params['status']!=-1){
+                $query = $query->where('status', $params['status']);
+            }
         }
         if (isset($params['is_audit'])) {
             $query = $query->where('is_audit', 0);
@@ -368,7 +380,9 @@ class ProjectController extends Controller
 
         $earlyWarning = new ProjectEarlyWarning;
         if (isset($params['warning_type'])) {
-            $earlyWarning = $earlyWarning->where('warning_type', $params['warning_type']);
+            if($params['warning_type']!=-1){
+                $earlyWarning = $earlyWarning->where('warning_type', $params['warning_type']);
+            }
         }
         if (isset($params['start_at']) && isset($params['end_at'])) {
             $params['start_at'] = date('Y-m', strtotime($params['start_at']));
@@ -469,13 +483,19 @@ class ProjectController extends Controller
                 $projects = $projects->where('title', 'like', '%' . $data['title'] . '%');
             }
             if (isset($data['money_from'])) {
-                $projects = $projects->where('money_from', $data['money_from']);
+                if($data['money_from']!=-1){
+                    $projects = $projects->where('money_from', $data['money_from']);
+                }
             }
             if (isset($data['is_gc'])) {
-                $projects = $projects->where('is_gc', $data['is_gc']);
+                if($data['is_gc']!=-1){
+                    $projects = $projects->where('is_gc', $data['is_gc']);
+                }
             }
             if (isset($data['nep_type'])) {
-                $projects = $projects->where('nep_type', $data['nep_type']);
+                if($data['nep_type']!=-1){
+                    $projects = $projects->where('nep_type', $data['nep_type']);
+                }
             }
             $projects = $projects->get()->toArray();
             $ids = array_column($projects, 'id');

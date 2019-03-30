@@ -20,6 +20,7 @@
           <span v-if="drop">
             <Form-item label="角色" prop="group_id">
               <Select v-model="searchForm.group_id" aria-label="" style="width: 200px">
+                <Option value='-1' key='-1'>全部</Option>
                 <Option v-for="item in roleList" :value="item.id" :label="item.name" :key="item.id">
                   <span>{{ item.name }}</span>
                   <span style="float:right;padding-right:15px;color:#ccc">{{ item.description }}</span>

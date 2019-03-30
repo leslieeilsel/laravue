@@ -89,16 +89,24 @@ class LedgerController extends Controller
         if (isset($params['project_id'])||isset($params['money_from'])||isset($params['is_gc'])||isset($params['nep_type'])) {
             $projects = Projects::select('id');
             if(isset($params['project_id'])){
-                $projects = $projects->where('project_id', $params['project_id']);
+                if($params['project_id']!=-1){
+                    $projects = $projects->where('id', $params['project_id']);
+                }
             }
             if(isset($params['money_from'])){
-                $projects = $projects->where('money_from', $params['money_from']);
+                if($params['money_from']!=-1){
+                    $projects = $projects->where('money_from', $params['money_from']);
+                }
             }
             if(isset($params['is_gc'])){
-                $projects = $projects->where('is_gc', $params['is_gc']);
+                if($params['is_gc']!=-1){
+                    $projects = $projects->where('is_gc', $params['is_gc']);
+                }
             }
             if(isset($params['nep_type'])){
-                $projects = $projects->where('nep_type', $params['nep_type']);
+                if($params['nep_type']!=-1){
+                    $projects = $projects->where('nep_type', $params['nep_type']);
+                }
             }
             $projects=$projects->get()->toArray();
             $ids = array_column($projects, 'id');

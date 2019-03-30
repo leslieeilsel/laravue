@@ -18,6 +18,7 @@
       <Form ref="searchForm" :model="searchForm" inline :label-width="90" class="search-form">
         <Form-item label="预警类型" prop="warning_type">
           <Select v-model="searchForm.warning_type" style="width: 200px">
+            <Option value='-1' key='-1'>全部</Option>
             <Option v-for="item in warnings" :value="item.value" :key="item.value">{{ item.name }}</Option>
           </Select>
         </Form-item>
