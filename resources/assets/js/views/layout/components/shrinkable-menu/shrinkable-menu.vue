@@ -32,7 +32,7 @@
       // name 是路由名，此方法为子组件 emit 的方法
       handleChange(name) {
         if (name === 'dashboard') {
-          window.open('http://localhost:5788/dashboard', '_blank');
+          window.open('http://datav.aliyuncs.com/share/ab70533a98a16e5dd238d61f1ba0bf4c', '_blank');
           return;
         }
         let willpush = true;
