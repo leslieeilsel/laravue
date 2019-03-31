@@ -54,8 +54,8 @@ class buildProjectGeoJson extends Command
             foreach ($positionsArr as $kk => $vv) {
                 $ccc = explode(',', $vv);
                 $arr[] = [
-                    (float) $ccc[0],
-                    (float) $ccc[1]
+                    (float)$ccc[0],
+                    (float)$ccc[1],
                 ];
             }
 
@@ -70,8 +70,8 @@ class buildProjectGeoJson extends Command
             $properties['level'] = 'district';
             $centerPoint = explode(',', $v['center_point']);
             $properties['center'] = [
-                'lng' => (float) $centerPoint[0],
-                'lat' => (float) $centerPoint[1],
+                'lng' => (float)$centerPoint[0],
+                'lat' => (float)$centerPoint[1],
             ];
 
             $aaa['properties'] = $properties;
@@ -88,7 +88,8 @@ class buildProjectGeoJson extends Command
             $projectArr[] = $aaa;
             $dataArr[] = $data;
         }
-        $projectJson = json_encode($projectArr);
+
+        $projectJson = json_encode(['type' => 'FeatureCollection', 'features' => $projectArr]);
         $dataJson = json_encode($dataArr);
 
         Storage::put('public/jsonData/project.json', $projectJson);
