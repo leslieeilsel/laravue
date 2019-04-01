@@ -68,7 +68,7 @@
 </template>
 <script>
   import "./projectMap.css";
-  import {getAllProjects, getProjectDictData,locationPosition} from "../../../api/project";
+  import {getAllProjects, getProjectDictData, locationPosition} from "../../../api/project";
 
   export default {
     data() {
@@ -105,7 +105,7 @@
         drop: false,
         dropDownIcon: "ios-arrow-down",
         searchNepDisabled: true,
-        positionLocation:[]
+        positionLocation: []
       };
     },
     mounted() {
@@ -174,9 +174,9 @@
         let land1 = '108.65075810272602,34.253884846018397;108.65317565385077,34.2538601776954;108.65490195419373,34.25384494996136;108.65645485218207,34.25383309225574;108.65869692275283,34.25381951602986;108.66128301191745,34.25380889731351;108.66317811188914,34.2539469115916;108.66541644401764,34.25426555677064;108.6676098916012,34.25501439747912;108.66937261225819,34.255801100460327;108.67100524813083,34.256554241452139;108.67139177429735,34.256946871807418;108.67164918830761,34.25748061015674;108.67194901557493,34.25840484536985;108.67237792427385,34.25940085417373;108.67297738818206,34.26149843192042;108.67349087856495,34.263595236849379;108.67417567844918,34.26619045742864;108.6746031122294,34.26835767914859;108.67503087486931,34.27017062473115;108.67537254075266,34.27201833022626;108.67625189698082,34.272665324426849;108.67749539561297,34.27363625752621;108.67912500587893,34.27422292273896;108.67989698663101,34.274392568661109;108.68122595703709,34.27446338631358;108.68206184252534,34.274404128973319;108.6831117958405,34.274384158399389;108.68441867929914,34.2743689033108;108.68698890489263,34.27439301561791;108.6904143267239,34.274435716146339;108.69364590477615,34.27463765907251;108.69756173405503,34.27464067957214;108.70130660818947,34.27476456465688;108.70537328736129,34.274783370925607;108.71068422887352,34.274884792521479;108.71376992333924,34.27503172178947;108.71713653544495,34.2750681232647';
         let land2 = '108.68530948723714,34.29747387151788;108.68559131830416,34.256686851642758';
         let land3 = '108.673645,34.265121;108.717446,34.265696';
-        var polyline1 = new BMap.Polyline(land1, {strokeColor:"#f5e131", strokeWeight:5, strokeOpacity:0.8});   //创建折线
-        var polyline2 = new BMap.Polyline(land2, {strokeColor:"#f5e131", strokeWeight:5, strokeOpacity:0.8});   //创建折线
-        var polyline3 = new BMap.Polyline(land3, {strokeColor:"#f5e131", strokeWeight:5, strokeOpacity:0.8});   //创建折线
+        var polyline1 = new BMap.Polyline(land1, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline2 = new BMap.Polyline(land2, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline3 = new BMap.Polyline(land3, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
         map.addOverlay(polyline1);
         map.addOverlay(polyline2);
         map.addOverlay(polyline3);
@@ -228,10 +228,10 @@
             if (project.is_audit === 1 || project.is_audit === 3) {
               // 添加标注
               let center = project.center_point;
-              let positions = project.positions;
-              let marker;
-              locationPosition({center:center,positions:positions}).then(res=>{
-                marker = new BMap.Marker(new BMap.Point(res.result.center[0].lng, res.result.center[0].lat), {
+              if (center !== null) {
+                let centerArr = center.split(",");
+
+                let marker = new BMap.Marker(new BMap.Point(centerArr[0], centerArr[1]), {
                   // 指定Marker的icon属性为Symbol
                   icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
                     scale: 1.2,//图标缩放大小
@@ -241,53 +241,83 @@
                 });
                 points.push(marker.point);
                 map.addOverlay(marker);
-                //添加多边形
-                  let pointArr1 = [];
-                  res.result.positions.forEach(function (e, i) {                  
-                    pointArr1[i] = new BMap.Point(e.lng,e.lat);
-                  });
-                  let polygon = new BMap.Polygon(pointArr1, {
-                    strokeColor: "blue",
-                    strokeWeight: 2,
-                    strokeOpacity: 0.5
-                  });
-                  map.addOverlay(polygon);
-                // /
-                
-                // 添加label
-                var label = new BMap.Label(project.title, {
-                  offset: new BMap.Size(25, 3)
+              }
+              // 添加多边形
+              let positions = project.positions;
+              if (positions !== null) {
+                let positionsArr = positions.split(";");
+                let pointArr = [];
+                positionsArr.forEach(function (e, i) {
+                  let pArr = e.split(",");
+                  pointArr[i] = new BMap.Point(pArr[0], pArr[1]);
                 });
-                label.setStyle({
-                  border: "1px solid #2196F3"
+                let polygon = new BMap.Polygon(pointArr, {
+                  strokeColor: "blue",
+                  strokeWeight: 2,
+                  strokeOpacity: 0.5
                 });
-                marker.setLabel(label);
+                map.addOverlay(polygon);
+              }
+              // let center = project.center_point;
+              // let positions = project.positions;
+              // let marker;
+              // locationPosition({center:center,positions:positions}).then(res=>{
+              //   marker = new BMap.Marker(new BMap.Point(res.result.center[0].lng, res.result.center[0].lat), {
+              //     // 指定Marker的icon属性为Symbol
+              //     icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+              //       scale: 1.2,//图标缩放大小
+              //       fillColor: point_color,//填充颜色
+              //       fillOpacity: 1//填充透明度
+              //     })
+              //   });
+              //   points.push(marker.point);
+              //   map.addOverlay(marker);
+              //   //添加多边形
+              //     let pointArr1 = [];
+              //     res.result.positions.forEach(function (e, i) {
+              //       pointArr1[i] = new BMap.Point(e.lng,e.lat);
+              //     });
+              //     let polygon = new BMap.Polygon(pointArr1, {
+              //       strokeColor: "blue",
+              //       strokeWeight: 2,
+              //       strokeOpacity: 0.5
+              //     });
+              //     map.addOverlay(polygon);
 
-                  // 添加弹窗
-                let statusColor = '';
-                switch (project.status) {
-                  case '计划':
-                    statusColor = 'yellowcircle';
-                    break;
-                  case '在建':
-                    statusColor = 'greencircle';
-                    break;
-                  case '完成':
-                    statusColor = 'graycircle';
-                    break;
-                }
-                let description = project.description;
-                description = description === null ? '' : description;
-                description = description === undefined ? '' : description;
-                let sContent =
-                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目名称：" + project.title + "</h5>" +
-                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
-                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span><span class='project-status'>" + project.status + "</span></h5>" +
-                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
-                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：<span class='" + war_color + "'></span><span class='project-stage'>" + Percentage_con + "</span></h5>" +
-                  "<a href='/#/investment/projects'>查看详情</a>";
-                _this.addClickHandler(sContent, marker, map);
-              })
+              // 添加label
+              var label = new BMap.Label(project.title, {
+                offset: new BMap.Size(25, 3)
+              });
+              label.setStyle({
+                border: "1px solid #2196F3"
+              });
+              marker.setLabel(label);
+
+              // 添加弹窗
+              let statusColor = '';
+              switch (project.status) {
+                case '计划':
+                  statusColor = 'yellowcircle';
+                  break;
+                case '在建':
+                  statusColor = 'greencircle';
+                  break;
+                case '完成':
+                  statusColor = 'graycircle';
+                  break;
+              }
+              let description = project.description;
+              description = description === null ? '' : description;
+              description = description === undefined ? '' : description;
+              let sContent =
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目名称：" + project.title + "</h5>" +
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span><span class='project-status'>" + project.status + "</span></h5>" +
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
+                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：<span class='" + war_color + "'></span><span class='project-stage'>" + Percentage_con + "</span></h5>" +
+                "<a href='/#/investment/projects'>查看详情</a>";
+              _this.addClickHandler(sContent, marker, map);
+              // })
             }
           });
           this.setZoom(points, map);
