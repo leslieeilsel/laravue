@@ -241,10 +241,8 @@
                 });
                 points.push(marker.point);
                 map.addOverlay(marker);
-              }
-              // 添加多边形
-              let positions = project.positions;
-              if (positions !== null) {
+                // 添加多边形
+                let positions = project.positions;
                 let positionsArr = positions.split(";");
                 let pointArr = [];
                 positionsArr.forEach(function (e, i) {
@@ -257,66 +255,66 @@
                   strokeOpacity: 0.5
                 });
                 map.addOverlay(polygon);
-              }
-              // let center = project.center_point;
-              // let positions = project.positions;
-              // let marker;
-              // locationPosition({center:center,positions:positions}).then(res=>{
-              //   marker = new BMap.Marker(new BMap.Point(res.result.center[0].lng, res.result.center[0].lat), {
-              //     // 指定Marker的icon属性为Symbol
-              //     icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
-              //       scale: 1.2,//图标缩放大小
-              //       fillColor: point_color,//填充颜色
-              //       fillOpacity: 1//填充透明度
-              //     })
-              //   });
-              //   points.push(marker.point);
-              //   map.addOverlay(marker);
-              //   //添加多边形
-              //     let pointArr1 = [];
-              //     res.result.positions.forEach(function (e, i) {
-              //       pointArr1[i] = new BMap.Point(e.lng,e.lat);
-              //     });
-              //     let polygon = new BMap.Polygon(pointArr1, {
-              //       strokeColor: "blue",
-              //       strokeWeight: 2,
-              //       strokeOpacity: 0.5
-              //     });
-              //     map.addOverlay(polygon);
+                // let center = project.center_point;
+                // let positions = project.positions;
+                // let marker;
+                // locationPosition({center:center,positions:positions}).then(res=>{
+                //   marker = new BMap.Marker(new BMap.Point(res.result.center[0].lng, res.result.center[0].lat), {
+                //     // 指定Marker的icon属性为Symbol
+                //     icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
+                //       scale: 1.2,//图标缩放大小
+                //       fillColor: point_color,//填充颜色
+                //       fillOpacity: 1//填充透明度
+                //     })
+                //   });
+                //   points.push(marker.point);
+                //   map.addOverlay(marker);
+                //   //添加多边形
+                //     let pointArr1 = [];
+                //     res.result.positions.forEach(function (e, i) {
+                //       pointArr1[i] = new BMap.Point(e.lng,e.lat);
+                //     });
+                //     let polygon = new BMap.Polygon(pointArr1, {
+                //       strokeColor: "blue",
+                //       strokeWeight: 2,
+                //       strokeOpacity: 0.5
+                //     });
+                //     map.addOverlay(polygon);
 
-              // 添加label
-              var label = new BMap.Label(project.title, {
-                offset: new BMap.Size(25, 3)
-              });
-              label.setStyle({
-                border: "1px solid #2196F3"
-              });
-              marker.setLabel(label);
+                // 添加label
+                let label = new BMap.Label(project.title, {
+                  offset: new BMap.Size(25, 3)
+                });
+                label.setStyle({
+                  border: "1px solid #2196F3"
+                });
+                marker.setLabel(label);
 
-              // 添加弹窗
-              let statusColor = '';
-              switch (project.status) {
-                case '计划':
-                  statusColor = 'yellowcircle';
-                  break;
-                case '在建':
-                  statusColor = 'greencircle';
-                  break;
-                case '完成':
-                  statusColor = 'graycircle';
-                  break;
+                // 添加弹窗
+                let statusColor = '';
+                switch (project.status) {
+                  case '计划':
+                    statusColor = 'yellowcircle';
+                    break;
+                  case '在建':
+                    statusColor = 'greencircle';
+                    break;
+                  case '完成':
+                    statusColor = 'graycircle';
+                    break;
+                }
+                let description = project.description;
+                description = description === null ? '' : description;
+                description = description === undefined ? '' : description;
+                let sContent =
+                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目名称：" + project.title + "</h5>" +
+                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
+                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span><span class='project-status'>" + project.status + "</span></h5>" +
+                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
+                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：计划完成:1000万,累计额完成:350万,完成比:35%</h5>" +
+                  "<a href='/#/investment/projects'>查看详情</a>";
+                _this.addClickHandler(sContent, marker, map);
               }
-              let description = project.description;
-              description = description === null ? '' : description;
-              description = description === undefined ? '' : description;
-              let sContent =
-                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目名称：" + project.title + "</h5>" +
-                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
-                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span><span class='project-status'>" + project.status + "</span></h5>" +
-                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
-                "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：<span class='" + war_color + "'></span><span class='project-stage'>" + Percentage_con + "</span></h5>" +
-                "<a href='/#/investment/projects'>查看详情</a>";
-              _this.addClickHandler(sContent, marker, map);
               // })
             }
           });
