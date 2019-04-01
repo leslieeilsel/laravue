@@ -216,7 +216,7 @@
             </FormItem>
           </Col>
         </Row>
-        <Divider  :style="planDisplay"><h4>项目投资计划</h4></Divider>
+        <Divider v-if="planDisplay"><h4>项目投资计划</h4></Divider>
         <div v-for="(item, index_t) in form.projectPlan">
           <Divider orientation="left"><h5 style="color: #2d8cf0;">{{item.date}}年项目投资计划</h5></Divider>
           <Row>
@@ -679,7 +679,7 @@
         btnDisable: true,
         exportBtnDisable: true,
         editFormLoading: false,
-        planDisplay:'display:none',
+        planDisplay: false,
         reasonForm: {
           reason: ''
         },
@@ -822,7 +822,7 @@
               let editButton;
               editButton = this.office === 0 ? !(params.row.is_audit === 3 || params.row.is_audit === 2 || params.row.is_audit === 4) : this.office === 1;
               let delButton;
-              delButton = this.office === 0 ? !((params.row.is_audit === 2 || params.row.is_audit === 4) && params.row.audited === null)  : true;
+              delButton = this.office === 0 ? !((params.row.is_audit === 2 || params.row.is_audit === 4) && params.row.audited === null) : true;
               return h('div', [
                 h('Button', {
                   props: {
@@ -1089,8 +1089,10 @@
         };
         this.pageCurrent = 1;
         this.getProject();
-      },addProject(){
-        this.modal=true;
+      },
+      addProject() {
+        this.planDisplay = false;
+        this.modal = true;
         this.form.projectPlan = '';
       },
       handleSubmit(name) {
@@ -1103,9 +1105,9 @@
                 this.$Message.success('添加成功!');
                 this.modal = false;
                 this.$refs['formValidate'].resetFields();
-                this.getProject();
-                this.planDisplay='display:none',
+                this.planDisplay = false;
                 this.form.projectPlan = '';
+                this.getProject();
               } else {
                 this.$Message.error('添加失败!');
               }
@@ -1135,6 +1137,8 @@
         })
       },
       handleReset(name) {
+        this.form.projectPlan = '';
+        this.planDisplay = false;
         this.$refs[name].resetFields();
       },
       handleAdd() {
@@ -1172,8 +1176,8 @@
                     row.placeholder = '非必填';
                   }
                 });
-                this.planDisplay='display:block',
-                this.form.projectPlan = res.result;
+                this.planDisplay = true;
+                  this.form.projectPlan = res.result;
               }
             });
           } else {
