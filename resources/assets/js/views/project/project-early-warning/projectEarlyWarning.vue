@@ -2,15 +2,15 @@
   <Card>
     <Alert type="warning" class="description">
       <Row>
-        <Button type="success" size="small">已经超额</Button>
+        <Button type="success" size="small">已经滞后</Button>
         <span>：相比预期延缓<10%</span>
       </Row>
       <Row>
-        <Button type="warning" size="small">警告超额</Button>
+        <Button type="warning" size="small">警告滞后</Button>
         <span>：相比预期延缓10% ~ 20%</span>
       </Row>
       <Row>
-        <Button type="error" size="small">严重超额</Button>
+        <Button type="error" size="small">严重滞后</Button>
         <span>：相比预期延缓>20%</span>
       </Row>
     </Alert>
