@@ -252,7 +252,8 @@
                 let polygon = new BMap.Polygon(pointArr, {
                   strokeColor: "blue",
                   strokeWeight: 2,
-                  strokeOpacity: 0.5
+                  strokeOpacity: 0.5,
+                  fillColor: ''
                 });
                 map.addOverlay(polygon);
                 // let center = project.center_point;

@@ -395,7 +395,7 @@
             <Input v-model="editForm.center_point" placeholder="" v-bind:disabled="isAdjustReadOnly"/>
           </FormItem>
           <FormItem label="项目轮廓点坐标" prop="positions">
-            <Input v-model="editForm.positions" placeholder="必填项" disabled/>
+            <Input v-model="editForm.positions" placeholder="" disabled/>
           </FormItem>
         </Row>
         <Row>
