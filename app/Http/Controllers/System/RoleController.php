@@ -20,17 +20,23 @@ class RoleController
     public function add(Request $request)
     {
         $data = $request->input();
+        $data['data_type'] = 0;
         $data['created_at'] = date('Y-m-d H:i:s');
-        $id = DB::table('ibiart_slms_roles')->insertGetId($data);
 
-        $result = $id ? Role::where('id', '!=', $id)->update(['is_default' => 0]) : false;
+        if ($data['is_default'] === 1) {
+            $roles = Role::all()->toArray();
+            $ids = array_column($roles, 'id');
+            Role::whereIn('id' , $ids)->update(['is_default' => 0]);
+        }
+
+        $result = Role::insert($data);
 
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '创建角色');
         }
 
-        return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
+        return response()->json(['result' => $result], 200);
     }
 
     /**
