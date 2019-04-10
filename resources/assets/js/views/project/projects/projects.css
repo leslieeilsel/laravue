@@ -34,3 +34,6 @@
 .page {
     margin-top: 2vh;
 }
+.ivu-modal-fullscreen .ivu-modal-body {
+    padding: 0;
+}

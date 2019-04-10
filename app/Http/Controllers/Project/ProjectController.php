@@ -91,7 +91,8 @@ class ProjectController extends Controller
         $data = $request->input();
         $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
         $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
-        $data['positions'] = self::buildPositions($data['positions']);
+        $data['center_point'] = json_encode($data['center_point']);
+        $data['positions'] = json_encode($data['positions']);
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['is_audit'] = 4;
         $data['user_id'] = Auth::id();
