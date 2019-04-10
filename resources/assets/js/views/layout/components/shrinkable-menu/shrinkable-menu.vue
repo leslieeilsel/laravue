@@ -35,6 +35,10 @@
           window.open('http://datav.aliyuncs.com/share/ab70533a98a16e5dd238d61f1ba0bf4c', '_blank');
           return;
         }
+        if (name === 'daping2') {
+          window.open('http://datav.aliyuncs.com/share/c7cb48e836718ed3b53fc7df75386bb6?nsukey=aYxkMKmdCOLxZch0nzmfjHpmeNiLr%2FEASjFKDlwoT9RgL8MKOWYwHyVkPKPAZkXNH7bIPLI8kCOXhjNQNAsY%2FunfDQeVQTy68bpgZQYj%2BHTlcqyexldNEq4HEHlBymYW7taajlJE8MhDVLGA7FSRYrXiLCq%2BQ91L9NH4eU2YIwOnq0O', '_blank');
+          return;
+        }
         let willpush = true;
         if (this.beforePush !== undefined) {
           if (!this.beforePush(name)) {

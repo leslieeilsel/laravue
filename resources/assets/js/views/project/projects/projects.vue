@@ -1154,6 +1154,7 @@
         });
       },
       chooseArea() {
+        $("#map").empty();
         this.modal11 = true;
         console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
@@ -1223,6 +1224,8 @@
               this.$Message.success('地图绘制成功!');
               this.editDisabled = false;
               this.addDisabled = true;
+              this.map = {};
+              this.drawingManager = {};
             }
           }
         }
