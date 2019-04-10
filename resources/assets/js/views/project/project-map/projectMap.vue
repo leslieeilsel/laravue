@@ -160,7 +160,7 @@
       },
       createMap() {
         // enableMapClick: false 构造底图时，关闭底图可点功能
-        let map = new BMap.Map("map", {enableMapClick: false});
+        let map = new BMap.Map("map", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
         map.centerAndZoom(new BMap.Point(108.720027, 34.298497), 15);
         map.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
         map.addControl(new BMap.NavigationControl());
@@ -174,12 +174,148 @@
         let land1 = '108.65075810272602,34.253884846018397;108.65317565385077,34.2538601776954;108.65490195419373,34.25384494996136;108.65645485218207,34.25383309225574;108.65869692275283,34.25381951602986;108.66128301191745,34.25380889731351;108.66317811188914,34.2539469115916;108.66541644401764,34.25426555677064;108.6676098916012,34.25501439747912;108.66937261225819,34.255801100460327;108.67100524813083,34.256554241452139;108.67139177429735,34.256946871807418;108.67164918830761,34.25748061015674;108.67194901557493,34.25840484536985;108.67237792427385,34.25940085417373;108.67297738818206,34.26149843192042;108.67349087856495,34.263595236849379;108.67417567844918,34.26619045742864;108.6746031122294,34.26835767914859;108.67503087486931,34.27017062473115;108.67537254075266,34.27201833022626;108.67625189698082,34.272665324426849;108.67749539561297,34.27363625752621;108.67912500587893,34.27422292273896;108.67989698663101,34.274392568661109;108.68122595703709,34.27446338631358;108.68206184252534,34.274404128973319;108.6831117958405,34.274384158399389;108.68441867929914,34.2743689033108;108.68698890489263,34.27439301561791;108.6904143267239,34.274435716146339;108.69364590477615,34.27463765907251;108.69756173405503,34.27464067957214;108.70130660818947,34.27476456465688;108.70537328736129,34.274783370925607;108.71068422887352,34.274884792521479;108.71376992333924,34.27503172178947;108.71713653544495,34.2750681232647';
         let land2 = '108.68530948723714,34.29747387151788;108.68559131830416,34.256686851642758';
         let land3 = '108.673645,34.265121;108.717446,34.265696';
+        // 咸户路
+        let land4 = '108.685496,34.295336;108.685568,34.265149;108.685784,34.255542;108.686682,34.230385;108.686682,34.230385';
+        // 信息九路
+        let land5 = '108.688766,34.297036;108.688766,34.290236;108.688766,34.290266';
+        // 兴信路北段
+        let land6 = '108.691892,34.297751;108.691856,34.289967;108.691856,34.289967';
+        // 兴信路南段
+        let land7 = '108.691892,34.283316;108.692036,34.265269';
+        // 兴园路北段
+        let land8 = '108.695755,34.298944;108.695863,34.293367';
+        // 沣渭大道
+        let land9 = '108.70481,34.302687;108.706031,34.295649;108.706103,34.279662;108.706031,34.279603;108.706247,34.265582';
+        // 兴咸路
+        let land10 = '108.710631,34.303403;108.712068,34.295589;108.712355,34.265462';
+        // 秦皇大道
+        let land11 = '108.714655,34.312706;108.716236,34.304238;108.717386,34.295768;108.717745,34.265582';
+        // 同德路
+        let land12 = '108.718248,34.314376;108.721913,34.305073;108.723494,34.300778;108.724501,34.298751;108.724501,34.295649';
+        // 同文路
+        let land13 = '108.726728,34.317178;108.731974,34.297498;108.732046,34.295589';
+        // 白马河路
+        let land14 = '108.73625,34.318222;108.739628,34.307488;108.740634,34.303254;108.741137,34.295619';
+        // 同仁路
+        let land15 = '108.741757,34.31729;108.743841,34.307272';
+        // 韩非路
+        let land16 = '108.746608,34.316873;108.74862,34.306944';
+        // 沣柳路
+        let land17 = '108.751998,34.306735;108.751495,34.305125;108.751099,34.303813;108.751028,34.30256;108.751171,34.301278;108.751495,34.300145;108.752105,34.299041;108.753004,34.29758;108.753938,34.296327;108.754908,34.295015;108.755735,34.293852;108.75631,34.292868;108.756633,34.291973;108.756597,34.290959;108.756202,34.289587;108.755555,34.288782;108.755232,34.288275';
+        // 永平路
+        let land18 = '108.719731,34.310075;108.727923,34.312102;108.73784,34.313355;108.746177,34.312997;108.756381,34.312341';
+        // 统一路
+        let land19 = '108.704855,34.302739;108.739278,34.30757;108.754441,34.306616';
+        // 康定路
+        let land20 = '108.699465,34.299161;108.700327,34.299638;108.701261,34.299638;108.702052,34.299697;108.702627,34.299757;108.703777,34.299638;108.705142,34.299459;108.711251,34.299578;108.717072,34.300294;108.723683,34.301129;108.730726,34.301964;108.740499,34.303216;108.751351,34.304469';
+        // 尚业路
+        let land21 = '108.717503,34.29755;108.752932,34.297669';
+        // 沣景路
+        let land22 = '108.685667,34.295343;108.754082,34.29588';
+        // 创业路
+        let land23 = '108.717359,34.292957;108.680924,34.292361';
+        // 开元路
+        let land24 = '108.717251,34.290154;108.706112,34.290005';
+        // 天府路
+        let land25 = '108.717359,34.284726;108.706004,34.284726';
+        // 数据六路
+        let land26 = '108.717251,34.287261;108.709562,34.287201';
+        // 数据八路
+        let land27 = '108.717251,34.282802;108.712167,34.282742';
+        // 天雄西路
+        let land28 = '108.679109,34.279207;108.717341,34.279864';
+        // 天元路
+        let land29 = '108.678606,34.274315;108.717269,34.274614';
+        // 红光大道
+        let land30 = '108.685505,34.265186;108.717413,34.265783;108.732648,34.265544;108.740913,34.265544';
+        // 南洋大道
+        let land31 = '108.673504,34.264948;108.685721,34.265246';
+        // 科技路
+        let land32 = '108.685478,34.246158;108.697677,34.246262';
+        // 科创路
+        let land33 = '108.685285,34.248888;108.689327,34.24891';
+        // 新港桥
+        let land34 = '108.67544,34.272003;108.675835,34.272481;108.676302,34.272928;108.676805,34.273316;108.677452,34.273704;108.677955,34.273972;108.67853,34.274241;108.678638,34.27427';
+        // 学镇环路
+        let land35 = '108.675404,34.271944;108.673356,34.265022;108.672206,34.259652;108.671918,34.258608;108.671559,34.25813;108.6712,34.257623;108.670697,34.257235;108.670373,34.256907;108.669942,34.256609;108.669367,34.25631;108.668684,34.255982;108.668145,34.255833;108.667678,34.255743;108.662468,34.255654';
+        // 学镇东路
+        let land36 = '108.675332,34.271824;108.67199,34.274837';
+        // 临渭路
+        let land37 = '108.672727,34.273957;108.670176,34.271123;108.669457,34.270198;108.667157,34.268498;108.6613,34.265515;108.65839,34.263993';
         var polyline1 = new BMap.Polyline(land1, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
         var polyline2 = new BMap.Polyline(land2, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
         var polyline3 = new BMap.Polyline(land3, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline4 = new BMap.Polyline(land4, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline5 = new BMap.Polyline(land5, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline6 = new BMap.Polyline(land6, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline7 = new BMap.Polyline(land7, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline8 = new BMap.Polyline(land8, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline9 = new BMap.Polyline(land9, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline10 = new BMap.Polyline(land10, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline11 = new BMap.Polyline(land11, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline12 = new BMap.Polyline(land12, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline13 = new BMap.Polyline(land13, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline14 = new BMap.Polyline(land14, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline15 = new BMap.Polyline(land15, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline16 = new BMap.Polyline(land16, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline17 = new BMap.Polyline(land17, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline18 = new BMap.Polyline(land18, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline19 = new BMap.Polyline(land19, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline20 = new BMap.Polyline(land20, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline21 = new BMap.Polyline(land21, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline22 = new BMap.Polyline(land22, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline23 = new BMap.Polyline(land23, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline24 = new BMap.Polyline(land24, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline25 = new BMap.Polyline(land25, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline26 = new BMap.Polyline(land26, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline27 = new BMap.Polyline(land27, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline28 = new BMap.Polyline(land28, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline29 = new BMap.Polyline(land29, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline30 = new BMap.Polyline(land30, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline31 = new BMap.Polyline(land31, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline32 = new BMap.Polyline(land32, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline33 = new BMap.Polyline(land33, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline34 = new BMap.Polyline(land34, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline35 = new BMap.Polyline(land35, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline36 = new BMap.Polyline(land36, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
+        var polyline37 = new BMap.Polyline(land37, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
         map.addOverlay(polyline1);
         map.addOverlay(polyline2);
         map.addOverlay(polyline3);
+        map.addOverlay(polyline4);
+        map.addOverlay(polyline5);
+        map.addOverlay(polyline6);
+        map.addOverlay(polyline7);
+        map.addOverlay(polyline8);
+        map.addOverlay(polyline9);
+        map.addOverlay(polyline10);
+        map.addOverlay(polyline11);
+        map.addOverlay(polyline12);
+        map.addOverlay(polyline13);
+        map.addOverlay(polyline14);
+        map.addOverlay(polyline15);
+        map.addOverlay(polyline16);
+        map.addOverlay(polyline17);
+        map.addOverlay(polyline18);
+        map.addOverlay(polyline19);
+        map.addOverlay(polyline20);
+        map.addOverlay(polyline21);
+        map.addOverlay(polyline22);
+        map.addOverlay(polyline23);
+        map.addOverlay(polyline24);
+        map.addOverlay(polyline25);
+        map.addOverlay(polyline26);
+        map.addOverlay(polyline27);
+        map.addOverlay(polyline28);
+        map.addOverlay(polyline29);
+        map.addOverlay(polyline30);
+        map.addOverlay(polyline31);
+        map.addOverlay(polyline32);
+        map.addOverlay(polyline33);
+        map.addOverlay(polyline34);
+        map.addOverlay(polyline35);
+        map.addOverlay(polyline36);
+        map.addOverlay(polyline37);
 
         getAllProjects(this.searchForm).then(e => {
           let _this = this;
