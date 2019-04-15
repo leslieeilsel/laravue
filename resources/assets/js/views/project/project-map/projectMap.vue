@@ -170,10 +170,6 @@
         let ply = new BMap.Polygon(polygon, {strokeWeight: 3}); //建立多边形覆盖物
         ply.setFillOpacity(0.01);
         map.addOverlay(ply);  //添加覆盖物
-
-        // let land1 = '108.65075810272602,34.253884846018397;108.65317565385077,34.2538601776954;108.65490195419373,34.25384494996136;108.65645485218207,34.25383309225574;108.65869692275283,34.25381951602986;108.66128301191745,34.25380889731351;108.66317811188914,34.2539469115916;108.66541644401764,34.25426555677064;108.6676098916012,34.25501439747912;108.66937261225819,34.255801100460327;108.67100524813083,34.256554241452139;108.67139177429735,34.256946871807418;108.67164918830761,34.25748061015674;108.67194901557493,34.25840484536985;108.67237792427385,34.25940085417373;108.67297738818206,34.26149843192042;108.67349087856495,34.263595236849379;108.67417567844918,34.26619045742864;108.6746031122294,34.26835767914859;108.67503087486931,34.27017062473115;108.67537254075266,34.27201833022626;108.67625189698082,34.272665324426849;108.67749539561297,34.27363625752621;108.67912500587893,34.27422292273896;108.67989698663101,34.274392568661109;108.68122595703709,34.27446338631358;108.68206184252534,34.274404128973319;108.6831117958405,34.274384158399389;108.68441867929914,34.2743689033108;108.68698890489263,34.27439301561791;108.6904143267239,34.274435716146339;108.69364590477615,34.27463765907251;108.69756173405503,34.27464067957214;108.70130660818947,34.27476456465688;108.70537328736129,34.274783370925607;108.71068422887352,34.274884792521479;108.71376992333924,34.27503172178947;108.71713653544495,34.2750681232647';
-        // let land2 = '108.68530948723714,34.29747387151788;108.68559131830416,34.256686851642758';
-        // let land3 = '108.673645,34.265121;108.717446,34.265696';
         // 咸户路
         let land4 = '108.685496,34.295336;108.685568,34.265149;108.685784,34.255542;108.686682,34.230385;108.686682,34.230385';
         // 信息九路
@@ -242,46 +238,40 @@
         let land36 = '108.675332,34.271824;108.67199,34.274837';
         // 临渭路
         let land37 = '108.672727,34.273957;108.670176,34.271123;108.669457,34.270198;108.667157,34.268498;108.6613,34.265515;108.65839,34.263993';
-        // var polyline1 = new BMap.Polyline(land1, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        // var polyline2 = new BMap.Polyline(land2, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        // var polyline3 = new BMap.Polyline(land3, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline4 = new BMap.Polyline(land4, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline5 = new BMap.Polyline(land5, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline6 = new BMap.Polyline(land6, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline7 = new BMap.Polyline(land7, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline8 = new BMap.Polyline(land8, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline9 = new BMap.Polyline(land9, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline10 = new BMap.Polyline(land10, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline11 = new BMap.Polyline(land11, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline12 = new BMap.Polyline(land12, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline13 = new BMap.Polyline(land13, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline14 = new BMap.Polyline(land14, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline15 = new BMap.Polyline(land15, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline16 = new BMap.Polyline(land16, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline17 = new BMap.Polyline(land17, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline18 = new BMap.Polyline(land18, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline19 = new BMap.Polyline(land19, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline20 = new BMap.Polyline(land20, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline21 = new BMap.Polyline(land21, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline22 = new BMap.Polyline(land22, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline23 = new BMap.Polyline(land23, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline24 = new BMap.Polyline(land24, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline25 = new BMap.Polyline(land25, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline26 = new BMap.Polyline(land26, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline27 = new BMap.Polyline(land27, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline28 = new BMap.Polyline(land28, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline29 = new BMap.Polyline(land29, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline30 = new BMap.Polyline(land30, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline31 = new BMap.Polyline(land31, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline32 = new BMap.Polyline(land32, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline33 = new BMap.Polyline(land33, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline34 = new BMap.Polyline(land34, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline35 = new BMap.Polyline(land35, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline36 = new BMap.Polyline(land36, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        var polyline37 = new BMap.Polyline(land37, {strokeColor: "#f5e131", strokeWeight: 5, strokeOpacity: 0.8});   //创建折线
-        // map.addOverlay(polyline1);
-        // map.addOverlay(polyline2);
-        // map.addOverlay(polyline3);
+        var polyline4 = new BMap.Polyline(land4, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline5 = new BMap.Polyline(land5, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline6 = new BMap.Polyline(land6, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline7 = new BMap.Polyline(land7, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline8 = new BMap.Polyline(land8, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline9 = new BMap.Polyline(land9, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.55});   //创建折线
+        var polyline10 = new BMap.Polyline(land10, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline11 = new BMap.Polyline(land11, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline12 = new BMap.Polyline(land12, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline13 = new BMap.Polyline(land13, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline14 = new BMap.Polyline(land14, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline15 = new BMap.Polyline(land15, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline16 = new BMap.Polyline(land16, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline17 = new BMap.Polyline(land17, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline18 = new BMap.Polyline(land18, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline19 = new BMap.Polyline(land19, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline20 = new BMap.Polyline(land20, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline21 = new BMap.Polyline(land21, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline22 = new BMap.Polyline(land22, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline23 = new BMap.Polyline(land23, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline24 = new BMap.Polyline(land24, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline25 = new BMap.Polyline(land25, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline26 = new BMap.Polyline(land26, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline27 = new BMap.Polyline(land27, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline28 = new BMap.Polyline(land28, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline29 = new BMap.Polyline(land29, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline30 = new BMap.Polyline(land30, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline31 = new BMap.Polyline(land31, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline32 = new BMap.Polyline(land32, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline33 = new BMap.Polyline(land33, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline34 = new BMap.Polyline(land34, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline35 = new BMap.Polyline(land35, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline36 = new BMap.Polyline(land36, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
+        var polyline37 = new BMap.Polyline(land37, {strokeColor: "#f5e131", strokeWeight: 3, strokeOpacity: 0.5});   //创建折线
         map.addOverlay(polyline4);
         map.addOverlay(polyline5);
         map.addOverlay(polyline6);
