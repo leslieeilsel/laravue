@@ -113,6 +113,15 @@
     },
     methods: {
       init() {
+        // GET /someUrl
+        console.log(this)
+        this.$http.get('http://139.217.6.78:9000/assets/json/luwang.geo.json').then(response => {
+          // get body data
+          let someData = response.body;
+          console.log(someData)
+        }, response => {
+          // error callback
+        });
         console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
