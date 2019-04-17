@@ -246,9 +246,9 @@
               // 添加标注
               let center = project.center_point;
               if (center !== null) {
-                let centerArr = center.split(",");
+                let centerPoint = JSON.parse(center).coordinates;
 
-                let marker = new BMap.Marker(new BMap.Point(centerArr[0], centerArr[1]), {
+                let marker = new BMap.Marker(new BMap.Point(centerPoint.lng, centerPoint.lat), {
                   // 指定Marker的icon属性为Symbol
                   icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
                     scale: 1.2,//图标缩放大小
@@ -259,20 +259,32 @@
                 points.push(marker.point);
                 map.addOverlay(marker);
                 // 添加多边形
-                let positions = project.positions;
-                let positionsArr = positions.split(";");
-                let pointArr = [];
-                positionsArr.forEach(function (e, i) {
-                  let pArr = e.split(",");
-                  pointArr[i] = new BMap.Point(pArr[0], pArr[1]);
+                let positions = JSON.parse(project.positions);
+                positions.forEach(function (e) {
+                  let positionsPoints = e.coordinates;
+                  let pointArr = [];
+                  positionsPoints.forEach(function (el, i) {
+                    pointArr[i] = new BMap.Point(el.lng, el.lat);
+                  });
+                  if (e.drawingMode === 'polygon') {
+                    let polygon = new BMap.Polygon(pointArr, {
+                      strokeColor: "blue",
+                      strokeWeight: 2,
+                      strokeOpacity: 0.5,
+                      fillColor: ''
+                    });
+                    map.addOverlay(polygon);
+                  } else {
+                    let polyline = new BMap.Polygon(pointArr, {
+                      strokeColor: "blue",
+                      strokeWeight: 2,
+                      strokeOpacity: 0.5,
+                      fillColor: ''
+                    });
+                    map.addOverlay(polyline);
+                  }
+                  points.push.apply(points, pointArr);
                 });
-                let polygon = new BMap.Polygon(pointArr, {
-                  strokeColor: "blue",
-                  strokeWeight: 2,
-                  strokeOpacity: 0.5,
-                  fillColor: ''
-                });
-                map.addOverlay(polygon);
                 // let center = project.center_point;
                 // let positions = project.positions;
                 // let marker;
