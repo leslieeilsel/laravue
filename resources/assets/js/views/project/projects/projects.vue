@@ -195,7 +195,7 @@
                   <div id="addViewMap" style="height:300px;width:100%;"></div>
                 </Col>
                 <Col span="24">
-                  <Button type="primary" long icon="ios-create" style="margin-top: 10px;">修改</Button>
+                  <Button type="primary" @click="editArea" long icon="ios-create" style="margin-top: 10px;">修改</Button>
                 </Col>
               </Row>
             </FormItem>
@@ -420,12 +420,23 @@
           </Col>
         </Row>
         <Row>
-          <FormItem label="项目中心点坐标" prop="center_point">
-            <Input v-model="editForm.center_point" placeholder="" v-bind:disabled="isAdjustReadOnly"/>
-          </FormItem>
-          <FormItem label="项目轮廓点坐标" prop="positions">
-            <Input v-model="editForm.positions" placeholder="" disabled/>
-          </FormItem>
+          <Col span="24">
+            <FormItem label="项目地理位置">
+              <Row v-if="editAddMap">
+                <Col span="24">
+                  <Button type="info" long @click="chooseArea" icon="md-add">绘制地图</Button>
+                </Col>
+              </Row>
+              <Row v-if="editShowMap">
+                <Col span="24">
+                  <div id="editMap" style="height:300px;width:100%;"></div>
+                </Col>
+                <Col span="24">
+                  <Button type="primary" @click="" long icon="ios-create" style="margin-top: 10px;">修改</Button>
+                </Col>
+              </Row>
+            </FormItem>
+          </Col>
         </Row>
         <Row>
           <FormItem label="项目概况" prop="description">
@@ -904,6 +915,15 @@
                         this.isReadOnly = false;
                         this.openErrorAlert = (this.editForm.reason !== '' && this.editForm.is_audit === 2);
                         this.editModal = true;
+                        
+                        if (this.editForm.center_point && this.editForm.positions) {
+                          this.editAddMap = false;
+                          this.editShowMap = true;
+                          this.showEditArea();
+                        } else {
+                          this.editAddMap = true;
+                          this.editShowMap = false;
+                        }
                         // this.editFormLoading = false;
                       });
                     }
@@ -984,7 +1004,7 @@
           plan_end_at: '',
           center_point: {},
           description: '',
-          positions: {},
+          positions: [],
           projectPlan: [
             {
               date: '2019',
@@ -1048,6 +1068,9 @@
         map: {},
         addViewMap: {},
         addMap: true,
+        editViewMap: {},
+        editAddMap: false,
+        editShowMap: false,
         showMap: false,
         mapStyle: {
           height: '',
@@ -1222,6 +1245,96 @@
           }, 500);
         });
       },
+      showEditArea() {
+        $("#editMap").empty();
+        console.log("初始化百度地图脚本...");
+        const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
+        const apiVersion = "3.0";
+        const timestamp = new Date().getTime();
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        return new Promise((resolve, reject) => {
+          // 插入script脚本DrawingManager_min
+          let scriptNode = document.createElement("script");
+          scriptNode.setAttribute("type", "text/javascript");
+          scriptNode.setAttribute("src", BMap_URL);
+          document.body.appendChild(scriptNode);
+
+          // 等待页面加载完毕回调
+          let timeout = 0;
+          let interval = setInterval(() => {
+            // 超时10秒加载失败
+            if (timeout >= 20) {
+              reject();
+              clearInterval(interval);
+              console.error("百度地图脚本初始化失败...");
+              this.$Message.error('地图加载失败，请检查网络连接是否正常!');
+            }
+            // 加载成功
+            if (typeof BMap !== "undefined") {
+              resolve(BMap);
+              clearInterval(interval);
+              console.log("百度地图脚本初始化成功...");
+
+              this.editViewMap = new BMap.Map("editMap", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
+              this.editViewMap.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
+              this.editViewMap.addControl(new BMap.MapTypeControl({
+                type: BMAP_MAPTYPE_CONTROL_HORIZONTAL, // 按钮水平方式展示，默认采用此类型展示
+                mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP], // 控件展示的地图类型
+                anchor: BMAP_ANCHOR_BOTTOM_RIGHT
+              }));
+              this.clearAll();
+              let allPoints = [];
+              let markerPoints = JSON.parse(this.editForm.center_point).coordinates;
+              let mPoint = new BMap.Point(markerPoints.lng, markerPoints.lat);
+              let marker = new BMap.Marker((mPoint), {
+                strokeColor:"blue",
+                strokeWeight:3,
+                strokeOpacity:0.5,
+                fillColor: ''
+              });
+              allPoints.push.apply(allPoints, [mPoint]);
+              this.editViewMap.addOverlay(marker);
+              marker.drawingMode = 'marker';
+              this.overlays.push(marker);
+              let _this = this;
+              JSON.parse(this.editForm.positions).forEach(function (e) {
+                let points = [];
+                e.coordinates.forEach(function (el) {
+                  points.push(new BMap.Point(el.lng, el.lat));
+                });
+                if (e.drawingMode === 'polygon') {
+                  let polygon = new BMap.Polygon(points, {
+                    strokeColor:"blue",
+                    strokeWeight:3,
+                    strokeOpacity:0.5,
+                    fillColor: ''
+                  });
+                  _this.editViewMap.addOverlay(polygon);
+                  polygon.drawingMode = 'polygon';
+                  _this.overlays.push(polygon);
+                } else {
+                  let polyline = new BMap.Polyline(points, {
+                    strokeColor:"blue",
+                    strokeWeight:3,
+                    strokeOpacity:0.5,
+                    fillColor: ''
+                  });
+                  _this.editViewMap.addOverlay(polyline);
+                  polyline.drawingMode = 'polyline';
+                  _this.overlays.push(polyline);
+                }
+                allPoints.push.apply(allPoints, points);
+              });
+
+              let view = this.editViewMap.getViewport(eval(allPoints));
+              let mapZoom = view.zoom;
+              let centerPoint = view.center;
+              this.editViewMap.centerAndZoom(centerPoint, mapZoom);
+            }
+            timeout += 1;
+          }, 500);
+        });
+      },
       showAddMap(allPoints) {
         this.addViewMap = new BMap.Map("addViewMap", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
         this.addViewMap.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
@@ -1251,7 +1364,7 @@
             if (e.drawingMode === 'polygon') {
               let polygon = new BMap.Polygon(points, {
                 strokeColor:"blue",
-                strokeWeight:2,
+                strokeWeight:3,
                 strokeOpacity:0.5,
                 fillColor: ''
               });
@@ -1259,7 +1372,7 @@
             } else {
               let polyline = new BMap.Polyline(points, {
                 strokeColor:"blue",
-                strokeWeight:2,
+                strokeWeight:3,
                 strokeOpacity:0.5,
                 fillColor: ''
               });
@@ -1287,6 +1400,8 @@
             this.$Message.error('请选择项目区域!');
           }
         } else {
+          this.form.center_point = {};
+          this.form.positions = [];
           let points = [];
           for (let i = 0; i < length; i++) {
             let overlay;
@@ -1299,10 +1414,10 @@
               points.push(new BMap.Point(overlay.lng, overlay.lat));
             } else {
               overlay = this.overlays[i].getPath();
-              this.form.positions = {
+              this.form.positions.push({
                 "drawingMode": this.overlays[i].drawingMode,
                 "coordinates": overlay
-              };
+              });
               overlay.forEach(function (e) {
                 points.push(new BMap.Point(e.lng, e.lat));
               });
@@ -1342,12 +1457,177 @@
                 resolve(BMap);
                 clearInterval(interval);
                 console.log("百度地图脚本初始化成功...");
-                this.showAddMap(allPoints, this.overlays);
+                this.showAddMap(allPoints);
               }
               timeout += 1;
             }, 500);
           });
         }
+      },
+      editArea() {
+        $("#map").empty();
+        this.modal11 = true;
+        console.log("初始化百度地图脚本...");
+        const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
+        const apiVersion = "3.0";
+        const timestamp = new Date().getTime();
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        return new Promise((resolve, reject) => {
+          // 插入script脚本DrawingManager_min
+          let scriptNode = document.createElement("script");
+          scriptNode.setAttribute("type", "text/javascript");
+          scriptNode.setAttribute("src", BMap_URL);
+          document.body.appendChild(scriptNode);
+
+          // 等待页面加载完毕回调
+          let timeout = 0;
+          let interval = setInterval(() => {
+            // 超时10秒加载失败
+            if (timeout >= 20) {
+              reject();
+              clearInterval(interval);
+              console.error("百度地图脚本初始化失败...");
+              this.$Message.error('地图加载失败，请检查网络连接是否正常!');
+            }
+            // 加载成功
+            if (typeof BMap !== "undefined") {
+              resolve(BMap);
+              clearInterval(interval);
+              console.log("百度地图脚本初始化成功...");
+              this.editMap();
+            }
+            timeout += 1;
+          }, 500);
+        });
+      },
+      editMap() {
+        // enableMapClick: false 构造底图时，关闭底图可点功能
+        this.map = new BMap.Map("map", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
+        this.map.centerAndZoom(new BMap.Point(108.720027, 34.298497), 15);
+        this.map.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
+        this.map.addControl(new BMap.NavigationControl());
+        this.map.addControl(new BMap.MapTypeControl({
+          type: BMAP_MAPTYPE_CONTROL_HORIZONTAL, // 按钮水平方式展示，默认采用此类型展示
+          mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP], // 控件展示的地图类型
+          anchor: BMAP_ANCHOR_BOTTOM_RIGHT
+        }));
+        this.clearAll();
+        // 加载行政区划
+        this.loadStaticMapData('xingzheng.geo.json');
+        // 加载路网
+        this.loadStaticMapData('luwang.geo.json');
+        console.log('加载鼠标绘制工具...');
+        let _this = this;
+        return new Promise((resolve, reject) => {
+          let drawNode = document.createElement("script");
+          drawNode.setAttribute("type", "text/javascript");
+          drawNode.setAttribute("src", '/assets/js/DrawingManager_min.js');
+          document.body.appendChild(drawNode);
+          // 等待页面加载完毕回调
+          let timeout = 0;
+          let interval = setInterval(() => {
+            // 超时10秒加载失败
+            if (timeout >= 20) {
+              reject();
+              clearInterval(interval);
+              console.error("鼠标绘制工具加载失败...");
+            }
+            // 加载成功
+            if (typeof BMapLib !== "undefined") {
+              resolve(BMapLib);
+              clearInterval(interval);
+              console.log("鼠标绘制工具加载成功...");
+              // let arr = [];
+              let overlaycomplete = function (e) {
+                e.overlay.drawingMode = e.drawingMode;
+                if (e.drawingMode === 'marker') {
+                  $('.BMapLib_marker_hover, .BMapLib_marker').css('display', 'none');
+                }
+                _this.overlays.push(e.overlay);
+                _this.Editing('enable');
+              };
+              let polygonStyleOptions = {
+                strokeColor: "#f44336", // 边线颜色。
+                fillColor: "#f44336", // 填充颜色。当参数为空时，圆形将没有填充效果。
+                fillOpacity: 0.2, // 填充的透明度，取值范围0 - 1。
+                strokeWeight: 4, // 边线的宽度，以像素为单位。
+                strokeOpacity: 0.8, // 边线透明度，取值范围0 - 1。
+                strokeStyle: 'solid' // 边线的样式，solid或dashed。
+              };
+              let polylineStyleOptions = {
+                strokeColor: "#2196f3", // 边线颜色。
+                strokeWeight: 4, // 边线的宽度，以像素为单位。
+                strokeOpacity: 0.8, // 边线透明度，取值范围0 - 1。
+                strokeStyle: 'solid' // 边线的样式，solid或dashed。
+              };
+              //实例化鼠标绘制工具
+              this.drawingManager = new BMapLib.DrawingManager(this.map, {
+                isOpen: false, // 是否开启绘制模式
+                enableDrawingTool: true, // 是否显示工具栏
+                drawingToolOptions: {
+                  anchor: BMAP_ANCHOR_TOP_RIGHT, // 位置
+                  offset: new BMap.Size(5, 5), // 偏离值
+                  drawingModes: [BMAP_DRAWING_MARKER, BMAP_DRAWING_POLYLINE, BMAP_DRAWING_POLYGON], // 设置只显示画折线和多边形
+                },
+                polylineOptions: polylineStyleOptions, // 折线样式
+                polygonOptions: polygonStyleOptions, // 多边形样式
+              });
+
+              // 添加鼠标绘制工具监听事件，用于获取绘制结果
+              this.drawingManager.addEventListener('overlaycomplete', overlaycomplete);
+              this.drawingManager.addEventListener("markercomplete", function (e, overlay) {
+                _this.drawingManager.setDrawingMode('hander');
+              });
+              let allPoints = [];
+              let markerPoints = this.form.center_point.coordinates;
+              let marker = new BMap.Marker(new BMap.Point(markerPoints.lng, markerPoints.lat), {
+                strokeColor:"blue",
+                strokeWeight:3,
+                strokeOpacity:0.5,
+                fillColor: ''
+              });
+              allPoints.push.apply(allPoints, [new BMap.Point(markerPoints.lng, markerPoints.lat)]);
+              this.map.addOverlay(marker);
+              marker.drawingMode = 'marker';
+              this.overlays.push(marker);
+              let _this = this;
+              this.form.positions.forEach(function (e) {
+                let points = [];
+                e.coordinates.forEach(function (el) {
+                  points.push(new BMap.Point(el.lng, el.lat));
+                });
+                if (e.drawingMode === 'polygon') {
+                  let polygon = new BMap.Polygon(points, {
+                    strokeColor:"blue",
+                    strokeWeight:3,
+                    strokeOpacity:0.5,
+                    fillColor: ''
+                  });
+                  _this.map.addOverlay(polygon);
+                  polygon.drawingMode = 'polygon';
+                  _this.overlays.push(polygon);
+                } else {
+                  let polyline = new BMap.Polyline(points, {
+                    strokeColor:"blue",
+                    strokeWeight:3,
+                    strokeOpacity:0.5,
+                    fillColor: ''
+                  });
+                  _this.map.addOverlay(polyline);
+                  polyline.drawingMode = 'polyline';
+                  _this.overlays.push(polyline);
+                }
+                allPoints.push.apply(allPoints, points);
+              });
+
+              let view = this.map.getViewport(eval(allPoints));
+              let mapZoom = view.zoom;
+              let centerPoint = view.center;
+              this.map.centerAndZoom(centerPoint, mapZoom);
+            }
+            timeout += 1;
+          }, 500);
+        });
       },
       isEdit(state) {
         this.Editing(state);
