@@ -133,6 +133,7 @@
               reject();
               clearInterval(interval);
               console.error("百度地图脚本初始化失败...");
+              this.$Message.error('地图加载失败，请检查网络连接是否正常!');
             }
             // 加载成功
             if (typeof BMap !== "undefined") {
