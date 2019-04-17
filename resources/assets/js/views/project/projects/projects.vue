@@ -612,14 +612,20 @@
           </Col>
         </Row>
         <Row>
-          <FormItem label="项目中心点坐标" prop="center_point">
-            <Input v-model="previewForm.center_point" placeholder="" v-bind:readonly="isReadOnly"/>
-          </FormItem>
-        </Row>
-        <Row>
-          <FormItem label="项目轮廓点坐标" prop="positions">
-            <Input v-model="previewForm.positions" placeholder="" v-bind:readonly="isReadOnly"/>
-          </FormItem>
+          <Col span="24">
+            <FormItem label="项目地理位置">
+              <Row v-if="noMap">
+                <Col span="24">
+                  <Alert show-icon>暂无地图</Alert>
+                </Col>
+              </Row>
+              <Row v-if="haveMap">
+                <Col span="24">
+                  <div id="onlyView" style="height:300px;width:100%;"></div>
+                </Col>
+              </Row>
+            </FormItem>
+          </Col>
         </Row>
         <Row>
           <FormItem label="项目概况" prop="description">
@@ -720,6 +726,8 @@
   export default {
     data: function () {
       return {
+        noMap: false,
+        haveMap: false,
         iframeHeight: 0,
         modal11: false,
         modal222: false,
@@ -900,6 +908,15 @@
                       this.isReadOnly = true;
                       this.openErrorAlert = (this.previewForm.reason !== '' && this.previewForm.is_audit === 2);
                       this.previewModal = true;
+
+                      if (this.previewForm.center_point && this.previewForm.positions) {
+                        this.haveMap = true;
+                        this.noMap = false;
+                        this.onlyShowArea();
+                      } else {
+                        this.haveMap = false;
+                        this.noMap = true;
+                      }
                     }
                   }
                 }, '查看'),
@@ -1500,6 +1517,100 @@
               let mapZoom = view.zoom;
               let centerPoint = view.center;
               this.editView.centerAndZoom(centerPoint, mapZoom);
+            }
+            timeout += 1;
+          }, 500);
+        });
+      },
+      onlyShowArea() {
+        $("#onlyView").empty();
+        console.log("初始化百度地图脚本...");
+        const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
+        const apiVersion = "3.0";
+        const timestamp = new Date().getTime();
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        return new Promise((resolve, reject) => {
+          // 插入script脚本DrawingManager_min
+          let scriptNode = document.createElement("script");
+          scriptNode.setAttribute("type", "text/javascript");
+          scriptNode.setAttribute("src", BMap_URL);
+          document.body.appendChild(scriptNode);
+
+          // 等待页面加载完毕回调
+          let timeout = 0;
+          let interval = setInterval(() => {
+            // 超时10秒加载失败
+            if (timeout >= 20) {
+              reject();
+              clearInterval(interval);
+              console.error("百度地图脚本初始化失败...");
+              this.$Message.error('地图加载失败，请检查网络连接是否正常!');
+            }
+            // 加载成功
+            if (typeof BMap !== "undefined") {
+              resolve(BMap);
+              clearInterval(interval);
+              console.log("百度地图脚本初始化成功...");
+
+              this.onlyView = new BMap.Map("onlyView", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
+              this.onlyView.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
+              this.onlyView.addControl(new BMap.MapTypeControl({
+                type: BMAP_MAPTYPE_CONTROL_HORIZONTAL, // 按钮水平方式展示，默认采用此类型展示
+                mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP], // 控件展示的地图类型
+                anchor: BMAP_ANCHOR_BOTTOM_RIGHT
+              }));
+              for (let i = 0; i < this.overlays.length; i++) {
+                this.onlyView.removeOverlay(this.overlays[i]);
+              }
+              this.overlays.length = 0;
+              $('.BMapLib_marker_hover, .BMapLib_marker').css('display', 'inherit');
+              let allPoints = [];
+              let markerPoints = JSON.parse(this.previewForm.center_point).coordinates;
+              let mPoint = new BMap.Point(markerPoints.lng, markerPoints.lat);
+              let marker = new BMap.Marker((mPoint), {
+                strokeColor:"blue",
+                strokeWeight:3,
+                strokeOpacity:0.5,
+                fillColor: ''
+              });
+              allPoints.push.apply(allPoints, [mPoint]);
+              this.onlyView.addOverlay(marker);
+              marker.drawingMode = 'marker';
+              this.overlays.push(marker);
+              let _this = this;
+              JSON.parse(this.previewForm.positions).forEach(function (e) {
+                let points = [];
+                e.coordinates.forEach(function (el) {
+                  points.push(new BMap.Point(el.lng, el.lat));
+                });
+                if (e.drawingMode === 'polygon') {
+                  let polygon = new BMap.Polygon(points, {
+                    strokeColor:"blue",
+                    strokeWeight:3,
+                    strokeOpacity:0.5,
+                    fillColor: ''
+                  });
+                  _this.onlyView.addOverlay(polygon);
+                  polygon.drawingMode = 'polygon';
+                  _this.overlays.push(polygon);
+                } else {
+                  let polyline = new BMap.Polyline(points, {
+                    strokeColor:"blue",
+                    strokeWeight:3,
+                    strokeOpacity:0.5,
+                    fillColor: ''
+                  });
+                  _this.onlyView.addOverlay(polyline);
+                  polyline.drawingMode = 'polyline';
+                  _this.overlays.push(polyline);
+                }
+                allPoints.push.apply(allPoints, points);
+              });
+
+              let view = this.onlyView.getViewport(eval(allPoints));
+              let mapZoom = view.zoom;
+              let centerPoint = view.center;
+              this.onlyView.centerAndZoom(centerPoint, mapZoom);
             }
             timeout += 1;
           }, 500);
