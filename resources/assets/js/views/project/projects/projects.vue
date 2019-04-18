@@ -424,13 +424,13 @@
           <Col span="12">
             <FormItem label="计划开始时间" prop="plan_start_at">
               <DatePicker type="month" placeholder="开始时间" format="yyyy年MM月"
-                          v-model="editForm.plan_start_at" v-bind:disabled="isAdjustReadOnly"></DatePicker>
+                          v-model="editForm.plan_start_at" readonly></DatePicker>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="计划结束时间" prop="plan_end_at">
-              <DatePicker type="month" @on-change="buildYearPlan" placeholder="结束时间" format="yyyy年MM月"
-                          v-model="editForm.plan_end_at" v-bind:disabled="isAdjustReadOnly"></DatePicker>
+              <DatePicker type="month" placeholder="结束时间" format="yyyy年MM月"
+                          v-model="editForm.plan_end_at" readonly></DatePicker>
             </FormItem>
           </Col>
         </Row>
@@ -447,7 +447,8 @@
                   <div id="editMap" style="height:300px;width:100%;"></div>
                 </Col>
                 <Col span="24">
-                  <Button type="primary" @click="editEditArea" long icon="ios-create" style="margin-top: 10px;">修改</Button>
+                  <Button type="primary" @click="editEditArea" long icon="ios-create" style="margin-top: 10px;">修改
+                  </Button>
                 </Col>
               </Row>
             </FormItem>
@@ -475,7 +476,6 @@
             <Col span="12">
               <FormItem
                 label="计划形象进度"
-                :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"
                 :prop="'projectPlan.' + index_t + '.image_progress'">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."
                        v-bind:readonly="isReadOnly"></Input>
@@ -948,7 +948,7 @@
                         this.isReadOnly = false;
                         this.openErrorAlert = (this.editForm.reason !== '' && this.editForm.is_audit === 2);
                         this.editModal = true;
-                        
+
                         if (this.editForm.center_point && this.editForm.positions) {
                           this.editAddMap = false;
                           this.editShowMap = true;
@@ -1349,8 +1349,6 @@
               this.drawingManager.addEventListener("markercomplete", function (e, overlay) {
                 _this.drawingManager.setDrawingMode('hander');
               });
-
-              // this.createMap();
             }
             timeout += 1;
           }, 500);
@@ -1471,15 +1469,15 @@
               let markerPoints = this.editForm.center_point.coordinates;
               let mPoint = new BMap.Point(markerPoints.lng, markerPoints.lat);
               let marker = new BMap.Marker((mPoint), {
-                strokeColor:"blue",
-                strokeWeight:3,
-                strokeOpacity:0.5,
+                strokeColor: "blue",
+                strokeWeight: 3,
+                strokeOpacity: 0.5,
                 fillColor: ''
               });
               allPoints.push.apply(allPoints, [mPoint]);
               this.editView.addOverlay(marker);
               marker.drawingMode = 'marker';
-              this.overlays.push(marker);
+              // this.overlays.push(marker);
               let _this = this;
               this.editForm.positions.forEach(function (e) {
                 let points = [];
@@ -1488,24 +1486,24 @@
                 });
                 if (e.drawingMode === 'polygon') {
                   let polygon = new BMap.Polygon(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
                   _this.editView.addOverlay(polygon);
                   polygon.drawingMode = 'polygon';
-                  _this.overlays.push(polygon);
+                  // _this.overlays.push(polygon);
                 } else {
                   let polyline = new BMap.Polyline(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
                   _this.editView.addOverlay(polyline);
                   polyline.drawingMode = 'polyline';
-                  _this.overlays.push(polyline);
+                  // _this.overlays.push(polyline);
                 }
                 allPoints.push.apply(allPoints, points);
               });
@@ -1564,9 +1562,9 @@
               let markerPoints = JSON.parse(this.previewForm.center_point).coordinates;
               let mPoint = new BMap.Point(markerPoints.lng, markerPoints.lat);
               let marker = new BMap.Marker((mPoint), {
-                strokeColor:"blue",
-                strokeWeight:3,
-                strokeOpacity:0.5,
+                strokeColor: "blue",
+                strokeWeight: 3,
+                strokeOpacity: 0.5,
                 fillColor: ''
               });
               allPoints.push.apply(allPoints, [mPoint]);
@@ -1581,9 +1579,9 @@
                 });
                 if (e.drawingMode === 'polygon') {
                   let polygon = new BMap.Polygon(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
                   _this.onlyView.addOverlay(polygon);
@@ -1591,9 +1589,9 @@
                   _this.overlays.push(polygon);
                 } else {
                   let polyline = new BMap.Polyline(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
                   _this.onlyView.addOverlay(polyline);
@@ -1641,25 +1639,25 @@
               clearInterval(interval);
               console.log("百度地图脚本初始化成功...");
 
-              this.editViewMap = new BMap.Map("editMap", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
-              this.editViewMap.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
-              this.editViewMap.addControl(new BMap.MapTypeControl({
+              this.editView = new BMap.Map("editMap", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
+              this.editView.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
+              this.editView.addControl(new BMap.MapTypeControl({
                 type: BMAP_MAPTYPE_CONTROL_HORIZONTAL, // 按钮水平方式展示，默认采用此类型展示
                 mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP], // 控件展示的地图类型
                 anchor: BMAP_ANCHOR_BOTTOM_RIGHT
               }));
-              this.clearEditAll();
+              // this.clearEditAll();
               let allPoints = [];
               let markerPoints = this.editForm.center_point.coordinates;
               let mPoint = new BMap.Point(markerPoints.lng, markerPoints.lat);
               let marker = new BMap.Marker((mPoint), {
-                strokeColor:"blue",
-                strokeWeight:3,
-                strokeOpacity:0.5,
+                strokeColor: "blue",
+                strokeWeight: 3,
+                strokeOpacity: 0.5,
                 fillColor: ''
               });
               allPoints.push.apply(allPoints, [mPoint]);
-              this.editViewMap.addOverlay(marker);
+              this.editView.addOverlay(marker);
               marker.drawingMode = 'marker';
               this.overlays.push(marker);
               let _this = this;
@@ -1670,32 +1668,31 @@
                 });
                 if (e.drawingMode === 'polygon') {
                   let polygon = new BMap.Polygon(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
-                  _this.editViewMap.addOverlay(polygon);
+                  _this.editView.addOverlay(polygon);
                   polygon.drawingMode = 'polygon';
                   _this.overlays.push(polygon);
                 } else {
                   let polyline = new BMap.Polyline(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
-                  _this.editViewMap.addOverlay(polyline);
+                  _this.editView.addOverlay(polyline);
                   polyline.drawingMode = 'polyline';
                   _this.overlays.push(polyline);
                 }
                 allPoints.push.apply(allPoints, points);
               });
-
-              let view = this.editViewMap.getViewport(eval(allPoints));
+              let view = this.editView.getViewport(eval(allPoints));
               let mapZoom = view.zoom;
               let centerPoint = view.center;
-              this.editViewMap.centerAndZoom(centerPoint, mapZoom);
+              this.editView.centerAndZoom(centerPoint, mapZoom);
             }
             timeout += 1;
           }, 500);
@@ -1714,7 +1711,7 @@
         let centerPoint = view.center;
         this.addViewMap.centerAndZoom(centerPoint, mapZoom);
         let _this = this;
-        
+
         this.overlays.forEach(function (e) {
           let points = [];
           let overlay;
@@ -1729,17 +1726,17 @@
             });
             if (e.drawingMode === 'polygon') {
               let polygon = new BMap.Polygon(points, {
-                strokeColor:"blue",
-                strokeWeight:3,
-                strokeOpacity:0.5,
+                strokeColor: "blue",
+                strokeWeight: 3,
+                strokeOpacity: 0.5,
                 fillColor: ''
               });
               _this.addViewMap.addOverlay(polygon);
             } else {
               let polyline = new BMap.Polyline(points, {
-                strokeColor:"blue",
-                strokeWeight:3,
-                strokeOpacity:0.5,
+                strokeColor: "blue",
+                strokeWeight: 3,
+                strokeOpacity: 0.5,
                 fillColor: ''
               });
               _this.addViewMap.addOverlay(polyline);
@@ -1821,7 +1818,7 @@
               if (timeout >= 20) {
                 reject();
                 clearInterval(interval);
-                console.error("百度地图脚本初始化失败...");;
+                console.error("百度地图脚本初始化失败...");
                 this.$Message.error('地图加载失败，请检查网络连接是否正常!');
               }
               // 加载成功
@@ -2032,9 +2029,9 @@
               let allPoints = [];
               let markerPoints = this.form.center_point.coordinates;
               let marker = new BMap.Marker(new BMap.Point(markerPoints.lng, markerPoints.lat), {
-                strokeColor:"blue",
-                strokeWeight:3,
-                strokeOpacity:0.5,
+                strokeColor: "blue",
+                strokeWeight: 3,
+                strokeOpacity: 0.5,
                 fillColor: ''
               });
               allPoints.push.apply(allPoints, [new BMap.Point(markerPoints.lng, markerPoints.lat)]);
@@ -2049,9 +2046,9 @@
                 });
                 if (e.drawingMode === 'polygon') {
                   let polygon = new BMap.Polygon(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
                   _this.map.addOverlay(polygon);
@@ -2059,9 +2056,9 @@
                   _this.overlays.push(polygon);
                 } else {
                   let polyline = new BMap.Polyline(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
                   _this.map.addOverlay(polyline);
@@ -2091,7 +2088,7 @@
           mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP], // 控件展示的地图类型
           anchor: BMAP_ANCHOR_BOTTOM_RIGHT
         }));
-        this.clearEditAll();
+        // this.clearEditAll();
         // 加载行政区划
         this.loadEditStaticMapData('xingzheng.geo.json');
         // 加载路网
@@ -2161,9 +2158,9 @@
               let allPoints = [];
               let markerPoints = this.editForm.center_point.coordinates;
               let marker = new BMap.Marker(new BMap.Point(markerPoints.lng, markerPoints.lat), {
-                strokeColor:"blue",
-                strokeWeight:3,
-                strokeOpacity:0.5,
+                strokeColor: "blue",
+                strokeWeight: 3,
+                strokeOpacity: 0.5,
                 fillColor: ''
               });
               allPoints.push.apply(allPoints, [new BMap.Point(markerPoints.lng, markerPoints.lat)]);
@@ -2178,9 +2175,9 @@
                 });
                 if (e.drawingMode === 'polygon') {
                   let polygon = new BMap.Polygon(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
                   _this.editViewMap.addOverlay(polygon);
@@ -2188,9 +2185,9 @@
                   _this.overlays.push(polygon);
                 } else {
                   let polyline = new BMap.Polyline(points, {
-                    strokeColor:"blue",
-                    strokeWeight:3,
-                    strokeOpacity:0.5,
+                    strokeColor: "blue",
+                    strokeWeight: 3,
+                    strokeOpacity: 0.5,
                     fillColor: ''
                   });
                   _this.editViewMap.addOverlay(polyline);

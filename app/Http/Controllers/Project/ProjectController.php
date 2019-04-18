@@ -193,6 +193,8 @@ class ProjectController extends Controller
         $data = $request->input();
         $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
         $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
+        $data['center_point'] = json_encode($data['center_point']);
+        $data['positions'] = json_encode($data['positions']);
         if ($this->office === 0) {
             if ($data['is_audit'] === 2 || $data['is_audit'] === 3) {
                 $data['is_audit'] = 4;
@@ -201,7 +203,7 @@ class ProjectController extends Controller
         $id = $data['id'];
         $data['reason'] = '';
         $projectPlan = $data['projectPlan'];
-        unset($data['id'], $data['projectPlan'], $data['positions'], $data['center_point']);
+        unset($data['id'], $data['projectPlan']);
         $result = Projects::where('id', $id)->update($data);
         $this->updatePlan($id, $projectPlan);
 
@@ -256,32 +258,32 @@ class ProjectController extends Controller
             $query = $query->where('num', $params['num']);
         }
         if (isset($params['type'])) {
-            if($params['type']!=-1){
+            if ($params['type'] != -1) {
                 $query = $query->where('type', $params['type']);
             }
         }
         if (isset($params['build_type'])) {
-            if($params['build_type']!=-1){
+            if ($params['build_type'] != -1) {
                 $query = $query->where('build_type', $params['build_type']);
             }
         }
         if (isset($params['money_from'])) {
-            if($params['money_from']!=-1){
+            if ($params['money_from'] != -1) {
                 $query = $query->where('money_from', $params['money_from']);
             }
         }
         if (isset($params['is_gc'])) {
-            if($params['is_gc']!=-1){
+            if ($params['is_gc'] != -1) {
                 $query = $query->where('is_gc', $params['is_gc']);
             }
         }
         if (isset($params['nep_type'])) {
-            if($params['nep_type']!=-1){
+            if ($params['nep_type'] != -1) {
                 $query = $query->where('nep_type', $params['nep_type']);
             }
         }
         if (isset($params['status'])) {
-            if($params['status']!=-1){
+            if ($params['status'] != -1) {
                 $query = $query->where('status', $params['status']);
             }
         }
@@ -381,7 +383,7 @@ class ProjectController extends Controller
 
         $earlyWarning = new ProjectEarlyWarning;
         if (isset($params['warning_type'])) {
-            if($params['warning_type']!=-1){
+            if ($params['warning_type'] != -1) {
                 $earlyWarning = $earlyWarning->where('warning_type', $params['warning_type']);
             }
         }
@@ -484,17 +486,17 @@ class ProjectController extends Controller
                 $projects = $projects->where('title', 'like', '%' . $data['title'] . '%');
             }
             if (isset($data['money_from'])) {
-                if($data['money_from']!=-1){
+                if ($data['money_from'] != -1) {
                     $projects = $projects->where('money_from', $data['money_from']);
                 }
             }
             if (isset($data['is_gc'])) {
-                if($data['is_gc']!=-1){
+                if ($data['is_gc'] != -1) {
                     $projects = $projects->where('is_gc', $data['is_gc']);
                 }
             }
             if (isset($data['nep_type'])) {
-                if($data['nep_type']!=-1){
+                if ($data['nep_type'] != -1) {
                     $projects = $projects->where('nep_type', $data['nep_type']);
                 }
             }
@@ -781,7 +783,7 @@ class ProjectController extends Controller
         $result = Projects::where('id', $data['id'])->update([
             'is_audit' => $data['status'],
             'reason' => $data['reason'],
-            'audited' => $audited
+            'audited' => $audited,
         ]);
 
         $result = $result || $result >= 0;
@@ -957,6 +959,7 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 转百度坐标
      *
@@ -966,26 +969,26 @@ class ProjectController extends Controller
     public function locationPosition(Request $request)
     {
         $position = $request->input('position');
-        $center_url ='http://api.map.baidu.com/geoconv/v1/?coords='.$position['center'].'&from=1&to=5&ak=ULD7Bs841R1vy18i61u2CnCRP65wlKRv';
+        $center_url = 'http://api.map.baidu.com/geoconv/v1/?coords=' . $position['center'] . '&from=1&to=5&ak=ULD7Bs841R1vy18i61u2CnCRP65wlKRv';
         $center_data = file_get_contents($center_url);
         $center_data = str_replace('renderOption&&renderOption(', '', $center_data);
         $center_data = str_replace(')', '', $center_data);
-        $positions_url ='http://api.map.baidu.com/geoconv/v1/?coords='.$position['positions'].'&from=1&to=5&ak=ULD7Bs841R1vy18i61u2CnCRP65wlKRv';
+        $positions_url = 'http://api.map.baidu.com/geoconv/v1/?coords=' . $position['positions'] . '&from=1&to=5&ak=ULD7Bs841R1vy18i61u2CnCRP65wlKRv';
         $positions_data = file_get_contents($positions_url);
         $positions_data = str_replace('renderOption&&renderOption(', '', $positions_data);
         $positions_data = str_replace(')', '', $positions_data);
-        $data['center'] = json_decode($center_data,true);
-        $data['positions'] = json_decode($positions_data,true);
-        $result=[];
-        foreach($data['center']['result'] as $k=>$v){
-            $result['center'][$k]['lng']=$v['x'];
-            $result['center'][$k]['lat']=$v['y'];
+        $data['center'] = json_decode($center_data, true);
+        $data['positions'] = json_decode($positions_data, true);
+        $result = [];
+        foreach ($data['center']['result'] as $k => $v) {
+            $result['center'][$k]['lng'] = $v['x'];
+            $result['center'][$k]['lat'] = $v['y'];
         }
-        foreach($data['positions']['result'] as $k=>$v){
-            $result['positions'][$k]['lng']=$v['x'];
-            $result['positions'][$k]['lat']=$v['y'];
+        foreach ($data['positions']['result'] as $k => $v) {
+            $result['positions'][$k]['lng'] = $v['x'];
+            $result['positions'][$k]['lat'] = $v['y'];
         }
         return response()->json(['result' => $result], 200);
     }
-    
+
 }
