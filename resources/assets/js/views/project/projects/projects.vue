@@ -1362,8 +1362,7 @@
         console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
-        const timestamp = new Date().getTime();
-        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK;
         return new Promise((resolve, reject) => {
           // 插入script脚本DrawingManager_min
           let scriptNode = document.createElement("script");
@@ -1398,8 +1397,7 @@
         console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
-        const timestamp = new Date().getTime();
-        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK;
         return new Promise((resolve, reject) => {
           // 插入script脚本DrawingManager_min
           let scriptNode = document.createElement("script");
@@ -1433,8 +1431,7 @@
         console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
-        const timestamp = new Date().getTime();
-        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK;
         return new Promise((resolve, reject) => {
           // 插入script脚本DrawingManager_min
           let scriptNode = document.createElement("script");
@@ -1527,8 +1524,7 @@
         console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
-        const timestamp = new Date().getTime();
-        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK;
         return new Promise((resolve, reject) => {
           // 插入script脚本DrawingManager_min
           let scriptNode = document.createElement("script");
@@ -1621,8 +1617,7 @@
         console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
-        const timestamp = new Date().getTime();
-        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK;
         return new Promise((resolve, reject) => {
           // 插入script脚本DrawingManager_min
           let scriptNode = document.createElement("script");
@@ -1811,8 +1806,7 @@
           console.log("初始化百度地图脚本...");
           const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
           const apiVersion = "3.0";
-          const timestamp = new Date().getTime();
-          const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+          const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK;
           return new Promise((resolve, reject) => {
             // 插入script脚本DrawingManager_min
             let scriptNode = document.createElement("script");
@@ -1893,8 +1887,7 @@
         console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
-        const timestamp = new Date().getTime();
-        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK;
         return new Promise((resolve, reject) => {
           // 插入script脚本DrawingManager_min
           let scriptNode = document.createElement("script");
@@ -1929,8 +1922,7 @@
         console.log("初始化百度地图脚本...");
         const AK = "rdxXZeTCdtOAVL3DlNzYkXas9nR21KNu";
         const apiVersion = "3.0";
-        const timestamp = new Date().getTime();
-        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK + "&services=&t=" + timestamp;
+        const BMap_URL = "http://api.map.baidu.com/getscript?v=" + apiVersion + "&ak=" + AK;
         return new Promise((resolve, reject) => {
           // 插入script脚本DrawingManager_min
           let scriptNode = document.createElement("script");
