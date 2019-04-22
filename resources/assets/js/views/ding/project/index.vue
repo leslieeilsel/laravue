@@ -104,105 +104,139 @@
 	</div>
 </template>
 <script>
-dd.ready(function() {
-    dd.device.base.getPhoneInfo({
-    onSuccess : function(data) {
-		console.log(data);
-		
-        // {
-        //     screenWidth: 1080, // 手机屏幕宽度
-        //     screenHeight: 1920, // 手机屏幕高度
-        //     brand:'Mi', // 手机品牌
-        //     model:'Note4', // 手机型号
-        //     version:'7.0', // 版本
-        //     netInfo:'wifi' , // 网络类型 wifi／4g／3g 
-        //     operatorType:'xx' // 运营商信息
-        // }
-    },
-    onFail : function(err) {}
-});
-});
-//   import {
-//     getAuditedProjects,
-//     projectProgress,
-//     projectProgressList,
-//     projectPlanInfo,
-//     editProjectProgress,
-//     getData,
-//     auditProjectProgress,
-//     toAuditSchedule,
-//     actCompleteMoney,
-//     getProjectNoScheduleList,
-//     projectScheduleMonth,
-//     getProjectDictData,
-//     projectScheduleDelete
-//   } from '../../../api/project';
-//   import './index.css';
-//   import '../mui.css';
-//   export default {
-//     data() {
-//       return {
-//         form: {
-//           month: '',
-//           project_id: '',
-//           project_num: '',
-//           subject: '',
-//           build_start_at: '',
-//           build_end_at: '',
-//           total_investors: '',
-//           plan_investors: '',
-//           plan_img_progress: '',
-//           month_act_complete: null,
-//           month_img_progress: '',
-//           acc_complete: '',
-//           acc_img_progress: '',
-//           problem: '',
-//           plan_build_start_at: '',
-//           exp_preforma: '',
-//           img_progress_pic: '',
-//           marker: '',
-//           is_audit: ''
+// dd.ready(function() {
+//     dd.device.base.getPhoneInfo({
+// 		onSuccess : function(data) {
+// 			console.log(data);
+			
+// 			// {
+// 			//     screenWidth: 1080, // 手机屏幕宽度
+// 			//     screenHeight: 1920, // 手机屏幕高度
+// 			//     brand:'Mi', // 手机品牌
+// 			//     model:'Note4', // 手机型号
+// 			//     version:'7.0', // 版本
+// 			//     netInfo:'wifi' , // 网络类型 wifi／4g／3g 
+// 			//     operatorType:'xx' // 运营商信息
+// 			// }
 // 		},
-// 		project_id:[]
-// 	  }
-//     },
-//     mounted() {
-// 	  this.init();
-// 	 	dd.biz.util.datepicker({
-// 			format: 'yyyy-MM-dd',//注意：format只支持android系统规范，即2015-03-31格式为yyyy-MM-dd
-// 			value: '2015-04-17', //默认显示日期
-// 			onSuccess : function(result) {
-// 				//onSuccess将在点击完成之后回调
-// 				/*{
-// 					value: "2015-02-10"
-// 				}
-// 				*/
-// 			},
-// 			onFail : function(err) {}
-// 		})
-//     },
-//     methods: {
-//       init() {
-//         this.getProjectId();
-//       },
-//       getProjectId() {
-//         getAuditedProjects().then(res => {
-//           this.project_id = res.result;
-//         });
-//       },
-//       changeProject(e) {
-//         this.project_id.forEach((em) => {
-//           if (em.id === e) {
-//             this.form.subject = em.subject;
-//             this.form.project_num = em.num;
-//             this.form.build_start_at = em.plan_start_at;
-//             this.form.build_end_at = em.plan_end_at;
-//             this.form.total_investors = em.amount;
-//             this.form.plan_img_progress = em.image_progress;
-//             this.form.plan_build_start_at = em.plan_start_at;
-//           }
-//         });
-//       }
-//     }
-//   }
+// 		onFail : function(err) {}
+// 	});
+// 	dd.biz.util.datepicker({
+// 		format: 'yyyy-MM-dd',//注意：format只支持android系统规范，即2015-03-31格式为yyyy-MM-dd
+// 		value: '2015-04-17', //默认显示日期
+// 		onSuccess : function(result) {
+// 			//onSuccess将在点击完成之后回调
+// 			/*{
+// 				value: "2015-02-10"
+// 			}
+// 			*/
+// 		},
+// 		onFail : function(err) {}
+// 	})
+// });
+  import {
+    getAuditedProjects,
+    projectProgress,
+    projectProgressList,
+    projectPlanInfo,
+    editProjectProgress,
+    getData,
+    auditProjectProgress,
+    toAuditSchedule,
+    actCompleteMoney,
+    getProjectNoScheduleList,
+    projectScheduleMonth,
+    getProjectDictData,
+    projectScheduleDelete
+  } from '../../../api/project';
+  import './index.css';
+  import '../mui.css';
+  export default {
+    data() {
+      return {
+        form: {
+          month: '',
+          project_id: '',
+          project_num: '',
+          subject: '',
+          build_start_at: '',
+          build_end_at: '',
+          total_investors: '',
+          plan_investors: '',
+          plan_img_progress: '',
+          month_act_complete: null,
+          month_img_progress: '',
+          acc_complete: '',
+          acc_img_progress: '',
+          problem: '',
+          plan_build_start_at: '',
+          exp_preforma: '',
+          img_progress_pic: '',
+          marker: '',
+          is_audit: ''
+		},
+		project_id:[]
+	  }
+    },
+    mounted() {
+	  this.init();
+	 	dd.biz.util.datepicker({
+			format: 'yyyy-MM-dd',//注意：format只支持android系统规范，即2015-03-31格式为yyyy-MM-dd
+			value: '2015-04-17', //默认显示日期
+			onSuccess : function(result) {
+				//onSuccess将在点击完成之后回调
+				/*{
+					value: "2015-02-10"
+				}
+				*/
+			},
+			onFail : function(err) {}
+		})
+    },
+    methods: {
+      init() {
+        this.getProjectId();
+        this.aaa();
+      },
+      getProjectId() {
+        getAuditedProjects().then(res => {
+          this.project_id = res.result;
+        });
+      },
+      changeProject(e) {
+        this.project_id.forEach((em) => {
+          if (em.id === e) {
+            this.form.subject = em.subject;
+            this.form.project_num = em.num;
+            this.form.build_start_at = em.plan_start_at;
+            this.form.build_end_at = em.plan_end_at;
+            this.form.total_investors = em.amount;
+            this.form.plan_img_progress = em.image_progress;
+            this.form.plan_build_start_at = em.plan_start_at;
+          }
+        });
+	  },
+	  aaa(){
+		dd.ready(function() {
+			dd.device.base.getPhoneInfo({
+				onSuccess : function(data) {
+					console.log(data);
+					
+					// {
+					//     screenWidth: 1080, // 手机屏幕宽度
+					//     screenHeight: 1920, // 手机屏幕高度
+					//     brand:'Mi', // 手机品牌
+					//     model:'Note4', // 手机型号
+					//     version:'7.0', // 版本
+					//     netInfo:'wifi' , // 网络类型 wifi／4g／3g 
+					//     operatorType:'xx' // 运营商信息
+					// }
+				},
+				onFail : function(err) {}
+			});
+		})
+	  }
+	  
+    }
+  }
 </script>
