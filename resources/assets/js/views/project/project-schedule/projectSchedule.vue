@@ -82,6 +82,7 @@
             show-total show-sizer :current="pageCurrent"/>
     </Row>
     <Modal
+      :mask-closable="false"
       v-model="noSchedule"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
@@ -91,6 +92,7 @@
       </Table>
     </Modal>
     <Modal
+      :mask-closable="false"
       v-model="modal"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
@@ -246,6 +248,7 @@
     </Modal>
     <!-- 查看model------------------------------------------------------------------------------ -->
     <Modal
+      :mask-closable="false"
       v-model="seeModal"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
@@ -403,6 +406,7 @@
     </Modal>
     <!-- 编辑model------------------------------------------------------------------------------ -->
     <Modal
+      :mask-closable="false"
       v-model="editModal"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
@@ -558,6 +562,7 @@
       </div>
     </Modal>
     <Modal
+      :mask-closable="false"
       v-model="reasonModal"
       title="审核不通过原因">
       <Form ref="reasonForm" :model="reasonForm">

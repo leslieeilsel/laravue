@@ -78,6 +78,7 @@
             show-total show-sizer :current="pageCurrent"/>
     </Row>
     <Modal
+      :mask-closable="false"
       v-model="modal"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
@@ -320,6 +321,7 @@
       </div>
     </Modal>
     <Modal
+      :mask-closable="false"
       v-model="editModal"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
@@ -515,6 +517,7 @@
       </div>
     </Modal>
     <Modal
+      :mask-closable="false"
       v-model="previewModal"
       @on-cancel="cancel"
       :styles="{top: '20px'}"
@@ -694,6 +697,7 @@
       </div>
     </Modal>
     <Modal
+      :mask-closable="false"
       v-model="reasonModal"
       title="请简要说明原因"
       @on-cancel="cancelReasonForm"
@@ -1119,6 +1123,7 @@
     },
     methods: {
       init() {
+        console.log(this.$router)
         this.office = this.$store.getters.user.office;
         if (this.office === 2) {
           this.showLandMoney = true;
@@ -2298,7 +2303,14 @@
                 this.form.projectPlan = '';
                 this.getProject();
               } else {
-                this.$Message.error('添加失败!');
+                if (e.message === '登录超时，请重新登陆') {
+                  this.$Message.error(e.message);
+                  this.$router.push({
+                    name: 'login'
+                  });
+                } else {
+                  this.$Message.error('添加失败!');
+                }
               }
             });
           } else {

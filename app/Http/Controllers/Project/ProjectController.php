@@ -88,30 +88,34 @@ class ProjectController extends Controller
      */
     public function add(Request $request)
     {
-        $data = $request->input();
-        $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
-        $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
-        $data['center_point'] = json_encode($data['center_point']);
-        $data['positions'] = json_encode($data['positions']);
-        $data['created_at'] = date('Y-m-d H:i:s');
-        $data['is_audit'] = 4;
-        $data['user_id'] = Auth::id();
+        if (Auth::check()) {
+            $data = $request->input();
+            $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
+            $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
+            $data['center_point'] = json_encode($data['center_point']);
+            $data['positions'] = json_encode($data['positions']);
+            $data['created_at'] = date('Y-m-d H:i:s');
+            $data['is_audit'] = 4;
+            $data['user_id'] = Auth::id();
 
-        $planData = $data['projectPlan'];
+            $planData = $data['projectPlan'];
 
-        unset($data['projectPlan']);
+            unset($data['projectPlan']);
 
-        $id = DB::table('iba_project_projects')->insertGetId($data);
-        $this->insertPlan($id, $planData);
+            $id = DB::table('iba_project_projects')->insertGetId($data);
+            $this->insertPlan($id, $planData);
 
-        $result = $id ? true : false;
+            $result = $id ? true : false;
 
-        if ($result) {
-            $log = new OperationLog();
-            $log->eventLog($request, '创建项目信息');
+            if ($result) {
+                $log = new OperationLog();
+                $log->eventLog($request, '创建项目信息');
+            }
+
+            return response()->json(['result' => $result], 200);
+        } else {
+            return response()->json(['result' => false, 'message' => '登录超时，请重新登陆']);
         }
-
-        return response()->json(['result' => $result], 200);
     }
 
     /**
