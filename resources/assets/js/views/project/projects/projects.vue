@@ -785,11 +785,11 @@
             width: 220,
             fixed: 'left'
           },
-          {
-            title: '项目编号',
-            key: 'num',
-            width: 100
-          },
+          // {
+          //   title: '项目编号',
+          //   key: 'num',
+          //   width: 100
+          // },
           {
             title: '建设状态',
             key: 'status',
@@ -849,10 +849,22 @@
             align: "center"
           },
           {
+            title: '创建时间',
+            key: 'created_at',
+            width: 150,
+            align: "right"
+          },
+          {
+            title: '修改时间',
+            key: 'updated_at',
+            width: 150,
+            align: "right"
+          },
+          {
             title: '审核状态',
             key: 'is_audit',
             fixed: 'right',
-            width: 160,
+            width: 150,
             render: (h, params) => {
               let edit_button = '';
               if (params.row.is_audit === 4) {
@@ -887,7 +899,7 @@
           {
             title: '操作',
             key: 'action',
-            width: 200,
+            width: 180,
             fixed: 'right',
             align: 'center',
             render: (h, params) => {
