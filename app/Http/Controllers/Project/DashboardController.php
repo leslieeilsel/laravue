@@ -132,7 +132,7 @@ class DashboardController extends Controller
         $earlyWarning = new ProjectEarlyWarning;
         $result = $earlyWarning->whereIn('schedule_id', $scheduleIds)->get()->take(10)->toArray();
         $warningType = [
-            '已经超额', '警告超额', '严重超额',
+            '已经滞后', '警告滞后', '严重滞后',
         ];
         $data = [];
         foreach ($result as $k => $row) {

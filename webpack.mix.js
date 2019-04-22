@@ -1,5 +1,5 @@
 let mix = require('laravel-mix');
-
+let webpack = require('webpack');
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -30,9 +30,14 @@ mix.js('resources/assets/js/app.js', 'public/js')
         'router': path.resolve(__dirname, 'resources/assets/js/router'),
       }
     },
-    // plugins: [
-    //   new BundleAnalyzerPlugin()
-    // ]
+    plugins: [
+      new webpack.ProvidePlugin({
+        $: "jquery",
+        jQuery: "jquery",
+        jquery: "jquery",
+        "window.jQuery": "jquery"
+      })
+    ],
   });
 
 if (mix.inProduction()) {

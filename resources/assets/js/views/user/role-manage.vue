@@ -27,7 +27,8 @@
             <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
             <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
           </div>
-        </Modal><Modal
+        </Modal>
+        <Modal
           v-model="editModal"
           @on-cancel="cancel"
           title="编辑角色">
@@ -90,9 +91,11 @@
           </div>
         </Modal>
       </p>
-      <Table border :columns="columns" :data="nowData" @on-selection-change="showSelect" :loading="loadingTable"></Table>
+      <Table border :columns="columns" :data="nowData" @on-selection-change="showSelect"
+             :loading="loadingTable"></Table>
       <Row type="flex" justify="end" class="page">
-        <Page :total="dataCount" :page-size="pageSize" :current="pageCurrent" @on-change="changePage" @on-page-size-change="_nowPageSize"
+        <Page :total="dataCount" :page-size="pageSize" :current="pageCurrent" @on-change="changePage"
+              @on-page-size-change="_nowPageSize"
               show-total show-sizer/>
       </Row>
     </Card>
@@ -100,7 +103,16 @@
 </template>
 <script>
   import './users.css';
-  import {add, getRoles, setRoleMenus, setDefaultRole, getDepartmentTree, editRoleDep,deleteRoleData,edit} from '../../api/role';
+  import {
+    add,
+    getRoles,
+    setRoleMenus,
+    setDefaultRole,
+    getDepartmentTree,
+    editRoleDep,
+    deleteRoleData,
+    edit
+  } from '../../api/role';
   import {getMenuTree} from '../../api/system';
 
   export default {
@@ -119,13 +131,13 @@
         editModal: false,
         treeModal: false,
         form: {
-          id:'',
+          id: '',
           name: '',
           description: '',
           is_default: 0,
         },
         editForm: {
-          id:'',
+          id: '',
           name: '',
           description: '',
           is_default: 0,
@@ -174,7 +186,7 @@
             align: "center",
             width: 180,
             render: (h, params) => {
-              if (params.row.is_default) {
+              if (params.row.is_default === 1) {
                 return h("div", [
                   h(
                     "Button",
@@ -281,10 +293,10 @@
                   on: {
                     click: () => {
                       this.$refs.editFormValidate.resetFields();
-                      this.editForm.id=params.row.id;
-                      this.editForm.name=params.row.name;
-                      this.editForm.description=params.row.description;
-                      this.editForm.is_default=params.row.is_default;
+                      this.editForm.id = params.row.id;
+                      this.editForm.name = params.row.name;
+                      this.editForm.description = params.row.description;
+                      this.editForm.is_default = params.row.is_default;
                       this.editModal = true;
                     }
                   }
@@ -336,15 +348,16 @@
           if (valid) {
             this.loading = true;
             add(this.form).then(res => {
-              if (res.result) {
+              if (res.result === true) {
                 this.loading = false;
                 this.$Message.success('创建成功');
                 this.$refs[name].resetFields();
                 this.modal = false;
-                this.init();
+                this.getRoleList();
               } else {
                 this.$Message.error('创建失败');
               }
+              this.loading = false;
             });
           } else {
             this.$Message.error('发生错误！');

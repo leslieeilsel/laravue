@@ -2,15 +2,15 @@
   <Card>
     <Alert type="warning" class="description">
       <Row>
-        <Button type="success" size="small">已经超额</Button>
+        <Button type="success" size="small">已经滞后</Button>
         <span>：相比预期延缓<10%</span>
       </Row>
       <Row>
-        <Button type="warning" size="small">警告超额</Button>
+        <Button type="warning" size="small">警告滞后</Button>
         <span>：相比预期延缓10% ~ 20%</span>
       </Row>
       <Row>
-        <Button type="error" size="small">严重超额</Button>
+        <Button type="error" size="small">严重滞后</Button>
         <span>：相比预期延缓>20%</span>
       </Row>
     </Alert>
@@ -218,15 +218,15 @@
         data: [],
         warnings: [
           {
-            name: '已经超额',
+            name: '已经滞后',
             value: 0
           },
           {
-            name: '警告超额',
+            name: '警告滞后',
             value: 1
           },
           {
-            name: '严重超额',
+            name: '严重滞后',
             value: 2
           },
         ],
@@ -299,16 +299,16 @@
             key: 'tags',
             render: (h, params) => {
               let button_rbg = 'success';
-              let war_title = '已经超额';
+              let war_title = '已经滞后';
               if (params.row.tags === 0) {
                 button_rbg = 'success';
-                war_title = '已经超额';
+                war_title = '已经滞后';
               } else if (params.row.tags === 1) {
                 button_rbg = 'warning';
-                war_title = '警告超额';
+                war_title = '警告滞后';
               } else if (params.row.tags === 2) {
                 button_rbg = 'error';
-                war_title = '严重超额';
+                war_title = '严重滞后';
               }
               return h("div", [
                 h(

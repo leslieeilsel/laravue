@@ -48,45 +48,49 @@ class buildProjectGeoJson extends Command
             $aaa = [];
             $aaa['type'] = 'Feature';
 
-            $positions = $v['positions'];
-            $positionsArr = explode(';', $positions);
             $arr = [];
-            foreach ($positionsArr as $kk => $vv) {
-                $ccc = explode(',', $vv);
-                $arr[] = [
-                    (float)$ccc[0],
-                    (float)$ccc[1],
+            if ($v['id'] === 3 || $v['id'] === 4 || $v['id'] === 5 || $v['id'] === 6) {
+                $positions = $v['positions'];
+                $positionsArr = explode(';', $positions);
+                foreach ($positionsArr as $kk => $vv) {
+                    $vv = $this->getGaoDeGeo($vv);
+                    $ccc = explode(',', $vv);
+                    $arr[] = [
+                        (float)$ccc[0],
+                        (float)$ccc[1],
+                    ];
+                }
+
+                $aaa['geometry'] = [
+                    'type' => 'Polygon',
+                    'coordinates' => [$arr],
                 ];
+
+                $properties = [];
+                $properties['name'] = $v['title'];
+                $properties['adcode'] = $v['id'];
+                $properties['level'] = 'district';
+                $this->getGaoDeGeo($v['center_point']);
+                $centerPoint = explode(',', $v['center_point']);
+                $properties['center'] = [
+                    'lng' => (float)$centerPoint[0],
+                    'lat' => (float)$centerPoint[1],
+                ];
+
+                $aaa['properties'] = $properties;
+
+                // 数据
+                $data['area_id'] = $v['id'];
+                $data['value'] = 64;
+                $data['info'] =
+                    '项目名称：' . $v['title'] . '<br/>' .
+                    '项目类型：' . $v['type'] . '<br/>' .
+                    '投资状态：' . $v['status'] . '<br/>' .
+                    '投资概况：' . $v['description'];
+
+                $projectArr[] = $aaa;
+                $dataArr[] = $data;
             }
-
-            $aaa['geometry'] = [
-                'type' => 'Polygon',
-                'coordinates' => [$arr],
-            ];
-
-            $properties = [];
-            $properties['name'] = $v['title'];
-            $properties['adcode'] = $v['id'];
-            $properties['level'] = 'district';
-            $centerPoint = explode(',', $v['center_point']);
-            $properties['center'] = [
-                'lng' => (float)$centerPoint[0],
-                'lat' => (float)$centerPoint[1],
-            ];
-
-            $aaa['properties'] = $properties;
-
-            // 数据
-            $data['area_id'] = $v['id'];
-            $data['value'] = 64;
-            $data['info'] =
-                '项目名称：' . $v['title'] . '<br/>' .
-                '项目类型：' . $v['type'] . '<br/>' .
-                '投资状态：' . $v['status'] . '<br/>' .
-                '投资概况：' . $v['description'];
-
-            $projectArr[] = $aaa;
-            $dataArr[] = $data;
         }
 
         $projectJson = json_encode(['type' => 'FeatureCollection', 'features' => $projectArr]);
@@ -114,6 +118,14 @@ class buildProjectGeoJson extends Command
         }
 
         return $projects;
+    }
+
+    public function getGaoDeGeo($point)
+    {
+        $res = file_get_contents('https://restapi.amap.com/v3/assistant/coordinate/convert?locations=' . $point . '&coordsys=baidu&output=json&key=86a30535207aa2d5fc6d2aec25c26b12');
+        $res = json_decode($res);
+
+        return $res->locations;
     }
 
 }

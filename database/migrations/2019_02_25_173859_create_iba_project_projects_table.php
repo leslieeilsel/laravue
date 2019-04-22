@@ -31,8 +31,8 @@ class CreateIbaProjectProjectsTable extends Migration
             $table->integer('audited');                             // 是否经过审核（审核过的项目不能再删除）
             $table->string('reason')->nullable();                   // 审核不通过原因
             $table->string('description')->nullable();              // 投资概况
-            $table->string('center_point')->nullable();             // 项目中心点坐标
-            $table->string('positions')->nullable();                // 项目坐标集
+            $table->json('center_point')->nullable();               // 项目中心点坐标
+            $table->json('positions')->nullable();                  // 项目坐标集
             $table->string('plan_start_at');                        // 计划开始年月
             $table->string('plan_end_at');                          // 计划结束年月
             $table->integer('user_id')->nullable();                 // 用户id
