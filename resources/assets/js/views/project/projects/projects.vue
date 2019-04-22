@@ -246,8 +246,7 @@
             <Col span="12">
               <FormItem
                 label="计划形象进度"
-                :prop="'projectPlan.' + index_t + '.image_progress'"
-                :rules="item.currentImage">
+                :prop="'projectPlan.' + index_t + '.image_progress'">
                 <Input v-model="item.image_progress" type="textarea" :rows="2" :placeholder="item.placeholder"></Input>
               </FormItem>
             </Col>
@@ -479,8 +478,7 @@
             <Col span="12">
               <FormItem
                 label="计划形象进度"
-                :prop="'projectPlan.' + index_t + '.image_progress'"
-                :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}">
+                :prop="'projectPlan.' + index_t + '.image_progress'">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."
                        v-bind:readonly="isReadOnly"></Input>
               </FormItem>
@@ -494,8 +492,7 @@
               <Input type="text" value="计划投资金额(万元)" class="borderNone"/>
             </Col>
             <Col span="8">
-              <Input type="text" value="计划形象进度" class="borderNone"
-                     :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"/>
+              <Input type="text" value="计划形象进度" class="borderNone"/>
             </Col>
             <div v-for="(ite, index) in item.month">
               <Col span="8">
@@ -2371,11 +2368,9 @@
                   let CurrentYear = CurrentDate.getFullYear();
                   if (row.date === CurrentYear) {
                     row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
-                    row.currentImage = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                     row.placeholder = '必填项';
                   } else {
                     row.role = {required: false, type: 'number'};
-                    row.currentImage = {required: false};
                     row.placeholder = '非必填';
                   }
                 });
