@@ -149,8 +149,8 @@
     getProjectDictData,
     projectScheduleDelete
   } from '../../../api/project';
-  import './index.css';
-  import '../mui.css';
+  // import './index.css';
+  // import '../mui.css';
   export default {
     data() {
       return {
