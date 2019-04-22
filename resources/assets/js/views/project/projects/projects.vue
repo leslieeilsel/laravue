@@ -185,7 +185,7 @@
         </Row>
         <Row>
           <Col span="24">
-            <FormItem label="项目地理位置">
+            <FormItem label="项目地图">
               <Row v-if="addMap">
                 <Col span="24">
                   <Button type="info" long @click="chooseArea" icon="md-add">绘制地图</Button>
@@ -332,7 +332,7 @@
               {{editForm.reason}}
           </span>
       </Alert>
-      <Form ref="editFormValidate" :model="editForm" :rules="ruleValidate" :label-width="110">
+      <Form ref="editFormValidate" :model="editForm" :rules="ruleValidate" :label-width="143">
         <Divider><h4>基础信息</h4></Divider>
         <Row>
           <Col span="12">
@@ -438,7 +438,7 @@
         </Row>
         <Row>
           <Col span="24">
-            <FormItem label="项目地理位置">
+            <FormItem label="项目地图">
               <Row v-if="editAddMap">
                 <Col span="24">
                   <Button type="info" long @click="chooseEditArea" icon="md-add">绘制地图</Button>
@@ -526,7 +526,7 @@
               {{previewForm.reason}}
           </span>
       </Alert>
-      <Form ref="previewFormValidate" :model="previewForm" :label-width="110">
+      <Form ref="previewFormValidate" :model="previewForm" :label-width="143">
         <Divider><h4>基础信息</h4></Divider>
         <Row>
           <Col span="12">
@@ -616,7 +616,7 @@
         </Row>
         <Row>
           <Col span="24">
-            <FormItem label="项目地理位置">
+            <FormItem label="项目地图">
               <Row v-if="noMap">
                 <Col span="24">
                   <Alert show-icon>暂无地图</Alert>
@@ -1120,7 +1120,6 @@
     },
     methods: {
       init() {
-        console.log(this.$router)
         this.office = this.$store.getters.user.office;
         if (this.office === 2) {
           this.showLandMoney = true;
@@ -2326,7 +2325,14 @@
                 this.editModal = false;
                 this.init();
               } else {
-                this.$Message.error('修改失败!');
+                if (e.message === '登录超时，请重新登陆') {
+                  this.$Message.error(e.message);
+                  this.$router.push({
+                    name: 'login'
+                  });
+                } else {
+                  this.$Message.error('修改失败!');
+                }
               }
             });
           } else {

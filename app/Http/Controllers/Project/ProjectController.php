@@ -92,8 +92,16 @@ class ProjectController extends Controller
             $data = $request->input();
             $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
             $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
-            $data['center_point'] = json_encode($data['center_point']);
-            $data['positions'] = json_encode($data['positions']);
+            if ($data['center_point']) {
+                $data['center_point'] = json_encode($data['center_point']);
+            } else {
+                unset($data['center_point']);
+            }
+            if ($data['positions']) {
+                $data['positions'] = json_encode($data['positions']);
+            } else {
+                unset($data['positions']);
+            }
             $data['created_at'] = date('Y-m-d H:i:s');
             $data['is_audit'] = 4;
             $data['user_id'] = Auth::id();
@@ -194,26 +202,38 @@ class ProjectController extends Controller
      */
     public function edit(Request $request)
     {
-        $data = $request->input();
-        $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
-        $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
-        $data['center_point'] = json_encode($data['center_point']);
-        $data['positions'] = json_encode($data['positions']);
-        if ($this->office === 0) {
-            if ($data['is_audit'] === 2 || $data['is_audit'] === 3) {
-                $data['is_audit'] = 4;
+        if (Auth::check()) {
+            $data = $request->input();
+            $data['plan_start_at'] = date('Y-m', strtotime($data['plan_start_at']));
+            $data['plan_end_at'] = date('Y-m', strtotime($data['plan_end_at']));
+            if ($data['center_point']) {
+                $data['center_point'] = json_encode($data['center_point']);
+            } else {
+                unset($data['center_point']);
             }
+            if ($data['positions']) {
+                $data['positions'] = json_encode($data['positions']);
+            } else {
+                unset($data['positions']);
+            }
+            if ($this->office === 0) {
+                if ($data['is_audit'] === 2 || $data['is_audit'] === 3) {
+                    $data['is_audit'] = 4;
+                }
+            }
+            $id = $data['id'];
+            $data['reason'] = '';
+            $projectPlan = $data['projectPlan'];
+            unset($data['id'], $data['projectPlan']);
+            $result = Projects::where('id', $id)->update($data);
+            $this->updatePlan($id, $projectPlan);
+
+            $result = ($result >= 0) ? true : false;
+
+            return response()->json(['result' => $result], 200);
+        } else {
+            return response()->json(['result' => false, 'message' => '登录超时，请重新登陆']);
         }
-        $id = $data['id'];
-        $data['reason'] = '';
-        $projectPlan = $data['projectPlan'];
-        unset($data['id'], $data['projectPlan']);
-        $result = Projects::where('id', $id)->update($data);
-        $this->updatePlan($id, $projectPlan);
-
-        $result = ($result >= 0) ? true : false;
-
-        return response()->json(['result' => $result], 200);
     }
 
     public function updatePlan($projectId, $planData)
