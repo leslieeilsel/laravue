@@ -83,7 +83,7 @@
       :styles="{top: '20px'}"
       width="850"
       title="创建项目">
-      <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="130">
+      <Form ref="formValidate" :model="form" :rules="ruleValidate" :label-width="143">
         <Divider><h4>基础信息</h4></Divider>
         <Row>
           <Col span="12">
@@ -236,7 +236,7 @@
           <Row>
             <Col span="12">
               <FormItem
-                label="计划投资金额（万元）"
+                label="计划投资金额(万元)"
                 :prop="'projectPlan.' + index_t + '.amount'"
                 :rules="item.role">
                 <InputNumber :min="0" :step="1.2" v-model="item.amount" :placeholder="item.placeholder"></InputNumber>
@@ -245,15 +245,16 @@
             <Col span="12">
               <FormItem
                 label="计划形象进度"
-                :prop="'projectPlan.' + index_t + '.image_progress'">
-                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."></Input>
+                :prop="'projectPlan.' + index_t + '.image_progress'"
+                :rules="item.currentImage">
+                <Input v-model="item.image_progress" type="textarea" :rows="2" :placeholder="item.placeholder"></Input>
               </FormItem>
             </Col>
           </Row>
           <Row>
             <Collapse class="collapse">
               <Panel name="index">
-                填写月项目投资计划（非必填）
+                填写月项目投资计划
                 <Row slot="content">
                   <Col span="8">
                     <Input type="text" value="月份" class="borderNone"/>
@@ -466,7 +467,7 @@
           <Row>
             <Col span="12">
               <FormItem
-                label="计划投资金额（万元）"
+                label="计划投资金额(万元)"
                 :prop="'projectPlan.' + index_t + '.amount'"
                 :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'}">
                 <InputNumber :min="1" :step="1.2" v-model="item.amount" placeholder="" v-bind:disabled="isReadOnly">
@@ -476,7 +477,8 @@
             <Col span="12">
               <FormItem
                 label="计划形象进度"
-                :prop="'projectPlan.' + index_t + '.image_progress'">
+                :prop="'projectPlan.' + index_t + '.image_progress'"
+                :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."
                        v-bind:readonly="isReadOnly"></Input>
               </FormItem>
@@ -490,7 +492,8 @@
               <Input type="text" value="计划投资金额(万元)" class="borderNone"/>
             </Col>
             <Col span="8">
-              <Input type="text" value="计划形象进度" class="borderNone"/>
+              <Input type="text" value="计划形象进度" class="borderNone"
+                     :rules="{required: true, message: '计划形象进度不能为空', trigger: 'blur'}"/>
             </Col>
             <div v-for="(ite, index) in item.month">
               <Col span="8">
@@ -639,7 +642,7 @@
           <Row>
             <Col span="12">
               <FormItem
-                label="计划投资金额（万元）"
+                label="计划投资金额(万元)"
                 :prop="'projectPlan.' + index + '.amount'">
                 <Input v-model="item.amount" placeholder="" v-bind:readonly="isReadOnly"/>
               </FormItem>
@@ -2356,9 +2359,11 @@
                   let CurrentYear = CurrentDate.getFullYear();
                   if (row.date === CurrentYear) {
                     row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                    row.currentImage = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                     row.placeholder = '必填项';
                   } else {
                     row.role = {required: false, type: 'number'};
+                    row.currentImage = {required: false};
                     row.placeholder = '非必填';
                   }
                 });
