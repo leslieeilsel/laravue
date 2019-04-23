@@ -226,7 +226,7 @@
         </Row>
         <Row>
           <Col span="24">
-            <FormItem label="项目概况" prop="description">
+            <FormItem label="项目概况(建设规模及主要内容)" prop="description">
               <Input v-model="form.description" type="textarea" :rows="4" placeholder="请输入..."></Input>
             </FormItem>
           </Col>
@@ -457,7 +457,7 @@
           </Col>
         </Row>
         <Row>
-          <FormItem label="项目概况" prop="description">
+          <FormItem label="项目概况(建设规模及主要内容)" prop="description">
             <Input v-model="editForm.description" type="textarea" :rows="4" placeholder="请输入..."
                    v-bind:disabled="isAdjustReadOnly"></Input>
           </FormItem>
@@ -630,7 +630,7 @@
           </Col>
         </Row>
         <Row>
-          <FormItem label="项目概况" prop="description">
+          <FormItem label="项目概况(建设规模及主要内容)" prop="description">
             <Input v-model="previewForm.description" type="textarea" :rows="4" placeholder=""
                    v-bind:readonly="isReadOnly"></Input>
           </FormItem>
@@ -950,6 +950,12 @@
                       // this.editFormLoading = true;
                       getEditFormData(params.row.id).then(res => {
                         this.editForm = res.result;
+                        if ((typeof this.editForm.plan_start_at === 'string') && this.editForm.plan_start_at.constructor === String) {
+                          this.editForm.plan_start_at = new Date(Date.parse(this.editForm.plan_start_at));
+                        }
+                        if ((typeof this.editForm.plan_end_at === 'string') && this.editForm.plan_end_at.constructor === String) {
+                          this.editForm.plan_end_at = new Date(Date.parse(this.editForm.plan_end_at));
+                        }
                         if (params.row.is_audit === 3) {
                           this.addNepDisabled = params.row.is_audit === 3;
                         } else {
@@ -2383,11 +2389,13 @@
                 res.result.forEach(function (row, index) {
                   let CurrentDate = new Date();
                   let CurrentYear = CurrentDate.getFullYear();
-                  if (row.date === CurrentYear) {
+                  if (row.date <= CurrentYear) {
                     row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                    // row.imageProjress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                     row.placeholder = '必填项';
                   } else {
                     row.role = {required: false, type: 'number'};
+                    // row.imageProjress = {required: false};
                     row.placeholder = '非必填';
                   }
                 });

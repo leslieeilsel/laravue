@@ -1019,6 +1019,9 @@
           month_act_complete: [
             {required: true, message: '实际完成投资不能为空', trigger: 'blur', type: 'number'}
           ],
+          exp_preforma: [
+            {required: true, message: '土地征收情况及前期手续办理情况不能为空', trigger: 'blur'}
+          ],
         },
         project_id: [],
         imgName: '',

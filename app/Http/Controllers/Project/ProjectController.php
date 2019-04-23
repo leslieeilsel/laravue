@@ -352,8 +352,8 @@ class ProjectController extends Controller
 
         $projects = Projects::where('id', $id)->first()->toArray();
 
-        $projects['plan_start_at'] = date('Y-m', strtotime($projects['plan_start_at']));
-        $projects['plan_end_at'] = date('Y-m', strtotime($projects['plan_end_at']));
+//        $projects['plan_start_at'] = date('Y-m', strtotime($projects['plan_start_at']));
+//        $projects['plan_end_at'] = date('Y-m', strtotime($projects['plan_end_at']));
         $projects['amount'] = (float)$projects['amount'];
         $projects['land_amount'] = $projects['land_amount'] ? (float)$projects['land_amount'] : null;
 
