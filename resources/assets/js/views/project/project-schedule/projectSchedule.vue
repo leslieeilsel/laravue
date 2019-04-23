@@ -26,7 +26,8 @@
             <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
         <FormItem label="部门" prop="department_id">
-          <Cascader :data="dataDep1" v-model="searchForm.department_id" placeholder="选择部门" trigger="hover" :render-format="format"></Cascader>
+          <Cascader :data="dataDep1" v-model="searchForm.department_id" placeholder="选择部门" trigger="hover"
+                    style="width: 200px" :render-format="format"></Cascader>
           <!-- <Poptip trigger="click" placement="right" title="选择部门" width="340">
             <div style="display:flex;">
               <Input v-model="searchForm.department_title" readonly style="width: 200px;" placeholder=""/>
@@ -593,7 +594,7 @@
     getProjectDictData,
     projectScheduleDelete
   } from '../../../api/project';
-  import {initDepartment, loadDepartment,loadClassDepartment} from '../../../api/system';
+  import {initDepartment, loadDepartment, loadClassDepartment} from '../../../api/system';
   import './projectSchedule.css'
 
   export default {
@@ -1071,7 +1072,7 @@
         this.noScheduleButton = this.office === 1;
         loadClassDepartment().then(res => {
           console.log(res);
-          
+
           this.dataDep1 = res;
         });
         // initDepartment().then(res => {
@@ -1358,7 +1359,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/exportSchedule?title="+title+"&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
+        window.location.href = "/api/project/exportSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
       },//下载
       downloadPic() {
         let project_id = this.searchForm.project_id;
@@ -1405,7 +1406,7 @@
         this.loadingTable = false;
       },
       loadDataTree(item, callback) {
-        loadDepartment(item.id).then(res => {  
+        loadDepartment(item.id).then(res => {
           res.result.forEach(function (e) {
             if (e.is_parent) {
               e.loading = false;
@@ -1446,13 +1447,13 @@
           }
         });
       },
-      format (labels, selectedData) {
-          const index = labels.length - 1;
-          const data = selectedData[index] || false;
-          if (data && data.code) {
-              return labels[index];
-          }
+      format(labels, selectedData) {
+        const index = labels.length - 1;
+        const data = selectedData[index] || false;
+        if (data && data.code) {
           return labels[index];
+        }
+        return labels[index];
       }
     },
     mounted() {
