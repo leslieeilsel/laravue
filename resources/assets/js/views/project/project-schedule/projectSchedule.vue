@@ -25,8 +25,9 @@
           <Form-item label="投资主体" prop="subject">
             <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
-        <FormItem label="部门" prop="department_title">
-          <Poptip trigger="click" placement="right" title="选择部门" width="340">
+        <FormItem label="部门" prop="department_id">
+          <Cascader :data="dataDep1" v-model="searchForm.department_id" placeholder="选择部门" trigger="hover" :render-format="format"></Cascader>
+          <!-- <Poptip trigger="click" placement="right" title="选择部门" width="340">
             <div style="display:flex;">
               <Input v-model="searchForm.department_title" readonly style="width: 200px;" placeholder=""/>
             </div>
@@ -34,7 +35,7 @@
               <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeS"></Tree>
               <Spin size="large" fix v-if="dpLoading"></Spin>
             </div>
-          </Poptip>
+          </Poptip> -->
         </FormItem>
           <FormItem label="资金来源">
             <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
@@ -592,7 +593,7 @@
     getProjectDictData,
     projectScheduleDelete
   } from '../../../api/project';
-  import {initDepartment, loadDepartment} from '../../../api/system';
+  import {initDepartment, loadDepartment,loadClassDepartment} from '../../../api/system';
   import './projectSchedule.css'
 
   export default {
@@ -618,7 +619,7 @@
         btnDisable: true,
         upbtnDisabled: true,
         picDisable: true,
-        dataDep: [],
+        dataDep1: [],
         dpLoading: false,
         searchForm: {
           title: '',
@@ -626,7 +627,7 @@
           subject: '',
           start_at: '',
           end_at: '',
-          department_id: '',
+          department_id: [],
           department_title: '',
           money_from: '',
           is_gc: '',
@@ -1065,21 +1066,27 @@
         this.office = this.$store.getters.user.office;
         this.isShowButton = this.office === 0;
         this.noScheduleButton = this.office === 1;
-
-        initDepartment().then(res => {
-          res.result.forEach(function (e) {
-            if (e.is_parent) {
-              e.loading = false;
-              e.children = [];
-            }
-            if (e.status === 0) {
-              e.title = "[已禁用] " + e.title;
-              e.disabled = true;
-            }
-          });
-          this.dataDep = res.result;
-          this.getDictData();
+        loadClassDepartment().then(res => {
+          console.log(res);
+          
+          this.dataDep1 = res;
         });
+        // initDepartment().then(res => {
+        //   res.result.forEach(function (e) {
+        //     if (e.is_parent) {
+        //       e.loading = false;
+        //       e.children = [];
+        //     }
+        //     if (e.status === 0) {
+        //       e.title = "[已禁用] " + e.title;
+        //       e.disabled = true;
+        //     }
+        //   });
+        //   this.dataDep = res.result;
+        //   console.log(this.dataDep);
+        //   this.loadDataTree();
+        //   this.getDictData();
+        // });
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
         this.getProjectScheduleList();
@@ -1087,7 +1094,6 @@
       },
       getProjectScheduleList() {
         this.tableLoading = true;
-        console.log(this.$route.params.is_audit);
         this.searchForm.is_audit = this.$route.params.is_audit;
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
@@ -1396,7 +1402,7 @@
         this.loadingTable = false;
       },
       loadDataTree(item, callback) {
-        loadDepartment(item.id).then(res => {
+        loadDepartment(item.id).then(res => {  
           res.result.forEach(function (e) {
             if (e.is_parent) {
               e.loading = false;
@@ -1420,7 +1426,6 @@
           }
           let str = JSON.stringify(v[0]);
           let data = JSON.parse(str);
-          console.log(data);
           this.searchForm.department_id = data.id;
           this.searchForm.department_title = data.title;
         }
@@ -1437,6 +1442,14 @@
             this.dict = res.result;
           }
         });
+      },
+      format (labels, selectedData) {
+          const index = labels.length - 1;
+          const data = selectedData[index] || false;
+          if (data && data.code) {
+              return labels[index];
+          }
+          return labels[index];
       }
     },
     mounted() {

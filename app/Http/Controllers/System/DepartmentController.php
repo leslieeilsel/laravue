@@ -84,4 +84,24 @@ class DepartmentController extends Controller
 
         return response()->json(['result' => $departments], 200);
     }
+    public function getClassDepartment($pid=0,$departments=[])
+    {
+        $departments = Departments::select('id','title','parent_id')->get()->toArray();        
+        $data = [];
+        foreach ($departments as $k => $v) {
+            if ($v['parent_id'] === $pid) {    
+                // 匹配子记录
+                $parent_count = Departments::where('parent_id',$v['id'])->count();
+                if ($parent_count > 0) {
+                    $v['children'] = $this->getClassDepartment($v['id'], $departments); // 递归获取子记录                                // 如果子元素为空则unset()
+                }
+                $v['label'] = $v['title'];
+                $v['value'] = (string)$v['id'];
+                unset($v['id'], $v['title'], $v['parent_id']);
+                $data[] = $v;
+            }
+        }
+        return $data;
+        // return response()->json(['result' => $data], 200);
+    }
 }

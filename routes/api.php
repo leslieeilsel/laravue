@@ -37,6 +37,7 @@ Route::post('user/getUser', 'User\RegistController@getUser');
 
 Route::get('department/getByParentId/{id}', 'System\DepartmentController@getByParentId');
 Route::get('department/getAllDepartment', 'System\DepartmentController@getAllDepartment');
+Route::get('department/getClassDepartment', 'System\DepartmentController@getClassDepartment');
 Route::post('department/addDepartment', 'System\DepartmentController@add');
 Route::post('department/editDepartment', 'System\DepartmentController@edit');
 
