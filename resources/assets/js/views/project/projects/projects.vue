@@ -2389,11 +2389,13 @@
                 res.result.forEach(function (row, index) {
                   let CurrentDate = new Date();
                   let CurrentYear = CurrentDate.getFullYear();
-                  if (row.date === CurrentYear) {
+                  if (row.date <= CurrentYear) {
                     row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                    // row.imageProjress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                     row.placeholder = '必填项';
                   } else {
                     row.role = {required: false, type: 'number'};
+                    // row.imageProjress = {required: false};
                     row.placeholder = '非必填';
                   }
                 });
