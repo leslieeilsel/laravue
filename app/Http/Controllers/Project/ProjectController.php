@@ -592,14 +592,14 @@ class ProjectController extends Controller
         $path = Storage::putFileAs(
             'public/project/project-schedule/' . $project_title . '/' . $params['month'],
             $request->file('img_pic'),
-            rand(1000000, time()) . '_' . $params['project_num'] . '.' . $suffix
+            rand(1000000, time()) . '.' . $suffix
         );
         $path = 'storage/' . substr($path, 7);
-        $img = Image::make($path);
-        $img_w = $img->width();
-        $img_h = $img->height();
-        $img = $img->resize($img_w * 0.5, $img_h * 0.5)->save($path);
-        $c = $img->response($suffix);
+        // $img = Image::make($path);
+        // $img_w = $img->width();
+        // $img_h = $img->height();
+        // $img = $img->resize($img_w * 0.5, $img_h * 0.5)->save($path);
+        // $c = $img->response($suffix);
 
         return response()->json(['result' => $path], 200);
     }
