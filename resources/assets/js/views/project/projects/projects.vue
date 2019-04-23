@@ -185,7 +185,7 @@
         </Row>
         <Row>
           <Col span="24">
-            <FormItem label="项目地理位置">
+            <FormItem label="项目地图">
               <Row v-if="addMap">
                 <Col span="24">
                   <Button type="info" long @click="chooseArea" icon="md-add">绘制地图</Button>
@@ -332,7 +332,7 @@
               {{editForm.reason}}
           </span>
       </Alert>
-      <Form ref="editFormValidate" :model="editForm" :rules="ruleValidate" :label-width="110">
+      <Form ref="editFormValidate" :model="editForm" :rules="ruleValidate" :label-width="143">
         <Divider><h4>基础信息</h4></Divider>
         <Row>
           <Col span="12">
@@ -438,7 +438,7 @@
         </Row>
         <Row>
           <Col span="24">
-            <FormItem label="项目地理位置">
+            <FormItem label="项目地图">
               <Row v-if="editAddMap">
                 <Col span="24">
                   <Button type="info" long @click="chooseEditArea" icon="md-add">绘制地图</Button>
@@ -469,8 +469,7 @@
             <Col span="12">
               <FormItem
                 label="计划投资金额(万元)"
-                :prop="'projectPlan.' + index_t + '.amount'"
-                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'}">
+                :prop="'projectPlan.' + index_t + '.amount'">
                 <InputNumber :min="1" :step="1.2" v-model="item.amount" placeholder="" v-bind:disabled="isReadOnly">
                 </InputNumber>
               </FormItem>
@@ -526,7 +525,7 @@
               {{previewForm.reason}}
           </span>
       </Alert>
-      <Form ref="previewFormValidate" :model="previewForm" :label-width="110">
+      <Form ref="previewFormValidate" :model="previewForm" :label-width="143">
         <Divider><h4>基础信息</h4></Divider>
         <Row>
           <Col span="12">
@@ -616,7 +615,7 @@
         </Row>
         <Row>
           <Col span="24">
-            <FormItem label="项目地理位置">
+            <FormItem label="项目地图">
               <Row v-if="noMap">
                 <Col span="24">
                   <Alert show-icon>暂无地图</Alert>
@@ -785,11 +784,11 @@
             width: 220,
             fixed: 'left'
           },
-          {
-            title: '项目编号',
-            key: 'num',
-            width: 100
-          },
+          // {
+          //   title: '项目编号',
+          //   key: 'num',
+          //   width: 100
+          // },
           {
             title: '建设状态',
             key: 'status',
@@ -849,10 +848,22 @@
             align: "center"
           },
           {
+            title: '创建时间',
+            key: 'created_at',
+            width: 150,
+            align: "right"
+          },
+          {
+            title: '修改时间',
+            key: 'updated_at',
+            width: 150,
+            align: "right"
+          },
+          {
             title: '审核状态',
             key: 'is_audit',
             fixed: 'right',
-            width: 160,
+            width: 150,
             render: (h, params) => {
               let edit_button = '';
               if (params.row.is_audit === 4) {
@@ -887,7 +898,7 @@
           {
             title: '操作',
             key: 'action',
-            width: 200,
+            width: 180,
             fixed: 'right',
             align: 'center',
             render: (h, params) => {
@@ -1120,7 +1131,6 @@
     },
     methods: {
       init() {
-        console.log(this.$router)
         this.office = this.$store.getters.user.office;
         if (this.office === 2) {
           this.showLandMoney = true;
@@ -2326,7 +2336,14 @@
                 this.editModal = false;
                 this.init();
               } else {
-                this.$Message.error('修改失败!');
+                if (e.message === '登录超时，请重新登陆') {
+                  this.$Message.error(e.message);
+                  this.$router.push({
+                    name: 'login'
+                  });
+                } else {
+                  this.$Message.error('修改失败!');
+                }
               }
             });
           } else {

@@ -269,16 +269,16 @@
                   if (e.drawingMode === 'polygon') {
                     let polygon = new BMap.Polygon(pointArr, {
                       strokeColor: "blue",
-                      strokeWeight: 2,
-                      strokeOpacity: 0.5,
+                      strokeWeight: 3,
+                      strokeOpacity: 0.85,
                       fillColor: ''
                     });
                     map.addOverlay(polygon);
                   } else {
                     let polyline = new BMap.Polygon(pointArr, {
                       strokeColor: "blue",
-                      strokeWeight: 2,
-                      strokeOpacity: 0.5,
+                      strokeWeight: 3,
+                      strokeOpacity: 0.85,
                       fillColor: ''
                     });
                     map.addOverlay(polyline);

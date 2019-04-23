@@ -3913,10 +3913,10 @@ isurl@^1.0.0-alpha5:
     has-to-string-tag-x "^1.2.0"
     is-object "^1.0.1"
 
-iview@^3.3.3:
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/iview/-/iview-3.3.3.tgz#33d65408978659ddd78866ca99a85bf694d771bf"
-  integrity sha512-5wsM6KRzhGpkHtU71fD82A7QzBrlEWN9R6JoJ7wmpWzvN0vwLM8blN2+EbS/j7v8jhyZLd64SRvQjBoQFwK09A==
+iview@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/iview/-/iview-3.4.0.tgz#4b969fe6089065a583e092a92e463cd54e7ebfe9"
+  integrity sha512-MSqro+YxJ91MnxkAd4iR4VK9usEIX2+qE4W5qwnbbFSaVevbc6x+CVSxeg3H8U7XcbP/n9wWBXAQIY3vxniHlw==
   dependencies:
     async-validator "^1.10.0"
     deepmerge "^2.2.1"
