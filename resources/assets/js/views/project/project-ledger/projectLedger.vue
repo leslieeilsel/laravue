@@ -119,8 +119,8 @@
             width: 100
           },
           {
-            title: '2019年主要建设规模及主要内容',
-            key: 'scale_con',
+            title: '项目建设规模及主要内容',
+            key: 'acc_img_progress',
             width: 210
           },
           {
@@ -129,8 +129,8 @@
             width: 180
           },
           {
-            title: '2019年主要建设内容',
-            key: 'plan_con',
+            title: '年度项目主要建设内容',
+            key: 'plan_img_progress',
             width: 200
           },
           {

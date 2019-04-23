@@ -104,36 +104,7 @@
 	</div>
 </template>
 <script>
-// dd.ready(function() {
-//     dd.device.base.getPhoneInfo({
-// 		onSuccess : function(data) {
-// 			console.log(data);
-			
-// 			// {
-// 			//     screenWidth: 1080, // 手机屏幕宽度
-// 			//     screenHeight: 1920, // 手机屏幕高度
-// 			//     brand:'Mi', // 手机品牌
-// 			//     model:'Note4', // 手机型号
-// 			//     version:'7.0', // 版本
-// 			//     netInfo:'wifi' , // 网络类型 wifi／4g／3g 
-// 			//     operatorType:'xx' // 运营商信息
-// 			// }
-// 		},
-// 		onFail : function(err) {}
-// 	});
-// 	dd.biz.util.datepicker({
-// 		format: 'yyyy-MM-dd',//注意：format只支持android系统规范，即2015-03-31格式为yyyy-MM-dd
-// 		value: '2015-04-17', //默认显示日期
-// 		onSuccess : function(result) {
-// 			//onSuccess将在点击完成之后回调
-// 			/*{
-// 				value: "2015-02-10"
-// 			}
-// 			*/
-// 		},
-// 		onFail : function(err) {}
-// 	})
-// });
+import * as dd from 'dingtalk-jsapi'
   import {
     getAuditedProjects,
     projectProgress,
@@ -150,7 +121,7 @@
     projectScheduleDelete
   } from '../../../api/project';
   import './index.css';
-  import '../mui.css';
+  import './mui.css';
   export default {
     data() {
       return {

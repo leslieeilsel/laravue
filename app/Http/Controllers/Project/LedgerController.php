@@ -172,7 +172,7 @@ class LedgerController extends Controller
                 ->setCellValue('K5', '项目总投资')
                 ->setCellValue('M5', $row['total_investors'])
                 ->setCellValue('B6', "项目建设规模及主要内容")
-                ->setCellValue('D6', $row['acc_img_progress'])
+                ->setCellValue('D6', $row['description'])
                 ->setCellValue('B7', '年度项目计划投资')
                 ->setCellValue('D7', $row['plan_investors'])
                 ->setCellValue('G7', '年度项目主要建设内容')
