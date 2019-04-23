@@ -275,7 +275,7 @@
                     });
                     map.addOverlay(polygon);
                   } else {
-                    let polyline = new BMap.Polygon(pointArr, {
+                    let polyline = new BMap.Polyline(pointArr, {
                       strokeColor: "blue",
                       strokeWeight: 3,
                       strokeOpacity: 0.85,
