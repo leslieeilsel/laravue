@@ -394,7 +394,7 @@ class ProjectController extends Controller
                 $query = $query->where('is_audit', '!=', 4);
             }
             if ($this->office === 2) {
-                $query = $query->where('is_audit', 1);
+                $query = $query->whereIn('is_audit', [0, 1, 2, 3, 4]);
             }
         }
         $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
