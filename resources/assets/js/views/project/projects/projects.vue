@@ -94,7 +94,7 @@
           </Col>
           <Col span="12">
             <FormItem label="项目编号" prop="num">
-              <Input v-model="form.num" placeholder="非必填"></Input>
+              <Input v-model="form.num" placeholder="由发展经营部统一填写"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -235,7 +235,7 @@
         <div v-for="(item, index_t) in form.projectPlan">
           <Divider orientation="left"><h5 style="color: #2d8cf0;">{{item.date}}年项目投资计划</h5></Divider>
           <Row>
-            <Col span="12">
+            <Col span="24">
               <FormItem
                 label="计划投资金额(万元)"
                 :prop="'projectPlan.' + index_t + '.amount'"
@@ -243,44 +243,62 @@
                 <InputNumber :min="0" :step="1.2" v-model="item.amount" :placeholder="item.placeholder"></InputNumber>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="24">
               <FormItem
                 label="计划形象进度"
-                :prop="'projectPlan.' + index_t + '.image_progress'">
-                <Input v-model="item.image_progress" type="textarea" :rows="2" :placeholder="item.placeholder"></Input>
+                :prop="'projectPlan.' + index_t + '.image_progress'"
+                :rules="item.imageProgress">
+                <Input v-model="item.image_progress" type="textarea" :rows="1" :placeholder="item.placeholder"></Input>
               </FormItem>
             </Col>
           </Row>
-          <Row>
-            <Collapse class="collapse">
-              <Panel name="index">
-                填写月项目投资计划
-                <Row slot="content">
-                  <Col span="8">
-                    <Input type="text" value="月份" class="borderNone"/>
-                  </Col>
-                  <Col span="8">
-                    <Input type="text" value="计划投资金额(万元)" class="borderNone"/>
-                  </Col>
-                  <Col span="8">
-                    <Input type="text" value="计划形象进度" class="borderNone"/>
-                  </Col>
-                  <div v-for="(ite, index) in item.month">
-                    <Col span="8">
-                      <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
-                    </Col>
-                    <Col span="8">
-                      <InputNumber :min="0" :step="1.2" v-model="ite.amount" @on-blur="totalAmount(index_t,index)"
-                                   placeholder=""
-                                   class="monthInput"></InputNumber>
-                    </Col>
-                    <Col span="8">
-                      <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
-                    </Col>
-                  </div>
-                </Row>
-              </Panel>
-            </Collapse>
+          <Row style="padding-left: 25px;">
+            <Col span="8">
+              <Input type="text" value="月份" class="borderNone"/>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="计划投资金额(万元)"
+                :required="item.required"
+                class="required-field"
+                style="margin-bottom:0;">
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem
+                label="计划形象进度"
+                :required="item.required"
+                class="required-field"
+                style="margin-bottom:0;">
+              </FormItem>
+            </Col>
+            <div v-for="(ite, index) in item.month">
+              <Col span="8">
+                <FormItem class="monthAmount">
+                  <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
+                </FormItem>
+              </Col>
+              <Col span="8">
+                <FormItem
+                  :prop="'projectPlan.' + index_t + '.month.' + index + '.amount'"
+                  :rules="ite.monthRole"
+                  class="monthAmount">
+                  <InputNumber
+                    :min="0" :step="1.2" v-model="ite.amount" @on-blur="totalAmount(index_t,index)"
+                    :placeholder="ite.monthPlaceholder"
+                    class="monthInput">
+                  </InputNumber>
+                </FormItem>
+              </Col>
+              <Col span="8">
+                <FormItem
+                  :prop="'projectPlan.' + index_t + '.month.' + index + '.image_progress'"
+                  :rules="ite.monthImageProgress"
+                  class="monthAmount">
+                  <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
+                </FormItem>
+              </Col>
+            </div>
           </Row>
         </div>
       </Form>
@@ -342,7 +360,7 @@
           </Col>
           <Col span="12">
             <FormItem label="项目编号" prop="num">
-              <Input v-model="editForm.num" placeholder="非必填" v-bind:disabled="isAdjustReadOnly"></Input>
+              <Input v-model="editForm.num" placeholder="由发展经营部统一填写" v-bind:disabled="isAdjustReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -426,13 +444,14 @@
           <Col span="12">
             <FormItem label="计划开始时间" prop="plan_start_at">
               <DatePicker type="month" placeholder="开始时间" format="yyyy年MM月"
-                          v-model="editForm.plan_start_at" readonly></DatePicker>
+                          v-model="editForm.plan_start_at" :disabled="isAdjustReadOnly"></DatePicker>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="计划结束时间" prop="plan_end_at">
               <DatePicker type="month" placeholder="结束时间" format="yyyy年MM月"
-                          v-model="editForm.plan_end_at" readonly></DatePicker>
+                          v-model="editForm.plan_end_at" @on-change="buildEditYearPlan"
+                          :disabled="isAdjustReadOnly"></DatePicker>
             </FormItem>
           </Col>
         </Row>
@@ -466,43 +485,71 @@
         <div v-for="(item, index_t) in editForm.projectPlan">
           <Divider orientation="left"><h5 style="color: #2d8cf0;">{{item.date}}年项目投资计划</h5></Divider>
           <Row>
-            <Col span="12">
+            <Col span="24">
               <FormItem
                 label="计划投资金额(万元)"
-                :prop="'projectPlan.' + index_t + '.amount'">
-                <InputNumber :min="1" :step="1.2" v-model="item.amount" placeholder="" v-bind:disabled="isReadOnly">
+                :prop="'projectPlan.' + index_t + '.amount'"
+                :rules="item.role">
+                <InputNumber :min="1" :step="1.2" v-model="item.amount" :placeholder="item.placeholder"
+                             v-bind:disabled="isReadOnly">
                 </InputNumber>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="24">
               <FormItem
                 label="计划形象进度"
-                :prop="'projectPlan.' + index_t + '.image_progress'">
+                :prop="'projectPlan.' + index_t + '.image_progress'"
+                :rules="item.imageProgress">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."
                        v-bind:readonly="isReadOnly"></Input>
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row style="padding-left: 25px;">
             <Col span="8">
               <Input type="text" value="月份" class="borderNone"/>
             </Col>
             <Col span="8">
-              <Input type="text" value="计划投资金额(万元)" class="borderNone"/>
+              <FormItem
+                label="计划投资金额(万元)"
+                :required="item.required"
+                class="required-field"
+                style="margin-bottom:0;">
+              </FormItem>
             </Col>
             <Col span="8">
-              <Input type="text" value="计划形象进度" class="borderNone"/>
+              <FormItem
+                label="计划形象进度"
+                :required="item.required"
+                class="required-field"
+                style="margin-bottom:0;">
+              </FormItem>
             </Col>
             <div v-for="(ite, index) in item.month">
               <Col span="8">
-                <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
+                <FormItem class="monthAmount">
+                  <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
+                </FormItem>
               </Col>
               <Col span="8">
-                <InputNumber :min="0" :step="1.2" v-model="ite.amount" @on-blur="totalAmountE(index_t,index)"
-                             placeholder="" class="monthInput"></InputNumber>
+                <FormItem
+                  :prop="'projectPlan.' + index_t + '.month.' + index + '.amount'"
+                  :rules="ite.monthRole"
+                  class="monthAmount">
+                  <InputNumber
+                    :min="0" :step="1.2" v-model="ite.amount" @on-blur="totalAmountE(index_t,index)"
+                    :placeholder="ite.monthPlaceholder"
+                    class="monthInput">
+                  </InputNumber>
+                </FormItem>
               </Col>
               <Col span="8">
-                <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
+                <FormItem
+                  :prop="'projectPlan.' + index_t + '.month.' + index + '.image_progress'"
+                  :rules="ite.monthImageProgress"
+                  class="monthAmount">
+                  <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
+                </FormItem>
               </Col>
             </div>
           </Row>
@@ -639,14 +686,14 @@
         <div v-for="(item, index) in previewForm.projectPlan">
           <Divider orientation="left"><h5 style="color: #2d8cf0;">{{item.date}}年项目投资计划</h5></Divider>
           <Row>
-            <Col span="12">
+            <Col span="24">
               <FormItem
                 label="计划投资金额(万元)"
                 :prop="'projectPlan.' + index + '.amount'">
                 <Input v-model="item.amount" placeholder="" v-bind:readonly="isReadOnly"/>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="24">
               <FormItem
                 label="计划形象进度"
                 :prop="'projectPlan.' + index + '.image_progress'">
@@ -655,7 +702,7 @@
               </FormItem>
             </Col>
           </Row>
-          <Row>
+          <Row style="padding-left: 25px;">
             <Col span="8">
               <Input type="text" value="月份" class="borderNone"/>
             </Col>
@@ -964,6 +1011,35 @@
                             this.editForm.nep_type = '';
                           }
                         }
+                        this.editForm.projectPlan.forEach(function (row, index) {
+                          let CurrentDate = new Date();
+                          let CurrentYear = CurrentDate.getFullYear();
+                          if (row.date <= CurrentYear) {
+                            row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                            row.imageProgress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
+                            row.placeholder = '必填项';
+                            row.required = true;
+                            if (row.month !== undefined) {
+                              row.month.forEach(function (e) {
+                                e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                                e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
+                                e.monthPlaceholder = '必填项';
+                              });
+                            }
+                          } else {
+                            row.role = {required: false, type: 'number'};
+                            row.imageProgress = {required: false};
+                            row.placeholder = '非必填';
+                            row.required = false;
+                            if (row.month !== undefined) {
+                              row.month.forEach(function (e) {
+                                e.monthRole = {required: false, type: 'number'};
+                                e.monthImageProgress = {required: false};
+                                e.monthPlaceholder = '非必填';
+                              });
+                            }
+                          }
+                        });
                         this.formId = params.row.id;
                         this.isAdjustReadOnly = params.row.is_audit === 3;
                         this.isReadOnly = false;
@@ -2391,12 +2467,24 @@
                   let CurrentYear = CurrentDate.getFullYear();
                   if (row.date <= CurrentYear) {
                     row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
-                    // row.imageProjress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
+                    row.imageProgress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                     row.placeholder = '必填项';
+                    row.required = true;
+                    row.month.forEach(function (e) {
+                      e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                      e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
+                      e.monthPlaceholder = '必填项';
+                    });
                   } else {
                     row.role = {required: false, type: 'number'};
-                    // row.imageProjress = {required: false};
+                    row.imageProgress = {required: false};
                     row.placeholder = '非必填';
+                    row.required = false;
+                    row.month.forEach(function (e) {
+                      e.monthRole = {required: false, type: 'number'};
+                      e.monthImageProgress = {required: false};
+                      e.monthPlaceholder = '非必填';
+                    });
                   }
                 });
                 this.planDisplay = true;
@@ -2409,6 +2497,54 @@
           }
         } else {
           this.form.plan_end_at = null;
+          this.$Message.error('请先选择开始时间!');
+        }
+      },
+      buildEditYearPlan() {
+        let startDate = this.editForm.plan_start_at;
+        if (startDate) {
+          let endDate = this.editForm.plan_end_at;
+          if (endDate >= startDate) {
+            buildPlanFields([startDate, endDate]).then(res => {
+              if (res.result) {
+                res.result.forEach(function (row, index) {
+                  let CurrentDate = new Date();
+                  let CurrentYear = CurrentDate.getFullYear();
+                  if (row.date <= CurrentYear) {
+                    row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                    row.imageProgress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
+                    row.placeholder = '必填项';
+                    row.required = true;
+                    if (row.month !== undefined) {
+                      row.month.forEach(function (e) {
+                        e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                        e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
+                        e.monthPlaceholder = '必填项';
+                      });
+                    }
+                  } else {
+                    row.role = {required: false, type: 'number'};
+                    row.imageProgress = {required: false};
+                    row.placeholder = '非必填';
+                    row.required = false;
+                    if (row.month !== undefined) {
+                      row.month.forEach(function (e) {
+                        e.monthRole = {required: false, type: 'number'};
+                        e.monthImageProgress = {required: false};
+                        e.monthPlaceholder = '非必填';
+                      });
+                    }
+                  }
+                });
+                this.editForm.projectPlan = res.result;
+              }
+            });
+          } else {
+            this.editForm.plan_end_at = null;
+            this.$Message.error('结束时间应 >= 开始时间!');
+          }
+        } else {
+          this.editForm.plan_end_at = null;
           this.$Message.error('请先选择开始时间!');
         }
       },

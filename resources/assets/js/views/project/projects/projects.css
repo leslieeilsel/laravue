@@ -14,7 +14,8 @@
     border-radius: unset;
 }
 
-.collapse .ivu-input-number {
+.collapse .ivu-input-number,
+.monthInput {
     border-radius: unset;
 }
 
@@ -37,4 +38,12 @@
 
 .ivu-modal-fullscreen .ivu-modal-body {
     padding: 0;
+}
+
+.monthAmount .ivu-form-item-content {
+    margin-left: 0 !important;
+}
+
+.required-field .ivu-form-item-label {
+    width: auto !important;
 }

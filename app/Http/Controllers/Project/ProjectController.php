@@ -146,10 +146,25 @@ class ProjectController extends Controller
             if (isset($v['placeholder'])) {
                 unset($v['placeholder']);
             }
+            if (isset($v['imageProgress'])) {
+                unset($v['imageProgress']);
+            }
+            if (isset($v['required'])) {
+                unset($v['required']);
+            }
 
             $parentId = DB::table('iba_project_plan')->insertGetId($v);
 
-            foreach ($monthArr as $k => $month) {
+            foreach ($monthArr as $month) {
+                if (isset($month['monthRole'])) {
+                    unset($month['monthRole']);
+                }
+                if (isset($month['monthImageProgress'])) {
+                    unset($month['monthImageProgress']);
+                }
+                if (isset($month['monthPlaceholder'])) {
+                    unset($month['monthPlaceholder']);
+                }
                 $month['project_id'] = $projectId;
                 $month['parent_id'] = $parentId;
                 $month['created_at'] = date('Y-m-d H:i:s');
@@ -238,24 +253,85 @@ class ProjectController extends Controller
 
     public function updatePlan($projectId, $planData)
     {
-        foreach ($planData as $k => $v) {
-            $v['project_id'] = $projectId;
-            $planYearId = ProjectPlan::where('project_id', $projectId)->where('date', $v['date'])->first()->id;
+        $currentData = ProjectPlan::where('project_id', $projectId);
+        $issetYearData = $currentData->where('parent_id', 0)->get()->toArray();
+        $issetYear = array_column($issetYearData, 'date');
+        $dataYear = array_column($planData, 'date');
+        $array_merge = array_unique(array_merge($issetYear, $dataYear));
+        foreach ($array_merge as $v) {
+            if (in_array($v, $dataYear)) {
+                $planData = collect($planData);
+                foreach ($planData->where('date', $v) as $k => $v) {
+                    if (in_array($v['date'], $issetYear)) {
+                        if (isset($v['role'])) {
+                            unset($v['role']);
+                        }
+                        if (isset($v['placeholder'])) {
+                            unset($v['placeholder']);
+                        }
+                        if (isset($v['imageProgress'])) {
+                            unset($v['imageProgress']);
+                        }
+                        if (isset($v['required'])) {
+                            unset($v['required']);
+                        }
+                        $v['project_id'] = $projectId;
+                        $planYearId = ProjectPlan::where('project_id', $projectId)->where('date', $v['date'])->first()->id;
 
-            $v['parent_id'] = 0;
-            $v['updated_at'] = date('Y-m-d H:i:s');
-            $monthArr = $v['month'];
-            unset($v['month']);
-            $yearRes = ProjectPlan::where('id', $planYearId)->update($v);
-            foreach ($monthArr as $k => $month) {
-                $planMonthId = ProjectPlan::where('project_id', $projectId)
-                    ->where('date', $month['date'])
-                    ->where('parent_id', $planYearId)
-                    ->first()
-                    ->id;
-                $month['updated_at'] = date('Y-m-d H:i:s');
-                unset($month['date']);
-                $monthRes = ProjectPlan::where('id', $planMonthId)->update($month);
+                        $v['parent_id'] = 0;
+                        $v['updated_at'] = date('Y-m-d H:i:s');
+                        $monthArr = $v['month'];
+                        unset($v['month']);
+                        $yearRes = ProjectPlan::where('id', $planYearId)->update($v);
+
+                        $issetMonthData = ProjectPlan::where('project_id', $projectId)->where('parent_id', $planYearId)->get()->toArray();
+                        $issetMonth = array_column($issetMonthData, 'date');
+                        $dataMonth = array_column($monthArr, 'date');
+                        $array_merge_month = array_unique(array_merge($issetMonth, $dataMonth));
+                        foreach ($array_merge_month as $vv) {
+                            if (in_array($vv, $dataMonth)) {
+                                $monthArr = collect($monthArr);
+                                foreach ($monthArr->where('date', $vv) as $k => $month) {
+                                    if (isset($month['monthRole'])) {
+                                        unset($month['monthRole']);
+                                    }
+                                    if (isset($month['monthImageProgress'])) {
+                                        unset($month['monthImageProgress']);
+                                    }
+                                    if (isset($month['monthPlaceholder'])) {
+                                        unset($month['monthPlaceholder']);
+                                    }
+                                    if (in_array($month['date'], $issetMonth)) {
+                                        $planMonthId = ProjectPlan::where('project_id', $projectId)
+                                            ->where('date', $month['date'])
+                                            ->where('parent_id', $planYearId)
+                                            ->first()
+                                            ->id;
+                                        $month['updated_at'] = date('Y-m-d H:i:s');
+                                        unset($month['date']);
+                                        $monthRes = ProjectPlan::where('id', $planMonthId)->update($month);
+                                    } else {
+                                        // 不存在的月，直接插入
+                                        $month['project_id'] = $projectId;
+                                        $month['parent_id'] = $planYearId;
+                                        $month['created_at'] = date('Y-m-d H:i:s');
+
+                                        ProjectPlan::insert($month);
+                                    }
+                                }
+                            } else {
+                                ProjectPlan::where('date', $vv)->where('parent_id', $planYearId)->delete();
+                            }
+                        }
+                    } else {
+                        // 不存在的年，直接插入
+                        $this->insertPlan($projectId, [$v]);
+                    }
+                }
+            } else {
+                $yearId = ProjectPlan::where('project_id', $projectId)->where('date', $v)->first()->id;
+                ProjectPlan::where('project_id', $projectId)->where('id', $yearId)->delete();
+                ProjectPlan::where('project_id', $projectId)->where('parent_id', $yearId)->delete();
             }
         }
     }
@@ -499,7 +575,7 @@ class ProjectController extends Controller
     public function projectProgressM($data)
     {
         $query = new ProjectSchedule;
-        if (isset($data['department_id'])&&count($data['department_id'])>0) {
+        if (isset($data['department_id']) && count($data['department_id']) > 0) {
             $user_ids = DB::table('users')->select('id')->where('department_id', $data['department_id'][1])->get()->toArray();
             $user_id = array_column($user_ids, 'id');
             $query = $query->whereIn('user_id', $user_id);
