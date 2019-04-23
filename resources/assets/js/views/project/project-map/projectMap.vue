@@ -260,6 +260,7 @@
                 map.addOverlay(marker);
                 // 添加多边形
                 let positions = JSON.parse(project.positions);
+                let strokeColor = project.status === '在建' ? "#ebf10b" : "#4edc52";
                 positions.forEach(function (e) {
                   let positionsPoints = e.coordinates;
                   let pointArr = [];
@@ -268,7 +269,7 @@
                   });
                   if (e.drawingMode === 'polygon') {
                     let polygon = new BMap.Polygon(pointArr, {
-                      strokeColor: "#ebf10b",
+                      strokeColor: strokeColor,
                       strokeWeight: 3,
                       strokeOpacity: 0.85,
                       fillColor: ''
@@ -276,7 +277,7 @@
                     map.addOverlay(polygon);
                   } else {
                     let polyline = new BMap.Polyline(pointArr, {
-                      strokeColor: "#ebf10b",
+                      strokeColor: strokeColor,
                       strokeWeight: 3,
                       strokeOpacity: 0.85,
                       fillColor: ''
