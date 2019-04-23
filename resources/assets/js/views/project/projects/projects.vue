@@ -469,8 +469,7 @@
             <Col span="12">
               <FormItem
                 label="计划投资金额(万元)"
-                :prop="'projectPlan.' + index_t + '.amount'"
-                :rules="{required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'}">
+                :prop="'projectPlan.' + index_t + '.amount'">
                 <InputNumber :min="1" :step="1.2" v-model="item.amount" placeholder="" v-bind:disabled="isReadOnly">
                 </InputNumber>
               </FormItem>
