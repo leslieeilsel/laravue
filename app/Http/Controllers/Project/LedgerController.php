@@ -272,12 +272,38 @@ class LedgerController extends Controller
             // 设置边框
             $borderStyleArray = [
                 'borders' => [
-                    'buttomBorders' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_NONE,
-                    ],
+                    'outline' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        'color' => ['argb' => '000000000'],
+                    ]
                 ],
             ];
-            // $spreadsheet->getActiveSheet()->getStyle('B1')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('B1:O1')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('B2:O2')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('B3:O3')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('B4:C4')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('D4:J4')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('K4:L4')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('M4:O4')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('B5:C5')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('D5:J5')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('K5:L5')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('M5:O5')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('B6:C6')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('D6:O6')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('B7:C7')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('D7:F7')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('G7:H7')->applyFromArray($borderStyleArray);
+            $spreadsheet->getActiveSheet()->getStyle('I7:O7')->applyFromArray($borderStyleArray);
+            
+            $num = 8;
+            foreach($month_data as $m=>$m_val){
+                $num = $num + $m * 11;
+                $spreadsheet->getActiveSheet()->getStyle('B' . $num . ':C' . ($num + 10))->applyFromArray($borderStyleArray);
+                $spreadsheet->getActiveSheet()->getStyle('D' . $num . ':J' . ($num + 10))->applyFromArray($borderStyleArray);
+                $spreadsheet->getActiveSheet()->getStyle('K' . $num . ':L' . ($num + 10))->applyFromArray($borderStyleArray);
+                $spreadsheet->getActiveSheet()->getStyle('M' . $num . ':O' . ($num + 10))->applyFromArray($borderStyleArray);
+            }
             //字体大小
             $spreadsheet->getActiveSheet()->getStyle('A2')->getFont()->setSize(20);
             // 将活动工作表索引设置为第一个工作表，以便Excel将其作为第一个工作表打开
@@ -452,10 +478,10 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->setCellValue('F' . $num, $plan_investors);
         // 合并行、列
         $spreadsheet->getActiveSheet()
-            ->mergeCells('A1:R1')
-            ->mergeCells('A2:R2')
+            ->mergeCells('A1:'.$Letter[$s_count+7].'1')
+            ->mergeCells('A2:'.$Letter[$s_count+7].'2')
             ->mergeCells('A3:N3')
-            ->mergeCells('O3:R3');
+            ->mergeCells('O3:'.$Letter[$s_count+7].'3');
         $num = 5+count($data);
         $spreadsheet->getActiveSheet()->mergeCells('A' . $num . ":C" . $num);
         $spreadsheet->getActiveSheet()->mergeCells('H' . $num . ":I" . $num);
@@ -531,12 +557,21 @@ class LedgerController extends Controller
         // 设置边框
         $borderStyleArray = [
             'borders' => [
-                'buttomBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_NONE,
-                ],
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000000'],
+                ]
             ],
         ];
-        // $spreadsheet->getActiveSheet()->getStyle('B1')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A1:'.$Letter[$s_count+7].'1')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A2:'.$Letter[$s_count+7].'2')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A3:'.$Letter[$s_count+7].'3')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('O3:'.$Letter[$s_count+7].'3')->applyFromArray($borderStyleArray);  
+        for($c=3;$c<count($data)+6;$c++){
+            for($l=0;$l<$s_count+8;$l++){
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$l].$c)->applyFromArray($borderStyleArray);
+            }
+        }
         //设置字体
         $spreadsheet->getActiveSheet()->getStyle('A2')->getFont()->setSize(20);
         $spreadsheet->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);
@@ -546,13 +581,13 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->getStyle('E4')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle('F4')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle('G4')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+1].'4')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+2].'4')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+3].'4')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+4].'4')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+5].'4')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+6].'4')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+7].'4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+1].'4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+2].'4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+3].'4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+4].'4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+5].'4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+6].'4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+7].'4')->getFont()->setBold(true);
         // 重命名 worksheet
         $spreadsheet->getActiveSheet()->setTitle('项目进度报表');
         // 将活动工作表索引设置为第一个工作表，以便Excel将其作为第一个工作表打开
@@ -783,59 +818,64 @@ class LedgerController extends Controller
         $num = 6;
         $count=count($data)+1;
         for ($i = 0; $i < $count; $i++) {
-            $spreadsheet->getActiveSheet()->getStyle('A'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('B'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('C'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('D'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('E'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('F'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('G'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('H'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('I'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('J'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('K'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('L'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('M'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('N'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('O'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('P'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('Q'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('R'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('S'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('T'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('U'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('V'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('W'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('X'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('Y'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('Z'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AA'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AB'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AC'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AD'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AE'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AF'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AG'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AH'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AI'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AJ'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AK'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AL'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AM'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AN'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle('AO'.$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            for($l=0;$l<41;$l++){
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$l].$num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            }
             $num++;
         }
-
         // 设置边框
         $borderStyleArray = [
             'borders' => [
-                'buttomBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_NONE,
-                ],
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000000'],
+                ]
             ],
         ];
-        // $spreadsheet->getActiveSheet()->getStyle('B1')->applyFromArray($borderStyleArray);
+        
+        $spreadsheet->getActiveSheet()->getStyle('A1:AO1')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A2:AO2')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A3:AL3')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('AM3:AO3')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A4:A5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('B4:B5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('C4:C5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('D4:D5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('E4:E5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('F4:F5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('G4:G5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('H4:H5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('I4:I5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('J4:J5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('K4:K5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('L4:L5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('M4:M5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('N4:N5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('O4:O5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('P4:P5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('Q4:Q5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('R4:AO4')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('R5:S5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('T5:U5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('V5:W5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('X5:Y5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('Z5:AA5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('AB5:AC5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('AD5:AE5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('AF5:AG5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('AH5:AI5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('AJ5:AK5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('AL5:AM5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('AN5:AO5')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A6:I6')->applyFromArray($borderStyleArray);
+        $num = 6;
+        $count=count($data)+1;
+        for ($i = 0; $i < $count; $i++) {
+            for($l=0;$l<41;$l++){
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$l].$num)->applyFromArray($borderStyleArray);
+            }
+            $num++;
+        }
         //设置字体
         $spreadsheet->getActiveSheet()->getStyle('A2')->getFont()->setSize(20);
         $spreadsheet->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);
