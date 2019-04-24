@@ -636,7 +636,6 @@ class ProjectController extends Controller
             $query = $query->where('is_audit', 1);
         }
         $ProjectSchedules = $query->whereIn('user_id', $this->seeIds);
-        $c=$query->toSql();
         return $ProjectSchedules;
     }
 
