@@ -542,7 +542,7 @@
                   <img :src="item.url">
                   <div class="demo-upload-list-cover">
                     <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
-                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                    <Icon type="ios-trash-outline" @click.native="handleRemove(item.url)"></Icon>
                   </div>
                 </template>
               </div>
@@ -560,6 +560,7 @@
               :max-size="600"
               :on-format-error="handleFormatError"
               :on-exceeded-size="handleMaxSize"
+              :before-upload="handleBeforeUpload"
               multiple
               :data="upData"
               type="drag"
@@ -944,18 +945,18 @@
                             edit_pics.forEach(function (item) {
                               let eaaa = item.split("/");
                               let aaaa = eaaa[eaaa.length - 1];
-                              edit_img_pic.push({url: '/' + item, name: aaaa});
+                              if(aaaa!='null'){
+                                edit_img_pic.push({url: '/' + item, name: aaaa});
+                              }
                             })
                           }
-
-                          console.log(edit_img_pic);
                           _editThis.editDefaultList = edit_img_pic;
-
                           _editThis.editForm.marker = em.marker;
                         }
                       });
                       this.openErrorAlert = (this.editForm.reason !== '' && this.editForm.is_audit === 2);
                       this.editModal = true;
+                      $('.ivu-upload-list').remove();
                     }
                   }
                 }, '编辑'),
@@ -1334,16 +1335,20 @@
         this.visible = true;
       },
       handleRemove(file) {
-        const fileList = this.editForm.img_progress_pic;
-        console.log(this.editForm.img_progress_pic);
-        // this.editForm.img_progress_pic.splice(fileList.indexOf(file), 1);
-        console.log(this.editForm.img_progress_pic);
+        const fileList = this.editDefaultList;
+        this.editDefaultList.splice(file, 1);
+        if(this.editDefaultList.length>0){
+          this.editForm.img_progress_pic=this.editDefaultList.join(',');
+        }else{
+          this.editForm.img_progress_pic='';
+        }
 
       },
       handleSuccess(res, file) {
         this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
       },
       editHandleSuccess(res, file) {
+        this.editDefaultList.push({url:res.result,name:2});
         this.editForm.img_progress_pic = this.editForm.img_progress_pic + ',' + res.result;
       },
       handleFormatError(file) {
