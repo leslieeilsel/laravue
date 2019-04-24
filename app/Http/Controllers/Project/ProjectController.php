@@ -602,7 +602,7 @@ class ProjectController extends Controller
             }
             $projects = $projects->get()->toArray();
             $ids = array_column($projects, 'id');
-            $ids = array_intersect($ids, $this->seeIds);
+            // $ids = array_intersect($ids, $this->seeIds);
             $query = $query->whereIn('project_id', $ids);
         }
         if (isset($data['project_num'])) {
@@ -628,16 +628,15 @@ class ProjectController extends Controller
         }
         if (isset($data['is_audit'])) {
             $query = $query->where('is_audit', 0);
-        } else {
-            if ($this->office === 1) {
-                $query = $query->where('is_audit', '!=', 4);
-            }
-            if ($this->office === 2) {
-                $query = $query->where('is_audit', 1);
-            }
+        }
+        if ($this->office === 1) {
+            $query = $query->where('is_audit', '!=', 4);
+        }
+        if ($this->office === 2) {
+            $query = $query->where('is_audit', 1);
         }
         $ProjectSchedules = $query->whereIn('user_id', $this->seeIds);
-
+        $c=$query->toSql();
         return $ProjectSchedules;
     }
 
