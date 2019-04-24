@@ -512,7 +512,6 @@
             <Col span="8">
               <FormItem
                 label="计划投资金额(万元)"
-                :required="item.required"
                 class="required-field"
                 style="margin-bottom:0;">
               </FormItem>
@@ -520,7 +519,6 @@
             <Col span="8">
               <FormItem
                 label="计划形象进度"
-                :required="item.required"
                 class="required-field"
                 style="margin-bottom:0;">
               </FormItem>
@@ -528,7 +526,7 @@
             <div v-for="(ite, index) in item.month">
               <Col span="8">
                 <FormItem class="monthAmount">
-                  <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
+                  <Input type="text" placeholder="" v-model="ite.date + '月'" class="monthInput"/>
                 </FormItem>
               </Col>
               <Col span="8">
@@ -1019,13 +1017,13 @@
                             row.imageProgress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                             row.placeholder = '必填项';
                             row.required = true;
-                            if (row.month !== undefined) {
-                              row.month.forEach(function (e) {
-                                e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
-                                e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
-                                e.monthPlaceholder = '必填项';
-                              });
-                            }
+                            // if (row.month !== undefined) {
+                            //   row.month.forEach(function (e) {
+                            //     e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                            //     e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
+                            //     e.monthPlaceholder = '必填项';
+                            //   });
+                            // }
                           } else {
                             row.role = {required: false, type: 'number'};
                             row.imageProgress = {required: false};
@@ -2470,11 +2468,11 @@
                     row.imageProgress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                     row.placeholder = '必填项';
                     row.required = true;
-                    row.month.forEach(function (e) {
-                      e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
-                      e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
-                      e.monthPlaceholder = '必填项';
-                    });
+                    // row.month.forEach(function (e) {
+                    //   e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                    //   e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
+                    //   e.monthPlaceholder = '必填项';
+                    // });
                   } else {
                     row.role = {required: false, type: 'number'};
                     row.imageProgress = {required: false};
@@ -2515,13 +2513,13 @@
                     row.imageProgress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                     row.placeholder = '必填项';
                     row.required = true;
-                    if (row.month !== undefined) {
-                      row.month.forEach(function (e) {
-                        e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
-                        e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
-                        e.monthPlaceholder = '必填项';
-                      });
-                    }
+                    // if (row.month !== undefined) {
+                    //   row.month.forEach(function (e) {
+                    //     e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                    //     e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
+                    //     e.monthPlaceholder = '必填项';
+                    //   });
+                    // }
                   } else {
                     row.role = {required: false, type: 'number'};
                     row.imageProgress = {required: false};
