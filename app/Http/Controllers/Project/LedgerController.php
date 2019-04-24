@@ -450,8 +450,9 @@ class LedgerController extends Controller
             $spreadsheet->getActiveSheet()->setCellValue('G' . $num, $data[$i]['plan_img_progress']);
             $le=7;
             foreach($schedule_data as $k=>$v){
+                $month_act_complete=ProjectSchedule::whereBetween('month',[date('Y-01'),$v['month']])->where('project_id',$v['project_id'])->sum('month_act_complete');
                 $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$k] . $num, $v['month_img_progress']);
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$k+1] . $num, $v['acc_complete']);
+                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$k+1] . $num, $month_act_complete);
                 
                 $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$k])->setWidth(18.88);
                 $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$k+1])->setWidth(9.75);
@@ -464,7 +465,8 @@ class LedgerController extends Controller
                 $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k+1].'4')->getFont()->setBold(true);
                 $le=$le+1;
             }
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1] . $num, $data[$i]['acc_complete']);
+            $acc_complete=$ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->orderBy('id','desc')->value('acc_complete');
+            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1] . $num, $acc_complete);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+2] . $num, $data[$i]['problem']);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+3] . $num, $data[$i]['plan_build_start_at']);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+4] . $num, $data[$i]['exp_preforma']);
