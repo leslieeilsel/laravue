@@ -536,7 +536,40 @@
         </Row>
         <Row>
           <Col span="24" style="margin-left: 20px;">
-            <div class="demo-upload-list" v-for="item in defaultList">
+          <template>
+            <Upload
+                ref="upload"
+                name="img_pic"
+                :default-file-list="editDefaultList"
+                :on-success="editHandleSuccess"
+                :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
+                :max-size="600"
+                :on-format-error="handleFormatError"
+                :on-exceeded-size="handleMaxSize"
+                multiple
+                :data="upData"
+                type="drag"
+                action="/api/project/uploadPic"
+                style="display: inline-block;width:58px;">
+                <div style="width: 58px;height:58px;line-height: 58px;">
+                    <Icon type="ios-camera" size="20"></Icon>
+                </div>
+            </Upload>
+            <div class="demo-upload-list" v-for="item in editDefaultList">
+                <template>
+                    <img :src="item.url">
+                    <div class="demo-upload-list-cover">
+                        <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
+                        <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                    </div>
+                </template>
+            </div>
+            <!-- <div style="color:#a7a5a5">文件大小不能超过600KB</div> -->
+            <Modal title="查看照片" v-model="visible">
+                <img :src="imgUrl" v-if="visible" style="width: 100%">
+            </Modal>
+          </template>
+            <!-- <div class="demo-upload-list" v-for="item in defaultList">
               <template>
                 <img :src="item.url">
                 <div class="demo-upload-list-cover">
@@ -549,7 +582,7 @@
             </div>
             <Modal title="查看照片" v-model="visible">
               <img :src="imgUrl" style="width: 100%">
-            </Modal>
+            </Modal> -->
           </Col>
         </Row>
       </Form>
@@ -842,13 +875,14 @@
                           _seeThis.seeForm.exp_preforma = em.exp_preforma;
                           _seeThis.seeForm.is_audit = em.is_audit;
                           _seeThis.seeForm.reason = em.reason;
-
                           let img_pic = [];
                           if (em.img_progress_pic) {
                             let pics = em.img_progress_pic.split(",");
                             let i = 0;
                             pics.forEach(function (em_pic) {
-                              img_pic.push({url: em_pic, name: i});
+                              if(em_pic!='null'){
+                                img_pic.push({url: em_pic, name: i});
+                              }
                               i++;
                             })
                           }
@@ -901,17 +935,26 @@
                           _editThis.editForm.plan_build_start_at = em.plan_build_start_at;
                           _editThis.editForm.exp_preforma = em.exp_preforma;
                           _editThis.editForm.img_progress_pic = em.img_progress_pic;
-
-                          let img_pic = [];
+                          
+                          _editThis.upData = {month: em.month, project_num: em.project_num, project_id: em.project_id};
+                          var gettype=Object.prototype.toString
+                         
+                          
+                          let edit_img_pic = [];
                           if (em.img_progress_pic) {
-                            let pics = em.img_progress_pic.split(",");
-                            let i = 0;
-                            pics.forEach(function (em_pic) {
-                              img_pic.push({url: em_pic, name: i});
-                              i++;
-                            })
+                            let edit_pics = em.img_progress_pic.split(",");
+                            edit_pics.splice(0,1); 
+                            let p = 0;
+                            edit_img_pic.push({url: edit_pics[0], name: 1});
+                            // edit_pics.forEach(function (edit_pic) {
+                            //   edit_img_pic.push({url: edit_pic, name: p});
+                            //   p++;
+                            // })
                           }
-                          _editThis.defaultList = img_pic;
+                          
+                             console.log(edit_img_pic);
+                          _editThis.editDefaultList = edit_img_pic;
+                          
                           _editThis.editForm.marker = em.marker;
                         }
                       });
@@ -1030,6 +1073,7 @@
         uploadList: [],
         imgUrl: '',
         defaultList: [],
+        editDefaultList:[],
         is_audit: [],
         editButton: false,
         upData: {},
@@ -1057,7 +1101,8 @@
           is_gc: [],
           nep_type: [],
           money_from: []
-        }
+        },
+        visible: false,
       }
     },
     methods: {
@@ -1071,8 +1116,6 @@
         this.isShowButton = this.office === 0;
         this.noScheduleButton = this.office === 1;
         loadClassDepartment().then(res => {
-          console.log(res);
-
           this.dataDep1 = res;
         });
         // initDepartment().then(res => {
@@ -1294,8 +1337,18 @@
         this.imgUrl = url;
         this.visible = true;
       },
+      handleRemove (file) {
+          const fileList = this.editForm.img_progress_pic;
+          console.log(this.editForm.img_progress_pic);
+          // this.editForm.img_progress_pic.splice(fileList.indexOf(file), 1);
+          console.log(this.editForm.img_progress_pic);
+          
+      },
       handleSuccess(res, file) {
         this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
+      },
+      editHandleSuccess(res, file) {
+        this.editForm.img_progress_pic = this.editForm.img_progress_pic + ',' + res.result;
       },
       handleFormatError(file) {
         this.$Notice.warning({
