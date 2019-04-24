@@ -648,6 +648,7 @@ class ProjectController extends Controller
             $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->value('title');
             $ProjectSchedules[$k]['project_title'] = $Projects;
+            $ProjectSchedules[$k]['acc_complete']=$this->allActCompleteMoney($row['project_id'],$row['month']);
         }
         return response()->json(['result' => $ProjectSchedules], 200);
     }
@@ -810,7 +811,7 @@ class ProjectController extends Controller
             $warResult = true;
             $warData = [];
             if ($plans_amount) {
-                $Percentage = ($plans_amount - $projects['month_act_complete']) / $plans_amount;
+                $Percentage = 1-($projects['month_act_complete']/ $plans_amount);
                 if ($Percentage > 0) {
                     if ($Percentage <= 0.1 && $Percentage > 0) {
                         $warData['warning_type'] = 0;
@@ -925,7 +926,26 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
-
+    /**
+     * 累计投资
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function allActCompleteMoney($project_id,$month)
+    {
+        $plan_date=ProjectPlan::select('date','amount')->where('project_id',$project_id)->where('parent_id',0)->get()->toArray(); 
+        $result=0;
+        foreach($plan_date as $k){
+            if($k['date']<2019){
+                $result=$result+$k['amount'];
+            }else{
+                $allMonth=ProjectSchedule::where('project_id', $project_id)->where('month','<=',$month)->sum('month_act_complete');
+                $result = $result+$allMonth;
+            }
+        }
+        return $result;
+    }
     /**
      * 填报，当当月实际投资发生改变时，修改累计投资
      *
@@ -942,8 +962,8 @@ class ProjectController extends Controller
         }
         $result=0;
         foreach($plan_date as $k){
-            if($k['date']<$year&&$k['date']<2019){
-                $result=$result+(int)$k['amount'];
+            if($k['date']<2019){
+                $result=$result+$k['amount'];
             }else{
                 $result = $result+ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $year . '%')->sum('month_act_complete');
             }

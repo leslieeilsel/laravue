@@ -465,7 +465,7 @@ class LedgerController extends Controller
                 $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k+1].'4')->getFont()->setBold(true);
                 $le=$le+1;
             }
-            $acc_complete=$ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->orderBy('id','desc')->value('acc_complete');
+            $acc_complete=$ProjectC->allActCompleteMoney($data[$i]['project_id'],date('Y-m'));
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1] . $num, $acc_complete);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+2] . $num, $data[$i]['problem']);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+3] . $num, $data[$i]['plan_build_start_at']);
