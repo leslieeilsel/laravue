@@ -939,11 +939,11 @@ class ProjectController extends Controller
         foreach($plan_date as $k){
             if($k['date']<2019){
                 $result=$result+$k['amount'];
-            }else{
-                $allMonth=ProjectSchedule::where('project_id', $project_id)->where('month','<=',$month)->sum('month_act_complete');
-                $result = $result+$allMonth;
             }
         }
+        
+        $allMonth=ProjectSchedule::where('project_id', $project_id)->where('month','<=',$month)->sum('month_act_complete');
+        $result = $result+$allMonth;
         return $result;
     }
     /**

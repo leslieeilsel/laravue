@@ -15,7 +15,7 @@ use App\Models\ZipDownload;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Models\Role;
-
+use App\Models\Departments;
 class LedgerController extends Controller
 {
     public $seeIds;
@@ -365,12 +365,14 @@ class LedgerController extends Controller
         $ProjectC = new ProjectController();
         $data=$ProjectC->projectProgressM($params)->groupBy('project_id')->get()->toArray();
         $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
-        $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
+        // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
         foreach ($data as $k => $row) {
             $data[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->value('title');
             $data[$k]['project_title'] = $Projects;
-        }
+        }       
+        $schedule_data_month = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('month')->toArray();
+        $departments = Departments::where('id', Auth::user()->department_id)->value('title');
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性
@@ -384,7 +386,7 @@ class LedgerController extends Controller
         // 添加表头
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A2', '沣西新城重点项目建设进度表')
-            ->setCellValue('A3', '报送部门：'.$department_title)
+            ->setCellValue('A3', '报送部门：'.$departments)
             ->setCellValue('O3', '单位：万元')
             ->setCellValue('A4', '序号')
             ->setCellValue('B4', '项目名称')
@@ -393,7 +395,13 @@ class LedgerController extends Controller
             ->setCellValue('E4', '总投资')
             ->setCellValue('F4', '年计划投资')
             ->setCellValue('G4', '年计划形象进度');
-
+        $l=7;
+        foreach($schedule_data_month as $k=>$v){
+            $m = (int)date('m', strtotime($v));
+            $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k].'4', '1-'.$m.'月形象进度');
+            $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', '1-'.$m.'月实际完成投资');
+            $l=$l+1;
+        }
         $schedule_count = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('id')->toArray();
         $s_count=count($schedule_count)*2+6;
         $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1].'4', '自开始累积完成投资');
@@ -431,13 +439,13 @@ class LedgerController extends Controller
             $total_investor = $ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->where('is_audit',1)->max('total_investors');
             $plan_investor = ProjectPlan::where('project_id',$data[$i]['project_id'])->where('date',date('Y'))->value('amount');
             $schedule_data = $ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->get()->toArray();
-            $l=7;
-            foreach($schedule_data as $k=>$v){
-                $m = (int)date('m', strtotime($v['month']));
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k].'4', '1-'.$m.'月形象进度');
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', '1-'.$m.'月实际完成投资');
-                $l=$l+1;
-            }
+            // $l=7;
+            // foreach($schedule_data as $k=>$v){
+            //     $m = (int)date('m', strtotime($v['month']));
+            //     $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k].'4', '1-'.$m.'月形象进度');
+            //     $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', '1-'.$m.'月实际完成投资');
+            //     $l=$l+1;
+            // }
             $total_investors=$total_investors+$total_investor;
             $plan_investors=$plan_investors+$plan_investor;
             $money_from = Dict::getOptionsByName('资金来源');
@@ -450,20 +458,22 @@ class LedgerController extends Controller
             $spreadsheet->getActiveSheet()->setCellValue('G' . $num, $data[$i]['plan_img_progress']);
             $le=7;
             foreach($schedule_data as $k=>$v){
-                $month_act_complete=ProjectSchedule::whereBetween('month',[date('Y-01'),$v['month']])->where('project_id',$v['project_id'])->sum('month_act_complete');
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$k] . $num, $v['month_img_progress']);
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$k+1] . $num, $month_act_complete);
+                $ac=array_keys($schedule_data_month,$v['month']);
+                $ac=$ac[0]*2;
+                $month_act_complete=ProjectSchedule::whereBetween('month',[date('Y-01', strtotime($v['month'])),$v['month']])->where('project_id',$v['project_id'])->sum('month_act_complete');
+                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$ac] . $num, $v['month_img_progress']);
+                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$ac+1] . $num, $month_act_complete);
                 
-                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$k])->setWidth(18.88);
-                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$k+1])->setWidth(9.75);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k+1].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$ac])->setWidth(18.88);
+                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$ac+1])->setWidth(9.75);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac+1].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
                 
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k+1]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k]. '4')->getFont()->setBold(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$k+1].'4')->getFont()->setBold(true);
-                $le=$le+1;
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac+1]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac]. '4')->getFont()->setBold(true);
+                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac+1].'4')->getFont()->setBold(true);
+                // $le++;
             }
             $acc_complete=$ProjectC->allActCompleteMoney($data[$i]['project_id'],date('Y-m'));
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1] . $num, $acc_complete);
@@ -624,7 +634,7 @@ class LedgerController extends Controller
         $ProjectC = new ProjectController();
         $data=$ProjectC->allProjects($params);
         $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
-        $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
+        // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
         $countAmount=0;
         foreach ($data as $k => $row) {
             $countAmount=$countAmount+$row['amount'];
@@ -646,6 +656,7 @@ class LedgerController extends Controller
         }
         
         
+        $department_title = Departments::where('id', Auth::user()->department_id)->value('title');
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性
