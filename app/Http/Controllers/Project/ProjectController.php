@@ -942,13 +942,15 @@ class ProjectController extends Controller
             $month = date('Y-m', strtotime($params['month']));
             $year = date('Y', strtotime($params['month']));
         }
-        $result = ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $year . '%')->sum('month_act_complete');
-        $result = $result + $params['month_act_complete'];
+        $result=0;
         foreach($plan_date as $k){
-            if($k['date']<$year){
+            if($k['date']<$year&&$k['date']<2019){
                 $result=$result+(int)$k['amount'];
+            }else{
+                $result = $result+ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $year . '%')->sum('month_act_complete');
             }
         }
+        $result = $result + $params['month_act_complete'];
         if ($params['type'] == 'edit') {
             $month_money = ProjectSchedule::where('project_id', $params['project_id'])->where('month', $month)->value('month_act_complete');
             $result = $result - $month_money;
