@@ -373,10 +373,28 @@ class LedgerController extends Controller
         }       
         $schedule_data_month = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('month')->toArray();
         $departments = Departments::where('id', Auth::user()->department_id)->value('title');
-        if(isset($params['end_at'])) {
-            $end_at = date('Y-m', strtotime($params['end_at']));
-        }else{
-            $end_at = date('Y-m');
+        // if(isset($params['end_at'])) {
+        //     $end_at = date('Y-m', strtotime($params['end_at']));
+        // }else{
+        //     $end_at = date('Y-m');
+        // }
+        
+        if (isset($params['start_at']) || isset($params['end_at'])) {
+            if (isset($params['start_at']) && isset($params['end_at'])) {
+                $start_m = (int)date('m', strtotime($params['start_at']));
+                $start_at = date('Y-m', strtotime($params['start_at']));
+                $end_at = date('Y-m', strtotime($params['end_at']));
+            } else {
+                if (isset($params['start_at'])) {
+                    $start_m = (int)date('m', strtotime($params['start_at']));
+                    $start_at = date('Y-m', strtotime($params['start_at']));
+                    $end_at = date('Y-m');
+                } elseif (isset($params['end_at'])) {
+                    $start_m = (int)date('01', strtotime($params['start_at']));
+                    $start_at = date('Y-01');
+                    $end_at = date('Y-m', strtotime($params['end_at']));
+                }
+            }
         }
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
@@ -403,8 +421,8 @@ class LedgerController extends Controller
         $l=7;
         foreach($schedule_data_month as $k=>$v){
             $m = (int)date('m', strtotime($v));
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k].'4', '1-'.$m.'月形象进度');
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', '1-'.$m.'月实际完成投资');
+            $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k].'4', $start_m.'-'.$m.'月形象进度');
+            $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', $start_m.'-'.$m.'月实际完成投资');
             $l=$l+1;
         }
         $schedule_count = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('id')->toArray();
@@ -465,7 +483,7 @@ class LedgerController extends Controller
             foreach($schedule_data as $k=>$v){
                 $ac=array_keys($schedule_data_month,$v['month']);
                 $ac=$ac[0]*2;
-                $month_act_complete=ProjectSchedule::whereBetween('month',[date('Y-01', strtotime($v['month'])),$v['month']])->where('project_id',$v['project_id'])->sum('month_act_complete');
+                $month_act_complete=ProjectSchedule::whereBetween('month',[$start_m,$v['month']])->where('project_id',$v['project_id'])->sum('month_act_complete');
                 $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$ac] . $num, $v['month_img_progress']);
                 $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$ac+1] . $num, $month_act_complete);
                 
