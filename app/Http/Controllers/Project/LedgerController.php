@@ -373,6 +373,11 @@ class LedgerController extends Controller
         }       
         $schedule_data_month = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('month')->toArray();
         $departments = Departments::where('id', Auth::user()->department_id)->value('title');
+        if(isset($params['end_at'])) {
+            $end_at = date('Y-m', strtotime($params['end_at']));
+        }else{
+            $end_at = date('Y-m');
+        }
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性
@@ -475,7 +480,7 @@ class LedgerController extends Controller
                 $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac+1].'4')->getFont()->setBold(true);
                 // $le++;
             }
-            $acc_complete=$ProjectC->allActCompleteMoney($data[$i]['project_id'],date('Y-m'));
+            $acc_complete=$ProjectC->allActCompleteMoney($data[$i]['project_id'],$end_at);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1] . $num, $acc_complete);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+2] . $num, $data[$i]['problem']);
             $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+3] . $num, $data[$i]['plan_build_start_at']);
