@@ -232,7 +232,7 @@
               :on-exceeded-size="handleMaxSize"
               action="/api/project/uploadPic">
               <Button icon="ios-cloud-upload-outline">上传</Button>
-              <div style="color:#a7a5a5">文件大小不能超过600KB</div>
+              <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
             </Upload>
           </FormItem>
         </Row>
@@ -546,7 +546,6 @@
                   </div>
                 </template>
               </div>
-              <!-- <div style="color:#a7a5a5">文件大小不能超过600KB</div> -->
               <Modal title="查看照片" v-model="visible">
                 <img :src="imgUrl" v-if="visible" style="width: 100%">
               </Modal>
@@ -570,6 +569,7 @@
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </Upload>
+            <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
             <!-- <div class="demo-upload-list" v-for="item in defaultList">
               <template>
                 <img :src="item.url">
@@ -945,7 +945,7 @@
                             edit_pics.forEach(function (item) {
                               let eaaa = item.split("/");
                               let aaaa = eaaa[eaaa.length - 1];
-                              if(aaaa!='null'){
+                              if (aaaa != 'null') {
                                 edit_img_pic.push({url: '/' + item, name: aaaa});
                               }
                             })
@@ -1337,18 +1337,21 @@
       handleRemove(file) {
         const fileList = this.editDefaultList;
         this.editDefaultList.splice(file, 1);
-        if(this.editDefaultList.length>0){
-          this.editForm.img_progress_pic=this.editDefaultList.join(',');
-        }else{
-          this.editForm.img_progress_pic='';
+        if (this.editDefaultList.length > 0) {
+          this.editForm.img_progress_pic = this.editDefaultList.join(',');
+        } else {
+          this.editForm.img_progress_pic = '';
         }
-
       },
       handleSuccess(res, file) {
         this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
       },
       editHandleSuccess(res, file) {
-        this.editDefaultList.push({url:res.result,name:2});
+        let eaaa = res.result.split("/");
+        let aaaa = eaaa[eaaa.length - 1];
+        if (aaaa !== 'null') {
+          this.editDefaultList.push({url: '/' + res.result, name: aaaa});
+        }
         this.editForm.img_progress_pic = this.editForm.img_progress_pic + ',' + res.result;
       },
       handleFormatError(file) {
