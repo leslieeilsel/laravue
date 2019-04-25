@@ -10,7 +10,9 @@
     border: none;
 }
 
-.monthInput input, .monthInput .ivu-input-number {
+.monthInput input,
+.monthInput .ivu-input-number,
+.monthInput textarea {
     border-radius: unset;
 }
 

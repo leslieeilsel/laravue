@@ -81,7 +81,7 @@
         columns: [
           {
             type: 'index2',
-            width: 60,
+            width: 40,
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
@@ -91,47 +91,55 @@
           {
             title: '填报时间',
             key: 'month',
-            width: 100
+            width: 100,
+            fixed: 'left',
+            align: "center"
           },
           {
             title: '项目名称',
             key: 'title',
+            fixed: 'left',
             width: 220,
           },
           {
             title: '项目编号',
             key: 'project_num',
-            width: 100
+            width: 100,
+            align: 'left'
           },
           {
             title: '建设性质',
             key: 'nature',
-            width: 100
+            width: 100,
+            align: "center"
           },
           {
             title: '投资主体',
             key: 'subject',
-            width: 100
+            width: 200,
+            align: "left"
           },
           {
             title: '总投资',
             key: 'total_investors',
-            width: 100
+            width: 100,
+            align: "right"
           },
           {
             title: '项目建设规模及主要内容',
             key: 'acc_img_progress',
-            width: 210
+            width: 350
           },
           {
             title: '2019年计划投资(万元)',
             key: 'plan_investors',
-            width: 180
+            width: 180,
+            align: "right"
           },
           {
             title: '年度项目主要建设内容',
             key: 'plan_img_progress',
-            width: 200
+            width: 350
           },
           {
             title: '存在问题',

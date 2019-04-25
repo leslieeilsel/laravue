@@ -152,14 +152,14 @@
           </Col>
         </Row>
         <Row>
-          <Col span="12">
+          <Col span="24">
             <FormItem :label="year_investors" prop="plan_investors">
               <Input v-model="form.plan_investors" placeholder="" readonly></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col span="24">
             <FormItem :label="year_img" prop="plan_img_progress">
-              <Input type="textarea" v-model="form.plan_img_progress" placeholder="" readonly></Input>
+              <Input type="textarea" :rows="2" v-model="form.plan_img_progress" placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -180,12 +180,12 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_img" prop="month_img_progress">
-              <Input type="textarea" v-model="form.month_img_progress" placeholder="请输入..."/>
+              <Input type="textarea" :rows="3" v-model="form.month_img_progress" placeholder="请输入..."/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="累计形象进度" prop="acc_img_progress">
-              <Input type="textarea" v-model="form.acc_img_progress" placeholder="请输入..."/>
+              <Input type="textarea" :rows="3" v-model="form.acc_img_progress" placeholder="请输入..."/>
             </FormItem>
           </Col>
         </Row>
@@ -198,22 +198,19 @@
           </Col>
           <Col span="12">
             <FormItem label="土地征收情况及前期手续办理情况" prop="exp_preforma">
-              <Input v-model="form.exp_preforma" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="请输入..."></Input>
+              <Input v-model="form.exp_preforma" type="textarea" :rows="3" placeholder="请输入..."></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="存在问题" prop="problem">
-              <Input v-model="form.problem" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="请输入..."></Input>
+              <Input v-model="form.problem" type="textarea" :rows="3" placeholder="请输入..."></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="备注" prop="marker">
-              <Input v-model="form.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="请输入..."></Input>
+              <Input v-model="form.marker" type="textarea" :rows="3" placeholder="请输入..."></Input>
             </FormItem>
           </Col>
         </Row>
@@ -311,14 +308,14 @@
           </Col>
         </Row>
         <Row>
-          <Col span="12">
+          <Col span="24">
             <FormItem :label="year_investors" prop="plan_investors">
               <Input v-model="seeForm.plan_investors" placeholder="" readonly></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col span="24">
             <FormItem :label="year_img" prop="plan_img_progress">
-              <Input v-model="seeForm.plan_img_progress" placeholder="" readonly></Input>
+              <Input type="textarea" :rows="2" v-model="seeForm.plan_img_progress" placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -338,12 +335,12 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_img" prop="month_img_progress">
-              <Input type="textarea" v-model="seeForm.month_img_progress" placeholder="" readonly/>
+              <Input type="textarea" :rows="3" v-model="seeForm.month_img_progress" placeholder="" readonly/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="累计形象进度" prop="acc_img_progress">
-              <Input type="textarea" v-model="seeForm.acc_img_progress" placeholder="" readonly/>
+              <Input type="textarea" :rows="3" v-model="seeForm.acc_img_progress" placeholder="" readonly/>
             </FormItem>
           </Col>
         </Row>
@@ -355,22 +352,19 @@
           </Col>
           <Col span="12">
             <FormItem label="土地征收情况及前期手续办理情况" prop="exp_preforma">
-              <Input v-model="seeForm.exp_preforma" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="" readonly></Input>
+              <Input v-model="seeForm.exp_preforma" type="textarea" :rows="3" placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="存在问题" prop="problem">
-              <Input v-model="seeForm.problem" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder=""
-                     readonly></Input>
+              <Input v-model="seeForm.problem" type="textarea" :rows="3"  placeholder="" readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="备注" prop="marker">
-              <Input v-model="seeForm.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder=""
-                     readonly></Input>
+              <Input v-model="seeForm.marker" type="textarea" :rows="3"  placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -424,7 +418,7 @@
         <Row>
           <Col span="12">
             <FormItem label="填报项目" prop="">
-              <Input v-model="editForm.project_title" placeholder="必填项" readonly></Input>
+              <Input v-model="editForm.project_title" placeholder="" readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
@@ -437,12 +431,12 @@
         <Row>
           <Col span="12">
             <FormItem label="项目编号" prop="project_num">
-              <Input v-model="editForm.project_num" placeholder="必填项" readonly></Input>
+              <Input v-model="editForm.project_num" placeholder="" readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="投资主体" prop="subject">
-              <Input v-model="editForm.subject" placeholder="必填项" readonly></Input>
+              <Input v-model="editForm.subject" placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -469,14 +463,14 @@
           </Col>
         </Row>
         <Row>
-          <Col span="12">
+          <Col span="24">
             <FormItem :label="year_investors" prop="plan_investors">
               <Input v-model="editForm.plan_investors" placeholder="" readonly></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col span="24">
             <FormItem :label="year_img" prop="plan_img_progress">
-              <Input type="textarea" v-model="editForm.plan_img_progress" placeholder="请输入..." readonly></Input>
+              <Input type="textarea" :rows="2" v-model="editForm.plan_img_progress" placeholder="请输入..." readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -497,12 +491,12 @@
         <Row>
           <Col span="12">
             <FormItem :label="month_img" prop="month_img_progress">
-              <Input type="textarea" v-model="editForm.month_img_progress" placeholder="请输入..."/>
+              <Input type="textarea" :rows="3" v-model="editForm.month_img_progress" placeholder="请输入..."/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="累计形象进度" prop="acc_img_progress">
-              <Input type="textarea" v-model="editForm.acc_img_progress" placeholder="请输入..."/>
+              <Input type="textarea" :rows="3" v-model="editForm.acc_img_progress" placeholder="请输入..."/>
             </FormItem>
           </Col>
         </Row>
@@ -515,22 +509,19 @@
           </Col>
           <Col span="12">
             <FormItem label="土地征收情况及前期手续办理情况" prop="exp_preforma">
-              <Input v-model="editForm.exp_preforma" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="请输入..."></Input>
+              <Input v-model="editForm.exp_preforma" type="textarea" :rows="3" placeholder="请输入..."></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="存在问题" prop="problem">
-              <Input v-model="editForm.problem" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="请输入..."></Input>
+              <Input v-model="editForm.problem" type="textarea" :rows="3" placeholder="请输入..."></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="备注" prop="marker">
-              <Input v-model="editForm.marker" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                     placeholder="请输入..."></Input>
+              <Input v-model="editForm.marker" type="textarea" :rows="3" placeholder="请输入..."></Input>
             </FormItem>
           </Col>
         </Row>
@@ -698,7 +689,7 @@
         columns: [
           {
             type: 'index2',
-            width: 60,
+            width: 40,
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
@@ -708,33 +699,38 @@
           {
             title: '项目名称',
             key: 'project_title',
-            width: 250,
+            width: 200,
             fixed: 'left'
           },
           {
             title: '填报月份',
             key: 'month',
-            width: 100
+            width: 100,
+            fixed: 'left',
+            align: "center"
           },
           {
             title: '项目编号',
             key: 'project_num',
-            width: 100
+            width: 100,
+            align: "left"
           },
           {
             title: '投资主体',
             key: 'subject',
-            width: 100
+            width: 200
           },
           {
             title: '建设开始年限',
             key: 'build_start_at',
-            width: 120
+            width: 120,
+            align: "center"
           },
           {
             title: '建设结束年限',
             key: 'build_end_at',
-            width: 120
+            width: 120,
+            align: "center"
           },
           {
             title: '总投资(万元)',
@@ -751,7 +747,7 @@
           {
             title: '年计划形象进度',
             key: 'plan_img_progress',
-            width: 250
+            width: 350
           },
           {
             title: '月实际完成投资(万元)',
@@ -762,7 +758,7 @@
           {
             title: '月形象进度',
             key: 'month_img_progress',
-            width: 250
+            width: 350
           },
           {
             title: '累计完成投资(万元)',
@@ -773,7 +769,7 @@
           {
             title: '累计形象进度',
             key: 'acc_img_progress',
-            width: 250
+            width: 350
           },
           {
             title: '存在问题',
@@ -783,13 +779,26 @@
           {
             title: '计划开工时间',
             key: 'plan_build_start_at',
-            width: 120
+            width: 120,
+            align: "center"
+          },
+          {
+            title: '创建时间',
+            key: 'created_at',
+            width: 150,
+            align: "right"
+          },
+          {
+            title: '修改时间',
+            key: 'updated_at',
+            width: 150,
+            align: "right"
           },
           {
             title: '审核状态',
             key: 'is_audit',
             fixed: 'right',
-            width: 160,
+            width: 150,
             render: (h, params) => {
               let edit_button = '';
               if (params.row.is_audit === 4) {
@@ -824,7 +833,7 @@
           {
             title: '操作',
             key: 'action',
-            width: 200,
+            width: 180,
             fixed: 'right',
             align: 'center',
             render: (h, params) => {

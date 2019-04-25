@@ -253,10 +253,10 @@
             </Col>
           </Row>
           <Row style="padding-left: 25px;">
-            <Col span="8">
+            <Col span="3">
               <Input type="text" value="月份" class="borderNone"/>
             </Col>
-            <Col span="8">
+            <Col span="4">
               <FormItem
                 label="计划投资金额(万元)"
                 :required="item.required"
@@ -264,7 +264,7 @@
                 style="margin-bottom:0;">
               </FormItem>
             </Col>
-            <Col span="8">
+            <Col span="17">
               <FormItem
                 label="计划形象进度"
                 :required="item.required"
@@ -273,12 +273,12 @@
               </FormItem>
             </Col>
             <div v-for="(ite, index) in item.month">
-              <Col span="8">
+              <Col span="3">
                 <FormItem class="monthAmount">
                   <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
+              <Col span="4">
                 <FormItem
                   :prop="'projectPlan.' + index_t + '.month.' + index + '.amount'"
                   :rules="ite.monthRole"
@@ -290,12 +290,12 @@
                   </InputNumber>
                 </FormItem>
               </Col>
-              <Col span="8">
+              <Col span="17">
                 <FormItem
                   :prop="'projectPlan.' + index_t + '.month.' + index + '.image_progress'"
                   :rules="ite.monthImageProgress"
                   class="monthAmount">
-                  <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
+                  <Input type="textarea" :rows="1" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
                 </FormItem>
               </Col>
             </div>
@@ -506,10 +506,10 @@
             </Col>
           </Row>
           <Row style="padding-left: 25px;">
-            <Col span="8">
+            <Col span="3">
               <Input type="text" value="月份" class="borderNone"/>
             </Col>
-            <Col span="8">
+            <Col span="4">
               <FormItem
                 label="计划投资金额(万元)"
                 class="required-field"
@@ -517,7 +517,7 @@
                 style="margin-bottom:0;">
               </FormItem>
             </Col>
-            <Col span="8">
+            <Col span="17">
               <FormItem
                 label="计划形象进度"
                 class="required-field"
@@ -526,12 +526,12 @@
               </FormItem>
             </Col>
             <div v-for="(ite, index) in item.month">
-              <Col span="8">
+              <Col span="3">
                 <FormItem class="monthAmount">
                   <Input type="text" placeholder="" v-model="ite.date + '月'" readonly class="monthInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
+              <Col span="4">
                 <FormItem
                   :prop="'projectPlan.' + index_t + '.month.' + index + '.amount'"
                   :rules="ite.monthRole"
@@ -543,12 +543,12 @@
                   </InputNumber>
                 </FormItem>
               </Col>
-              <Col span="8">
+              <Col span="17">
                 <FormItem
                   :prop="'projectPlan.' + index_t + '.month.' + index + '.image_progress'"
                   :rules="ite.monthImageProgress"
                   class="monthAmount">
-                  <Input type="text" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
+                  <Input type="textarea" :rows="1" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
                 </FormItem>
               </Col>
             </div>
@@ -703,24 +703,24 @@
             </Col>
           </Row>
           <Row style="padding-left: 25px;">
-            <Col span="8">
+            <Col span="3">
               <Input type="text" value="月份" class="borderNone"/>
             </Col>
-            <Col span="8">
+            <Col span="4">
               <Input type="text" value="计划投资金额(万元)" class="borderNone"/>
             </Col>
-            <Col span="8">
+            <Col span="17">
               <Input type="text" value="计划形象进度" class="borderNone"/>
             </Col>
             <div v-for="(ite, index) in item.month">
-              <Col span="8">
+              <Col span="3">
                 <Input type="text" v-model="ite.date + '月'" readonly class="monthInput"/>
               </Col>
-              <Col span="8">
+              <Col span="4">
                 <Input type="text" placeholder="" v-model="ite.amount" readonly class="monthInput"/>
               </Col>
-              <Col span="8">
-                <Input type="text" placeholder="" v-model="ite.image_progress" readonly class="monthInput"/>
+              <Col span="17">
+                <Input type="textarea" :rows="1" placeholder="" v-model="ite.image_progress" readonly class="monthInput"/>
               </Col>
             </div>
           </Row>
@@ -819,7 +819,7 @@
         columns: [
           {
             type: 'index2',
-            width: 60,
+            width: 40,
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
@@ -832,11 +832,12 @@
             width: 220,
             fixed: 'left'
           },
-          // {
-          //   title: '项目编号',
-          //   key: 'num',
-          //   width: 100
-          // },
+          {
+            title: '项目编号',
+            key: 'num',
+            width: 100,
+            align: 'left'
+          },
           {
             title: '建设状态',
             key: 'status',
@@ -1566,7 +1567,7 @@
               console.log("百度地图脚本初始化成功...");
 
               this.editView = new BMap.Map("editMap", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
-              this.editView.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
+              // this.editView.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
               this.editView.addControl(new BMap.MapTypeControl({
                 type: BMAP_MAPTYPE_CONTROL_HORIZONTAL, // 按钮水平方式展示，默认采用此类型展示
                 mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP], // 控件展示的地图类型
@@ -1659,7 +1660,7 @@
               console.log("百度地图脚本初始化成功...");
 
               this.onlyView = new BMap.Map("onlyView", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
-              this.onlyView.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
+              // this.onlyView.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
               this.onlyView.addControl(new BMap.MapTypeControl({
                 type: BMAP_MAPTYPE_CONTROL_HORIZONTAL, // 按钮水平方式展示，默认采用此类型展示
                 mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP], // 控件展示的地图类型
@@ -1752,7 +1753,7 @@
               console.log("百度地图脚本初始化成功...");
 
               this.editView = new BMap.Map("editMap", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
-              this.editView.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
+              // this.editView.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
               this.editView.addControl(new BMap.MapTypeControl({
                 type: BMAP_MAPTYPE_CONTROL_HORIZONTAL, // 按钮水平方式展示，默认采用此类型展示
                 mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP], // 控件展示的地图类型
@@ -1812,7 +1813,7 @@
       },
       showAddMap(allPoints) {
         this.addViewMap = new BMap.Map("addViewMap", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
-        this.addViewMap.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
+        // this.addViewMap.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
         this.addViewMap.addControl(new BMap.MapTypeControl({
           type: BMAP_MAPTYPE_CONTROL_HORIZONTAL, // 按钮水平方式展示，默认采用此类型展示
           mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP], // 控件展示的地图类型
