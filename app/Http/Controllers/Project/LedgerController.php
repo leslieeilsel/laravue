@@ -641,6 +641,7 @@ class LedgerController extends Controller
         $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
         // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
         $countAmount=0;
+        $countPlanAmount=0;
         foreach ($data as $k => $row) {
             $countAmount=$countAmount+$row['amount'];
             $data[$k]['amount'] = number_format($row['amount'], 2);
@@ -652,11 +653,13 @@ class LedgerController extends Controller
             $data[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
             $data[$k]['nep_type'] = isset($row['nep_type']) ? Dict::getOptionsArrByName('国民经济计划分类')[$row['nep_type']] : '';
             $data[$k]['projectPlan'] = $ProjectC->getPlanData($row['id'], '');
+            // $data[$k]['projectPlan'] = ProjectPlan::where('project_id', $row['id'])->where('date', (int)date('Y'))->first();
             $data[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
             $planAmount=$data[$k]['projectPlan'];
-            $countPlanAmount=0;
             foreach($planAmount as $k=>$v){
-                $countPlanAmount=$countPlanAmount+$v['amount'];
+                if($v['date']==date('Y')){
+                    $countPlanAmount=$countPlanAmount+$v['amount'];
+                }
             }
         }
         
