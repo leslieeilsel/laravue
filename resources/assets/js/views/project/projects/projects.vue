@@ -1024,7 +1024,7 @@
                             row.required = true;
                             if (row.month !== undefined) {
                               row.month.forEach(function (e) {
-                                e.monthRole = {required: true, message: '月计划投资金额不能为空', trigger: 'blur', type: 'number'};
+                                e.monthRole = {required: true, message: '不能为空', trigger: 'blur', type: 'number'};
                                 e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
                                 e.monthPlaceholder = '必填项';
                               });
