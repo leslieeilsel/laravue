@@ -943,10 +943,10 @@
                           if (em.img_progress_pic) {
                             let edit_pics = em.img_progress_pic.split(",");
                             edit_pics.forEach(function (item) {
-                              let eaaa = item.split("/");
-                              let aaaa = eaaa[eaaa.length - 1];
-                              if (aaaa != 'null') {
-                                edit_img_pic.push({url: '/' + item, name: aaaa});
+                              let files = item.split("/");
+                              let fileName = files[files.length - 1];
+                              if (fileName !== 'null') {
+                                edit_img_pic.push({url: item, name: fileName});
                               }
                             })
                           }
@@ -1336,9 +1336,17 @@
       },
       handleRemove(file) {
         const fileList = this.editDefaultList;
-        this.editDefaultList.splice(file, 1);
-        if (this.editDefaultList.length > 0) {
-          this.editForm.img_progress_pic = this.editDefaultList.join(',');
+        fileList.forEach(function (fileObj, index) {
+          if (file === fileObj.url) {
+            fileList.splice(index, 1);
+          }
+        });
+        if (fileList.length > 0) {
+          let fileUrl = [];
+          fileList.forEach(function (obj) {
+            fileUrl.push(obj.url);
+          });
+          this.editForm.img_progress_pic = fileUrl.join(',');
         } else {
           this.editForm.img_progress_pic = '';
         }
@@ -1347,10 +1355,10 @@
         this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
       },
       editHandleSuccess(res, file) {
-        let eaaa = res.result.split("/");
-        let aaaa = eaaa[eaaa.length - 1];
-        if (aaaa !== 'null') {
-          this.editDefaultList.push({url: '/' + res.result, name: aaaa});
+        let files = res.result.split("/");
+        let fileName = files[files.length - 1];
+        if (fileName !== 'null') {
+          this.editDefaultList.push({url: res.result, name: fileName});
         }
         this.editForm.img_progress_pic = this.editForm.img_progress_pic + ',' + res.result;
       },
