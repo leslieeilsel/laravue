@@ -163,7 +163,7 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="国民经济计划分类" prop="nep_type">
+            <FormItem label="国民经济计划分类" prop="nep_type" :rules="isGcRole">
               <Select v-model="form.nep_type" :disabled="addNepDisabled">
                 <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
@@ -427,13 +427,13 @@
         <Row>
           <Col span="12">
             <FormItem label="项目标识(是否为国民经济计划)" prop="is_gc">
-              <Select v-model="editForm.is_gc" @on-change="onAddIsGcChange" v-bind:disabled="isAdjustReadOnly">
+              <Select v-model="editForm.is_gc" @on-change="onEditIsGcChange" v-bind:disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="国民经济计划分类" prop="nep_type">
+            <FormItem label="国民经济计划分类" prop="nep_type" :rules="isGcRole">
               <Select v-model="editForm.nep_type" :disabled="addNepDisabled">
                 <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
@@ -776,6 +776,7 @@
   export default {
     data: function () {
       return {
+        isGcRole: {required: false},
         noMap: false,
         haveMap: false,
         iframeHeight: 0,
@@ -2618,10 +2619,26 @@
         });
       },
       onAddIsGcChange(value) {
-        this.addNepDisabled = value !== 1;
-        if (this.addNepDisabled) {
+        if (value !== 1) {
           this.form.nep_type = '';
+          this.isGcRole = {required: false};
+          this.$refs.formValidate.$children[6].$el.children[1].children[0].className = 'ivu-form-item';
+        } else {
+          this.isGcRole = {required: true, message: '国民经济计划分类不能为空', trigger: 'change', type: 'number'};
+          this.$refs.formValidate.$children[6].$el.children[1].children[0].className = 'ivu-form-item ivu-form-item-required';
         }
+        this.addNepDisabled = value !== 1;
+      },
+      onEditIsGcChange(value) {
+        if (value !== 1) {
+          this.editForm.nep_type = '';
+          this.isGcRole = {required: false};
+          this.$refs.formValidate.$children[6].$el.children[1].children[0].className = 'ivu-form-item';
+        } else {
+          this.isGcRole = {required: true, message: '国民经济计划分类不能为空', trigger: 'change', type: 'number'};
+          this.$refs.formValidate.$children[6].$el.children[1].children[0].className = 'ivu-form-item ivu-form-item-required';
+        }
+        this.addNepDisabled = value !== 1;
       },
       onSearchIsGcChange(value) {
         this.searchNepDisabled = value !== 1;
