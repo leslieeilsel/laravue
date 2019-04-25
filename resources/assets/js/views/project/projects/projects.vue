@@ -163,7 +163,7 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="国民经济计划分类" prop="nep_type">
+            <FormItem label="国民经济计划分类" prop="nep_type" :rules="isGcRole">
               <Select v-model="form.nep_type" :disabled="addNepDisabled">
                 <Option v-for="item in dict.nep_type" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
@@ -776,6 +776,7 @@
   export default {
     data: function () {
       return {
+        isGcRole: {required: false},
         noMap: false,
         haveMap: false,
         iframeHeight: 0,
@@ -2621,6 +2622,11 @@
         this.addNepDisabled = value !== 1;
         if (this.addNepDisabled) {
           this.form.nep_type = '';
+          this.isGcRole = {required: false};
+          this.$refs.formValidate.$children[6].$el.children[1].children[0].className = 'ivu-form-item';
+        } else {
+          this.isGcRole = {required: true, message: '国民经济计划分类不能为空', trigger: 'change', type: 'number'};
+          this.$refs.formValidate.$children[6].$el.children[1].children[0].className = 'ivu-form-item ivu-form-item-required';
         }
       },
       onSearchIsGcChange(value) {
