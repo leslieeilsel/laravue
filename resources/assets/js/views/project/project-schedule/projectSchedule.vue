@@ -1123,8 +1123,6 @@
         this.noScheduleButton = this.office === 1;
         loadClassDepartment().then(res => {
           this.dataDep1 = res;
-          this.loadDataTree();
-          this.getDictData();
         });
         // initDepartment().then(res => {
         //   res.result.forEach(function (e) {
@@ -1139,8 +1137,8 @@
         //   });
         //   this.dataDep = res.result;
         //   console.log(this.dataDep);
-        //   this.loadDataTree();
-          // this.getDictData();
+          // this.loadDataTree();
+          this.getDictData();
         // });
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
