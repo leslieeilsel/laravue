@@ -8,7 +8,7 @@
         <FormItem label="填报起止时间" prop="build_at">
           <Row style="width: 220px">
             <Col span="11">
-              <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" readonly v-model="searchForm.start_at">
+              <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
               </DatePicker>
             </Col>
             <Col span="2" style="text-align: center">-</Col>
@@ -1148,7 +1148,7 @@
       getProjectScheduleList() {
         this.tableLoading = true;
         this.searchForm.is_audit = this.$route.params.is_audit;
-        this.searchForm.start_at=new Date().getFullYear() + '-01';
+        // this.searchForm.start_at=new Date().getFullYear() + '-01';
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
           //分页显示所有数据总数

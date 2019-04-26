@@ -620,7 +620,8 @@ class ProjectController extends Controller
                 if (isset($data['start_at'])) {
                     $data['start_at'] = date('Y-m', strtotime($data['start_at']));
                     $query = $query->where('month', $data['start_at']);
-                } elseif (isset($data['end_at'])) {
+                } else
+                if (isset($data['end_at'])) {
                     $data['end_at'] = date('Y-m', strtotime($data['end_at']));
                     $query = $query->where('month', $data['end_at']);
                 }
