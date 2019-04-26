@@ -406,15 +406,21 @@ class ProjectController extends Controller
     {
         $params = $request->input('searchForm');
         $projects = $this->allProjects($params);
+        $type = Dict::getOptionsArrByName('工程类项目分类');
+        $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
+        $status = Dict::getOptionsArrByName('项目状态');
+        $money_from = Dict::getOptionsArrByName('资金来源');
+        $build_type = Dict::getOptionsArrByName('建设性质');
+        $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
-            $projects[$k]['type'] = Dict::getOptionsArrByName('工程类项目分类')[$row['type']];
-            $projects[$k]['is_gc'] = Dict::getOptionsArrByName('是否为国民经济计划')[$row['is_gc']];
-            $projects[$k]['status'] = Dict::getOptionsArrByName('项目状态')[$row['status']];
-            $projects[$k]['money_from'] = Dict::getOptionsArrByName('资金来源')[$row['money_from']];
-            $projects[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
-            $projects[$k]['nep_type'] = isset($row['nep_type']) ? Dict::getOptionsArrByName('国民经济计划分类')[$row['nep_type']] : '';
+            $projects[$k]['type'] = $type[$row['type']];
+            $projects[$k]['is_gc'] = $is_gc[$row['is_gc']];
+            $projects[$k]['status'] = $status[$row['status']];
+            $projects[$k]['money_from'] = $money_from[$row['money_from']];
+            $projects[$k]['build_type'] = $build_type[$row['build_type']];
+            $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
         }
@@ -425,11 +431,10 @@ class ProjectController extends Controller
     public function getEditFormData(Request $request)
     {
         $id = $request->input('id');
-
         $projects = Projects::where('id', $id)->first()->toArray();
 
-//        $projects['plan_start_at'] = date('Y-m', strtotime($projects['plan_start_at']));
-//        $projects['plan_end_at'] = date('Y-m', strtotime($projects['plan_end_at']));
+        // $projects['plan_start_at'] = date('Y-m', strtotime($projects['plan_start_at']));
+        // $projects['plan_end_at'] = date('Y-m', strtotime($projects['plan_end_at']));
         $projects['amount'] = (float)$projects['amount'];
         $projects['land_amount'] = $projects['land_amount'] ? (float)$projects['land_amount'] : null;
 
@@ -447,9 +452,13 @@ class ProjectController extends Controller
      */
     public function getPlanData($project_id, $status)
     {
-        $projectPlans = ProjectPlan::where('project_id', $project_id)->where('parent_id', 0)->get()->toArray();
+        $projectPlans = ProjectPlan::select('id', 'date', 'project_id', 'parent_id', 'amount', 'image_progress')
+            ->where('project_id', $project_id)->get()->toArray();
+        $projectPlans = collect($projectPlans);
+        $projectPlanParents = $projectPlans->where('parent_id', 0);
+        $projectPlanParents = array_values($projectPlanParents->all());
         $data = [];
-        foreach ($projectPlans as $k => $row) {
+        foreach ($projectPlanParents as $k => $row) {
             $data[$k]['date'] = $row['date'];
             if ($status === 'preview') {
                 $data[$k]['amount'] = isset($row['amount']) ? number_format($row['amount'], 2) : null;
@@ -457,7 +466,7 @@ class ProjectController extends Controller
                 $data[$k]['amount'] = isset($row['amount']) ? (float)$row['amount'] : null;
             }
             $data[$k]['image_progress'] = $row['image_progress'];
-            $monthPlan = ProjectPlan::where('parent_id', $row['id'])->get()->toArray();
+            $monthPlan = array_values($projectPlans->where('parent_id', $row['id'])->all());
             foreach ($monthPlan as $key => $v) {
                 $data[$k]['month'][$key]['date'] = $v['date'];
                 if ($status === 'preview') {
@@ -620,8 +629,7 @@ class ProjectController extends Controller
                 if (isset($data['start_at'])) {
                     $data['start_at'] = date('Y-m', strtotime($data['start_at']));
                     $query = $query->where('month', $data['start_at']);
-                } else
-                if (isset($data['end_at'])) {
+                } elseif (isset($data['end_at'])) {
                     $data['end_at'] = date('Y-m', strtotime($data['end_at']));
                     $query = $query->where('month', $data['end_at']);
                 }
@@ -649,7 +657,7 @@ class ProjectController extends Controller
             $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->value('title');
             $ProjectSchedules[$k]['project_title'] = $Projects;
-            $ProjectSchedules[$k]['acc_complete']=$this->allActCompleteMoney($row['project_id'],$row['month']);
+            $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
         }
         return response()->json(['result' => $ProjectSchedules], 200);
     }
@@ -812,7 +820,7 @@ class ProjectController extends Controller
             $warResult = true;
             $warData = [];
             if ($plans_amount) {
-                $Percentage = 1-($projects['month_act_complete']/ $plans_amount);
+                $Percentage = 1 - ($projects['month_act_complete'] / $plans_amount);
                 if ($Percentage > 0) {
                     if ($Percentage <= 0.1 && $Percentage > 0) {
                         $warData['warning_type'] = 0;
@@ -927,26 +935,28 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+
     /**
      * 累计投资
      *
      * @param Request $request
      * @return JsonResponse
      */
-    public function allActCompleteMoney($project_id,$month)
+    public function allActCompleteMoney($project_id, $month)
     {
-        $plan_date=ProjectPlan::select('date','amount')->where('project_id',$project_id)->where('parent_id',0)->get()->toArray(); 
-        $result=0;
-        foreach($plan_date as $k){
-            if($k['date']<2019){
-                $result=$result+$k['amount'];
+        $plan_date = ProjectPlan::select('date', 'amount')->where('project_id', $project_id)->where('parent_id', 0)->get()->toArray();
+        $result = 0;
+        foreach ($plan_date as $k) {
+            if ($k['date'] < 2019) {
+                $result = $result + $k['amount'];
             }
         }
-        
-        $allMonth=ProjectSchedule::where('project_id', $project_id)->where('month','<=',$month)->sum('month_act_complete');
-        $result = $result+$allMonth;
+
+        $allMonth = ProjectSchedule::where('project_id', $project_id)->where('month', '<=', $month)->sum('month_act_complete');
+        $result = $result + $allMonth;
         return $result;
     }
+
     /**
      * 填报，当当月实际投资发生改变时，修改累计投资
      *
@@ -956,17 +966,17 @@ class ProjectController extends Controller
     public function actCompleteMoney(Request $request)
     {
         $params = $request->input();
-        $plan_date=ProjectPlan::select('date','amount')->where('project_id',$params['project_id'])->where('parent_id',0)->get()->toArray(); 
+        $plan_date = ProjectPlan::select('date', 'amount')->where('project_id', $params['project_id'])->where('parent_id', 0)->get()->toArray();
         if ($params['month']) {
             $month = date('Y-m', strtotime($params['month']));
             $year = date('Y', strtotime($params['month']));
         }
-        $result=0;
-        foreach($plan_date as $k){
-            if($k['date']<2019){
-                $result=$result+$k['amount'];
-            }else{
-                $result = $result+ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $year . '%')->sum('month_act_complete');
+        $result = 0;
+        foreach ($plan_date as $k) {
+            if ($k['date'] < 2019) {
+                $result = $result + $k['amount'];
+            } else {
+                $result = $result + ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $year . '%')->sum('month_act_complete');
             }
         }
         $result = $result + $params['month_act_complete'];
@@ -1116,5 +1126,4 @@ class ProjectController extends Controller
         }
         return response()->json(['result' => $result], 200);
     }
-
 }
