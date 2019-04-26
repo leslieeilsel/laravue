@@ -575,7 +575,11 @@ class ProjectController extends Controller
     public function projectProgressM($data)
     {
         $query = new ProjectSchedule;
-        if (isset($data['department_id']) && count($data['department_id']) > 0) {
+        if (isset($data['department_id'])) {
+           if(gettype($data['department_id'])=='string'){
+                $data['department_id']=explode(',',$data['department_id']);
+           }
+            // count($data['department_id']) > 0
             $user_ids = DB::table('users')->select('id')->where('department_id', $data['department_id'][1])->get()->toArray();
             $user_id = array_column($user_ids, 'id');
             $query = $query->whereIn('user_id', $user_id);

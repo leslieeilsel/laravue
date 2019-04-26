@@ -1437,6 +1437,7 @@
         window.location.href = "/api/project/exportSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
       },//下载
       downloadPic() {
+        let title = this.searchForm.title;
         let project_id = this.searchForm.project_id;
         let project_num = this.searchForm.project_num;
         let subject = this.searchForm.subject;
@@ -1455,7 +1456,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/downLoadSchedule?project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
+        window.location.href = "/api/project/downLoadSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
       },
       changePage(index) {
         //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
