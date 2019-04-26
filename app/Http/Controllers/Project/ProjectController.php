@@ -559,8 +559,27 @@ class ProjectController extends Controller
         if ($data['plan_build_start_at']) {
             $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
         }
+        $project_title=Projects::where('id',$data['project_id'])->value('title');
+        $path = 'storage/project/project-schedule/'.$project_title.'/'.$data['month'];
         if ($data['img_progress_pic']) {
-            $data['img_progress_pic'] = substr($data['img_progress_pic'], 1);
+            $data['img_progress_pic'] = $data['img_progress_pic'];
+
+            $imgProgressPic=explode(',',$data['img_progress_pic']);
+            $handler = opendir($path);
+            while (($filename = readdir($handler)) !== false) {
+                if ($filename != "." && $filename != "..") {
+                    if(!in_array($path.'/'.$filename,$imgProgressPic)){
+                        unlink($path.'/'.$filename);
+                    }
+                }
+            }
+        }else{
+            $handler = opendir($path);
+            while (($filename = readdir($handler)) !== false) {
+                if ($filename != "." && $filename != "..") {
+                    unlink($path.'/'.$filename);
+                }
+            }
         }
         $data['is_audit'] = 4;
         $data['plan_id'] = $plan_month_id;
@@ -789,12 +808,30 @@ class ProjectController extends Controller
             }
         }
         $id = $data['id'];
+        $path = 'storage/project/project-schedule/'.$data['project_title'].'/'.$data['month'];
+        if($data['img_progress_pic']){
+            $imgProgressPic=explode(',',$data['img_progress_pic']);
+            $handler = opendir($path);
+            while (($filename = readdir($handler)) !== false) {
+                if ($filename != "." && $filename != "..") {
+                    if(!in_array($path.'/'.$filename,$imgProgressPic)){
+                        unlink($path.'/'.$filename);
+                    }
+                }
+            }
+        }else{
+            $handler = opendir($path);
+            while (($filename = readdir($handler)) !== false) {
+                if ($filename != "." && $filename != "..") {
+                    unlink($path.'/'.$filename);
+                }
+            }
+        }
         unset(
             $data['id'], $data['updated_at'], $data['project_id'], $data['subject'], $data['project_num'],
             $data['build_start_at'], $data['build_end_at'], $data['total_investors'], $data['plan_start_at'],
             $data['plan_investors'], $data['plan_img_progress'], $data['month'], $data['project_title']
         );
-
         $result = ProjectSchedule::where('id', $id)->update($data);
 
         if ($result) {

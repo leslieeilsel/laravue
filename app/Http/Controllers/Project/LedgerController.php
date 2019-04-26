@@ -334,6 +334,18 @@ class LedgerController extends Controller
      */
     public function downLoadSchedule(Request $request)
     {
+        $path = 'storage/project/project-schedule';
+        $handler = opendir($path);
+        while (($filename = readdir($handler)) !== false) {
+            if ($filename != "." && $filename != "..") {
+                $fileInfo=pathinfo($path.'/'.$filename);
+                if(isset($fileInfo['extension'])){
+                    if($fileInfo['extension']==='zip'){
+                        unlink($path.'/'.$filename);
+                    }
+                }
+            }
+        }
         $params = $request->input();
         $ProjectC = new ProjectController();
         $data = $ProjectC->projectProgressM($params)->get()->toArray();
@@ -342,7 +354,6 @@ class LedgerController extends Controller
             $data[$k]['project_title'] = $Projects;
         }
         $zip = new ZipDownload();
-        $path = 'storage/project/project-schedule';
         $url = $zip->downloadImages($path, $data,$params);
         $is_file = file_exists($url);
         if ($is_file) {

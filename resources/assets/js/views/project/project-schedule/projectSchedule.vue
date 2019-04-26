@@ -1349,7 +1349,7 @@
           if (file === fileObj.url) {
             fileList.splice(index, 1);
           }
-        });
+        });        
         if (fileList.length > 0) {
           let fileUrl = [];
           fileList.forEach(function (obj) {
@@ -1361,7 +1361,11 @@
         }
       },
       handleSuccess(res, file) {
-        this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
+        if(this.form.img_progress_pic){
+          this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
+        }else{
+          this.form.img_progress_pic = res.result;
+        }
       },
       editHandleSuccess(res, file) {
         let files = res.result.split("/");
@@ -1369,7 +1373,13 @@
         if (fileName !== 'null') {
           this.editDefaultList.push({url: res.result, name: fileName});
         }
-        this.editForm.img_progress_pic = this.editForm.img_progress_pic + ',' + res.result;
+        if(this.editForm.img_progress_pic){
+          console.log(this.editForm.img_progress_pic);
+          
+          this.editForm.img_progress_pic = this.editForm.img_progress_pic + ',' + res.result;
+        }else{
+          this.editForm.img_progress_pic = res.result;
+        }
       },
       handleFormatError(file) {
         this.$Notice.warning({
