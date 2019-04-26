@@ -379,23 +379,16 @@ class LedgerController extends Controller
         //     $end_at = date('Y-m');
         // }
         
-        if (isset($params['start_at']) || isset($params['end_at'])) {
-            if (isset($params['start_at']) && isset($params['end_at'])) {
-                $start_m = (int)date('m', strtotime($params['start_at']));
-                $start_at = date('Y-m', strtotime($params['start_at']));
-                $end_at = date('Y-m', strtotime($params['end_at']));
-            } else {
-                if (isset($params['start_at'])) {
-                    $start_m = (int)date('m', strtotime($params['start_at']));
-                    $start_at = date('Y-m', strtotime($params['start_at']));
-                    $end_at = date('Y-m');
-                } elseif (isset($params['end_at'])) {
-                    $start_m = (int)date('01', strtotime($params['start_at']));
-                    $start_at = date('Y-01');
-                    $end_at = date('Y-m', strtotime($params['end_at']));
-                }
-            }
+        $start_m = 1;
+        $start_at = date('Y-01');
+        if (isset($params['end_at'])) {
+            $end_at = date('Y-m', strtotime($params['end_at']));
+            $end_m = (int)date('m', strtotime($params['end_at']));
+        }else{
+            $end_at = date('Y-m');
+            $end_m = (int)date('m');
         }
+            
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性
@@ -419,21 +412,17 @@ class LedgerController extends Controller
             ->setCellValue('F4', '年计划投资')
             ->setCellValue('G4', '年计划形象进度');
         $l=7;
-        foreach($schedule_data_month as $k=>$v){
-            $m = (int)date('m', strtotime($v));
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k].'4', $start_m.'-'.$m.'月形象进度');
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', $start_m.'-'.$m.'月实际完成投资');
-            $l=$l+1;
-        }
+        $spreadsheet->getActiveSheet()->setCellValue('H4', $start_m.'-'.$end_m.'月形象进度');
+        $spreadsheet->getActiveSheet()->setCellValue('I4', $start_m.'-'.$end_m.'月实际完成投资');
         $schedule_count = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('id')->toArray();
         $s_count=count($schedule_count)*2+6;
-        $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1].'4', '自开始累积完成投资');
-        $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+2].'4', '存在问题');
-        $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+3].'4', '开工/计划开工时间');
-        $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+4].'4', '土地征收情况及前期手续办理情况');
-        $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+5].'4', '资金来源');
-        $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+6].'4', '形象进度照片');
-        $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+7].'4', '备注');
+        $spreadsheet->getActiveSheet()->setCellValue('J4', '自开始累积完成投资');
+        $spreadsheet->getActiveSheet()->setCellValue('K4', '存在问题');
+        $spreadsheet->getActiveSheet()->setCellValue('L4', '开工/计划开工时间');
+        $spreadsheet->getActiveSheet()->setCellValue('M4', '土地征收情况及前期手续办理情况');
+        $spreadsheet->getActiveSheet()->setCellValue('N4', '资金来源');
+        $spreadsheet->getActiveSheet()->setCellValue('O4', '形象进度照片');
+        $spreadsheet->getActiveSheet()->setCellValue('P4', '备注');
         //居中
         $numberStyleCenter = [
             'alignment' => [
@@ -479,33 +468,33 @@ class LedgerController extends Controller
             $spreadsheet->getActiveSheet()->setCellValue('E' . $num, $total_investor);
             $spreadsheet->getActiveSheet()->setCellValue('F' . $num, $plan_investor);
             $spreadsheet->getActiveSheet()->setCellValue('G' . $num, $data[$i]['plan_img_progress']);
-            $le=7;
-            foreach($schedule_data as $k=>$v){
-                $ac=array_keys($schedule_data_month,$v['month']);
-                $ac=$ac[0]*2;
-                $month_act_complete=ProjectSchedule::whereBetween('month',[$start_m,$v['month']])->where('project_id',$v['project_id'])->sum('month_act_complete');
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$ac] . $num, $v['month_img_progress']);
-                $spreadsheet->getActiveSheet()->setCellValue($Letter[$le+$ac+1] . $num, $month_act_complete);
+            // $le=7;
+            // foreach($schedule_data as $k=>$v){
+            //     $ac=array_keys($schedule_data_month,$v['month']);
+            //     $ac=$ac[0]*2;
+                $month_act_complete=ProjectSchedule::whereBetween('month',[$start_at,$end_at])->where('project_id',$data[$i]['project_id'])->sum('month_act_complete');
+                $spreadsheet->getActiveSheet()->setCellValue('H'. $num, $data[$i]['month_img_progress']);
+                $spreadsheet->getActiveSheet()->setCellValue('i' . $num, $month_act_complete);
                 
-                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$ac])->setWidth(18.88);
-                $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$le+$ac+1])->setWidth(9.75);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac+1].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(18.88);
+                $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(9.75);
+                $spreadsheet->getActiveSheet()->getStyle('H'.'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getStyle('I'.'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
                 
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac+1]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac]. '4')->getFont()->setBold(true);
-                $spreadsheet->getActiveSheet()->getStyle($Letter[$le+$ac+1].'4')->getFont()->setBold(true);
+                $spreadsheet->getActiveSheet()->getStyle('H'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getStyle('i'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                $spreadsheet->getActiveSheet()->getStyle('H'. '4')->getFont()->setBold(true);
+                $spreadsheet->getActiveSheet()->getStyle('i'.'4')->getFont()->setBold(true);
                 // $le++;
-            }
+            // }
             $acc_complete=$ProjectC->allActCompleteMoney($data[$i]['project_id'],$end_at);
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+1] . $num, $acc_complete);
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+2] . $num, $data[$i]['problem']);
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+3] . $num, $data[$i]['plan_build_start_at']);
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+4] . $num, $data[$i]['exp_preforma']);
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+5] . $num, $money_from[$data[$i]['money_from']]['title']);
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+6] . $num, $data[$i]['project_title']);
-            $spreadsheet->getActiveSheet()->setCellValue($Letter[$s_count+7] . $num, $data[$i]['marker']);
+            $spreadsheet->getActiveSheet()->setCellValue('J' . $num, $acc_complete);
+            $spreadsheet->getActiveSheet()->setCellValue('K' . $num, $data[$i]['problem']);
+            $spreadsheet->getActiveSheet()->setCellValue('L' . $num, $data[$i]['plan_build_start_at']);
+            $spreadsheet->getActiveSheet()->setCellValue('M' . $num, $data[$i]['exp_preforma']);
+            $spreadsheet->getActiveSheet()->setCellValue('N' . $num, $money_from[$data[$i]['money_from']]['title']);
+            $spreadsheet->getActiveSheet()->setCellValue('O' . $num, $data[$i]['project_title']);
+            $spreadsheet->getActiveSheet()->setCellValue('P' . $num, $data[$i]['marker']);
             $num++;
         }
         $spreadsheet->getActiveSheet()->setCellValue('A' . $num, '合计：' . count($data) . ' 个');
@@ -513,10 +502,10 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->setCellValue('F' . $num, $plan_investors);
         // 合并行、列
         $spreadsheet->getActiveSheet()
-            ->mergeCells('A1:'.$Letter[$s_count+7].'1')
-            ->mergeCells('A2:'.$Letter[$s_count+7].'2')
+            ->mergeCells('A1:'.'p1')
+            ->mergeCells('A2:'.'P2')
             ->mergeCells('A3:N3')
-            ->mergeCells('O3:'.$Letter[$s_count+7].'3');
+            ->mergeCells('O3:'.'P3');
         $num = 5+count($data);
         $spreadsheet->getActiveSheet()->mergeCells('A' . $num . ":C" . $num);
         $spreadsheet->getActiveSheet()->mergeCells('H' . $num . ":I" . $num);
@@ -530,13 +519,13 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(27.63);
         $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(18.88);
         $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(9.75);
-        $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$s_count+1])->setWidth(9.75);
-        $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$s_count+2])->setWidth(9.75);
-        $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$s_count+3])->setWidth(16.75);
-        $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$s_count+4])->setWidth(9.75);
-        $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$s_count+5])->setWidth(20.51);
-        $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$s_count+6])->setWidth(17.63);
-        $spreadsheet->getActiveSheet()->getColumnDimension($Letter[$s_count+7])->setWidth(17.63);
+        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(9.75);
+        $spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(9.75);
+        $spreadsheet->getActiveSheet()->getColumnDimension('L')->setWidth(16.75);
+        $spreadsheet->getActiveSheet()->getColumnDimension('M')->setWidth(9.75);
+        $spreadsheet->getActiveSheet()->getColumnDimension('N')->setWidth(20.51);
+        $spreadsheet->getActiveSheet()->getColumnDimension('O')->setWidth(17.63);
+        $spreadsheet->getActiveSheet()->getColumnDimension('P')->setWidth(17.63);
         // 设置高度
         $spreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(19);
         $spreadsheet->getActiveSheet()->getRowDimension('2')->setRowHeight(52);
@@ -558,13 +547,13 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->getStyle('E4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
         $spreadsheet->getActiveSheet()->getStyle('F4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
         $spreadsheet->getActiveSheet()->getStyle('G4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+1].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+2].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+3].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+4].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+5].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+6].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+7].'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('J4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('K4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('L4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('M4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('N4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('O4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+        $spreadsheet->getActiveSheet()->getStyle('P4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
 
 
         $num = 5;
@@ -576,13 +565,15 @@ class LedgerController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('E' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
             $spreadsheet->getActiveSheet()->getStyle('F' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
             $spreadsheet->getActiveSheet()->getStyle('G' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+1]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+2]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+3]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+4]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+5]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+6]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
-            $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+7]. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('H'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('I'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('J'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('K'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('L'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('M'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('N'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('O'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+            $spreadsheet->getActiveSheet()->getStyle('P'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
             $num++;
         }
         $spreadsheet->getActiveSheet()->getStyle('A' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
@@ -598,12 +589,12 @@ class LedgerController extends Controller
                 ]
             ],
         ];
-        $spreadsheet->getActiveSheet()->getStyle('A1:'.$Letter[$s_count+7].'1')->applyFromArray($borderStyleArray);
-        $spreadsheet->getActiveSheet()->getStyle('A2:'.$Letter[$s_count+7].'2')->applyFromArray($borderStyleArray);
-        $spreadsheet->getActiveSheet()->getStyle('A3:'.$Letter[$s_count+7].'3')->applyFromArray($borderStyleArray);
-        $spreadsheet->getActiveSheet()->getStyle('O3:'.$Letter[$s_count+7].'3')->applyFromArray($borderStyleArray);  
+        $spreadsheet->getActiveSheet()->getStyle('A1:P1')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A2:P2')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('A3:N3')->applyFromArray($borderStyleArray);
+        $spreadsheet->getActiveSheet()->getStyle('O3:P3')->applyFromArray($borderStyleArray);  
         for($c=3;$c<count($data)+6;$c++){
-            for($l=0;$l<$s_count+8;$l++){
+            for($l=0;$l<16;$l++){
                 $spreadsheet->getActiveSheet()->getStyle($Letter[$l].$c)->applyFromArray($borderStyleArray);
             }
         }
@@ -616,13 +607,16 @@ class LedgerController extends Controller
         $spreadsheet->getActiveSheet()->getStyle('E4')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle('F4')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle('G4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+1].'4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+2].'4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+3].'4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+4].'4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+5].'4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+6].'4')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle($Letter[$s_count+7].'4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('J4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('H4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('I4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('J4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('K4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('L4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('M4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('N4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('O4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('p4')->getFont()->setBold(true);
         // 重命名 worksheet
         $spreadsheet->getActiveSheet()->setTitle('项目进度报表');
         // 将活动工作表索引设置为第一个工作表，以便Excel将其作为第一个工作表打开
