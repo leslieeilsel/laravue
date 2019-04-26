@@ -343,7 +343,7 @@ class LedgerController extends Controller
         }
         $zip = new ZipDownload();
         $path = 'storage/project/project-schedule';
-        $url = $zip->downloadImages($path, $data);
+        $url = $zip->downloadImages($path, $data,$params);
         $is_file = file_exists($url);
         if ($is_file) {
             return response()->download($url);
