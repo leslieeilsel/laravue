@@ -435,8 +435,8 @@ class ProjectController extends Controller
 
         // $projects['plan_start_at'] = date('Y-m', strtotime($projects['plan_start_at']));
         // $projects['plan_end_at'] = date('Y-m', strtotime($projects['plan_end_at']));
-        $projects['amount'] = (float)$projects['amount'];
-        $projects['land_amount'] = $projects['land_amount'] ? (float)$projects['land_amount'] : null;
+        $projects['amount'] = (float) $projects['amount'];
+        $projects['land_amount'] = $projects['land_amount'] ? (float) $projects['land_amount'] : null;
 
         $projects['projectPlan'] = $this->getPlanData($id, 'edit');
 
@@ -463,7 +463,7 @@ class ProjectController extends Controller
             if ($status === 'preview') {
                 $data[$k]['amount'] = isset($row['amount']) ? number_format($row['amount'], 2) : null;
             } else {
-                $data[$k]['amount'] = isset($row['amount']) ? (float)$row['amount'] : null;
+                $data[$k]['amount'] = isset($row['amount']) ? (float) $row['amount'] : null;
             }
             $data[$k]['image_progress'] = $row['image_progress'];
             $monthPlan = array_values($projectPlans->where('parent_id', $row['id'])->all());
@@ -472,7 +472,7 @@ class ProjectController extends Controller
                 if ($status === 'preview') {
                     $data[$k]['month'][$key]['amount'] = isset($v['amount']) ? number_format($v['amount'], 2) : null;
                 } else {
-                    $data[$k]['month'][$key]['amount'] = isset($v['amount']) ? (float)$v['amount'] : null;
+                    $data[$k]['month'][$key]['amount'] = isset($v['amount']) ? (float) $v['amount'] : null;
                 }
                 $data[$k]['month'][$key]['image_progress'] = $v['image_progress'];
             }
@@ -506,7 +506,7 @@ class ProjectController extends Controller
             $data[$k]['key'] = $row['id'];
             $res = ProjectSchedule::where('id', $row['schedule_id'])->first();
             foreach ($projects as $kk => $v) {
-                if ($v['id'] === (int)$res->project_id) {
+                if ($v['id'] === (int) $res->project_id) {
                     $data[$k]['title'] = $v['title'];
                 }
             }
@@ -549,8 +549,8 @@ class ProjectController extends Controller
     {
         $data = $request->all();
         $data['month'] = date('Y-m', strtotime($data['month']));
-        $year = (int)date('Y', strtotime($data['month']));
-        $month = (int)date('m', strtotime($data['month']));
+        $year = (int) date('Y', strtotime($data['month']));
+        $month = (int) date('m', strtotime($data['month']));
         $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
         $plan_month_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $month)->value('id');
 
@@ -810,8 +810,8 @@ class ProjectController extends Controller
         $data = $request->all();
         $result = ProjectSchedule::where('id', $data['id'])->update(['is_audit' => $data['status'], 'reason' => $data['reason']]);
         $projects = ProjectSchedule::where('id', $data['id'])->first();
-        $year = (int)date('Y', strtotime($projects['month']));
-        $month = (int)date('m', strtotime($projects['month']));
+        $year = (int) date('Y', strtotime($projects['month']));
+        $month = (int) date('m', strtotime($projects['month']));
         $y = intval($year);
         $m = intval($month);
         $plans_amount_y = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', 0)->where('date', $y)->value('id');
@@ -860,7 +860,7 @@ class ProjectController extends Controller
             $ii = 0;
             foreach ($month as $k => $v) {
                 $monthList[$ii] = [
-                    'date' => (int)$v['month'],
+                    'date' => (int) $v['month'],
                     'amount' => null,
                     'image_progress' => '',
                 ];
