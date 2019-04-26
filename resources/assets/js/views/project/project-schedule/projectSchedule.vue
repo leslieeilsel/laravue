@@ -5,15 +5,15 @@
         <FormItem label="项目名称" prop="title">
           <Input clearable v-model="searchForm.title" placeholder="支持模糊搜索" style="width: 200px"/>
         </FormItem>
-        <FormItem label="填报起止时间" prop="build_at">
-          <Row style="width: 220px">
-            <Col span="11">
+        <FormItem label="填报时间" prop="build_at">
+          <Row style="width: 110px">
+            <!-- <Col span="11">
               <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
               </DatePicker>
             </Col>
-            <Col span="2" style="text-align: center">-</Col>
-            <Col span="11">
-              <DatePicker type="month" placeholder="结束时间" format="yyyy-MM" v-model="searchForm.end_at">
+            <Col span="2" style="text-align: center">-</Col> -->
+            <Col span="24">
+              <DatePicker type="month" placeholder="填报时间" format="yyyy-MM" v-model="searchForm.end_at">
               </DatePicker>
             </Col>
           </Row>
@@ -651,7 +651,6 @@
           title: '',
           project_num: '',
           subject: '',
-          start_at: '',
           end_at: '',
           department_id: [],
           department_title: '',
@@ -1162,7 +1161,7 @@
           }
           this.pageCurrent = 1;
           if (res.result) {
-            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.department_id || this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.start_at || this.searchForm.end_at || this.searchForm.title) {
+            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.department_id || this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.end_at || this.searchForm.title) {
               this.btnDisable = false;
             }
             this.tableLoading = false;
@@ -1398,7 +1397,6 @@
           project_id: '',
           project_num: '',
           subject: '',
-          start_at: '',
           end_at: ''
         };
         this.getProjectScheduleList();
@@ -1419,44 +1417,32 @@
         let project_id = this.searchForm.project_id;
         let project_num = this.searchForm.project_num;
         let subject = this.searchForm.subject;
-        let start_at = this.searchForm.start_at;
         let end_at = this.searchForm.end_at;
         let department_id = this.searchForm.department_id;
         let start_time = '';
-        if (start_at) {
-          let start_time_0 = new Date(start_at);
-          let month_start_time_0 = (start_time_0.getMonth() + 1) > 9 ? (start_time_0.getMonth() + 1) : '0' + (start_time_0.getMonth() + 1);
-          start_time = start_time_0.getFullYear() + '-' + month_start_time_0;
-        }
         let end_time = '';
         if (end_at) {
           let end_time_0 = new Date(end_at);
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/exportSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
+        window.location.href = "/api/project/exportSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id;
       },//下载
       downloadPic() {
         let title = this.searchForm.title;
         let project_id = this.searchForm.project_id;
         let project_num = this.searchForm.project_num;
         let subject = this.searchForm.subject;
-        let start_at = this.searchForm.start_at;
         let end_at = this.searchForm.end_at;
         let department_id = this.searchForm.department_id;
         let start_time = '';
-        if (start_at) {
-          let start_time_0 = new Date(start_at);
-          let month_start_time_0 = (start_time_0.getMonth() + 1) > 9 ? (start_time_0.getMonth() + 1) : '0' + (start_time_0.getMonth() + 1);
-          start_time = start_time_0.getFullYear() + '-' + month_start_time_0;
-        }
         let end_time = '';
         if (end_at) {
           let end_time_0 = new Date(end_at);
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/downLoadSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&start_at=" + start_time + "&end_at=" + end_time + "&department_id=" + department_id;
+        window.location.href = "/api/project/downLoadSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id;
       },
       changePage(index) {
         //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)

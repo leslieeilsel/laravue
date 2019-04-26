@@ -625,21 +625,22 @@ class ProjectController extends Controller
         if (isset($data['subject'])) {
             $query = $query->where('subject', 'like', '%' . $data['subject'] . '%');
         }
-        if (isset($data['start_at']) || isset($data['end_at'])) {
-            if (isset($data['start_at']) && isset($data['end_at'])) {
-                $data['start_at'] = date('Y-m', strtotime($data['start_at']));
-                $data['end_at'] = date('Y-m', strtotime($data['end_at']));
-                $query = $query->whereBetween('month', [$data['start_at'], $data['end_at']]);
-            } else {
-                if (isset($data['start_at'])) {
-                    $data['start_at'] = date('Y-m', strtotime($data['start_at']));
-                    $query = $query->where('month', $data['start_at']);
-                } elseif (isset($data['end_at'])) {
+        // if (isset($data['start_at']) || isset($data['end_at'])) {
+        //     if (isset($data['start_at']) && isset($data['end_at'])) {
+        //         $data['start_at'] = date('Y-m', strtotime($data['start_at']));
+        //         $data['end_at'] = date('Y-m', strtotime($data['end_at']));
+        //         $query = $query->whereBetween('month', [$data['start_at'], $data['end_at']]);
+        //     } else {
+        //         if (isset($data['start_at'])) {
+        //             $data['start_at'] = date('Y-m', strtotime($data['start_at']));
+        //             $query = $query->where('month', $data['start_at']);
+        //         } else
+                if (isset($data['end_at'])) {
                     $data['end_at'] = date('Y-m', strtotime($data['end_at']));
                     $query = $query->where('month', $data['end_at']);
                 }
-            }
-        }
+            // }
+        // }
         if (isset($data['is_audit'])) {
             $query = $query->where('is_audit', 0);
         }
