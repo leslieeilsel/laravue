@@ -367,7 +367,7 @@ class ProjectController extends Controller
      */
     public function allProjects($params)
     {
-        $query = $this->projectsCache;
+        $query = new Projects;
         if (isset($params['title'])) {
             $query = $query->where('title', 'like', '%' . $params['title'] . '%');
         }
@@ -420,9 +420,9 @@ class ProjectController extends Controller
                 $query = $query->whereIn('is_audit', [0, 1, 2, 3, 4]);
             }
         }
-        $projects = $query->whereIn('user_id', $this->seeIds)->all();
+        $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
 
-        return array_values($projects);
+        return $projects;
     }
 
     public function getAllProjects(Request $request)
