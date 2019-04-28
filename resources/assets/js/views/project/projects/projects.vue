@@ -758,7 +758,6 @@
 </template>
 <script>
   import {
-    initProjectInfo,
     edit,
     getEditFormData,
     getAllProjects,
@@ -1237,11 +1236,6 @@
         this.showExportButton = !(this.office === 0);
         this.$refs.formValidate.resetFields();
         this.iframeHeight = this.$parent.$el.clientHeight - 160;
-        initProjectInfo().then(res => {
-          if (res.result) {
-            this.project_list = res.result;
-          }
-        });
         this.getDictData();
         this.getProject();
       },

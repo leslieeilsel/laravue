@@ -10,22 +10,36 @@ use App\Models\Role;
 use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Models\OperationLog;
+//use App\Models\OperationLog;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProjectEarlyWarning;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Dict;
 use Illuminate\Support\Facades\Auth;
-use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Cache;
 
 class ProjectController extends Controller
 {
     public $seeIds;
     public $office;
+    public $projectsCache;
+    public $projectPlanCache;
 
     public function __construct()
     {
         $this->getSeeIds();
+        if (Cache::has('projectsCache')) {
+            $this->projectsCache = Cache::get('projectsCache');
+        } else {
+            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
+            $this->projectsCache = Cache::get('projectsCache');
+        }
+        if (Cache::has('projectPlanCache')) {
+            $this->projectPlanCache = Cache::get('projectPlanCache');
+        } else {
+            Cache::put('projectPlanCache', collect(ProjectPlan::all()->toArray()), 10080);
+            $this->projectPlanCache = Cache::get('projectPlanCache');
+        }
     }
 
     public function getSeeIds()
@@ -113,12 +127,14 @@ class ProjectController extends Controller
             $id = DB::table('iba_project_projects')->insertGetId($data);
             $this->insertPlan($id, $planData);
 
+            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
+
             $result = $id ? true : false;
 
-            if ($result) {
-                $log = new OperationLog();
-                $log->eventLog($request, '创建项目信息');
-            }
+            //            if ($result) {
+            //                $log = new OperationLog();
+            //                $log->eventLog($request, '创建项目信息');
+            //            }
 
             return response()->json(['result' => $result], 200);
         } else {
@@ -172,6 +188,8 @@ class ProjectController extends Controller
                 ProjectPlan::insert($month);
             }
         }
+
+        Cache::put('projectPlanCache', collect(ProjectPlan::all()->toArray()), 10080);
     }
 
     /**
@@ -241,6 +259,9 @@ class ProjectController extends Controller
             $projectPlan = $data['projectPlan'];
             unset($data['id'], $data['projectPlan']);
             $result = Projects::where('id', $id)->update($data);
+
+            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
+
             $this->updatePlan($id, $projectPlan);
 
             $result = ($result >= 0) ? true : false;
@@ -334,6 +355,8 @@ class ProjectController extends Controller
                 ProjectPlan::where('project_id', $projectId)->where('parent_id', $yearId)->delete();
             }
         }
+
+        Cache::put('projectPlanCache', collect(ProjectPlan::all()->toArray()), 10080);
     }
 
     /**
@@ -344,7 +367,7 @@ class ProjectController extends Controller
      */
     public function allProjects($params)
     {
-        $query = new Projects;
+        $query = $this->projectsCache;
         if (isset($params['title'])) {
             $query = $query->where('title', 'like', '%' . $params['title'] . '%');
         }
@@ -397,9 +420,9 @@ class ProjectController extends Controller
                 $query = $query->whereIn('is_audit', [0, 1, 2, 3, 4]);
             }
         }
-        $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
+        $projects = $query->whereIn('user_id', $this->seeIds)->all();
 
-        return $projects;
+        return array_values($projects);
     }
 
     public function getAllProjects(Request $request)
@@ -431,8 +454,11 @@ class ProjectController extends Controller
     public function getEditFormData(Request $request)
     {
         $id = $request->input('id');
-        $projects = Projects::where('id', $id)->first()->toArray();
 
+        $projects = $this->projectsCache->filter(function ($value) use ($id) {
+            return $value['id'] === $id;
+        });
+        $projects = $projects->first();
         // $projects['plan_start_at'] = date('Y-m', strtotime($projects['plan_start_at']));
         // $projects['plan_end_at'] = date('Y-m', strtotime($projects['plan_end_at']));
         $projects['amount'] = (float) $projects['amount'];
@@ -452,10 +478,13 @@ class ProjectController extends Controller
      */
     public function getPlanData($project_id, $status)
     {
-        $projectPlans = ProjectPlan::select('id', 'date', 'project_id', 'parent_id', 'amount', 'image_progress')
-            ->where('project_id', $project_id)->get()->toArray();
-        $projectPlans = collect($projectPlans);
-        $projectPlanParents = $projectPlans->where('parent_id', 0);
+        $projectPlanCache = $this->projectPlanCache;
+        $projectPlans = $projectPlanCache->filter(function ($value) use ($project_id) {
+            return $value['project_id'] === $project_id;
+        });
+        $projectPlanParents = $projectPlans->filter(function ($value) {
+            return $value['parent_id'] === 0;
+        });
         $projectPlanParents = array_values($projectPlanParents->all());
         $data = [];
         foreach ($projectPlanParents as $k => $row) {
@@ -466,7 +495,9 @@ class ProjectController extends Controller
                 $data[$k]['amount'] = isset($row['amount']) ? (float) $row['amount'] : null;
             }
             $data[$k]['image_progress'] = $row['image_progress'];
-            $monthPlan = array_values($projectPlans->where('parent_id', $row['id'])->all());
+            $monthPlan = array_values($projectPlans->filter(function ($value) use ($row) {
+                return $value['parent_id'] === $row['id'];
+            })->all());
             foreach ($monthPlan as $key => $v) {
                 $data[$k]['month'][$key]['date'] = $v['date'];
                 if ($status === 'preview') {
@@ -559,25 +590,25 @@ class ProjectController extends Controller
         if ($data['plan_build_start_at']) {
             $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
         }
-        $project_title=Projects::where('id',$data['project_id'])->value('title');
-        $path = 'storage/project/project-schedule/'.$project_title.'/'.$data['month'];
+        $project_title = Projects::where('id', $data['project_id'])->value('title');
+        $path = 'storage/project/project-schedule/' . $project_title . '/' . $data['month'];
         if ($data['img_progress_pic']) {
             $data['img_progress_pic'] = $data['img_progress_pic'];
 
-            $imgProgressPic=explode(',',$data['img_progress_pic']);
+            $imgProgressPic = explode(',', $data['img_progress_pic']);
             $handler = opendir($path);
             while (($filename = readdir($handler)) !== false) {
                 if ($filename != "." && $filename != "..") {
-                    if(!in_array($path.'/'.$filename,$imgProgressPic)){
-                        unlink($path.'/'.$filename);
+                    if (!in_array($path . '/' . $filename, $imgProgressPic)) {
+                        unlink($path . '/' . $filename);
                     }
                 }
             }
-        }else{
+        } else {
             $handler = opendir($path);
             while (($filename = readdir($handler)) !== false) {
                 if ($filename != "." && $filename != "..") {
-                    unlink($path.'/'.$filename);
+                    unlink($path . '/' . $filename);
                 }
             }
         }
@@ -587,10 +618,10 @@ class ProjectController extends Controller
         $data['user_id'] = Auth::id();
         $schedule_id = DB::table('iba_project_schedule')->insertGetId($data);
         $result = $schedule_id;
-        if ($result) {
-            $log = new OperationLog();
-            $log->eventLog($request, '投资项目进度填报');
-        }
+        //        if ($result) {
+        //            $log = new OperationLog();
+        //            $log->eventLog($request, '投资项目进度填报');
+        //        }
 
         return response()->json(['result' => $result], 200);
     }
@@ -604,14 +635,14 @@ class ProjectController extends Controller
     {
         $query = new ProjectSchedule;
         if (isset($data['department_id'])) {
-           if(gettype($data['department_id'])=='string'){
-                $data['department_id']=explode(',',$data['department_id']);
-           }
-           if(count($data['department_id'])>0){
+            if (gettype($data['department_id']) == 'string') {
+                $data['department_id'] = explode(',', $data['department_id']);
+            }
+            if (count($data['department_id']) > 0) {
                 $user_ids = DB::table('users')->select('id')->where('department_id', $data['department_id'][1])->get()->toArray();
                 $user_id = array_column($user_ids, 'id');
                 $query = $query->whereIn('user_id', $user_id);
-           }
+            }
         }
         if (isset($data['title']) || isset($data['money_from']) || isset($data['is_gc']) || isset($data['nep_type'])) {
             $projects = Projects::select('id');
@@ -654,11 +685,11 @@ class ProjectController extends Controller
         //             $data['start_at'] = date('Y-m', strtotime($data['start_at']));
         //             $query = $query->where('month', $data['start_at']);
         //         } else
-                if (isset($data['end_at'])) {
-                    $data['end_at'] = date('Y-m', strtotime($data['end_at']));
-                    $query = $query->where('month', $data['end_at']);
-                }
-            // }
+        if (isset($data['end_at'])) {
+            $data['end_at'] = date('Y-m', strtotime($data['end_at']));
+            $query = $query->where('month', $data['end_at']);
+        }
+        // }
         // }
         if (isset($data['is_audit'])) {
             $query = $query->where('is_audit', 0);
@@ -808,22 +839,22 @@ class ProjectController extends Controller
             }
         }
         $id = $data['id'];
-        $path = 'storage/project/project-schedule/'.$data['project_title'].'/'.$data['month'];
-        if($data['img_progress_pic']){
-            $imgProgressPic=explode(',',$data['img_progress_pic']);
+        $path = 'storage/project/project-schedule/' . $data['project_title'] . '/' . $data['month'];
+        if ($data['img_progress_pic']) {
+            $imgProgressPic = explode(',', $data['img_progress_pic']);
             $handler = opendir($path);
             while (($filename = readdir($handler)) !== false) {
                 if ($filename != "." && $filename != "..") {
-                    if(!in_array($path.'/'.$filename,$imgProgressPic)){
-                        unlink($path.'/'.$filename);
+                    if (!in_array($path . '/' . $filename, $imgProgressPic)) {
+                        unlink($path . '/' . $filename);
                     }
                 }
             }
-        }else{
+        } else {
             $handler = opendir($path);
             while (($filename = readdir($handler)) !== false) {
                 if ($filename != "." && $filename != "..") {
-                    unlink($path.'/'.$filename);
+                    unlink($path . '/' . $filename);
                 }
             }
         }
@@ -834,10 +865,10 @@ class ProjectController extends Controller
         );
         $result = ProjectSchedule::where('id', $id)->update($data);
 
-        if ($result) {
-            $log = new OperationLog();
-            $log->eventLog($request, '修改项目进度信息');
-        }
+        //        if ($result) {
+        //            $log = new OperationLog();
+        //            $log->eventLog($request, '修改项目进度信息');
+        //        }
 
         return response()->json(['result' => $result], 200);
     }
@@ -1100,10 +1131,12 @@ class ProjectController extends Controller
             } else {
                 $result = false;
             }
-            if ($result) {
-                $log = new OperationLog();
-                $log->eventLog($request, '删除项目');
-            }
+            //            if ($result) {
+            //                $log = new OperationLog();
+            //                $log->eventLog($request, '删除项目');
+            //            }
+
+            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
         } else {
             $result = false;
         }
@@ -1128,10 +1161,10 @@ class ProjectController extends Controller
             } else {
                 $result = false;
             }
-            if ($result) {
-                $log = new OperationLog();
-                $log->eventLog($request, '删除项目进度');
-            }
+            //            if ($result) {
+            //                $log = new OperationLog();
+            //                $log->eventLog($request, '删除项目进度');
+            //            }
         } else {
             $result = false;
         }
