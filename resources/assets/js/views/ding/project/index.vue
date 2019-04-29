@@ -108,7 +108,7 @@ import * as dd from 'dingtalk-jsapi'
   import {
     getAuditedProjects,
     projectProgress,
-    projectProgressList,
+    projectProgressList,                                                                                                       
     projectPlanInfo,
     editProjectProgress,
     getData,
@@ -188,24 +188,25 @@ import * as dd from 'dingtalk-jsapi'
         });
 	  },
 	  aaa(){
-		dd.ready(function() {
-			dd.device.base.getPhoneInfo({
-				onSuccess : function(data) {
-					console.log(data);
-					
-					// {
-					//     screenWidth: 1080, // 手机屏幕宽度
-					//     screenHeight: 1920, // 手机屏幕高度
-					//     brand:'Mi', // 手机品牌
-					//     model:'Note4', // 手机型号
-					//     version:'7.0', // 版本
-					//     netInfo:'wifi' , // 网络类型 wifi／4g／3g 
-					//     operatorType:'xx' // 运营商信息
-					// }
-				},
-				onFail : function(err) {}
-			});
-		})
+			dd.ready(function() {
+				dd.device.base.getPhoneInfo({
+					onSuccess : function(data) {
+						alert(json.stringify(data));
+						console.log(data);
+						
+						// {
+						//     screenWidth: 1080, // 手机屏幕宽度
+						//     screenHeight: 1920, // 手机屏幕高度
+						//     brand:'Mi', // 手机品牌
+						//     model:'Note4', // 手机型号
+						//     version:'7.0', // 版本
+						//     netInfo:'wifi' , // 网络类型 wifi／4g／3g 
+						//     operatorType:'xx' // 运营商信息
+						// }
+					},
+					onFail : function(err) {}
+				});
+			})
 	  }
 	  
     }

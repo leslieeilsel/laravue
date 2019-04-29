@@ -157,18 +157,18 @@ samp
     font-size: 1em;
 }
 
-button,
-input,
-optgroup,
-select,
-textarea
-{
-    font: inherit;
+    button,
+    input,
+    optgroup,
+    select,
+    textarea
+    {
+        font: inherit;
 
-    margin: 0;
+        margin: 0;
 
-    color: inherit;
-}
+        color: inherit;
+    }
 
 button
 {

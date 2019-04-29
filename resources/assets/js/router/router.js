@@ -12,7 +12,8 @@ export const constantRouterMap = [
   { path: '/login', component: require('views/login/index') },
   { path: '/password/send', component: require('views/login/password/email') },
   { path: '/password/reset/:token', component: require('views/login/password/reset') },
-  { path: '/ding/project/:token', component: require('views/ding/project/index') },
+  { path: '/ding/project', component: require('views/ding/project/index') },
+  { path: '/ding/project/list', component: require('views/ding/project/list') },
 ];
 
 // 导出所有的路由配置
