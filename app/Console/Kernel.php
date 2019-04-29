@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         'App\Console\Commands\buildProjectGeoJson',
         'App\Console\Commands\buildLuwangGeoJson',
+        'App\Console\Commands\buildDataVLuWangJsonData',
     ];
 
     /**
