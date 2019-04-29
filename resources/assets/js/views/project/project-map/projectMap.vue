@@ -189,7 +189,7 @@
       createMap() {
         // enableMapClick: false 构造底图时，关闭底图可点功能
         let map = new BMap.Map("map", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
-        map.centerAndZoom(new BMap.Point(108.720027, 34.298497), 15);
+        map.centerAndZoom(new BMap.Point(108.720027, 34.298497), 14);
         map.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
         map.addControl(new BMap.NavigationControl());
         map.addControl(new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]}));
@@ -198,6 +198,14 @@
         this.loadStaticMapData('xingzheng.geo.json', map);
         // 加载路网
         this.loadStaticMapData('luwang.geo.json', map);
+        
+        // 监听当前缩放级别
+        // map.addEventListener("zoomend", function (e) {
+        //   let ZoomNum = map.getZoom();
+        //   console.log(ZoomNum);
+        // });
+        
+        // 获取地图数据
         getAllProjects(this.searchForm).then(e => {
           let _this = this;
           let date = new Date();
@@ -251,7 +259,7 @@
                 let marker = new BMap.Marker(new BMap.Point(centerPoint.lng, centerPoint.lat), {
                   // 指定Marker的icon属性为Symbol
                   icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
-                    scale: 1.2,//图标缩放大小
+                    scale: 1.0,//图标缩放大小
                     fillColor: point_color,//填充颜色
                     fillOpacity: 1//填充透明度
                   })
@@ -286,38 +294,27 @@
                   }
                   points.push.apply(points, pointArr);
                 });
-                // let center = project.center_point;
-                // let positions = project.positions;
-                // let marker;
-                // locationPosition({center:center,positions:positions}).then(res=>{
-                //   marker = new BMap.Marker(new BMap.Point(res.result.center[0].lng, res.result.center[0].lat), {
-                //     // 指定Marker的icon属性为Symbol
-                //     icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
-                //       scale: 1.2,//图标缩放大小
-                //       fillColor: point_color,//填充颜色
-                //       fillOpacity: 1//填充透明度
-                //     })
-                //   });
-                //   points.push(marker.point);
-                //   map.addOverlay(marker);
-                //   //添加多边形
-                //     let pointArr1 = [];
-                //     res.result.positions.forEach(function (e, i) {
-                //       pointArr1[i] = new BMap.Point(e.lng,e.lat);
-                //     });
-                //     let polygon = new BMap.Polygon(pointArr1, {
-                //       strokeColor: "blue",
-                //       strokeWeight: 2,
-                //       strokeOpacity: 0.5
-                //     });
-                //     map.addOverlay(polygon);
 
                 // 添加label
                 let label = new BMap.Label(project.title, {
                   offset: new BMap.Size(25, 3)
                 });
                 label.setStyle({
+                  display: "none",  // 给label设置样式，任意的CSS都是可以的
                   border: "1px solid #2196F3"
+                });
+                marker.setLabel(label);
+
+                marker.addEventListener("mouseover", function () {
+                  label.setStyle({    //给label设置样式，任意的CSS都是可以的
+                    display: "block"
+                  });
+                });
+
+                marker.addEventListener("mouseout", function () {
+                  label.setStyle({    //给label设置样式，任意的CSS都是可以的
+                    display: "none"
+                  });
                 });
                 marker.setLabel(label);
 
@@ -349,7 +346,7 @@
               // })
             }
           });
-          this.setZoom(points, map);
+          // this.setZoom(points, map);
         });
       },
       handleResetSearch(name) {
