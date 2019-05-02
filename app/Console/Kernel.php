@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\buildProjectGeoJson',
         'App\Console\Commands\buildLuwangGeoJson',
         'App\Console\Commands\buildDataVLuWangJsonData',
+        'App\Console\Commands\buildLvHuaJson',
     ];
 
     /**
