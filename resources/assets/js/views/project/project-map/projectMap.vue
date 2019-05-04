@@ -105,7 +105,8 @@
         drop: false,
         dropDownIcon: "ios-arrow-down",
         searchNepDisabled: true,
-        positionLocation: []
+        positionLocation: [],
+        overlays: []
       };
     },
     mounted() {
@@ -148,6 +149,7 @@
       },
       loadStaticMapData(fileName, map) {
         let basePath = window.document.location.host;
+        let _this = this;
         this.$http.get('http://' + basePath + '/assets/json/' + fileName).then(response => {
           if (fileName === 'xingzheng.geo.json') {
             let data = response.body.features[0];
@@ -156,17 +158,30 @@
             polygonArr.forEach(function (e) {
               polygon += e.join(',') + ';';
             });
-            let ply = new BMap.Polygon(polygon, data.properties);
-            map.addOverlay(ply);
-          } else {
+            let xingzheng = new BMap.Polygon(polygon, data.properties);
+            map.addOverlay(xingzheng);
+          } else if (fileName === 'luwang.geo.json') {
             let polylineArr = response.body.features;
             polylineArr.forEach(function (e) {
               let polyline = '';
               e.geometry.coordinates.forEach(function (el) {
                 polyline += el.join(',') + ';';
               });
-              let poly = new BMap.Polyline(polyline.substr(0, polyline.length - 1), e.properties);
-              map.addOverlay(poly);
+              let shizheng = new BMap.Polyline(polyline.substr(0, polyline.length - 1), e.properties);
+              map.addOverlay(shizheng);
+              _this.overlays.push(shizheng);
+            });
+          } else {
+            let lvHuaArr = response.body.features;
+            lvHuaArr.forEach(function (e) {
+              let polygonArr = e.geometry.coordinates[0];
+              let polygon = '';
+              polygonArr.forEach(function (e) {
+                polygon += e.join(',') + ';';
+              });
+              let lvhua = new BMap.Polygon(polygon, e.properties);
+              map.addOverlay(lvhua);
+              _this.overlays.push(lvhua);
             });
           }
         }, response => {
@@ -187,24 +202,61 @@
         }
       },
       createMap() {
-        // enableMapClick: false 构造底图时，关闭底图可点功能
         let map = new BMap.Map("map", {enableMapClick: false, mapType: BMAP_HYBRID_MAP});
         map.centerAndZoom(new BMap.Point(108.720027, 34.298497), 14);
         map.enableScrollWheelZoom(true);// 开启鼠标滚动缩放
         map.addControl(new BMap.NavigationControl());
         map.addControl(new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]}));
+
+        let _this = this;
+        function ZoomControl() {
+          this.defaultAnchor = BMAP_ANCHOR_TOP_RIGHT;
+          this.defaultOffset = new BMap.Size(100, 10);
+        }
+        ZoomControl.prototype = new BMap.Control();
+        ZoomControl.prototype.initialize = function (map) {
+          let select = document.createElement("select");
+          select.setAttribute('id', 'vselect');
+          select.options[0] = new Option("市政路网", '0');
+          select.options[1] = new Option("绿化路网", '1');
+          select.style.cursor = "pointer";
+          select.style.border = "1px solid gray";
+          select.style.borderRadius = "3px";
+          select.style.backgroundColor = "white";
+          select.onchange = function (e) {
+            let obj = document.getElementById('vselect');
+            let index = obj.selectedIndex;
+            let value = obj.options[index].value;
+            for (var i = 0; i < _this.overlays.length; i++) {
+              map.removeOverlay(_this.overlays[i]);
+            }
+            _this.overlays.length = 0;
+            if (value === '1') {
+              _this.loadStaticMapData('lvhua.geo.json', map);
+            } else {
+              _this.loadStaticMapData('luwang.geo.json', map);
+            }
+          }
+          map.getContainer().appendChild(select);
+          
+          return select;
+        }
+        // 创建控件
+        let myZoomCtrl = new ZoomControl();
+        // 添加到地图当中
+        map.addControl(myZoomCtrl);
         this.getDictData();
         // 加载行政区划
         this.loadStaticMapData('xingzheng.geo.json', map);
-        // 加载路网
+        // 加载市政路网
         this.loadStaticMapData('luwang.geo.json', map);
-        
+
         // 监听当前缩放级别
         // map.addEventListener("zoomend", function (e) {
         //   let ZoomNum = map.getZoom();
         //   console.log(ZoomNum);
         // });
-        
+
         // 获取地图数据
         getAllProjects(this.searchForm).then(e => {
           let _this = this;
