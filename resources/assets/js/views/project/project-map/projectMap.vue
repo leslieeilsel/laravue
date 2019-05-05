@@ -219,6 +219,7 @@
           select.setAttribute('id', 'vselect');
           select.options[0] = new Option("市政路网", '0');
           select.options[1] = new Option("绿化路网", '1');
+          select.options[2] = new Option("全部路网", '2');
           select.style.cursor = "pointer";
           select.style.border = "1px solid gray";
           select.style.borderRadius = "3px";
@@ -233,8 +234,11 @@
             _this.overlays.length = 0;
             if (value === '1') {
               _this.loadStaticMapData('lvhua.geo.json', map);
+            } else if (value === '0')  {
+              _this.loadStaticMapData('luwang.geo.json', map);
             } else {
               _this.loadStaticMapData('luwang.geo.json', map);
+              _this.loadStaticMapData('lvhua.geo.json', map);
             }
           }
           map.getContainer().appendChild(select);
