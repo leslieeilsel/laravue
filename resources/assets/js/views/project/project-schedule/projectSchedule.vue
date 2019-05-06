@@ -782,6 +782,16 @@
             align: "center"
           },
           {
+            title: '填报员姓名',
+            key: 'tianbao_name',
+            width: 250
+          },
+          {
+            title: '部门名称',
+            key: 'department',
+            width: 250
+          },
+          {
             title: '创建时间',
             key: 'created_at',
             width: 150,

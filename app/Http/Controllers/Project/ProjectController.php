@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Dict;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Departments;
 
 class ProjectController extends Controller
 {
@@ -714,6 +715,9 @@ class ProjectController extends Controller
             $Projects = Projects::where('id', $row['project_id'])->value('title');
             $ProjectSchedules[$k]['project_title'] = $Projects;
             $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
+            $users=user::where('id',$row['user_id'])->first();
+            $ProjectSchedules[$k]['tianbao_name'] = $users['name'];
+            $ProjectSchedules[$k]['department'] = Departments::where('id',$users['department_id'])->value('title');
         }
         return response()->json(['result' => $ProjectSchedules], 200);
     }

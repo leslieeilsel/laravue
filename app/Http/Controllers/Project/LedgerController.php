@@ -63,6 +63,7 @@ class LedgerController extends Controller
         $sql = $sql->where('iba_project_schedule.is_audit', 1)->whereIn('iba_project_schedule.user_id', $this->seeIds)->get()->toArray();
         foreach ($sql as $k => $row) {
             $sql[$k]['nature'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
+            $sql[$k]['description'] = Projects::where('id',$row['project_id'])->value('description');
         }
         return response()->json(['result' => $sql], 200);
     }
@@ -374,7 +375,7 @@ class LedgerController extends Controller
         $Letter=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO'];
         $params = $request->input();
         $ProjectC = new ProjectController();
-        $data=$ProjectC->projectProgressM($params)->groupBy('project_id')->get()->toArray();
+        $data=$ProjectC->projectProgressM($params)->groupBy('project_id')->orderBy('project_id','asc')->get()->toArray();
         $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
         // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
         foreach ($data as $k => $row) {

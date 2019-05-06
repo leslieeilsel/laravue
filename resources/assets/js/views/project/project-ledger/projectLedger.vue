@@ -127,7 +127,7 @@
           },
           {
             title: '项目建设规模及主要内容',
-            key: 'acc_img_progress',
+            key: 'description',
             width: 350
           },
           {
