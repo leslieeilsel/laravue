@@ -38,14 +38,18 @@ class buildDataVLuWangJsonData extends Command
      */
     public function handle()
     {
-        $luwangData = file_get_contents('http://139.217.6.78:9000/assets/json/luwang.geo.json');
-        $luwangData = json_decode($luwangData, true);
+        $this->info('- Start!');
 
-        foreach ($luwangData['features'] as $k => $v) {
-            $luwangData['features'][$k]['geometry']['type'] = 'Polygon';
-            $luwangData['features'][$k]['geometry']['coordinates'] = [array_merge($v['geometry']['coordinates'], array_reverse($v['geometry']['coordinates']))];
+        $this->info('- Building ShiZheng road network');
+        // 市政路网
+        $shizhengData = file_get_contents('http://139.217.6.78:9000/assets/json/luwang.geo.json');
+        $shizhengData = json_decode($shizhengData, true);
+
+        foreach ($shizhengData['features'] as $k => $v) {
+            $shizhengData['features'][$k]['geometry']['type'] = 'Polygon';
+            $shizhengData['features'][$k]['geometry']['coordinates'] = [array_merge($v['geometry']['coordinates'], array_reverse($v['geometry']['coordinates']))];
             $points = '';
-            foreach ($luwangData['features'][$k]['geometry']['coordinates'][0] as $kkk => $vvv) {
+            foreach ($shizhengData['features'][$k]['geometry']['coordinates'][0] as $kkk => $vvv) {
                 $points = $points . implode(',', $vvv) . ';';
             }
             $points = $this->getGaoDeGeo($points);
@@ -59,10 +63,40 @@ class buildDataVLuWangJsonData extends Command
                 ];
                 $pointsItem[] = $point;
             }
-            $luwangData['features'][$k]['geometry']['coordinates'] = [array_merge($pointsItem, array_reverse($pointsItem))];
+            $shizhengData['features'][$k]['geometry']['coordinates'] = [array_merge($pointsItem, array_reverse($pointsItem))];
         }
-        $projectJson = json_encode($luwangData, JSON_UNESCAPED_UNICODE);
-        Storage::put('public/jsonData/luwang.json', $projectJson);
+
+        // 绿化路网
+        $this->info('- Building LvHua road network');
+        $lvhuaData = file_get_contents('http://139.217.6.78:9000/assets/json/lvhua.geo.json');
+        $lvhuaData = json_decode($lvhuaData, true);
+
+        foreach ($lvhuaData['features'] as $k => $v) {
+            $points = '';
+            foreach ($lvhuaData['features'][$k]['geometry']['coordinates'][0] as $kkk => $vvv) {
+                $points = $points . implode(',', $vvv) . ';';
+            }
+            $points = $this->getGaoDeGeo($points);
+            $pointsArr = explode(';', $points);
+            $pointsItem = [];
+            foreach ($pointsArr as $kkkk => $vvvv) {
+                $pointArr = explode(',', $vvvv);
+                $point = [
+                    (float)$pointArr[0],
+                    (float)$pointArr[1],
+                ];
+                $pointsItem[] = $point;
+            }
+            $lvhuaData['features'][$k]['geometry']['coordinates'] = [$pointsItem];
+        }
+
+        // 合并数据，存为单文件
+        $this->info('- Merge ShiZheng and LvHua road network');
+        $luwangData = array_merge($shizhengData['features'], $lvhuaData['features']);
+        $luwangJson = json_encode(['type' => 'FeatureCollection', 'features' => $luwangData], JSON_UNESCAPED_UNICODE);
+        Storage::put('public/luwang/luwang.datav.json', $luwangJson);
+
+        $this->info('- End!');
     }
 
     public function getGaoDeGeo($point)
