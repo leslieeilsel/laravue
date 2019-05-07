@@ -152,6 +152,7 @@ class ProjectController extends Controller
     public function insertPlan($projectId, $planData)
     {
         foreach ($planData as $k => $v) {
+            unset($v['total_count_amount']);
             $v['project_id'] = $projectId;
             $v['parent_id'] = 0;
             $v['created_at'] = date('Y-m-d H:i:s');
@@ -256,6 +257,9 @@ class ProjectController extends Controller
                 }
             }
             $id = $data['id'];
+            if($data['num']){
+                ProjectSchedule::where('project_id', $id)->update(['project_num'=>$data['num']]);
+            }
             $data['reason'] = '';
             $projectPlan = $data['projectPlan'];
             unset($data['id'], $data['projectPlan']);
@@ -284,6 +288,7 @@ class ProjectController extends Controller
             if (in_array($v, $dataYear)) {
                 $planData = collect($planData);
                 foreach ($planData->where('date', $v) as $k => $v) {
+                    unset($v['total_count_amount']);
                     if (in_array($v['date'], $issetYear)) {
                         if (isset($v['role'])) {
                             unset($v['role']);
@@ -494,6 +499,7 @@ class ProjectController extends Controller
                 $data[$k]['amount'] = isset($row['amount']) ? number_format($row['amount'], 2) : null;
             } else {
                 $data[$k]['amount'] = isset($row['amount']) ? (float) $row['amount'] : null;
+                $data[$k]['total_count_amount'] = isset($row['total_count_amount']) ? (float) $row['total_count_amount'] : null;
             }
             $data[$k]['image_progress'] = $row['image_progress'];
             $monthPlan = array_values($projectPlans->filter(function ($value) use ($row) {
@@ -933,6 +939,7 @@ class ProjectController extends Controller
                 'date' => $year,
                 'amount' => null,
                 'image_progress' => '',
+                'total_count_amount' => null,
             ];
             $monthList = [];
             $ii = 0;
