@@ -368,23 +368,21 @@
                   offset: new BMap.Size(25, 3)
                 });
                 label.setStyle({
-                  display: "none",  // 给label设置样式，任意的CSS都是可以的
+                  display: "none",
                   border: "1px solid #2196F3"
                 });
                 marker.setLabel(label);
-
-                marker.addEventListener("mouseover", function (type, target) {
-                  label.setStyle({    //给label设置样式，任意的CSS都是可以的
+                marker.addEventListener("mouseover", function () {
+                  label.setStyle({
                     display: "block"
                   });
                   map.removeOverlay(labell);
                 });
-
                 marker.addEventListener("mouseout", function () {
-                  label.setStyle({    //给label设置样式，任意的CSS都是可以的
+                  label.setStyle({
                     display: "none"
                   });
-                  map.addOverlay(labell);
+                  // map.addOverlay(labell);
                 });
                 marker.setLabel(label);
 
