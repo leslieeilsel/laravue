@@ -209,10 +209,12 @@
         map.addControl(new BMap.MapTypeControl({mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]}));
 
         let _this = this;
+
         function ZoomControl() {
           this.defaultAnchor = BMAP_ANCHOR_TOP_RIGHT;
           this.defaultOffset = new BMap.Size(100, 10);
         }
+
         ZoomControl.prototype = new BMap.Control();
         ZoomControl.prototype.initialize = function (map) {
           let select = document.createElement("select");
@@ -228,13 +230,13 @@
             let obj = document.getElementById('vselect');
             let index = obj.selectedIndex;
             let value = obj.options[index].value;
-            for (var i = 0; i < _this.overlays.length; i++) {
+            for (let i = 0; i < _this.overlays.length; i++) {
               map.removeOverlay(_this.overlays[i]);
             }
             _this.overlays.length = 0;
             if (value === '1') {
               _this.loadStaticMapData('lvhua.geo.json', map);
-            } else if (value === '0')  {
+            } else if (value === '0') {
               _this.loadStaticMapData('luwang.geo.json', map);
             } else {
               _this.loadStaticMapData('luwang.geo.json', map);
@@ -242,7 +244,7 @@
             }
           }
           map.getContainer().appendChild(select);
-          
+
           return select;
         }
         // 创建控件
@@ -311,7 +313,6 @@
               let center = project.center_point;
               if (center !== null) {
                 let centerPoint = JSON.parse(center).coordinates;
-
                 let marker = new BMap.Marker(new BMap.Point(centerPoint.lng, centerPoint.lat), {
                   // 指定Marker的icon属性为Symbol
                   icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
@@ -322,34 +323,45 @@
                 });
                 points.push(marker.point);
                 map.addOverlay(marker);
+                let labell;
                 // 添加多边形
-                let positions = JSON.parse(project.positions);
-                let strokeColor = project.status === '在建' ? "#ebf10b" : "#4edc52";
-                positions.forEach(function (e) {
-                  let positionsPoints = e.coordinates;
-                  let pointArr = [];
-                  positionsPoints.forEach(function (el, i) {
-                    pointArr[i] = new BMap.Point(el.lng, el.lat);
+                if (project.type === '绿化' || project.type === '市政' || project.type === '水利') {
+                  let positions = JSON.parse(project.positions);
+                  let strokeColor = project.status === '在建' ? "#ebf10b" : "#4edc52";
+                  positions.forEach(function (e) {
+                    let positionsPoints = e.coordinates;
+                    let pointArr = [];
+                    positionsPoints.forEach(function (el, i) {
+                      pointArr[i] = new BMap.Point(el.lng, el.lat);
+                    });
+                    labell = new BMap.Label(project.title, {
+                      position: _this.getCenterPoint(pointArr),
+                    });
+                    if (e.drawingMode === 'polygon') {
+                      let polygon = new BMap.Polygon(pointArr, {
+                        strokeOpacity: 0.01,
+                        fillColor: '#99ce66',
+                        fillOpacity: 0.7,
+                      });
+                      map.addOverlay(polygon);
+                      polygon.addEventListener('mouseover', function () {
+                        map.addOverlay(labell);
+                      });
+                      polygon.addEventListener('mouseout', function () {
+                        map.removeOverlay(labell);
+                      })
+                    } else {
+                      let polyline = new BMap.Polyline(pointArr, {
+                        strokeColor: strokeColor,
+                        strokeWeight: 3,
+                        strokeOpacity: 0.85,
+                        fillColor: ''
+                      });
+                      map.addOverlay(polyline);
+                    }
+                    points.push.apply(points, pointArr);
                   });
-                  if (e.drawingMode === 'polygon') {
-                    let polygon = new BMap.Polygon(pointArr, {
-                      strokeColor: strokeColor,
-                      strokeWeight: 3,
-                      strokeOpacity: 0.85,
-                      fillColor: ''
-                    });
-                    map.addOverlay(polygon);
-                  } else {
-                    let polyline = new BMap.Polyline(pointArr, {
-                      strokeColor: strokeColor,
-                      strokeWeight: 3,
-                      strokeOpacity: 0.85,
-                      fillColor: ''
-                    });
-                    map.addOverlay(polyline);
-                  }
-                  points.push.apply(points, pointArr);
-                });
+                }
 
                 // 添加label
                 let label = new BMap.Label(project.title, {
@@ -361,16 +373,18 @@
                 });
                 marker.setLabel(label);
 
-                marker.addEventListener("mouseover", function () {
+                marker.addEventListener("mouseover", function (type, target) {
                   label.setStyle({    //给label设置样式，任意的CSS都是可以的
                     display: "block"
                   });
+                  map.removeOverlay(labell);
                 });
 
                 marker.addEventListener("mouseout", function () {
                   label.setStyle({    //给label设置样式，任意的CSS都是可以的
                     display: "none"
                   });
+                  map.addOverlay(labell);
                 });
                 marker.setLabel(label);
 
@@ -404,6 +418,31 @@
           });
           // this.setZoom(points, map);
         });
+      },
+      getCenterPoint(points) {
+        let total = points.length;
+        let X = 0, Y = 0, Z = 0;
+        $.each(points, function (index, lnglat) {
+          let lng = lnglat.lng * Math.PI / 180;
+          let lat = lnglat.lat * Math.PI / 180;
+          let x, y, z;
+          x = Math.cos(lat) * Math.cos(lng);
+          y = Math.cos(lat) * Math.sin(lng);
+          z = Math.sin(lat);
+          X += x;
+          Y += y;
+          Z += z;
+        });
+
+        X = X / total;
+        Y = Y / total;
+        Z = Z / total;
+
+        let Lng = Math.atan2(Y, X);
+        let Hyp = Math.sqrt(X * X + Y * Y);
+        let Lat = Math.atan2(Z, Hyp);
+
+        return {lng: Lng * 180 / Math.PI, lat: Lat * 180 / Math.PI};
       },
       handleResetSearch(name) {
         this.$refs[name].resetFields();
