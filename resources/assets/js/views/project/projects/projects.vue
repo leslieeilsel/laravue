@@ -251,6 +251,12 @@
                 <Input v-model="item.image_progress" type="textarea" :rows="1" :placeholder="item.placeholder"></Input>
               </FormItem>
             </Col>
+            <Col span="24">
+              <FormItem label="累计金额(万元)"
+                :prop="'projectPlan.' + index_t + '.total_count_amount'" >
+                <InputNumber :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="累计金额" value="0" readonly></InputNumber>
+              </FormItem>
+            </Col>
           </Row>
           <Row style="padding-left: 25px;">
             <Col span="3">
@@ -504,6 +510,12 @@
                        v-bind:readonly="isReadOnly"></Input>
               </FormItem>
             </Col>
+            <Col span="24">
+              <FormItem label="累计金额(万元)"
+                :prop="'projectPlan.' + index_t + '.total_count_amount'" >
+                <InputNumber :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="累计金额" value="0" readonly></InputNumber>
+              </FormItem>
+            </Col>
           </Row>
           <Row style="padding-left: 25px;">
             <Col span="3">
@@ -699,6 +711,12 @@
                 :prop="'projectPlan.' + index + '.image_progress'">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder=""
                        v-bind:readonly="isReadOnly"></Input>
+              </FormItem>
+            </Col>
+            <Col span="24">
+              <FormItem label="累计金额(万元)"
+                :prop="'projectPlan.' + index + '.total_count_amount'" >
+                <InputNumber v-model="item.total_count_amount" placeholder="累计金额" value="0" readonly></InputNumber>
               </FormItem>
             </Col>
           </Row>
@@ -971,7 +989,20 @@
                       this.isReadOnly = true;
                       this.openErrorAlert = (this.previewForm.reason !== '' && this.previewForm.is_audit === 2);
                       this.previewModal = true;
-
+                      
+                      this.previewForm.projectPlan.forEach(function (row, index) {
+                        let total_count_amount=0;
+                        row.month.forEach(function (e) {
+                          total_count_amount=parseFloat(total_count_amount)+parseFloat(e.amount);
+                        }); 
+                        console.log(total_count_amount);
+                        
+                        if(isNaN(total_count_amount)){
+                          row.total_count_amount=0;
+                        }else{
+                          row.total_count_amount=total_count_amount;
+                        }
+                      })
                       if (this.previewForm.center_point && this.previewForm.positions) {
                         this.haveMap = true;
                         this.noMap = false;
@@ -1012,7 +1043,12 @@
                             this.editForm.nep_type = '';
                           }
                         }
-                        this.editForm.projectPlan.forEach(function (row, index) {
+                        this.editForm.projectPlan.forEach(function (row, index) {                     
+                          let total_count_amount=0;
+                          row.month.forEach(function (e) {
+                            total_count_amount=parseFloat(total_count_amount)+parseFloat(e.amount);
+                          });
+                          row.total_count_amount=total_count_amount;
                           let CurrentDate = new Date();
                           let CurrentYear = CurrentDate.getFullYear();
                           // 如果是当年，年度计划和月度计划都为必填
@@ -1157,6 +1193,7 @@
               date: '2019',
               amount: null,
               image_progress: '',
+              total_count_amount:null,
               month: [
                 {
                   date: 1,
@@ -2682,16 +2719,19 @@
           month_total[index].amount = 0;
           return;
         }
+        month_total.length
         let amounts = 0;
         for (let i = 0; i < month_total.length; i++) {
           if (month_total[i].amount) {
             amounts = parseFloat(amounts) + parseFloat(month_total[i].amount);
           }
         }
+        this.form.projectPlan[index_t].total_count_amount=amounts;
         if (amounts > amount_total) {
           this.$Message.error('月计划总金额不能超过年计划');
+          this.form.projectPlan[index_t].total_count_amount=amounts-month_total[index].amount;
           month_total[index].amount = 0;
-        }
+        }        
       },//修改月投资计划金额   大于计划金额时不能填写
       totalAmountE(index_t, index) {
         let amount_total = this.editForm.projectPlan[index_t].amount;
@@ -2706,9 +2746,11 @@
           if (month_total[i].amount) {
             amounts = parseFloat(amounts) + parseFloat(month_total[i].amount);
           }
-        }
+        }                
+        this.editForm.projectPlan[index_t].total_count_amount=amounts;
         if (amounts > amount_total) {
           this.$Message.error('月计划总金额不能超过年计划');
+          this.editForm.projectPlan[index_t].total_count_amount=amounts-month_total[index].amount;
           month_total[index].amount = 0;
         }
       },
