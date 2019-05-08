@@ -49,6 +49,7 @@ class buildProjectGeoJson extends Command
         $this->info('- Total ' . $count . ' datas');
         $projectArr = [];
         $dataArr = [];
+        $i = 1;
         foreach ($projectData as $k => $v) {
             $aaa['type'] = 'Feature';
 
@@ -85,7 +86,7 @@ class buildProjectGeoJson extends Command
 
                     $properties = [];
                     $properties['name'] = $v['title'];
-                    $properties['adcode'] = $v['id'];
+                    $properties['adcode'] = $i;
                     $properties['level'] = 'district';
                     $center = json_decode($v['center_point'], true);
                     $center = $this->getGaoDeGeo($center['coordinates']['lng'] . ',' . $center['coordinates']['lat']);
@@ -97,7 +98,7 @@ class buildProjectGeoJson extends Command
 
                     $aaa['properties'] = $properties;
                     // 数据
-                    $data['area_id'] = $v['id'];
+                    $data['area_id'] = $i;
                     $data['value'] = 64;
                     $data['info'] =
                         '项目名称：' . $v['title'] . '<br/>' .
@@ -107,10 +108,13 @@ class buildProjectGeoJson extends Command
 
                     $projectArr[] = $aaa;
                     $dataArr[] = $data;
+
+                    $i++;
                 }
             } else {
                 $this->info('- Miss [' . ($k + 1) . '/' . $count .'], ID = ' . $v['id'] . ', no coordinates data');
             }
+
         }
 
         $projectJson = json_encode(['type' => 'FeatureCollection', 'features' => $projectArr], JSON_UNESCAPED_UNICODE);
