@@ -40,8 +40,13 @@ class buildProjectGeoJson extends Command
      */
     public function handle()
     {
+        $this->info('- Start!');
+
+        $this->info('- Building project data');
         $projectData = $this->getAllProjects();
 
+        $count = count($projectData);
+        $this->info('- Total ' . $count . ' datas');
         $projectArr = [];
         $dataArr = [];
         foreach ($projectData as $k => $v) {
@@ -51,6 +56,7 @@ class buildProjectGeoJson extends Command
 
             $positions = $v['positions'];
             if ($v['positions'] && $v['center_point']) {
+                $this->info('- Building [' . ($k + 1) . '/' . $count .'], ID=' . $v['id']);
                 $positions = json_decode($positions, true);
                 foreach ($positions as $kk => $vv) {
                     if ($vv['drawingMode'] === 'polyline') {
@@ -101,14 +107,19 @@ class buildProjectGeoJson extends Command
 
                 $projectArr[] = $aaa;
                 $dataArr[] = $data;
+            } else {
+                $this->info('- Miss [' . ($k + 1) . '/' . $count .'], ID = ' . $v['id'] . ', no coordinates data');
             }
         }
 
         $projectJson = json_encode(['type' => 'FeatureCollection', 'features' => $projectArr], JSON_UNESCAPED_UNICODE);
         $dataJson = json_encode($dataArr, JSON_UNESCAPED_UNICODE);
 
+        $this->info('- Save as json file');
         Storage::put('public/jsonData/project.json', $projectJson);
         Storage::put('public/jsonData/data.json', $dataJson);
+
+        $this->info('- Done!');
     }
 
     public function getAllProjects()
