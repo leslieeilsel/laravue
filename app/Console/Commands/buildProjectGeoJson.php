@@ -51,7 +51,6 @@ class buildProjectGeoJson extends Command
         $dataArr = [];
         $i = 1;
         foreach ($projectData as $k => $v) {
-            $aaa['type'] = 'Feature';
 
             $positions = $v['positions'];
             if ($v['positions'] && $v['center_point']) {
@@ -60,6 +59,7 @@ class buildProjectGeoJson extends Command
                     $aaa = [];
                     $data = [];
 
+                    $aaa['type'] = 'Feature';
                     $this->info('- Building [' . ($k + 1) . '/' . $count .'][' . ($kk + 1) . '], ID=' . $v['id']);
                     if ($vv['drawingMode'] === 'polyline') {
                         $vv['coordinates'] = array_merge($vv['coordinates'], array_reverse($vv['coordinates']));
