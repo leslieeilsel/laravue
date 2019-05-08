@@ -111,3 +111,5 @@ Route::post('role/getDepartmentTree', 'System\RoleController@getDepartmentTree')
 Route::post('role/editRoleDep', 'System\RoleController@editRoleDep');
 
 Route::get('log/getOperationLogs', 'Logs\LogController@getOperationLogs');
+
+Route::get('datav/project', 'DataV\ProjectController@getDataVProject');
