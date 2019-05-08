@@ -64,21 +64,7 @@ class buildProjectGeoJson extends Command
                     if ($vv['drawingMode'] === 'polyline') {
                         $vv['coordinates'] = array_merge($vv['coordinates'], array_reverse($vv['coordinates']));
                     }
-                    $points = '';
-                    foreach ($vv['coordinates'] as $kkk => $vvv) {
-                        $points .= $vvv['lng'] . ',' . $vvv['lat'] . ';';
-                    }
-                    $points = $this->getGaoDeGeo($points);
-                    $pointsArr = explode(';', $points);
-                    $pointsItem = [];
-                    foreach ($pointsArr as $kkkk => $vvvv) {
-                        $pointArr = explode(',', $vvvv);
-                        $point = [
-                            (float) $pointArr[0],
-                            (float) $pointArr[1],
-                        ];
-                        $pointsItem[] = $point;
-                    }
+                    $pointsItem = $this->bd_to_gd($vv['coordinates']);
                     $aaa['geometry'] = [
                         'type' => 'Polygon',
                         'coordinates' => [$pointsItem],
@@ -89,11 +75,10 @@ class buildProjectGeoJson extends Command
                     $properties['adcode'] = $i;
                     $properties['level'] = 'district';
                     $center = json_decode($v['center_point'], true);
-                    $center = $this->getGaoDeGeo($center['coordinates']['lng'] . ',' . $center['coordinates']['lat']);
-                    $centerPoint = explode(',', $center);
+                    $centerPoint = $this->bd_to_gd([$center['coordinates']]);
                     $properties['center'] = [
-                        'lng' => (float) $centerPoint[0],
-                        'lat' => (float) $centerPoint[1],
+                        'lng' => (float) $centerPoint[0][0],
+                        'lat' => (float) $centerPoint[0][1],
                     ];
 
                     $aaa['properties'] = $properties;
@@ -152,11 +137,22 @@ class buildProjectGeoJson extends Command
         return $projects;
     }
 
-    public function getGaoDeGeo($point)
-    {
-        $res = file_get_contents('https://restapi.amap.com/v3/assistant/coordinate/convert?locations=' . $point . '&coordsys=baidu&output=json&key=86a30535207aa2d5fc6d2aec25c26b12');
-        $res = json_decode($res);
+    public function bd_to_gd($pointsArr){
+        $gdPointsArr = [];
+        $x_pi = 3.14159265358979324 * 3000.0 / 180.0;
+        foreach ($pointsArr as $k => $point) {
+            $data = [];
+            $x = $point['lng'] - 0.0065;
+            $y = $point['lat'] - 0.006;
+            $z = sqrt($x * $x + $y * $y) - 0.00002 * sin($y * $x_pi);
+            $theta = atan2($y, $x) - 0.000003 * cos($x * $x_pi);
+            $gg_lon = $z * cos($theta);
+            $gg_lat = $z * sin($theta);
+            $data[] = round($gg_lon, 6);
+            $data[] = round($gg_lat, 6);
+            $gdPointsArr[] = $data;
+        }
 
-        return $res->locations;
+        return $gdPointsArr;
     }
 }
