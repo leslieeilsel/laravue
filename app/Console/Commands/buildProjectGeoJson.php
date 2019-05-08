@@ -50,15 +50,16 @@ class buildProjectGeoJson extends Command
         $projectArr = [];
         $dataArr = [];
         foreach ($projectData as $k => $v) {
-            $aaa = [];
-            $data = [];
             $aaa['type'] = 'Feature';
 
             $positions = $v['positions'];
             if ($v['positions'] && $v['center_point']) {
-                $this->info('- Building [' . ($k + 1) . '/' . $count .'], ID=' . $v['id']);
                 $positions = json_decode($positions, true);
                 foreach ($positions as $kk => $vv) {
+                    $aaa = [];
+                    $data = [];
+
+                    $this->info('- Building [' . ($k + 1) . '/' . $count .'][' . ($kk + 1) . '], ID=' . $v['id']);
                     if ($vv['drawingMode'] === 'polyline') {
                         $vv['coordinates'] = array_merge($vv['coordinates'], array_reverse($vv['coordinates']));
                     }
@@ -95,18 +96,18 @@ class buildProjectGeoJson extends Command
                     ];
 
                     $aaa['properties'] = $properties;
-                }
-                // 数据
-                $data['area_id'] = $v['id'];
-                $data['value'] = 64;
-                $data['info'] =
-                    '项目名称：' . $v['title'] . '<br/>' .
-                    '项目类型：' . $v['type'] . '<br/>' .
-                    '投资状态：' . $v['status'] . '<br/>' .
-                    '投资概况：' . $v['description'];
+                    // 数据
+                    $data['area_id'] = $v['id'];
+                    $data['value'] = 64;
+                    $data['info'] =
+                        '项目名称：' . $v['title'] . '<br/>' .
+                        '项目类型：' . $v['type'] . '<br/>' .
+                        '投资状态：' . $v['status'] . '<br/>' .
+                        '投资概况：' . $v['description'];
 
-                $projectArr[] = $aaa;
-                $dataArr[] = $data;
+                    $projectArr[] = $aaa;
+                    $dataArr[] = $data;
+                }
             } else {
                 $this->info('- Miss [' . ($k + 1) . '/' . $count .'], ID = ' . $v['id'] . ', no coordinates data');
             }
