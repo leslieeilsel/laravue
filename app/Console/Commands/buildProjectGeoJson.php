@@ -48,73 +48,116 @@ class buildProjectGeoJson extends Command
             $aaa = [];
             $aaa['type'] = 'Feature';
 
-            $arr = [];
-            if ($v['id'] === 3 || $v['id'] === 4 || $v['id'] === 5 || $v['id'] === 6) {
-                $positions = $v['positions'];
-                $positionsArr = explode(';', $positions);
-                foreach ($positionsArr as $kk => $vv) {
-                    $vv = $this->getGaoDeGeo($vv);
-                    $ccc = explode(',', $vv);
-                    $arr[] = [
-                        (float)$ccc[0],
-                        (float)$ccc[1],
+            $positions = $v['positions'];
+            if ($v['positions'] && $v['center_point']) {
+                $positions = json_decode($positions, true);
+                foreach ($positions as $kk => $vv) {
+                    if ($vv['drawingMode'] === 'polyline') {
+                        $vv['coordinates'] = array_merge($vv['coordinates'], array_reverse($vv['coordinates']));
+                    }
+                    $points = '';
+                    foreach ($vv['coordinates'] as $kkk => $vvv) {
+                        $points .= $vvv['lng'] . ',' . $vvv['lat'] . ';';
+                    }
+                    $points = $this->getGaoDeGeo($points);
+                    $pointsArr = explode(';', $points);
+                    $pointsItem = [];
+                    foreach ($pointsArr as $kkkk => $vvvv) {
+                        $pointArr = explode(',', $vvvv);
+                        $point = [
+                            (float) $pointArr[0],
+                            (float) $pointArr[1],
+                        ];
+                        $pointsItem[] = $point;
+                    }
+                    $aaa['geometry'] = [
+                        'type' => 'Polygon',
+                        'coordinates' => [$pointsItem],
                     ];
+
+                    $properties = [];
+                    $properties['name'] = $v['title'];
+                    $properties['adcode'] = $v['id'];
+                    $properties['level'] = 'district';
+                    $center = json_decode($v['center_point'], true);
+                    $center = $this->getGaoDeGeo($center['coordinates']['lng'] . ',' . $center['coordinates']['lat']);
+                    $centerPoint = explode(',', $center);
+                    $properties['center'] = [
+                        'lng' => (float) $centerPoint[0],
+                        'lat' => (float) $centerPoint[1],
+                    ];
+
+                    $aaa['properties'] = $properties;
                 }
-
-                $aaa['geometry'] = [
-                    'type' => 'Polygon',
-                    'coordinates' => [$arr],
-                ];
-
-                $properties = [];
-                $properties['name'] = $v['title'];
-                $properties['adcode'] = $v['id'];
-                $properties['level'] = 'district';
-                $this->getGaoDeGeo($v['center_point']);
-                $centerPoint = explode(',', $v['center_point']);
-                $properties['center'] = [
-                    'lng' => (float)$centerPoint[0],
-                    'lat' => (float)$centerPoint[1],
-                ];
-
-                $aaa['properties'] = $properties;
-
-                // 数据
-                $data['area_id'] = $v['id'];
-                $data['value'] = 64;
-                $data['info'] =
-                    '项目名称：' . $v['title'] . '<br/>' .
-                    '项目类型：' . $v['type'] . '<br/>' .
-                    '投资状态：' . $v['status'] . '<br/>' .
-                    '投资概况：' . $v['description'];
-
+//                $positionsArr = explode(';', $positions);
+//                foreach ($positionsArr as $kk => $vv) {
+//                    $vv = $this->getGaoDeGeo($vv);
+//                    $ccc = explode(',', $vv);
+//                    $arr[] = [
+//                        (float) $ccc[0],
+//                        (float) $ccc[1],
+//                    ];
+//                }
+//
+//                $aaa['geometry'] = [
+//                    'type' => 'Polygon',
+//                    'coordinates' => [$arr],
+//                ];
+//
+//                $properties = [];
+//                $properties['name'] = $v['title'];
+//                $properties['adcode'] = $v['id'];
+//                $properties['level'] = 'district';
+//                $this->getGaoDeGeo($v['center_point']);
+//                $centerPoint = explode(',', $v['center_point']);
+//                $properties['center'] = [
+//                    'lng' => (float) $centerPoint[0],
+//                    'lat' => (float) $centerPoint[1],
+//                ];
+//
+//                $aaa['properties'] = $properties;
+//
+//                // 数据
+//                $data['area_id'] = $v['id'];
+//                $data['value'] = 64;
+//                $data['info'] =
+//                    '项目名称：' . $v['title'] . '<br/>' .
+//                    '项目类型：' . $v['type'] . '<br/>' .
+//                    '投资状态：' . $v['status'] . '<br/>' .
+//                    '投资概况：' . $v['description'];
+//
                 $projectArr[] = $aaa;
-                $dataArr[] = $data;
+//                $dataArr[] = $data;
             }
         }
 
-        $projectJson = json_encode(['type' => 'FeatureCollection', 'features' => $projectArr]);
+        $projectJson = json_encode(['type' => 'FeatureCollection', 'features' => $projectArr], JSON_UNESCAPED_UNICODE);
         $dataJson = json_encode($dataArr);
 
         Storage::put('public/jsonData/project.json', $projectJson);
-        Storage::put('public/jsonData/data.json', $dataJson);
+//        Storage::put('public/jsonData/data.json', $dataJson);
     }
 
     public function getAllProjects()
     {
         $projects = Projects::whereIn('is_audit', [1, 3])->get()->toArray();
 
+        $type = Dict::getOptionsArrByName('工程类项目分类');
+        $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
+        $status = Dict::getOptionsArrByName('项目状态');
+        $money_from = Dict::getOptionsArrByName('资金来源');
+        $build_type = Dict::getOptionsArrByName('建设性质');
+        $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
+
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
-            $projects[$k]['type'] = Dict::getOptionsArrByName('工程类项目分类')[$row['type']];
-            $projects[$k]['is_gc'] = Dict::getOptionsArrByName('是否为国民经济计划')[$row['is_gc']];
-            $projects[$k]['status'] = Dict::getOptionsArrByName('项目状态')[$row['status']];
-            $projects[$k]['money_from'] = Dict::getOptionsArrByName('资金来源')[$row['money_from']];
-            $projects[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
-            $projects[$k]['nep_type'] = isset($row['nep_type']) ? Dict::getOptionsArrByName('国民经济计划分类')[$row['nep_type']] : '';
-//            $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
-//            $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
+            $projects[$k]['type'] = $type[$row['type']];
+            $projects[$k]['is_gc'] = $is_gc[$row['is_gc']];
+            $projects[$k]['status'] = $status[$row['status']];
+            $projects[$k]['money_from'] = $money_from[$row['money_from']];
+            $projects[$k]['build_type'] = $build_type[$row['build_type']];
+            $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
         }
 
         return $projects;
@@ -127,5 +170,4 @@ class buildProjectGeoJson extends Command
 
         return $res->locations;
     }
-
 }
