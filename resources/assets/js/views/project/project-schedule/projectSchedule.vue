@@ -925,6 +925,7 @@
                   },
                   on: {
                     click: () => {
+                      console.log(params);
                       this.month_img = params.row.month + ' 月形象进度';
                       this.month_act = params.row.month + ' 月实际完成投资(万元)';
                       this.year_investors = params.row.month.substring(0, 4) + '年计划投资(万元)';
@@ -1159,6 +1160,8 @@
         this.searchForm.is_audit = this.$route.params.is_audit;
         // this.searchForm.start_at=new Date().getFullYear() + '-01';
         projectProgressList(this.searchForm).then(res => {
+          console.log(res.result);
+          
           this.data = res.result;
           //分页显示所有数据总数
           this.dataCount = this.data.length;

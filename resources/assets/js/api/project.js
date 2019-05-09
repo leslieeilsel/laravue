@@ -243,11 +243,11 @@ export function getEditFormData(id) {
  * 发起项目调整
  * @returns {*}
  */
-export function projectAdjustment(status) {
+export function projectAdjustment(form) {
   return request({
     url: '/api/project/projectAdjustment',
     method: 'post',
-    data: {status}
+    data: {...form}
   });
 }
 

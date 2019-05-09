@@ -586,17 +586,20 @@ class ProjectController extends Controller
     public function projectProgress(Request $request)
     {
         $data = $request->all();
+        unset($data['project_num'],$data['subject'],$data['build_start_at'],$data['build_end_at'],
+        $data['total_investors'],$data['plan_investors'],$data['plan_img_progress'],$data['acc_complete'],
+        $data['plan_build_start_at']);
         $data['month'] = date('Y-m', strtotime($data['month']));
         $year = (int) date('Y', strtotime($data['month']));
         $month = (int) date('m', strtotime($data['month']));
         $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
         $plan_month_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $month)->value('id');
 
-        $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
-        $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
-        if ($data['plan_build_start_at']) {
-            $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
-        }
+        // $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
+        // $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
+        // if ($data['plan_build_start_at']) {
+        //     $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
+        // }
         $project_title = Projects::where('id', $data['project_id'])->value('title');
         $path = 'storage/project/project-schedule/' . $project_title . '/' . $data['month'];
         if ($data['img_progress_pic']) {
@@ -612,10 +615,12 @@ class ProjectController extends Controller
                 }
             }
         } else {
-            $handler = opendir($path);
-            while (($filename = readdir($handler)) !== false) {
-                if ($filename != "." && $filename != "..") {
-                    unlink($path . '/' . $filename);
+            if(is_dir($path)){
+                $handler = opendir($path);
+                while (($filename = readdir($handler)) !== false) {
+                    if ($filename != "." && $filename != "..") {
+                        unlink($path . '/' . $filename);
+                    }
                 }
             }
         }
@@ -651,10 +656,17 @@ class ProjectController extends Controller
                 $query = $query->whereIn('user_id', $user_id);
             }
         }
-        if (isset($data['title']) || isset($data['money_from']) || isset($data['is_gc']) || isset($data['nep_type'])) {
+        if (isset($data['title'])|| isset($data['project_num'])|| isset($data['subject']) || isset($data['money_from']) || isset($data['is_gc']) || isset($data['nep_type'])) {
             $projects = Projects::select('id');
             if (isset($data['title'])) {
                 $projects = $projects->where('title', 'like', '%' . $data['title'] . '%');
+            }
+            
+            if (isset($data['project_num'])) {
+                $projects = $projects->where('project_num', $data['project_num']);
+            }
+            if (isset($data['subject'])) {
+                $projects = $projects->where('subject', 'like', '%' . $data['subject'] . '%');
             }
             if (isset($data['money_from'])) {
                 if ($data['money_from'] != -1) {
@@ -675,12 +687,6 @@ class ProjectController extends Controller
             $ids = array_column($projects, 'id');
             // $ids = array_intersect($ids, $this->seeIds);
             $query = $query->whereIn('project_id', $ids);
-        }
-        if (isset($data['project_num'])) {
-            $query = $query->where('project_num', $data['project_num']);
-        }
-        if (isset($data['subject'])) {
-            $query = $query->where('subject', 'like', '%' . $data['subject'] . '%');
         }
         // if (isset($data['start_at']) || isset($data['end_at'])) {
         //     if (isset($data['start_at']) && isset($data['end_at'])) {
@@ -718,12 +724,23 @@ class ProjectController extends Controller
         $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
             $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
-            $Projects = Projects::where('id', $row['project_id'])->value('title');
-            $ProjectSchedules[$k]['project_title'] = $Projects;
+            $Projects = Projects::where('id', $row['project_id'])->first();
+            $ProjectSchedules[$k]['money_from'] = $Projects['money_from'];
+            $ProjectSchedules[$k]['project_title'] = $Projects['title'];
             $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
             $users=user::where('id',$row['user_id'])->first();
             $ProjectSchedules[$k]['tianbao_name'] = $users['name'];
             $ProjectSchedules[$k]['department'] = Departments::where('id',$users['department_id'])->value('title');
+            $year = date('Y', strtotime($row['month']));
+            $ProjectPlans=ProjectPlan::where('project_id',$row['project_id'])->where('date',$year)->first();
+            $ProjectSchedules[$k]['project_num'] = $Projects['num'];
+            $ProjectSchedules[$k]['subject'] = $Projects['subject'];
+            $ProjectSchedules[$k]['build_start_at'] = $Projects['plan_start_at'];
+            $ProjectSchedules[$k]['build_end_at'] = $Projects['plan_end_at'];
+            $ProjectSchedules[$k]['total_investors'] = $Projects['amount'];
+            $ProjectSchedules[$k]['plan_investors'] = $ProjectPlans['amount'];
+            $ProjectSchedules[$k]['plan_img_progress'] = $ProjectPlans['img_progress'];
+            $ProjectSchedules[$k]['plan_build_start_at'] = $Projects['plan_start_at'];
         }
         return response()->json(['result' => $ProjectSchedules], 200);
     }
@@ -992,7 +1009,8 @@ class ProjectController extends Controller
      */
     public function projectAdjustment(Request $request)
     {
-        $result = Projects::where('id', '>', 0)->update(['is_audit' => 3]);
+        $params=$request->input();
+        $result = Projects::whereIn('id', $params['project_ids'])->update(['is_audit' => 3]);
 
         $result = $result ? true : false;
 
