@@ -69,7 +69,7 @@
               :disabled="exportBtnDisable" icon="md-cloud-upload">
         导出项目
       </Button>
-      <Button type="primary" @click="projectAdjustment" icon="" >发起项目调整</Button>
+      <Button type="primary" @click="projectAdjustment" icon="" :disabled="projectBtnDisable">发起项目调整</Button>
     </p>
     <Row>
       <Table type="selection" stripe border :columns="columns" :data="nowData" :loading="tableLoading" @on-selection-change="checkboxProject"></Table>
@@ -829,6 +829,7 @@
         isAdjustReadOnly: false,
         btnDisable: true,
         exportBtnDisable: true,
+        projectBtnDisable: true,
         editFormLoading: false,
         planDisplay: false,
         projectAdjustmentIds:[],  
@@ -2834,6 +2835,12 @@
       }
       ,//选中
       checkboxProject(selection){
+        console.log(selection.length);
+        if(selection.length>0){
+          this.projectBtnDisable=false;
+        }else{
+          this.projectBtnDisable=true;
+        }
         this.projectAdjustmentIds=selection;
       }
     },
