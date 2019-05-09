@@ -407,12 +407,10 @@
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span><span class='project-status'>" + project.status + "</span></h5>" +
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
-                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：计划完成:1000万,累计额完成:350万,完成比:35%</h5>" +
-                  // "<a href='/#/investment/projects'>查看详情</a>";
+                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：" + Percentage_con + "</h5>" +
                   "<a href='/#/projects/preview?id=" + project.id + "'>查看详情</a>";
                 _this.addClickHandler(sContent, marker, map);
               }
-              // })
             }
           });
           // this.setZoom(points, map);
