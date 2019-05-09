@@ -25,7 +25,7 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('user', 'AuthController@user');
-    Route::get('ding/getToken', 'Ding\DingController@getAccessToken');
+    Route::get('ding/getToken', 'Ding\DingController@getToken');
 });
 
 Route::post('user/regist', 'User\RegistController@registUser');
