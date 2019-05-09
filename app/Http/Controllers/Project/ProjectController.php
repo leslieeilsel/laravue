@@ -663,7 +663,7 @@ class ProjectController extends Controller
             }
             
             if (isset($data['project_num'])) {
-                $projects = $projects->where('project_num', $data['project_num']);
+                $projects = $projects->where('num', $data['project_num']);
             }
             if (isset($data['subject'])) {
                 $projects = $projects->where('subject', 'like', '%' . $data['subject'] . '%');
