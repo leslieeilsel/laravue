@@ -257,8 +257,8 @@ class ProjectController extends Controller
                 }
             }
             $id = $data['id'];
-            if($data['num']){
-                ProjectSchedule::where('project_id', $id)->update(['project_num'=>$data['num']]);
+            if ($data['num']) {
+                ProjectSchedule::where('project_id', $id)->update(['project_num' => $data['num']]);
             }
             $data['reason'] = '';
             $projectPlan = $data['projectPlan'];
@@ -467,8 +467,8 @@ class ProjectController extends Controller
         $projects = $projects->first();
         // $projects['plan_start_at'] = date('Y-m', strtotime($projects['plan_start_at']));
         // $projects['plan_end_at'] = date('Y-m', strtotime($projects['plan_end_at']));
-        $projects['amount'] = (float) $projects['amount'];
-        $projects['land_amount'] = $projects['land_amount'] ? (float) $projects['land_amount'] : null;
+        $projects['amount'] = (float)$projects['amount'];
+        $projects['land_amount'] = $projects['land_amount'] ? (float)$projects['land_amount'] : null;
 
         $projects['projectPlan'] = $this->getPlanData($id, 'edit');
 
@@ -498,8 +498,8 @@ class ProjectController extends Controller
             if ($status === 'preview') {
                 $data[$k]['amount'] = isset($row['amount']) ? number_format($row['amount'], 2) : null;
             } else {
-                $data[$k]['amount'] = isset($row['amount']) ? (float) $row['amount'] : null;
-                $data[$k]['total_count_amount'] = isset($row['total_count_amount']) ? (float) $row['total_count_amount'] : null;
+                $data[$k]['amount'] = isset($row['amount']) ? (float)$row['amount'] : null;
+                $data[$k]['total_count_amount'] = isset($row['total_count_amount']) ? (float)$row['total_count_amount'] : null;
             }
             $data[$k]['image_progress'] = $row['image_progress'];
             $monthPlan = array_values($projectPlans->filter(function ($value) use ($row) {
@@ -510,7 +510,7 @@ class ProjectController extends Controller
                 if ($status === 'preview') {
                     $data[$k]['month'][$key]['amount'] = isset($v['amount']) ? number_format($v['amount'], 2) : null;
                 } else {
-                    $data[$k]['month'][$key]['amount'] = isset($v['amount']) ? (float) $v['amount'] : null;
+                    $data[$k]['month'][$key]['amount'] = isset($v['amount']) ? (float)$v['amount'] : null;
                 }
                 $data[$k]['month'][$key]['image_progress'] = $v['image_progress'];
             }
@@ -544,7 +544,7 @@ class ProjectController extends Controller
             $data[$k]['key'] = $row['id'];
             $res = ProjectSchedule::where('id', $row['schedule_id'])->first();
             foreach ($projects as $kk => $v) {
-                if ($v['id'] === (int) $res->project_id) {
+                if ($v['id'] === (int)$res->project_id) {
                     $data[$k]['title'] = $v['title'];
                 }
             }
@@ -586,12 +586,12 @@ class ProjectController extends Controller
     public function projectProgress(Request $request)
     {
         $data = $request->all();
-        unset($data['project_num'],$data['subject'],$data['build_start_at'],$data['build_end_at'],
-        $data['total_investors'],$data['plan_investors'],$data['plan_img_progress'],$data['acc_complete'],
+        unset($data['project_num'], $data['subject'], $data['build_start_at'], $data['build_end_at'],
+        $data['total_investors'], $data['plan_investors'], $data['plan_img_progress'], $data['acc_complete'],
         $data['plan_build_start_at']);
         $data['month'] = date('Y-m', strtotime($data['month']));
-        $year = (int) date('Y', strtotime($data['month']));
-        $month = (int) date('m', strtotime($data['month']));
+        $year = (int)date('Y', strtotime($data['month']));
+        $month = (int)date('m', strtotime($data['month']));
         $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
         $plan_month_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $month)->value('id');
 
@@ -615,7 +615,7 @@ class ProjectController extends Controller
                 }
             }
         } else {
-            if(is_dir($path)){
+            if (is_dir($path)) {
                 $handler = opendir($path);
                 while (($filename = readdir($handler)) !== false) {
                     if ($filename != "." && $filename != "..") {
@@ -656,12 +656,12 @@ class ProjectController extends Controller
                 $query = $query->whereIn('user_id', $user_id);
             }
         }
-        if (isset($data['title'])|| isset($data['project_num'])|| isset($data['subject']) || isset($data['money_from']) || isset($data['is_gc']) || isset($data['nep_type'])) {
+        if (isset($data['title']) || isset($data['project_num']) || isset($data['subject']) || isset($data['money_from']) || isset($data['is_gc']) || isset($data['nep_type'])) {
             $projects = Projects::select('id');
             if (isset($data['title'])) {
                 $projects = $projects->where('title', 'like', '%' . $data['title'] . '%');
             }
-            
+
             if (isset($data['project_num'])) {
                 $projects = $projects->where('num', $data['project_num']);
             }
@@ -728,11 +728,11 @@ class ProjectController extends Controller
             $ProjectSchedules[$k]['money_from'] = $Projects['money_from'];
             $ProjectSchedules[$k]['project_title'] = $Projects['title'];
             $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
-            $users=user::where('id',$row['user_id'])->first();
+            $users = user::where('id', $row['user_id'])->first();
             $ProjectSchedules[$k]['tianbao_name'] = $users['name'];
-            $ProjectSchedules[$k]['department'] = Departments::where('id',$users['department_id'])->value('title');
+            $ProjectSchedules[$k]['department'] = Departments::where('id', $users['department_id'])->value('title');
             $year = date('Y', strtotime($row['month']));
-            $ProjectPlans=ProjectPlan::where('project_id',$row['project_id'])->where('date',$year)->first();
+            $ProjectPlans = ProjectPlan::where('project_id', $row['project_id'])->where('date', $year)->first();
             $ProjectSchedules[$k]['project_num'] = $Projects['num'];
             $ProjectSchedules[$k]['subject'] = $Projects['subject'];
             $ProjectSchedules[$k]['build_start_at'] = $Projects['plan_start_at'];
@@ -885,11 +885,9 @@ class ProjectController extends Controller
                 }
             }
         }
-        unset(
-            $data['id'], $data['updated_at'], $data['project_id'], $data['subject'], $data['project_num'],
-            $data['build_start_at'], $data['build_end_at'], $data['total_investors'], $data['plan_start_at'],
-            $data['plan_investors'], $data['plan_img_progress'], $data['month'], $data['project_title']
-        );
+        unset($data['id'], $data['updated_at'], $data['project_id'], $data['subject'], $data['project_num'],
+        $data['build_start_at'], $data['build_end_at'], $data['total_investors'], $data['plan_start_at'],
+        $data['plan_investors'], $data['plan_img_progress'], $data['month'], $data['project_title']);
         $result = ProjectSchedule::where('id', $id)->update($data);
 
         //        if ($result) {
@@ -911,8 +909,8 @@ class ProjectController extends Controller
         $data = $request->all();
         $result = ProjectSchedule::where('id', $data['id'])->update(['is_audit' => $data['status'], 'reason' => $data['reason']]);
         $projects = ProjectSchedule::where('id', $data['id'])->first();
-        $year = (int) date('Y', strtotime($projects['month']));
-        $month = (int) date('m', strtotime($projects['month']));
+        $year = (int)date('Y', strtotime($projects['month']));
+        $month = (int)date('m', strtotime($projects['month']));
         $y = intval($year);
         $m = intval($month);
         $plans_amount_y = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', 0)->where('date', $y)->value('id');
@@ -962,7 +960,7 @@ class ProjectController extends Controller
             $ii = 0;
             foreach ($month as $k => $v) {
                 $monthList[$ii] = [
-                    'date' => (int) $v['month'],
+                    'date' => (int)$v['month'],
                     'amount' => null,
                     'image_progress' => '',
                 ];
@@ -1009,7 +1007,7 @@ class ProjectController extends Controller
      */
     public function projectAdjustment(Request $request)
     {
-        $params=$request->input();
+        $params = $request->input();
         $result = Projects::whereIn('id', $params['project_ids'])->update(['is_audit' => 3]);
 
         $result = $result ? true : false;
@@ -1230,5 +1228,31 @@ class ProjectController extends Controller
             $result['positions'][$k]['lat'] = $v['y'];
         }
         return response()->json(['result' => $result], 200);
+    }
+
+    public function getProjectById(Request $request)
+    {
+        $id = $request->input('id');
+        $projects = Projects::where('id', (int)$id)->first()->toArray();
+
+        $type = Dict::getOptionsArrByName('工程类项目分类');
+        $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
+        $status = Dict::getOptionsArrByName('项目状态');
+        $money_from = Dict::getOptionsArrByName('资金来源');
+        $build_type = Dict::getOptionsArrByName('建设性质');
+        $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
+
+        $projects['amount'] = number_format($projects['amount'], 2);
+        $projects['land_amount'] = isset($projects['land_amount']) ? number_format($projects['land_amount'], 2) : '';
+        $projects['type'] = $type[$projects['type']];
+        $projects['is_gc'] = $is_gc[$projects['is_gc']];
+        $projects['status'] = $status[$projects['status']];
+        $projects['money_from'] = $money_from[$projects['money_from']];
+        $projects['build_type'] = $build_type[$projects['build_type']];
+        $projects['nep_type'] = isset($projects['nep_type']) ? $nep_type[$projects['nep_type']] : '';
+        $projects['projectPlan'] = $this->getPlanData($projects['id'], 'preview');
+        $projects['scheduleInfo'] = ProjectSchedule::where('project_id', $projects['id'])->orderBy('id', 'desc')->first();
+
+        return response()->json(['result' => $projects], 200);
     }
 }

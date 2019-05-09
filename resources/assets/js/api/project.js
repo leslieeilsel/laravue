@@ -366,3 +366,15 @@ export function locationPosition(position) {
   });
 }
 
+/**
+ * 转坐标
+ * @returns {*}
+ */
+export function getProjectById(id) {
+  return request({
+    url: '/api/project/getProjectById',
+    method: 'post',
+    data: {id}
+  });
+}
+
