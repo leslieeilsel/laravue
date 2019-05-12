@@ -185,7 +185,7 @@
             });
           }
         }, response => {
-          this.$Message.error('据读取失败!');
+          this.$Message.error('路网数据读取失败!');
         });
       },
       getDictData() {
@@ -210,11 +210,11 @@
 
         let _this = this;
 
+        // 添加路网切换
         function ZoomControl() {
           this.defaultAnchor = BMAP_ANCHOR_TOP_RIGHT;
           this.defaultOffset = new BMap.Size(100, 10);
         }
-
         ZoomControl.prototype = new BMap.Control();
         ZoomControl.prototype.initialize = function (map) {
           let select = document.createElement("select");
@@ -247,11 +247,48 @@
 
           return select;
         }
-        // 创建控件
         let myZoomCtrl = new ZoomControl();
-        // 添加到地图当中
         map.addControl(myZoomCtrl);
+        
+        // 添加图例
+        function LegendControl() {
+          this.defaultAnchor = BMAP_ANCHOR_BOTTOM_RIGHT;
+          this.defaultOffset = new BMap.Size(5, 5);
+        }
+        LegendControl.prototype = new BMap.Control();
+        LegendControl.prototype.initialize = function (map) {
+          let div = document.createElement("div");
+          div.style.cursor = "pointer";
+          div.style.width = "160px";
+          div.style.height = "100px";
+          div.style.padding = "5px";
+          div.style.border = "1px solid gray";
+          div.style.borderRadius = "3px";
+          div.style.backgroundColor = "white";
+          
+          let shizheng = document.createElement("div");
+          shizheng.innerText = '市政：中心点 + 线';
+          div.appendChild(shizheng);
+          let lvhua = document.createElement("div");
+          lvhua.innerText = '绿化：中心点 + 阴影面';
+          div.appendChild(lvhua);
+          let fangjian = document.createElement("div");
+          fangjian.innerText = '房建：中心点';
+          div.appendChild(fangjian);
+          let shuili = document.createElement("div");
+          shuili.innerText = '水利：中心点 + 线';
+          div.appendChild(shuili);
+          
+          map.getContainer().appendChild(div);
+
+          return div;
+        }
+        let myLegendCtrl = new LegendControl();
+        map.addControl(myLegendCtrl);
+        
+        // 获取数据字典数据
         this.getDictData();
+        
         // 加载行政区划
         this.loadStaticMapData('xingzheng.geo.json', map);
         // 加载市政路网
