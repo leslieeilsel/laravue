@@ -72,7 +72,8 @@
       <Button type="primary" @click="projectAdjustment" icon="" :disabled="projectBtnDisable">发起项目调整</Button>
     </p>
     <Row>
-      <Table type="selection" stripe border :columns="columns" :data="nowData" :loading="tableLoading" @on-selection-change="checkboxProject"></Table>
+      <Table type="selection" stripe border :columns="columns" :data="nowData" :loading="tableLoading"
+             @on-selection-change="checkboxProject"></Table>
     </Row>
     <Row type="flex" justify="end" class="page">
       <Page :total="dataCount" :page-size="pageSize" @on-change="changePage" @on-page-size-change="_nowPageSize"
@@ -253,9 +254,10 @@
               </FormItem>
             </Col>
             <Col span="24">
-              <FormItem label="累计金额(万元)"
-                :prop="'projectPlan.' + index_t + '.total_count_amount'" >
-                <InputNumber :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="累计金额" value="0" readonly></InputNumber>
+              <FormItem label="月计划投资金额合计(万元)"
+                        :prop="'projectPlan.' + index_t + '.total_count_amount'">
+                <InputNumber :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0"
+                             readonly></InputNumber>
               </FormItem>
             </Col>
           </Row>
@@ -302,7 +304,8 @@
                   :prop="'projectPlan.' + index_t + '.month.' + index + '.image_progress'"
                   :rules="ite.monthImageProgress"
                   class="monthAmount">
-                  <Input type="textarea" :rows="1" placeholder="请输入..." v-model="ite.image_progress" class="monthInput"/>
+                  <Input type="textarea" :rows="1" placeholder="请输入..." v-model="ite.image_progress"
+                         class="monthInput"/>
                 </FormItem>
               </Col>
             </div>
@@ -512,9 +515,10 @@
               </FormItem>
             </Col>
             <Col span="24">
-              <FormItem label="累计金额(万元)"
-                :prop="'projectPlan.' + index_t + '.total_count_amount'" >
-                <InputNumber :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="累计金额" value="0" readonly></InputNumber>
+              <FormItem label="月计划投资金额合计(万元)"
+                        :prop="'projectPlan.' + index_t + '.total_count_amount'">
+                <InputNumber :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0"
+                             readonly></InputNumber>
               </FormItem>
             </Col>
           </Row>
@@ -561,7 +565,8 @@
                   :prop="'projectPlan.' + index_t + '.month.' + index + '.image_progress'"
                   :rules="ite.monthImageProgress"
                   class="monthAmount">
-                  <Input type="textarea" :rows="1" placeholder="请输入..." :readonly="ite.monthProgressReadonly" v-model="ite.image_progress" class="monthInput"/>
+                  <Input type="textarea" :rows="1" placeholder="请输入..." :readonly="ite.monthProgressReadonly"
+                         v-model="ite.image_progress" class="monthInput"/>
                 </FormItem>
               </Col>
             </div>
@@ -715,9 +720,9 @@
               </FormItem>
             </Col>
             <Col span="24">
-              <FormItem label="累计金额(万元)"
-                :prop="'projectPlan.' + index + '.total_count_amount'" >
-                <InputNumber v-model="item.total_count_amount" placeholder="累计金额" value="0" readonly></InputNumber>
+              <FormItem label="月计划投资金额合计(万元)"
+                        :prop="'projectPlan.' + index + '.total_count_amount'">
+                <InputNumber v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0" readonly></InputNumber>
               </FormItem>
             </Col>
           </Row>
@@ -739,7 +744,8 @@
                 <Input type="text" placeholder="" v-model="ite.amount" readonly class="monthInput"/>
               </Col>
               <Col span="17">
-                <Input type="textarea" :rows="1" placeholder="" v-model="ite.image_progress" readonly class="monthInput"/>
+                <Input type="textarea" :rows="1" placeholder="" v-model="ite.image_progress" readonly
+                       class="monthInput"/>
               </Col>
             </div>
           </Row>
@@ -774,16 +780,16 @@
       </div>
     </Modal>
     <Modal
-        v-model="projectModal"
-        title="是否调整所选项目"
-        ok-text="取消"
-        cancel-text="确定"
-        @on-cancel="projectAdjustmentOk"
-        @on-ok="projectAdjustmentCancel"
-        >
-        <div v-for="(item,index) in projectAdjustmentIds">
-          <p>{{item.title}}</p>
-        </div>
+      v-model="projectModal"
+      title="是否调整所选项目"
+      ok-text="取消"
+      cancel-text="确定"
+      @on-cancel="projectAdjustmentOk"
+      @on-ok="projectAdjustmentCancel"
+    >
+      <div v-for="(item,index) in projectAdjustmentIds">
+        <p>{{item.title}}</p>
+      </div>
     </Modal>
   </Card>
 </template>
@@ -813,7 +819,7 @@
         iframeHeight: 0,
         modal11: false,
         modal222: false,
-        projectModal:false,
+        projectModal: false,
         pageSize: 10,   // 每页显示多少条
         dataCount: 0,   // 总条数
         pageCurrent: 1, // 当前页
@@ -832,7 +838,7 @@
         projectBtnDisable: true,
         editFormLoading: false,
         planDisplay: false,
-        projectAdjustmentIds:[],  
+        projectAdjustmentIds: [],
         reasonForm: {
           reason: ''
         },
@@ -1012,18 +1018,18 @@
                       this.isReadOnly = true;
                       this.openErrorAlert = (this.previewForm.reason !== '' && this.previewForm.is_audit === 2);
                       this.previewModal = true;
-                      
+
                       this.previewForm.projectPlan.forEach(function (row, index) {
-                        let total_count_amount=0;
+                        let total_count_amount = 0;
                         row.month.forEach(function (e) {
-                          total_count_amount=parseFloat(total_count_amount)+parseFloat(e.amount);
-                        }); 
+                          total_count_amount = parseFloat(total_count_amount) + parseFloat(e.amount);
+                        });
                         console.log(total_count_amount);
-                        
-                        if(isNaN(total_count_amount)){
-                          row.total_count_amount=0;
-                        }else{
-                          row.total_count_amount=total_count_amount;
+
+                        if (isNaN(total_count_amount)) {
+                          row.total_count_amount = 0;
+                        } else {
+                          row.total_count_amount = total_count_amount;
                         }
                       })
                       if (this.previewForm.center_point && this.previewForm.positions) {
@@ -1066,15 +1072,15 @@
                             this.editForm.nep_type = '';
                           }
                         }
-                        this.editForm.projectPlan.forEach(function (row, index) {                     
-                          let total_count_amount=0;
+                        this.editForm.projectPlan.forEach(function (row, index) {
+                          let total_count_amount = 0;
                           row.month.forEach(function (e) {
-                            total_count_amount=parseFloat(total_count_amount)+parseFloat(e.amount);
+                            total_count_amount = parseFloat(total_count_amount) + parseFloat(e.amount);
                           });
-                          row.total_count_amount=total_count_amount;
+                          row.total_count_amount = total_count_amount;
                           let CurrentDate = new Date();
                           let CurrentYear = CurrentDate.getFullYear();
-                          let CurrentMonth = CurrentDate.getMonth()+1;
+                          let CurrentMonth = CurrentDate.getMonth() + 1;
                           // 如果是当年，年度计划和月度计划都为必填
                           if (row.date === CurrentYear) {
                             row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
@@ -1083,10 +1089,10 @@
                             row.required = true;
                             if (row.month !== undefined) {
                               row.month.forEach(function (e) {
-                                if(e.date<CurrentMonth){
-                                  e.monthReadonly=true;
-                                  e.monthProgressReadonly=true;
-                                }else{
+                                if (e.date < CurrentMonth) {
+                                  e.monthReadonly = true;
+                                  e.monthProgressReadonly = true;
+                                } else {
                                   e.monthRole = {required: true, message: '不能为空', trigger: 'blur', type: 'number'};
                                   e.monthImageProgress = {required: true, message: '月计划形象进度不能为空', trigger: 'blur'};
                                   e.monthPlaceholder = '必填项';
@@ -1101,8 +1107,8 @@
                             row.required = false;
                             if (row.month !== undefined) {
                               row.month.forEach(function (e) {
-                                e.monthReadonly=true;
-                                e.monthProgressReadonly=true;
+                                e.monthReadonly = true;
+                                e.monthProgressReadonly = true;
                                 // e.monthRole = {required: false, type: 'number'};
                                 // e.monthImageProgress = {required: false};
                                 // e.monthPlaceholder = '非必填';
@@ -1224,7 +1230,7 @@
               date: '2019',
               amount: null,
               image_progress: '',
-              total_count_amount:null,
+              total_count_amount: null,
               month: [
                 {
                   date: 1,
@@ -2757,12 +2763,12 @@
             amounts = parseFloat(amounts) + parseFloat(month_total[i].amount);
           }
         }
-        this.form.projectPlan[index_t].total_count_amount=amounts;
+        this.form.projectPlan[index_t].total_count_amount = amounts;
         if (amounts > amount_total) {
           this.$Message.error('月计划总金额不能超过年计划');
-          this.form.projectPlan[index_t].total_count_amount=amounts-month_total[index].amount;
+          this.form.projectPlan[index_t].total_count_amount = amounts - month_total[index].amount;
           month_total[index].amount = 0;
-        }        
+        }
       },//修改月投资计划金额   大于计划金额时不能填写
       totalAmountE(index_t, index) {
         let amount_total = this.editForm.projectPlan[index_t].amount;
@@ -2777,11 +2783,11 @@
           if (month_total[i].amount) {
             amounts = parseFloat(amounts) + parseFloat(month_total[i].amount);
           }
-        }                
-        this.editForm.projectPlan[index_t].total_count_amount=amounts;
+        }
+        this.editForm.projectPlan[index_t].total_count_amount = amounts;
         if (amounts > amount_total) {
           this.$Message.error('月计划总金额不能超过年计划');
-          this.editForm.projectPlan[index_t].total_count_amount=amounts-month_total[index].amount;
+          this.editForm.projectPlan[index_t].total_count_amount = amounts - month_total[index].amount;
           month_total[index].amount = 0;
         }
       },
@@ -2801,24 +2807,24 @@
         window.location.href = "/api/project/exportProject?title=" + title + "&subject=" + subject + "&office=" + office + "&unit=" + unit + "&num=" + num + "&type=" + type + "&build_type=" + build_type + "&money_from=" + money_from + "&is_gc=" + is_gc + "&nep_type=" + nep_type + "&status=" + status;
       },//发起项目调整
       projectAdjustment() {
-        this.projectModal=true;
+        this.projectModal = true;
       },//调整项目
-      projectAdjustmentOk(){
+      projectAdjustmentOk() {
         this.$Modal.confirm({
           title: "本次调整将不可撤销，确认是否需要调整",
           loading: true,
           okText: "取消",
-          cancelText:"确定",
+          cancelText: "确定",
           content: '',
           onOk: () => {
             this.$Modal.remove();
           },
-          onCancel:()=>{
-            let project_ids=[];
+          onCancel: () => {
+            let project_ids = [];
             this.projectAdjustmentIds.forEach(function (el) {
               project_ids.push(el.id);
             });
-            projectAdjustment({project_ids:project_ids}).then(e => {
+            projectAdjustment({project_ids: project_ids}).then(e => {
               if (e.result) {
                 this.$Message.success("调整成功");
               } else {
@@ -2830,18 +2836,18 @@
           }
         })
       },//调整项目  取消
-      projectAdjustmentCancel(){
+      projectAdjustmentCancel() {
         this.$Modal.remove()
       }
       ,//选中
-      checkboxProject(selection){
+      checkboxProject(selection) {
         console.log(selection.length);
-        if(selection.length>0){
-          this.projectBtnDisable=false;
-        }else{
-          this.projectBtnDisable=true;
+        if (selection.length > 0) {
+          this.projectBtnDisable = false;
+        } else {
+          this.projectBtnDisable = true;
         }
-        this.projectAdjustmentIds=selection;
+        this.projectAdjustmentIds = selection;
       }
     },
     mounted() {
