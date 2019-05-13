@@ -342,35 +342,43 @@
                   month_act_complete = 0;
                 }
                 // console.log("实际完成" + month_act_complete)
-                let Percentage = 0;
-                if (monthAmount > 0 && monthAmount > parseFloat(month_act_complete)) {
-                  Percentage = (monthAmount - month_act_complete) / monthAmount;
+                let Percentage = 0
+                if (month_act_complete !== 0) {
+                  Percentage = month_act_complete / monthAmount;
+                  if (isNaN(Percentage)) {
+                    Percentage = 0;
+                  }
+                  console.log(Percentage)
+                }
+                if (monthAmount == 0) {
+                  Percentage = 1;
                 }
                 // console.log(Percentage)
                 Percentage_con = '';
-                Percentage = parseFloat(Percentage);
+                Percentage = parseFloat(Percentage).toFixed(2);
                 war_color = 'greencircle';
                 point_color = '#19be6b';
                 warningColor = 'success';
-                if (Percentage <= 0) {
-                  Percentage_con = "计划完成：" + monthAmount + "，已完成" + month_act_complete + "万，" + "和预期一样";
-                } else {
-                  Percentage = Percentage.toFixed(2);
-                  if (Percentage > 0.1 && Percentage < 0.2) {
-                    war_color = 'yellowcircle';
-                    point_color = '#ff9900';
-                    warningColor = 'warning';
-                  } else if (Percentage > 0.3) {
-                    war_color = 'redcircle';
-                    point_color = '#ed4014';
-                    warningColor = 'error';
-                  }
-                  Percentage_con = "计划完成：" + monthAmount + "，已完成" + month_act_complete + "万，" + "比预期延缓" + Percentage * 100 + "%";
+
+                if (Percentage < 0.7) {
+                  war_color = 'redcircle';
+                  point_color = '#ed4014';
+                  warningColor = 'error';
+                } else if (Percentage < 0.8 && Percentage >= 0.7) {
+                  war_color = 'yellowcircle';
+                  point_color = '#ff9900';
+                  warningColor = 'warning';
+                } else if (Percentage < 0.9 && Percentage >= 0.8) {
+                  war_color = 'greencircle';
+                  point_color = '#19be6b';
+                  warningColor = 'success';
                 }
+
+                Percentage_con = "计划完成：" + monthAmount + "，已完成" + month_act_complete + "万，" + "实际完成率" + Percentage * 100 + "%";
               }
             });
             // console.log("当年月计划合计：" + plan_amount)
-            
+
             if (project.is_audit === 1 || project.is_audit === 3) {
               // 添加标注
               let center = project.center_point;
