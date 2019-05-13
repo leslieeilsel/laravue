@@ -307,49 +307,67 @@
           let _this = this;
           let date = new Date();
           let y = date.getFullYear();
-          let m = date.getMonth();
-          let plan_amount = 0;
+          let m = date.getMonth() + 1;
+          let plan_amount;
+          let last_month;
           let points = [];
           e.result.forEach(function (project) {
+            console.log('--------------------')
+            console.log(project)
+            plan_amount = 0;
+            last_month = 0;
+            let war_color;
+            let point_color;
+            let warningColor;
+            let Percentage_con;
             project.projectPlan.forEach(function (year) {
+              console.log(project.title)
               if (year.date === y) {
+                let monthAmount = 0;
                 year.month.forEach(function (month) {
-                  if (m > month.date) {
-                    plan_amount = parseFloat(plan_amount) + parseFloat(month.amount);
+                  if (month.date < m) {
+                    monthAmount = month.amount;
+                    console.log(month.date + '月：' + parseFloat(month.amount))
+                    plan_amount += parseFloat(month.amount);
+                    // console.log('1-' + month.date + '月合计：' + plan_amount)
                   }
                 })
+                console.log("计划" + monthAmount)
+                let month_act_complete = 0;
+                if (project.scheduleInfo) {
+                  month_act_complete = project.scheduleInfo.month_act_complete;
+                } else {
+                  month_act_complete = 0;
+                }
+                console.log("实际完成" + month_act_complete)
+                let Percentage = 0;
+                if (monthAmount > 0 && monthAmount > month_act_complete) {
+                  Percentage = (monthAmount - month_act_complete) / monthAmount;
+                }
+                Percentage_con = '';
+                Percentage = parseFloat(Percentage);
+                war_color = 'greencircle';
+                point_color = '#19be6b';
+                warningColor = 'success';
+                if (Percentage <= 0) {
+                  Percentage_con = "计划完成：" + monthAmount + "，已完成" + month_act_complete + "万，" + "和预期一样";
+                } else {
+                  Percentage = Percentage.toFixed(2);
+                  if (Percentage > 0.1 && Percentage < 0.2) {
+                    war_color = 'yellowcircle';
+                    point_color = '#ff9900';
+                    warningColor = 'warning';
+                  } else if (Percentage > 0.3) {
+                    war_color = 'redcircle';
+                    point_color = '#ed4014';
+                    warningColor = 'error';
+                  }
+                  Percentage_con = "计划完成：" + monthAmount + "，已完成" + month_act_complete + "万，" + "比预期延缓" + Percentage * 100 + "%";
+                }
               }
             });
-            let acc_complete = 0;
-            if (project.scheduleInfo) {
-              acc_complete = project.scheduleInfo.acc_complete;
-            } else {
-              acc_complete = 0;
-            }
-            let Percentage = 0;
-            if (plan_amount > 0 && plan_amount > acc_complete) {
-              Percentage = (plan_amount - acc_complete) / plan_amount;
-            }
-            let Percentage_con = '';
-            Percentage = parseFloat(Percentage);
-            let war_color = 'greencircle';
-            let point_color = '#19be6b';
-            let warningColor = 'success';
-            if (Percentage <= 0) {
-              Percentage_con = "已完成" + acc_complete + "万，" + "和预期一样";
-            } else {
-              Percentage = Percentage.toFixed(2);
-              if (Percentage > 0.1 && Percentage < 0.2) {
-                war_color = 'yellowcircle';
-                point_color = '#ff9900';
-                warningColor = 'warning';
-              } else if (Percentage > 0.3) {
-                war_color = 'redcircle';
-                point_color = '#ed4014';
-                warningColor = 'error';
-              }
-              Percentage_con = "已完成" + acc_complete + "万，" + "比预期延缓" + Percentage * 100 + "%";
-            }
+            console.log("当年月计划合计：" + plan_amount)
+            
             if (project.is_audit === 1 || project.is_audit === 3) {
               // 添加标注
               let center = project.center_point;
