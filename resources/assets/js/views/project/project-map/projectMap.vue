@@ -185,7 +185,7 @@
             });
           }
         }, response => {
-          this.$Message.error('据读取失败!');
+          this.$Message.error('路网数据读取失败!');
         });
       },
       getDictData() {
@@ -210,6 +210,7 @@
 
         let _this = this;
 
+        // 添加路网切换
         function ZoomControl() {
           this.defaultAnchor = BMAP_ANCHOR_TOP_RIGHT;
           this.defaultOffset = new BMap.Size(100, 10);
@@ -247,11 +248,49 @@
 
           return select;
         }
-        // 创建控件
         let myZoomCtrl = new ZoomControl();
-        // 添加到地图当中
         map.addControl(myZoomCtrl);
+
+        // 添加图例
+        function LegendControl() {
+          this.defaultAnchor = BMAP_ANCHOR_BOTTOM_RIGHT;
+          this.defaultOffset = new BMap.Size(5, 5);
+        }
+
+        LegendControl.prototype = new BMap.Control();
+        LegendControl.prototype.initialize = function (map) {
+          let div = document.createElement("div");
+          div.style.cursor = "pointer";
+          div.style.width = "160px";
+          div.style.height = "100px";
+          div.style.padding = "5px";
+          div.style.border = "1px solid gray";
+          div.style.borderRadius = "3px";
+          div.style.backgroundColor = "white";
+
+          let shizheng = document.createElement("div");
+          shizheng.innerText = '市政：中心点 + 线';
+          div.appendChild(shizheng);
+          let lvhua = document.createElement("div");
+          lvhua.innerText = '绿化：中心点 + 阴影面';
+          div.appendChild(lvhua);
+          let fangjian = document.createElement("div");
+          fangjian.innerText = '房建：中心点';
+          div.appendChild(fangjian);
+          let shuili = document.createElement("div");
+          shuili.innerText = '水利：中心点 + 线';
+          div.appendChild(shuili);
+
+          map.getContainer().appendChild(div);
+
+          return div;
+        }
+        let myLegendCtrl = new LegendControl();
+        map.addControl(myLegendCtrl);
+
+        // 获取数据字典数据
         this.getDictData();
+
         // 加载行政区划
         this.loadStaticMapData('xingzheng.geo.json', map);
         // 加载市政路网
@@ -295,6 +334,7 @@
             Percentage = parseFloat(Percentage);
             let war_color = 'greencircle';
             let point_color = '#19be6b';
+            let warningColor = 'success';
             if (Percentage <= 0) {
               Percentage_con = "已完成" + acc_complete + "万，" + "和预期一样";
             } else {
@@ -302,9 +342,11 @@
               if (Percentage > 0.1 && Percentage < 0.2) {
                 war_color = 'yellowcircle';
                 point_color = '#ff9900';
+                warningColor = 'warning';
               } else if (Percentage > 0.3) {
                 war_color = 'redcircle';
                 point_color = '#ed4014';
+                warningColor = 'error';
               }
               Percentage_con = "已完成" + acc_complete + "万，" + "比预期延缓" + Percentage * 100 + "%";
             }
@@ -312,15 +354,20 @@
               // 添加标注
               let center = project.center_point;
               if (center !== null) {
+                let iconName = 'default-' + warningColor;
+                if (project.type === '绿化') {
+                  iconName = 'lh-' + warningColor;
+                } else if (project.type === '市政') {
+                  iconName = 'sz-' + warningColor;
+                } else if (project.type === '水利') {
+                  iconName = 'sl-' + warningColor;
+                } else if (project.type === '房建') {
+                  iconName = 'fj-' + warningColor;
+                }
+
                 let centerPoint = JSON.parse(center).coordinates;
-                let marker = new BMap.Marker(new BMap.Point(centerPoint.lng, centerPoint.lat), {
-                  // 指定Marker的icon属性为Symbol
-                  icon: new BMap.Symbol(BMap_Symbol_SHAPE_POINT, {
-                    scale: 1.0,//图标缩放大小
-                    fillColor: point_color,//填充颜色
-                    fillOpacity: 1//填充透明度
-                  })
-                });
+                let myIcon = new BMap.Icon("http://139.217.6.78:9000/storage/images/icon/" + iconName + ".png", new BMap.Size(21, 21));
+                let marker = new BMap.Marker(new BMap.Point(centerPoint.lng, centerPoint.lat), {icon: myIcon});  // 创建标注
                 points.push(marker.point);
                 map.addOverlay(marker);
                 let labell;
@@ -356,6 +403,12 @@
                         strokeWeight: 3,
                         strokeOpacity: 0.85,
                         fillColor: ''
+                      });
+                      polyline.addEventListener('mouseover', function (e) {
+                        map.addOverlay(labell);
+                      });
+                      polyline.addEventListener('mouseout', function (e) {
+                        map.removeOverlay(labell);
                       });
                       map.addOverlay(polyline);
                     }
@@ -407,11 +460,10 @@
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span><span class='project-status'>" + project.status + "</span></h5>" +
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资概况：" + description + "</h5>" +
-                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：计划完成:1000万,累计额完成:350万,完成比:35%</h5>" +
-                  "<a href='/#/investment/projects'>查看详情</a>";
+                  "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资进度：" + Percentage_con + "</h5>" +
+                  "<a href='/#/projects/preview?id=" + project.id + "'>查看详情</a>";
                 _this.addClickHandler(sContent, marker, map);
               }
-              // })
             }
           });
           // this.setZoom(points, map);

@@ -71,6 +71,7 @@ Route::post('project/noAudit', 'Project\ProjectController@noAudit');
 Route::post('project/projectDelete', 'Project\ProjectController@projectDelete');
 Route::post('project/projectScheduleDelete', 'Project\ProjectController@projectScheduleDelete');
 Route::post('project/locationPosition', 'Project\ProjectController@locationPosition');
+Route::post('project/getProjectById', 'Project\ProjectController@getProjectById');
 
 // 添加台账导出
 Route::get('project/exportSchedule', 'Project\LedgerController@exportSchedule');
