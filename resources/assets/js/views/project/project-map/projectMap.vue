@@ -312,38 +312,41 @@
           let last_month;
           let points = [];
           e.result.forEach(function (project) {
-            console.log('--------------------')
-            console.log(project)
+            // console.log('--------------------')
+            // console.log(project)
             plan_amount = 0;
             last_month = 0;
             let war_color;
             let point_color;
             let warningColor;
             let Percentage_con;
+            // console.log(project.title)
             project.projectPlan.forEach(function (year) {
-              console.log(project.title)
               if (year.date === y) {
                 let monthAmount = 0;
                 year.month.forEach(function (month) {
                   if (month.date < m) {
                     monthAmount = month.amount;
-                    console.log(month.date + '月：' + parseFloat(month.amount))
-                    plan_amount += parseFloat(month.amount);
+                    // console.log(month.date + '月：' + parseFloat(month.amount))
+                    if (month.amount !== null) {
+                      plan_amount += parseFloat(month.amount);
+                    }
                     // console.log('1-' + month.date + '月合计：' + plan_amount)
                   }
                 })
-                console.log("计划" + monthAmount)
+                // console.log("计划" + monthAmount)
                 let month_act_complete = 0;
                 if (project.scheduleInfo) {
                   month_act_complete = project.scheduleInfo.month_act_complete;
                 } else {
                   month_act_complete = 0;
                 }
-                console.log("实际完成" + month_act_complete)
+                // console.log("实际完成" + month_act_complete)
                 let Percentage = 0;
-                if (monthAmount > 0 && monthAmount > month_act_complete) {
+                if (monthAmount > 0 && monthAmount > parseFloat(month_act_complete)) {
                   Percentage = (monthAmount - month_act_complete) / monthAmount;
                 }
+                // console.log(Percentage)
                 Percentage_con = '';
                 Percentage = parseFloat(Percentage);
                 war_color = 'greencircle';
@@ -366,7 +369,7 @@
                 }
               }
             });
-            console.log("当年月计划合计：" + plan_amount)
+            // console.log("当年月计划合计：" + plan_amount)
             
             if (project.is_audit === 1 || project.is_audit === 3) {
               // 添加标注
