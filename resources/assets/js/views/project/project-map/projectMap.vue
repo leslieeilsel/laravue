@@ -262,7 +262,7 @@
           let div = document.createElement("div");
           div.style.cursor = "pointer";
           div.style.width = "160px";
-          div.style.height = "100px";
+          div.style.height = "140px";
           div.style.padding = "5px";
           div.style.border = "1px solid gray";
           div.style.borderRadius = "3px";
@@ -280,6 +280,12 @@
           let shuili = document.createElement("div");
           shuili.innerText = '水利：中心点 + 线';
           div.appendChild(shuili);
+          let blue = document.createElement("div");
+          blue.innerText = '已建：蓝色';
+          div.appendChild(blue);
+          let yellow = document.createElement("div");
+          yellow.innerText = '在建：黄色';
+          div.appendChild(yellow);
 
           map.getContainer().appendChild(div);
 
