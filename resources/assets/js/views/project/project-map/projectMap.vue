@@ -354,7 +354,7 @@
               // 添加标注
               let center = project.center_point;
               if (center !== null) {
-                let iconName = '';
+                let iconName = 'default-' + warningColor;
                 if (project.type === '绿化') {
                   iconName = 'lh-' + warningColor;
                 } else if (project.type === '市政') {
