@@ -117,6 +117,7 @@ class ProjectController extends Controller
             } else {
                 unset($data['positions']);
             }
+            unset($data['unit_title']);
             $data['created_at'] = date('Y-m-d H:i:s');
             $data['is_audit'] = 4;
             $data['user_id'] = Auth::id();
@@ -257,12 +258,9 @@ class ProjectController extends Controller
                 }
             }
             $id = $data['id'];
-            if($data['num']){
-                ProjectSchedule::where('project_id', $id)->update(['project_num'=>$data['num']]);
-            }
             $data['reason'] = '';
             $projectPlan = $data['projectPlan'];
-            unset($data['id'], $data['projectPlan']);
+            unset($data['id'], $data['projectPlan'],$data['unit_title']);
             $result = Projects::where('id', $id)->update($data);
 
             Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
@@ -328,6 +326,13 @@ class ProjectController extends Controller
                                     if (isset($month['monthPlaceholder'])) {
                                         unset($month['monthPlaceholder']);
                                     }
+                                    if (isset($month['monthReadonly'])) {
+                                        unset($month['monthReadonly']);
+                                    }
+                                    if (isset($month['monthProgressReadonly'])) {
+                                        unset($month['monthProgressReadonly']);
+                                    }
+
                                     if (in_array($month['date'], $issetMonth)) {
                                         $planMonthId = ProjectPlan::where('project_id', $projectId)
                                             ->where('date', $month['date'])
@@ -452,6 +457,7 @@ class ProjectController extends Controller
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
+            $projects[$k]['unit'] = Departments::where('id',$row['unit'])->value('title');
         }
 
         return response()->json(['result' => $projects], 200);

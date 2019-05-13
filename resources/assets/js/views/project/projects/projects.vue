@@ -122,8 +122,8 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="承建单位" prop="unit">
-              <Input v-model="form.unit" placeholder="子公司或部门"></Input>
+            <FormItem label="承建单位" prop="unit_title">
+              <Input v-model="form.unit_title" readonly placeholder="子公司或部门"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -395,7 +395,7 @@
           </Col>
           <Col span="12">
             <FormItem label="承建单位" prop="unit">
-              <Input v-model="editForm.unit" placeholder="子公司或部门" v-bind:disabled="isAdjustReadOnly"></Input>
+              <Input v-model="editForm.unit_title" placeholder="子公司或部门" v-bind:disabled="isAdjustReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -618,7 +618,7 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="承建单位" prop="unit">
+            <FormItem label="承建单位" prop="unit_title">
               <Input v-model="previewForm.unit" placeholder="" v-bind:readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
@@ -800,6 +800,7 @@
     projectDelete,
     projectAdjustment
   } from '../../../api/project';
+  import {getAllDepartment} from '../../../api/system';
   import './projects.css'
   import '../../../../../../public/assets/css/DrawingManager_min.css';
   import $ from 'jquery'
@@ -1012,14 +1013,12 @@
                       this.isReadOnly = true;
                       this.openErrorAlert = (this.previewForm.reason !== '' && this.previewForm.is_audit === 2);
                       this.previewModal = true;
-                      
+
                       this.previewForm.projectPlan.forEach(function (row, index) {
                         let total_count_amount=0;
                         row.month.forEach(function (e) {
                           total_count_amount=parseFloat(total_count_amount)+parseFloat(e.amount);
                         }); 
-                        console.log(total_count_amount);
-                        
                         if(isNaN(total_count_amount)){
                           row.total_count_amount=0;
                         }else{
@@ -1052,6 +1051,9 @@
                       // this.editFormLoading = true;
                       getEditFormData(params.row.id).then(res => {
                         this.editForm = res.result;
+                        let departmentId = this.editForm.unit;
+                        this.editForm.unit_title=this.departmentIds[departmentId];
+                        this.form.unit=departmentId;
                         if ((typeof this.editForm.plan_start_at === 'string') && this.editForm.plan_start_at.constructor === String) {
                           this.editForm.plan_start_at = new Date(Date.parse(this.editForm.plan_start_at));
                         }
@@ -1071,7 +1073,11 @@
                           row.month.forEach(function (e) {
                             total_count_amount=parseFloat(total_count_amount)+parseFloat(e.amount);
                           });
-                          row.total_count_amount=total_count_amount;
+                          if(isNaN(total_count_amount)){
+                            row.total_count_amount=0;
+                          }else{
+                            row.total_count_amount=total_count_amount;
+                          }
                           let CurrentDate = new Date();
                           let CurrentYear = CurrentDate.getFullYear();
                           let CurrentMonth = CurrentDate.getMonth()+1;
@@ -1209,6 +1215,7 @@
           build_type: '',
           money_from: '',
           status: '',
+          unit_title: '',
           unit: '',
           amount: null,
           land_amount: null,
@@ -1291,7 +1298,8 @@
         mapStyle: {
           height: '',
           width: ''
-        }
+        },
+        departmentIds:[]
       }
     },
     methods: {
@@ -1306,6 +1314,11 @@
         this.iframeHeight = this.$parent.$el.clientHeight - 160;
         this.getDictData();
         this.getProject();
+        getAllDepartment().then(res => {
+          if (res.result) {
+            this.departmentIds=res.result;
+          }
+        })
       },
       loadStaticMapData(fileName) {
         let basePath = window.document.location.host;
@@ -2455,31 +2468,57 @@
         this.showMap = false;
         this.modal = true;
         this.form.projectPlan = '';
+        let departmentId = this.$store.getters.user.department_id;
+        this.form.unit_title=this.departmentIds[departmentId];
+        this.form.unit=departmentId;
       },
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            this.loading = true;
-            addProject(this.form).then(e => {
-              this.loading = false;
-              if (e.result) {
-                this.$Message.success('添加成功!');
-                this.modal = false;
-                this.$refs['formValidate'].resetFields();
-                this.planDisplay = false;
-                this.form.projectPlan = '';
-                this.getProject();
-              } else {
-                if (e.message === '登录超时，请重新登陆') {
-                  this.$Message.error(e.message);
-                  this.$router.push({
-                    name: 'login'
-                  });
-                } else {
-                  this.$Message.error('添加失败!');
+            let err_sum='';
+            let year_count_amount=0;
+            if(this.form.projectPlan.length>0){
+              let _this=this;
+              this.form.projectPlan.forEach(function (row, index) {
+                year_count_amount=year_count_amount+row.amount;
+                if(row.total_count_amount!=row.amount){
+                  if(err_sum!=""){
+                    err_sum=err_sum+','+row.date;
+                  }else{
+                    err_sum=row.date;
+                  }
                 }
+              })
+            }
+            if(err_sum!=""){
+              this.$Message.error(err_sum+"月度累计金额不等于年计划");
+            }else{
+              if(year_count_amount>this.form.amount){
+                this.$Message.error("年度累计金额不能大于总金额！");
+              }else{
+                this.loading = true;
+                addProject(this.form).then(e => {
+                  this.loading = false;
+                  if (e.result) {
+                    this.$Message.success('添加成功!');
+                    this.modal = false;
+                    this.$refs['formValidate'].resetFields();
+                    this.planDisplay = false;
+                    this.form.projectPlan = '';
+                    this.getProject();
+                  } else {
+                    if (e.message === '登录超时，请重新登陆') {
+                      this.$Message.error(e.message);
+                      this.$router.push({
+                        name: 'login'
+                      });
+                    } else {
+                      this.$Message.error('添加失败!');
+                    }
+                  }
+                });
               }
-            });
+            }
           } else {
             this.$Message.error('请填写必填字段!');
           }
@@ -2488,24 +2527,47 @@
       editSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            this.loading = true;
-            edit(this.editForm).then(e => {
-              this.loading = false;
-              if (e.result) {
-                this.$Message.success('修改成功!');
-                this.editModal = false;
-                this.init();
-              } else {
-                if (e.message === '登录超时，请重新登陆') {
-                  this.$Message.error(e.message);
-                  this.$router.push({
-                    name: 'login'
-                  });
-                } else {
-                  this.$Message.error('修改失败!');
+            let err_sum='';
+            let year_count_amount=0;
+            if(this.editForm.projectPlan.length>0){
+              let _this=this;
+              this.editForm.projectPlan.forEach(function (row, index) {
+                year_count_amount=year_count_amount+row.amount;
+                if(row.total_count_amount!=row.amount){
+                  if(err_sum!=""){
+                    err_sum=err_sum+','+row.date;
+                  }else{
+                    err_sum=row.date;
+                  }
                 }
+              })
+            }
+            if(err_sum!=""){
+              this.$Message.error(err_sum+"月度累计金额不等于年计划");
+            }else{
+              if(year_count_amount>this.form.amount){
+                this.$Message.error("年度累计金额不能大于总金额！");
+              }else{
+                this.loading = true;
+                edit(this.editForm).then(e => {
+                  this.loading = false;
+                  if (e.result) {
+                    this.$Message.success('修改成功!');
+                    this.editModal = false;
+                    this.init();
+                  } else {
+                    if (e.message === '登录超时，请重新登陆') {
+                      this.$Message.error(e.message);
+                      this.$router.push({
+                        name: 'login'
+                      });
+                    } else {
+                      this.$Message.error('修改失败!');
+                    }
+                  }
+                });
               }
-            });
+            }
           } else {
             this.$Message.error('请填写必填字段!');
           }
