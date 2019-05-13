@@ -404,6 +404,12 @@
                         strokeOpacity: 0.85,
                         fillColor: ''
                       });
+                      polyline.addEventListener('mouseover', function (e) {
+                        map.addOverlay(labell);
+                      });
+                      polyline.addEventListener('mouseout', function (e) {
+                        map.removeOverlay(labell);
+                      });
                       map.addOverlay(polyline);
                     }
                     points.push.apply(points, pointArr);
