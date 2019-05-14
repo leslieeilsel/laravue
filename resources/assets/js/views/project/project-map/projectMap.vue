@@ -254,7 +254,7 @@
         // 添加图例
         function LegendControl() {
           this.defaultAnchor = BMAP_ANCHOR_BOTTOM_RIGHT;
-          this.defaultOffset = new BMap.Size(5, 5);
+          this.defaultOffset = new BMap.Size(0, 0);
         }
 
         LegendControl.prototype = new BMap.Control();
@@ -262,30 +262,18 @@
           let div = document.createElement("div");
           div.style.cursor = "pointer";
           div.style.width = "160px";
-          div.style.height = "140px";
-          div.style.padding = "5px";
+          div.style.height = "175px";
+          // div.style.padding = "5px";
           div.style.border = "1px solid gray";
           div.style.borderRadius = "3px";
           div.style.backgroundColor = "white";
 
-          let shizheng = document.createElement("div");
-          shizheng.innerText = '市政：中心点 + 线';
-          div.appendChild(shizheng);
-          let lvhua = document.createElement("div");
-          lvhua.innerText = '绿化：中心点 + 阴影面';
-          div.appendChild(lvhua);
-          let fangjian = document.createElement("div");
-          fangjian.innerText = '房建：中心点';
-          div.appendChild(fangjian);
-          let shuili = document.createElement("div");
-          shuili.innerText = '水利：中心点 + 线';
-          div.appendChild(shuili);
-          let blue = document.createElement("div");
-          blue.innerText = '已建：蓝色';
-          div.appendChild(blue);
-          let yellow = document.createElement("div");
-          yellow.innerText = '在建：黄色';
-          div.appendChild(yellow);
+          let iframe = document.createElement('iframe');
+          iframe.src = "http://139.217.6.78:9000/bMapLegend";
+          iframe.style.border = "none";
+          iframe.style.width = "170px";
+          iframe.style.height = "175px";
+          div.appendChild(iframe);
 
           map.getContainer().appendChild(div);
 
@@ -411,7 +399,7 @@
                 // 添加多边形
                 if (project.type === '绿化' || project.type === '市政' || project.type === '水利') {
                   let positions = JSON.parse(project.positions);
-                  let strokeColor = project.status === '在建' ? "#ebf10b" : "#4edc52";
+                  let strokeColor = project.status === '在建' ? "#ebf10b" : "#3470dc";
                   positions.forEach(function (e) {
                     let positionsPoints = e.coordinates;
                     let pointArr = [];

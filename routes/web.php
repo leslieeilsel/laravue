@@ -18,3 +18,4 @@ Route::get('/', function () {
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 Route::get('dashboard', 'Project\DashboardController@dashboard');
 Route::get('slogan', 'Project\DashboardController@slogan');
+Route::get('bMapLegend', 'Project\DashboardController@bMapLegend');

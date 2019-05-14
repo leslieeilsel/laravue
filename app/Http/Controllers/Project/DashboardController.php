@@ -226,4 +226,9 @@ class DashboardController extends Controller
     {
         return view('slogan');
     }
+
+    public function bMapLegend()
+    {
+        return view('bMapLegend');
+    }
 }
