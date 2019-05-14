@@ -69,7 +69,9 @@
               :disabled="exportBtnDisable" icon="md-cloud-upload">
         导出项目
       </Button>
-      <Button type="primary" @click="projectAdjustment" icon="" :disabled="projectBtnDisable">发起项目调整</Button>
+      <Button v-if="isShowAdjustmentBtn" type="primary" @click="projectAdjustment" icon=""
+              :disabled="projectBtnDisable">发起项目调整
+      </Button>
     </p>
     <Row>
       <Table type="selection" stripe border :columns="columns" :data="nowData" :loading="tableLoading"
@@ -814,6 +816,7 @@
   export default {
     data: function () {
       return {
+        isShowAdjustmentBtn: false,
         isGcRole: {required: false},
         noMap: false,
         haveMap: false,
@@ -858,12 +861,6 @@
           status: '',
         },
         columns: [
-          {
-            type: 'selection',
-            width: 50,
-            align: 'center',
-            fixed: 'left'
-          },
           {
             type: 'index2',
             width: 50,
@@ -1023,12 +1020,12 @@
                       this.previewForm.projectPlan.forEach(function (row, index) {
                         let total_count_amount = 0;
                         row.month.forEach(function (e) {
-                          total_count_amount=parseFloat(total_count_amount)+parseFloat(e.amount);
-                        }); 
-                        if(isNaN(total_count_amount)){
-                          row.total_count_amount=0;
-                        }else{
-                          row.total_count_amount=total_count_amount;
+                          total_count_amount = parseFloat(total_count_amount) + parseFloat(e.amount);
+                        });
+                        if (isNaN(total_count_amount)) {
+                          row.total_count_amount = 0;
+                        } else {
+                          row.total_count_amount = total_count_amount;
                         }
                       })
                       if (this.previewForm.center_point && this.previewForm.positions) {
@@ -1058,8 +1055,8 @@
                       getEditFormData(params.row.id).then(res => {
                         this.editForm = res.result;
                         let departmentId = this.editForm.unit;
-                        this.editForm.unit_title=this.departmentIds[departmentId];
-                        this.form.unit=departmentId;
+                        this.editForm.unit_title = this.departmentIds[departmentId];
+                        this.form.unit = departmentId;
                         if ((typeof this.editForm.plan_start_at === 'string') && this.editForm.plan_start_at.constructor === String) {
                           this.editForm.plan_start_at = new Date(Date.parse(this.editForm.plan_start_at));
                         }
@@ -1079,10 +1076,10 @@
                           row.month.forEach(function (e) {
                             total_count_amount = parseFloat(total_count_amount) + parseFloat(e.amount);
                           });
-                          if(isNaN(total_count_amount)){
-                            row.total_count_amount=0;
-                          }else{
-                            row.total_count_amount=total_count_amount;
+                          if (isNaN(total_count_amount)) {
+                            row.total_count_amount = 0;
+                          } else {
+                            row.total_count_amount = total_count_amount;
                           }
                           let CurrentDate = new Date();
                           let CurrentYear = CurrentDate.getFullYear();
@@ -1305,7 +1302,7 @@
           height: '',
           width: ''
         },
-        departmentIds:[]
+        departmentIds: []
       }
     },
     methods: {
@@ -1313,6 +1310,16 @@
         this.office = this.$store.getters.user.office;
         if (this.office === 2) {
           this.showLandMoney = true;
+          this.isShowAdjustmentBtn = true;
+          this.columns.unshift(
+            {
+              type: 'selection',
+              width: 50,
+              align: 'center',
+              fixed: 'left',
+              display: 'none'
+            },
+          );
         }
         this.isShowButton = this.office === 0;
         this.showExportButton = !(this.office === 0);
@@ -1322,7 +1329,7 @@
         this.getProject();
         getAllDepartment().then(res => {
           if (res.result) {
-            this.departmentIds=res.result;
+            this.departmentIds = res.result;
           }
         })
       },
@@ -2475,33 +2482,33 @@
         this.modal = true;
         this.form.projectPlan = '';
         let departmentId = this.$store.getters.user.department_id;
-        this.form.unit_title=this.departmentIds[departmentId];
-        this.form.unit=departmentId;
+        this.form.unit_title = this.departmentIds[departmentId];
+        this.form.unit = departmentId;
       },
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            let err_sum='';
-            let year_count_amount=0;
-            if(this.form.projectPlan.length>0){
-              let _this=this;
+            let err_sum = '';
+            let year_count_amount = 0;
+            if (this.form.projectPlan.length > 0) {
+              let _this = this;
               this.form.projectPlan.forEach(function (row, index) {
-                year_count_amount=year_count_amount+row.amount;
-                if(row.total_count_amount!=row.amount){
-                  if(err_sum!=""){
-                    err_sum=err_sum+','+row.date;
-                  }else{
-                    err_sum=row.date;
+                year_count_amount = year_count_amount + row.amount;
+                if (row.total_count_amount != row.amount) {
+                  if (err_sum != "") {
+                    err_sum = err_sum + ',' + row.date;
+                  } else {
+                    err_sum = row.date;
                   }
                 }
               })
             }
-            if(err_sum!=""){
-              this.$Message.error(err_sum+"月度累计金额不等于年计划");
-            }else{
-              if(year_count_amount>this.form.amount){
+            if (err_sum != "") {
+              this.$Message.error(err_sum + "月度累计金额不等于年计划");
+            } else {
+              if (year_count_amount > this.form.amount) {
                 this.$Message.error("年度累计金额不能大于总金额！");
-              }else{
+              } else {
                 this.loading = true;
                 addProject(this.form).then(e => {
                   this.loading = false;
@@ -2533,27 +2540,27 @@
       editSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            let err_sum='';
-            let year_count_amount=0;
-            if(this.editForm.projectPlan.length>0){
-              let _this=this;
+            let err_sum = '';
+            let year_count_amount = 0;
+            if (this.editForm.projectPlan.length > 0) {
+              let _this = this;
               this.editForm.projectPlan.forEach(function (row, index) {
-                year_count_amount=year_count_amount+row.amount;
-                if(row.total_count_amount!=row.amount){
-                  if(err_sum!=""){
-                    err_sum=err_sum+','+row.date;
-                  }else{
-                    err_sum=row.date;
+                year_count_amount = year_count_amount + row.amount;
+                if (row.total_count_amount != row.amount) {
+                  if (err_sum != "") {
+                    err_sum = err_sum + ',' + row.date;
+                  } else {
+                    err_sum = row.date;
                   }
                 }
               })
             }
-            if(err_sum!=""){
-              this.$Message.error(err_sum+"月度累计金额不等于年计划");
-            }else{
-              if(year_count_amount>this.form.amount){
+            if (err_sum != "") {
+              this.$Message.error(err_sum + "月度累计金额不等于年计划");
+            } else {
+              if (year_count_amount > this.form.amount) {
                 this.$Message.error("年度累计金额不能大于总金额！");
-              }else{
+              } else {
                 this.loading = true;
                 edit(this.editForm).then(e => {
                   this.loading = false;
@@ -2867,10 +2874,12 @@
         let nep_type = this.searchForm.nep_type;
         let status = this.searchForm.status;
         window.location.href = "/api/project/exportProject?title=" + title + "&subject=" + subject + "&office=" + office + "&unit=" + unit + "&num=" + num + "&type=" + type + "&build_type=" + build_type + "&money_from=" + money_from + "&is_gc=" + is_gc + "&nep_type=" + nep_type + "&status=" + status;
-      },//发起项目调整
+      },
+      // 发起项目调整
       projectAdjustment() {
         this.projectModal = true;
-      },//调整项目
+      },
+      // 调整项目
       projectAdjustmentOk() {
         this.$Modal.confirm({
           title: "本次调整将不可撤销，确认是否需要调整",
