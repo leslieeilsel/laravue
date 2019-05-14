@@ -333,9 +333,11 @@
                 year.month.forEach(function (month) {
                   if (month.date < m) {
                     monthAmount = month.amount;
-                    // console.log(month.date + '月：' + parseFloat(month.amount))
-                    if (month.amount !== null) {
-                      plan_amount += parseFloat(month.amount);
+                    // console.log(month.date + '月：' + monthAmount)
+                    if (monthAmount !== null) {
+                      monthAmount = monthAmount.replace(/,/g, "");
+                      monthAmount = parseFloat(monthAmount);
+                      plan_amount += monthAmount;
                     }
                     // console.log('1-' + month.date + '月合计：' + plan_amount)
                   }
@@ -343,18 +345,18 @@
                 // console.log("计划" + monthAmount)
                 let month_act_complete = 0;
                 if (project.scheduleInfo) {
-                  month_act_complete = project.scheduleInfo.month_act_complete;
+                  month_act_complete = parseFloat(project.scheduleInfo.month_act_complete);
                 } else {
                   month_act_complete = 0;
                 }
                 // console.log("实际完成" + month_act_complete)
-                let Percentage = 0
+                let Percentage = 0;
                 if (month_act_complete !== 0) {
                   Percentage = month_act_complete / monthAmount;
                   if (isNaN(Percentage)) {
                     Percentage = 0;
                   }
-                  console.log(Percentage)
+                  // console.log(Percentage)
                 }
                 if (monthAmount == 0) {
                   Percentage = 1;
@@ -380,7 +382,7 @@
                   warningColor = 'success';
                 }
 
-                Percentage_con = "计划完成：" + monthAmount + "，已完成" + month_act_complete + "万，" + "实际完成率" + Percentage * 100 + "%";
+                Percentage_con = "计划完成：" + monthAmount + "万，已完成" + month_act_complete + "万，" + "完成率" + Percentage * 100 + "%";
               }
             });
             // console.log("当年月计划合计：" + plan_amount)
