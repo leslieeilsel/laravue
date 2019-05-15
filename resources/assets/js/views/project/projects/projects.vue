@@ -256,8 +256,8 @@
             <Col span="24">
               <FormItem label="月计划投资金额合计(万元)"
                         :prop="'projectPlan.' + index_t + '.total_count_amount'">
-                <InputNumber :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0"
-                             readonly></InputNumber>
+                <Input :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0"
+                             readonly></Input>
               </FormItem>
             </Col>
           </Row>
@@ -517,8 +517,8 @@
             <Col span="24">
               <FormItem label="月计划投资金额合计(万元)"
                         :prop="'projectPlan.' + index_t + '.total_count_amount'">
-                <InputNumber :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0"
-                             readonly></InputNumber>
+                <Input :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0"
+                             readonly></Input>
               </FormItem>
             </Col>
           </Row>
@@ -722,7 +722,7 @@
             <Col span="24">
               <FormItem label="月计划投资金额合计(万元)"
                         :prop="'projectPlan.' + index + '.total_count_amount'">
-                <InputNumber v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0" readonly></InputNumber>
+                <Input v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0" readonly></Input>
               </FormItem>
             </Col>
           </Row>
@@ -1023,13 +1023,14 @@
                       this.previewForm.projectPlan.forEach(function (row, index) {
                         let total_count_amount = 0;
                         row.month.forEach(function (e) {
-                          total_count_amount=parseFloat(total_count_amount)+parseFloat(e.amount);
+                          total_count_amount+=parseFloat(e.amount);
                         }); 
                         if(isNaN(total_count_amount)){
                           row.total_count_amount=0;
                         }else{
-                          row.total_count_amount=total_count_amount;
+                          row.total_count_amount=total_count_amount.toFixed(2);
                         }
+                        
                       })
                       if (this.previewForm.center_point && this.previewForm.positions) {
                         this.haveMap = true;
@@ -1082,7 +1083,7 @@
                           if(isNaN(total_count_amount)){
                             row.total_count_amount=0;
                           }else{
-                            row.total_count_amount=total_count_amount;
+                            row.total_count_amount=total_count_amount.toFixed(2);
                           }
                           let CurrentDate = new Date();
                           let CurrentYear = CurrentDate.getFullYear();
@@ -2665,11 +2666,27 @@
           if (endDate >= startDate) {
             buildPlanFields([startDate, endDate]).then(res => {
               if (res.result) {
+                let projectPlans=this.editForm.projectPlan;
                 res.result.forEach(function (row, index) {
                   let CurrentDate = new Date();
                   let CurrentYear = CurrentDate.getFullYear();
                   // 如果是当年，年度计划和月度计划都为必填
-                  if (row.date === CurrentYear) {
+                  
+                  projectPlans.forEach(function (rowP, indexP) {    
+                    if(rowP.date==row.date){
+                      row.amount=rowP.amount;
+                      row.image_progress=rowP.image_progress;
+                      row.month.forEach(function (e) {                        
+                        rowP.month.forEach(function (p) {
+                          if(e.date==p.date){
+                            e.amount=p.amount
+                            e.image_progress=p.image_progress;
+                          }
+                        });
+                      });
+                    }
+                  })
+                  if (row.date === CurrentYear) {   
                     row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
                     row.imageProgress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                     row.placeholder = '必填项';
