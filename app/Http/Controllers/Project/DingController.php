@@ -8,6 +8,7 @@ class DingController extends Controller
     public function getToken(){
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
+        dd($appKey.'***'.$appSecret);
         $url='https://oapi.dingtalk.com/gettoken?appkey='.$appKey.'&appsecret='.$appSecret;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
