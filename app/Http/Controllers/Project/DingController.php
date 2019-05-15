@@ -16,7 +16,7 @@ class DingController extends Controller
         $json =  curl_exec($ch);
         curl_close($ch);
         $arr=json_decode($json,1);
-        echo $arr;
+        dd($arr);
     }
     
 }
