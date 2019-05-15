@@ -262,14 +262,14 @@
           let div = document.createElement("div");
           div.style.cursor = "pointer";
           div.style.width = "160px";
-          div.style.height = "175px";
+          div.style.height = "135px";
           // div.style.padding = "5px";
           div.style.border = "1px solid gray";
           div.style.borderRadius = "3px";
           div.style.backgroundColor = "white";
 
           let iframe = document.createElement('iframe');
-          iframe.src = "http://139.217.6.78:9000/bMapLegend";
+          iframe.src = "http://localhost:5788/bMapLegend";
           iframe.style.border = "none";
           iframe.style.width = "170px";
           iframe.style.height = "175px";
@@ -329,7 +329,7 @@
                     }
                     // console.log('1-' + month.date + '月合计：' + plan_amount)
                   }
-                })
+                });
                 // console.log("计划" + monthAmount)
                 let month_act_complete = 0;
                 if (project.scheduleInfo) {
@@ -353,20 +353,20 @@
                 Percentage_con = '';
                 Percentage = parseFloat(Percentage).toFixed(2);
                 war_color = 'greencircle';
-                point_color = '#19be6b';
+                point_color = '#4CAF50';
                 warningColor = 'success';
 
                 if (Percentage < 0.7) {
                   war_color = 'redcircle';
-                  point_color = '#ed4014';
+                  point_color = '#F44336';
                   warningColor = 'error';
                 } else if (Percentage < 0.8 && Percentage >= 0.7) {
                   war_color = 'yellowcircle';
-                  point_color = '#ff9900';
+                  point_color = '#FF9800';
                   warningColor = 'warning';
                 } else if (Percentage < 0.9 && Percentage >= 0.8) {
                   war_color = 'greencircle';
-                  point_color = '#19be6b';
+                  point_color = '#4CAF50';
                   warningColor = 'success';
                 }
 
@@ -399,7 +399,6 @@
                 // 添加多边形
                 if (project.type === '绿化' || project.type === '市政' || project.type === '水利') {
                   let positions = JSON.parse(project.positions);
-                  let strokeColor = project.status === '在建' ? "#ebf10b" : "#3470dc";
                   positions.forEach(function (e) {
                     let positionsPoints = e.coordinates;
                     let pointArr = [];
@@ -412,7 +411,7 @@
                     if (e.drawingMode === 'polygon') {
                       let polygon = new BMap.Polygon(pointArr, {
                         strokeOpacity: 0.01,
-                        fillColor: '#99ce66',
+                        fillColor: point_color,
                         fillOpacity: 0.7,
                       });
                       map.addOverlay(polygon);
@@ -424,7 +423,7 @@
                       })
                     } else {
                       let polyline = new BMap.Polyline(pointArr, {
-                        strokeColor: strokeColor,
+                        strokeColor: point_color,
                         strokeWeight: 3,
                         strokeOpacity: 0.85,
                         fillColor: ''
