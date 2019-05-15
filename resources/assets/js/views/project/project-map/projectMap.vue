@@ -254,7 +254,7 @@
         // 添加图例
         function LegendControl() {
           this.defaultAnchor = BMAP_ANCHOR_BOTTOM_RIGHT;
-          this.defaultOffset = new BMap.Size(5, 5);
+          this.defaultOffset = new BMap.Size(0, 0);
         }
 
         LegendControl.prototype = new BMap.Control();
@@ -262,24 +262,18 @@
           let div = document.createElement("div");
           div.style.cursor = "pointer";
           div.style.width = "160px";
-          div.style.height = "100px";
-          div.style.padding = "5px";
+          div.style.height = "175px";
+          // div.style.padding = "5px";
           div.style.border = "1px solid gray";
           div.style.borderRadius = "3px";
           div.style.backgroundColor = "white";
 
-          let shizheng = document.createElement("div");
-          shizheng.innerText = '市政：中心点 + 线';
-          div.appendChild(shizheng);
-          let lvhua = document.createElement("div");
-          lvhua.innerText = '绿化：中心点 + 阴影面';
-          div.appendChild(lvhua);
-          let fangjian = document.createElement("div");
-          fangjian.innerText = '房建：中心点';
-          div.appendChild(fangjian);
-          let shuili = document.createElement("div");
-          shuili.innerText = '水利：中心点 + 线';
-          div.appendChild(shuili);
+          let iframe = document.createElement('iframe');
+          iframe.src = "http://139.217.6.78:9000/bMapLegend";
+          iframe.style.border = "none";
+          iframe.style.width = "170px";
+          iframe.style.height = "175px";
+          div.appendChild(iframe);
 
           map.getContainer().appendChild(div);
 
@@ -307,49 +301,80 @@
           let _this = this;
           let date = new Date();
           let y = date.getFullYear();
-          let m = date.getMonth();
-          let plan_amount = 0;
+          let m = date.getMonth() + 1;
+          let plan_amount;
+          let last_month;
           let points = [];
           e.result.forEach(function (project) {
+            // console.log('--------------------')
+            // console.log(project)
+            plan_amount = 0;
+            last_month = 0;
+            let war_color;
+            let point_color;
+            let warningColor;
+            let Percentage_con;
+            // console.log(project.title)
             project.projectPlan.forEach(function (year) {
               if (year.date === y) {
+                let monthAmount = 0;
                 year.month.forEach(function (month) {
-                  if (m > month.date) {
-                    plan_amount = parseFloat(plan_amount) + parseFloat(month.amount);
+                  if (month.date < m) {
+                    monthAmount = month.amount;
+                    // console.log(month.date + '月：' + monthAmount)
+                    if (monthAmount !== null) {
+                      monthAmount = monthAmount.replace(/,/g, "");
+                      monthAmount = parseFloat(monthAmount);
+                      plan_amount += monthAmount;
+                    }
+                    // console.log('1-' + month.date + '月合计：' + plan_amount)
                   }
                 })
+                // console.log("计划" + monthAmount)
+                let month_act_complete = 0;
+                if (project.scheduleInfo) {
+                  month_act_complete = parseFloat(project.scheduleInfo.month_act_complete);
+                } else {
+                  month_act_complete = 0;
+                }
+                // console.log("实际完成" + month_act_complete)
+                let Percentage = 0;
+                if (month_act_complete !== 0) {
+                  Percentage = month_act_complete / monthAmount;
+                  if (isNaN(Percentage)) {
+                    Percentage = 0;
+                  }
+                  // console.log(Percentage)
+                }
+                if (monthAmount == 0) {
+                  Percentage = 1;
+                }
+                // console.log(Percentage)
+                Percentage_con = '';
+                Percentage = parseFloat(Percentage).toFixed(2);
+                war_color = 'greencircle';
+                point_color = '#19be6b';
+                warningColor = 'success';
+
+                if (Percentage < 0.7) {
+                  war_color = 'redcircle';
+                  point_color = '#ed4014';
+                  warningColor = 'error';
+                } else if (Percentage < 0.8 && Percentage >= 0.7) {
+                  war_color = 'yellowcircle';
+                  point_color = '#ff9900';
+                  warningColor = 'warning';
+                } else if (Percentage < 0.9 && Percentage >= 0.8) {
+                  war_color = 'greencircle';
+                  point_color = '#19be6b';
+                  warningColor = 'success';
+                }
+
+                Percentage_con = "计划完成：" + monthAmount + "万，已完成" + month_act_complete + "万，" + "完成率" + Percentage * 100 + "%";
               }
             });
-            let acc_complete = 0;
-            if (project.scheduleInfo) {
-              acc_complete = project.scheduleInfo.acc_complete;
-            } else {
-              acc_complete = 0;
-            }
-            let Percentage = 0;
-            if (plan_amount > 0 && plan_amount > acc_complete) {
-              Percentage = (plan_amount - acc_complete) / plan_amount;
-            }
-            let Percentage_con = '';
-            Percentage = parseFloat(Percentage);
-            let war_color = 'greencircle';
-            let point_color = '#19be6b';
-            let warningColor = 'success';
-            if (Percentage <= 0) {
-              Percentage_con = "已完成" + acc_complete + "万，" + "和预期一样";
-            } else {
-              Percentage = Percentage.toFixed(2);
-              if (Percentage > 0.1 && Percentage < 0.2) {
-                war_color = 'yellowcircle';
-                point_color = '#ff9900';
-                warningColor = 'warning';
-              } else if (Percentage > 0.3) {
-                war_color = 'redcircle';
-                point_color = '#ed4014';
-                warningColor = 'error';
-              }
-              Percentage_con = "已完成" + acc_complete + "万，" + "比预期延缓" + Percentage * 100 + "%";
-            }
+            // console.log("当年月计划合计：" + plan_amount)
+
             if (project.is_audit === 1 || project.is_audit === 3) {
               // 添加标注
               let center = project.center_point;
@@ -374,7 +399,7 @@
                 // 添加多边形
                 if (project.type === '绿化' || project.type === '市政' || project.type === '水利') {
                   let positions = JSON.parse(project.positions);
-                  let strokeColor = project.status === '在建' ? "#ebf10b" : "#4edc52";
+                  let strokeColor = project.status === '在建' ? "#ebf10b" : "#3470dc";
                   positions.forEach(function (e) {
                     let positionsPoints = e.coordinates;
                     let pointArr = [];
