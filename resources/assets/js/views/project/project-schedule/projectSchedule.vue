@@ -899,12 +899,13 @@
                             let pics = em.img_progress_pic.split(",");
                             let i = 0;
                             pics.forEach(function (em_pic) {
-                              if (em_pic != 'null') {
-                                img_pic.push({url: em_pic, name: i});
+                              if (em_pic != 'null') {                                
+                                img_pic.push({url: em_pic.replace("#","%23"), name: i});
                               }
                               i++;
                             })
                           }
+                          
                           _seeThis.defaultList = img_pic;
                           _seeThis.seeForm.marker = em.marker;
                         }
@@ -965,7 +966,7 @@
                               let files = item.split("/");
                               let fileName = files[files.length - 1];
                               if (fileName !== 'null') {
-                                edit_img_pic.push({url: item, name: fileName});
+                                edit_img_pic.push({url: item.replace("#","%23"), name: fileName});
                               }
                             })
                           }
@@ -1160,8 +1161,6 @@
         this.searchForm.is_audit = this.$route.params.is_audit;
         // this.searchForm.start_at=new Date().getFullYear() + '-01';
         projectProgressList(this.searchForm).then(res => {
-          console.log(res.result);
-          
           this.data = res.result;
           //分页显示所有数据总数
           this.dataCount = this.data.length;
