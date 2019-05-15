@@ -106,7 +106,8 @@
         dropDownIcon: "ios-arrow-down",
         searchNepDisabled: true,
         positionLocation: [],
-        overlays: []
+        overlays: [],
+        basePath: window.document.location.host,
       };
     },
     mounted() {
@@ -148,9 +149,8 @@
         });
       },
       loadStaticMapData(fileName, map) {
-        let basePath = window.document.location.host;
         let _this = this;
-        this.$http.get('http://' + basePath + '/assets/json/' + fileName).then(response => {
+        this.$http.get('http://' + this.basePath + '/assets/json/' + fileName).then(response => {
           if (fileName === 'xingzheng.geo.json') {
             let data = response.body.features[0];
             let polygonArr = data.geometry.coordinates[0];
@@ -243,11 +243,11 @@
               _this.loadStaticMapData('luwang.geo.json', map);
               _this.loadStaticMapData('lvhua.geo.json', map);
             }
-          }
+          };
           map.getContainer().appendChild(select);
 
           return select;
-        }
+        };
         let myZoomCtrl = new ZoomControl();
         map.addControl(myZoomCtrl);
 
@@ -269,7 +269,7 @@
           div.style.backgroundColor = "white";
 
           let iframe = document.createElement('iframe');
-          iframe.src = "http://localhost:5788/bMapLegend";
+          iframe.src = "http://" + _this.basePath + "/bMapLegend";
           iframe.style.border = "none";
           iframe.style.width = "170px";
           iframe.style.height = "175px";
@@ -278,7 +278,7 @@
           map.getContainer().appendChild(div);
 
           return div;
-        }
+        };
         let myLegendCtrl = new LegendControl();
         map.addControl(myLegendCtrl);
 
