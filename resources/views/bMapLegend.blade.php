@@ -17,14 +17,6 @@
             overflow: hidden;
         }
 
-        #doing {
-            color: #3470DC;
-        }
-
-        #done {
-            color: #ebf10b;
-        }
-
         #success {
             color: #4CAF50;
         }
@@ -39,25 +31,19 @@
     </style>
 </head>
 <body>
-<div style="width: 170px;height: 175px;font-size: 12px;">
+<div style="width: 170px;height: 135px;font-size: 12px;">
     <div>
         <div>
-            <span class="mdi mdi-domain mdi-18px mdi-dark"></span> 房建:中心点
+            <span class="mdi mdi-domain mdi-18px mdi-dark"></span> 房建: 中心点
         </div>
         <div>
-            <span class="mdi mdi-road-variant mdi-18px mdi-dark"></span> 市政:中心点 + 线
+            <span class="mdi mdi-road-variant mdi-18px mdi-dark"></span> 市政: 中心点 + 线
         </div>
         <div>
-            <span class="mdi mdi-nature-people mdi-18px mdi-dark"></span> 绿化:中心点 + 阴影面
+            <span class="mdi mdi-nature-people mdi-18px mdi-dark"></span> 绿化: 中心点 + 阴影面
         </div>
         <div>
-            <span class="mdi mdi-water mdi-18px mdi-dark"></span> 水利:中心点 + 线
-        </div>
-        <div>
-            <span id="doing" class="mdi mdi-checkbox-blank mdi-18px"></span>: 在建
-        </div>
-        <div>
-            <span id="done" class="mdi mdi-checkbox-blank mdi-18px"></span>: 已建
+            <span class="mdi mdi-water mdi-18px mdi-dark"></span> 水利: 中心点 + 线
         </div>
         <div>
             <span id="success" class="mdi mdi-checkbox-blank mdi-18px"></span>: 已经滞后
