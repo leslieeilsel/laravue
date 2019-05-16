@@ -46,13 +46,13 @@
             <span class="mdi mdi-water mdi-18px mdi-dark"></span> 水利: 中心点 + 线
         </div>
         <div>
-            <span id="success" class="mdi mdi-checkbox-blank mdi-18px"></span>: 已经滞后
+            <span id="success" class="mdi mdi-checkbox-blank mdi-18px"></span>: 完成率 ≥ 100%
         </div>
         <div>
-            <span id="warning" class="mdi mdi-checkbox-blank mdi-18px"></span>: 警告滞后
+            <span id="warning" class="mdi mdi-checkbox-blank mdi-18px"></span>: 70% ≤ 完成率 < 100%
         </div>
         <div>
-            <span id="error" class="mdi mdi-checkbox-blank mdi-18px"></span>: 严重滞后
+            <span id="error" class="mdi mdi-checkbox-blank mdi-18px"></span>: 完成率 < 70%
         </div>
     </div>
 </div>
