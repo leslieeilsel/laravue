@@ -26,7 +26,7 @@ class CreateIbaProjectProjectsTable extends Migration
             $table->integer('money_from');                          // 资金来源
             $table->decimal('land_amount', 10, 2)->nullable();      // 土地费用
             $table->integer('is_gc');                               // 改创项目
-            $table->integer('nep_type')->nullable();                // 国民经济计划分类(nec:national economic plan)
+            $table->integer('nep_type')->nullable();                // 国民经济计划分类(nep:national economic plan)
             $table->integer('is_audit');                            // 审核状态
             $table->integer('audited');                             // 是否经过审核（审核过的项目不能再删除）
             $table->string('reason')->nullable();                   // 审核不通过原因

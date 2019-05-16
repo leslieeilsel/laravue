@@ -263,7 +263,6 @@
           div.style.cursor = "pointer";
           div.style.width = "160px";
           div.style.height = "135px";
-          // div.style.padding = "5px";
           div.style.border = "1px solid gray";
           div.style.borderRadius = "3px";
           div.style.backgroundColor = "white";
@@ -346,25 +345,25 @@
                   }
                   // console.log(Percentage)
                 }
+
+                // 如果计划金额为0，则默认完成比为100%
                 if (monthAmount == 0) {
                   Percentage = 1;
                 }
+                
                 // console.log(Percentage)
                 Percentage_con = '';
                 Percentage = parseFloat(Percentage).toFixed(2);
-                war_color = 'greencircle';
-                point_color = '#4CAF50';
-                warningColor = 'success';
 
                 if (Percentage < 0.7) {
                   war_color = 'redcircle';
                   point_color = '#F44336';
                   warningColor = 'error';
-                } else if (Percentage < 0.8 && Percentage >= 0.7) {
+                } else if (Percentage < 1 && Percentage >= 0.7) {
                   war_color = 'yellowcircle';
                   point_color = '#FF9800';
                   warningColor = 'warning';
-                } else if (Percentage < 0.9 && Percentage >= 0.8) {
+                } else {
                   war_color = 'greencircle';
                   point_color = '#4CAF50';
                   warningColor = 'success';
