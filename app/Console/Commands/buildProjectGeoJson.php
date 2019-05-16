@@ -23,7 +23,7 @@ class buildProjectGeoJson extends Command
      */
     protected $description = 'Command description';
 
-    /**
+    /** 
      * Create a new command instance.
      *
      * @return void
