@@ -32,7 +32,7 @@ class buildDingProjectJson extends Command
     {
         parent::__construct();
     }
-    public function getToken(){
+    public function handle(){
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
         $url='https://oapi.dingtalk.com/gettoken?appkey='.$appKey.'&appsecret='.$appSecret;
