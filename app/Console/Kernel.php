@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('buildProjectGeoJson --force')->everyMinute();
-        $schedule->command('buildDingProjectJson --force')->everyHour();
+        $schedule->command('buildDingProjectJson --force')->everyMinute();
         // $schedule->command('inspire')
         //          ->hourly();
     }
