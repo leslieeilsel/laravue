@@ -16,7 +16,7 @@ import 'ant-design-vue/dist/antd.css'
 
 Vue.use(iView);
 Vue.use(Antd);
-Vue.use(VueResource)
+Vue.use(VueResource);
 
 const app = new Vue({
   el: '#app',
