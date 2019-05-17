@@ -1103,8 +1103,10 @@
             let time_0 = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1);
             let time = date.getFullYear() + '-' + time_0;
             const disabledMonth = time;
-            // return disabledMonth !== date_at.getMonth();
-            return disabledMonth > curr_time;
+            console.log(disabledMonth);
+            
+            return disabledMonth !== curr_time;
+            // return disabledMonth > curr_time;
           }
         },
         scheduleMonth: [],
