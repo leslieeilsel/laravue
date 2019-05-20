@@ -863,7 +863,7 @@
         columns: [
           {
             type: 'index2',
-            width: 50,
+            width: 70,
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
