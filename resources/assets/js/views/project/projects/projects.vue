@@ -1313,16 +1313,18 @@
         this.office = this.$store.getters.user.office;
         if (this.office === 2) {
           this.showLandMoney = true;
-          this.isShowAdjustmentBtn = true;
-          this.columns.unshift(
-            {
-              type: 'selection',
-              width: 50,
-              align: 'center',
-              fixed: 'left',
-              display: 'none'
-            },
-          );
+          this.isShowAdjustmentBtn = true
+          if (this.columns[0].type !== 'selection') {
+            this.columns.unshift(
+              {
+                type: 'selection',
+                width: 50,
+                align: 'center',
+                fixed: 'left',
+                display: 'none'
+              },
+            );
+          }
         }
         this.isShowButton = this.office === 0;
         this.showExportButton = !(this.office === 0);
