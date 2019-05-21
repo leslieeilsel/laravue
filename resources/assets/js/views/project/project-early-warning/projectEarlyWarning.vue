@@ -2,16 +2,12 @@
   <Card>
     <Alert type="warning" class="description">
       <Row>
-        <Button type="success" size="small">已经滞后</Button>
-        <span>：相比预期延缓<10%</span>
-      </Row>
-      <Row>
         <Button type="warning" size="small">警告滞后</Button>
-        <span>：相比预期延缓10% ~ 20%</span>
+        <span>：70% ≤ 完成率 < 100%</span>
       </Row>
       <Row>
         <Button type="error" size="small">严重滞后</Button>
-        <span>：相比预期延缓>20%</span>
+        <span>：完成率 < 70%</span>
       </Row>
     </Alert>
     <Row>
@@ -218,10 +214,6 @@
         data: [],
         warnings: [
           {
-            name: '已经滞后',
-            value: 0
-          },
-          {
             name: '警告滞后',
             value: 1
           },
@@ -279,7 +271,7 @@
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
-              return h('span', params.index + (this.pageCurrent- 1) * this.pageSize + 1);
+              return h('span', params.index + (this.pageCurrent - 1) * this.pageSize + 1);
             }
           },
           {
@@ -298,12 +290,10 @@
             title: '预警类型',
             key: 'tags',
             render: (h, params) => {
-              let button_rbg = 'success';
-              let war_title = '已经滞后';
-              if (params.row.tags === 0) {
-                button_rbg = 'success';
-                war_title = '已经滞后';
-              } else if (params.row.tags === 1) {
+              let button_rbg = '';
+              let war_title = '';
+
+              if (params.row.tags === 1) {
                 button_rbg = 'warning';
                 war_title = '警告滞后';
               } else if (params.row.tags === 2) {

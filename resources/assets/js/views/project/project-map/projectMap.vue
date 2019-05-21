@@ -358,15 +358,15 @@
                 if (Percentage < 0.7) {
                   war_color = 'redcircle';
                   point_color = '#F44336';
-                  warningColor = 'error';
+                  warningColor = 'error.gif';
                 } else if (Percentage < 1 && Percentage >= 0.7) {
                   war_color = 'yellowcircle';
                   point_color = '#FF9800';
-                  warningColor = 'warning';
+                  warningColor = 'warning.png';
                 } else {
                   war_color = 'greencircle';
                   point_color = '#4CAF50';
-                  warningColor = 'success';
+                  warningColor = 'success.png';
                 }
 
                 Percentage_con = "计划完成：" + monthAmount + "万，已完成" + month_act_complete + "万，" + "完成率" + Percentage * 100 + "%";
@@ -390,7 +390,7 @@
                 }
 
                 let centerPoint = JSON.parse(center).coordinates;
-                let myIcon = new BMap.Icon("http://139.217.6.78:9000/storage/images/icon/" + iconName + ".png", new BMap.Size(21, 21));
+                let myIcon = new BMap.Icon('http://' + _this.basePath + "/storage/images/icon/" + iconName, new BMap.Size(21, 21));
                 let marker = new BMap.Marker(new BMap.Point(centerPoint.lng, centerPoint.lat), {icon: myIcon});  // 创建标注
                 points.push(marker.point);
                 map.addOverlay(marker);

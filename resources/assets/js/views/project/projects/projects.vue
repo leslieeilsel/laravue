@@ -255,11 +255,11 @@
                 <Input v-model="item.image_progress" type="textarea" :rows="1" :placeholder="item.placeholder"></Input>
               </FormItem>
             </Col>
-            <Col span="24">
+            <Col span="24" v-if="item.date === currentYear">
               <FormItem label="月计划投资金额合计(万元)"
                         :prop="'projectPlan.' + index_t + '.total_count_amount'">
                 <Input :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0"
-                             readonly></Input>
+                       readonly></Input>
               </FormItem>
             </Col>
           </Row>
@@ -367,55 +367,54 @@
         <Row>
           <Col span="12">
             <FormItem label="项目名称" prop="title">
-              <Input v-model="editForm.title" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"/>
+              <Input v-model="editForm.title" placeholder="必填项" :disabled="isAdjustReadOnly"/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="项目编号" prop="num">
-              <Input v-model="editForm.num" placeholder="由发展经营部统一填写" v-bind:disabled="isAdjustReadOnly"></Input>
+              <Input v-model="editForm.num" placeholder="由发展经营部统一填写" :disabled="isAdjustReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="项目类型" prop="type">
-              <Select v-model="editForm.type" v-bind:disabled="isAdjustReadOnly">
+              <Select v-model="editForm.type" :disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.type" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="投资主体" prop="subject">
-              <Input v-model="editForm.subject" placeholder="必填项" v-bind:disabled="isAdjustReadOnly"/>
+              <Input v-model="editForm.subject" placeholder="必填项" :disabled="isAdjustReadOnly"/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="建设性质" prop="build_type">
-              <Select v-model="editForm.build_type" v-bind:disabled="isAdjustReadOnly">
+              <Select v-model="editForm.build_type" :disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.build_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="承建单位" prop="unit">
-              <Input v-model="editForm.unit_title" placeholder="子公司或部门" v-bind:disabled="isAdjustReadOnly"></Input>
+              <Input v-model="editForm.unit_title" placeholder="子公司或部门" :disabled="isAdjustReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="资金来源" prop="money_from">
-              <Select v-model="editForm.money_from" v-bind:disabled="isAdjustReadOnly">
+              <Select v-model="editForm.money_from" :disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.money_from" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="项目金额(万元)" prop="amount">
-              <InputNumber :min="0" :step="1.2" v-model="editForm.amount" placeholder=""
-                           v-bind:disabled="isAdjustReadOnly">
+              <InputNumber :min="0" :step="1.2" v-model="editForm.amount" placeholder="" :disabled="isAdjustReadOnly">
               </InputNumber>
             </FormItem>
           </Col>
@@ -424,13 +423,13 @@
           <Col span="12" v-if="showLandMoney">
             <FormItem label="土地费用(万元)" prop="land_amount">
               <InputNumber :step="1.2" :min="0" v-model="editForm.land_amount" placeholder=""
-                           v-bind:disabled="isAdjustReadOnly">
+                           :disabled="isAdjustReadOnly">
               </InputNumber>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="项目状态" prop="status">
-              <Select v-model="editForm.status" v-bind:disabled="isAdjustReadOnly">
+              <Select v-model="editForm.status" :disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.status" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
             </FormItem>
@@ -439,7 +438,7 @@
         <Row>
           <Col span="12">
             <FormItem label="项目标识(是否为国民经济计划)" prop="is_gc">
-              <Select v-model="editForm.is_gc" @on-change="onEditIsGcChange" v-bind:disabled="isAdjustReadOnly">
+              <Select v-model="editForm.is_gc" @on-change="onEditIsGcChange" :disabled="isAdjustReadOnly">
                 <Option v-for="item in dict.is_gc" :value="item.value" :key="item.value">{{item.title}}</Option>
               </Select>
             </FormItem>
@@ -490,7 +489,7 @@
         <Row>
           <FormItem label="项目概况(建设规模及主要内容)" prop="description">
             <Input v-model="editForm.description" type="textarea" :rows="4" placeholder="请输入..."
-                   v-bind:disabled="isAdjustReadOnly"></Input>
+                   :disabled="isAdjustReadOnly"></Input>
           </FormItem>
         </Row>
         <Divider><h4>投资计划</h4></Divider>
@@ -503,7 +502,7 @@
                 :prop="'projectPlan.' + index_t + '.amount'"
                 :rules="item.role">
                 <InputNumber :min="1" :step="1.2" v-model="item.amount" :placeholder="item.placeholder"
-                             v-bind:disabled="isReadOnly">
+                             :disabled="isReadOnly">
                 </InputNumber>
               </FormItem>
             </Col>
@@ -513,14 +512,14 @@
                 :prop="'projectPlan.' + index_t + '.image_progress'"
                 :rules="item.imageProgress">
                 <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="请输入..."
-                       v-bind:readonly="isReadOnly"></Input>
+                       :readonly="isReadOnly"></Input>
               </FormItem>
             </Col>
-            <Col span="24">
+            <Col span="24" v-if="item.date === currentYear">
               <FormItem label="月计划投资金额合计(万元)"
                         :prop="'projectPlan.' + index_t + '.total_count_amount'">
                 <Input :min="0" :step="1.2" v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0"
-                             readonly></Input>
+                       readonly></Input>
               </FormItem>
             </Col>
           </Row>
@@ -597,85 +596,85 @@
         <Row>
           <Col span="12">
             <FormItem label="项目名称" prop="title">
-              <Input v-model="previewForm.title" placeholder="" v-bind:readonly="isReadOnly"/>
+              <Input v-model="previewForm.title" placeholder="" :readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="项目编号" prop="num">
-              <Input v-model="previewForm.num" placeholder="" v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="previewForm.num" placeholder="" :readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="项目类型" prop="type">
-              <Input v-model="previewForm.type" placeholder="" v-bind:readonly="isReadOnly"/>
+              <Input v-model="previewForm.type" placeholder="" :readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="投资主体" prop="subject">
-              <Input v-model="previewForm.subject" placeholder="" v-bind:readonly="isReadOnly"/>
+              <Input v-model="previewForm.subject" placeholder="" :readonly="isReadOnly"/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="建设性质" prop="build_type">
-              <Input v-model="previewForm.build_type" placeholder="" v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="previewForm.build_type" placeholder="" :readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="承建单位" prop="unit_title">
-              <Input v-model="previewForm.unit" placeholder="" v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="previewForm.unit" placeholder="" :readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="资金来源" prop="money_from">
-              <Input v-model="previewForm.money_from" placeholder="" v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="previewForm.money_from" placeholder="" :readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="项目金额(万元)" prop="amount">
-              <Input v-model="previewForm.amount" placeholder="" v-bind:readonly="isReadOnly"/>
+              <Input v-model="previewForm.amount" placeholder="" :readonly="isReadOnly"/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12" v-if="showLandMoney">
             <FormItem label="土地费用(万元)" prop="land_amount">
-              <Input v-model="previewForm.land_amount" placeholder="" v-bind:readonly="isReadOnly"/>
+              <Input v-model="previewForm.land_amount" placeholder="" :readonly="isReadOnly"/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="项目状态" prop="status">
-              <Input v-model="previewForm.status" placeholder="" v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="previewForm.status" placeholder="" :readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="项目标识(是否为国民经济计划)" prop="is_gc">
-              <Input v-model="previewForm.is_gc" placeholder="" v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="previewForm.is_gc" placeholder="" :readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="国民经济计划分类" prop="nep_type">
-              <Input v-model="previewForm.nep_type" placeholder="" v-bind:readonly="isReadOnly"></Input>
+              <Input v-model="previewForm.nep_type" placeholder="" :readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <FormItem label="计划开始时间" prop="plan_start_at">
-              <DatePicker type="month" v-bind:readonly="isReadOnly" placeholder="" format="yyyy年MM月"
+              <DatePicker type="month" :readonly="isReadOnly" placeholder="" format="yyyy年MM月"
                           v-model="previewForm.plan_start_at"></DatePicker>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="计划结束时间" prop="plan_end_at">
-              <DatePicker type="month" v-bind:readonly="isReadOnly" @on-change="buildYearPlan" placeholder=""
+              <DatePicker type="month" :readonly="isReadOnly" @on-change="buildYearPlan" placeholder=""
                           format="yyyy年MM月" v-model="previewForm.plan_end_at"></DatePicker>
             </FormItem>
           </Col>
@@ -698,8 +697,8 @@
         </Row>
         <Row>
           <FormItem label="项目概况(建设规模及主要内容)" prop="description">
-            <Input v-model="previewForm.description" type="textarea" :rows="4" placeholder=""
-                   v-bind:readonly="isReadOnly"></Input>
+            <Input v-model="previewForm.description" type="textarea" :rows="4" placeholder="" :readonly="isReadOnly">
+            </Input>
           </FormItem>
         </Row>
         <Divider><h4>投资计划</h4></Divider>
@@ -710,18 +709,18 @@
               <FormItem
                 label="计划投资金额(万元)"
                 :prop="'projectPlan.' + index + '.amount'">
-                <Input v-model="item.amount" placeholder="" v-bind:readonly="isReadOnly"/>
+                <Input v-model="item.amount" placeholder="" :readonly="isReadOnly"/>
               </FormItem>
             </Col>
             <Col span="24">
               <FormItem
                 label="计划形象进度"
                 :prop="'projectPlan.' + index + '.image_progress'">
-                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder=""
-                       v-bind:readonly="isReadOnly"></Input>
+                <Input v-model="item.image_progress" type="textarea" :rows="1" placeholder="" :readonly="isReadOnly">
+                </Input>
               </FormItem>
             </Col>
-            <Col span="24">
+            <Col span="24" v-if="item.date === currentYear">
               <FormItem label="月计划投资金额合计(万元)"
                         :prop="'projectPlan.' + index + '.total_count_amount'">
                 <Input v-model="item.total_count_amount" placeholder="月计划投资金额合计" value="0" readonly></Input>
@@ -816,6 +815,7 @@
   export default {
     data: function () {
       return {
+        currentYear: 2019,
         isShowAdjustmentBtn: false,
         isGcRole: {required: false},
         noMap: false,
@@ -863,7 +863,7 @@
         columns: [
           {
             type: 'index2',
-            width: 50,
+            width: 70,
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
@@ -879,7 +879,7 @@
           {
             title: '项目编号',
             key: 'num',
-            width: 100,
+            width: 210,
             align: 'left'
           },
           {
@@ -1020,15 +1020,15 @@
                       this.previewForm.projectPlan.forEach(function (row, index) {
                         let total_count_amount = 0;
                         row.month.forEach(function (e) {
-                          total_count_amount+=parseFloat(e.amount);
-                        }); 
-                        if(isNaN(total_count_amount)){
-                          row.total_count_amount=0;
-                        }else{
-                          row.total_count_amount=total_count_amount.toFixed(2);
+                          total_count_amount += parseFloat(e.amount);
+                        });
+                        if (isNaN(total_count_amount)) {
+                          row.total_count_amount = 0;
+                        } else {
+                          row.total_count_amount = total_count_amount.toFixed(2);
                         }
-                        
-                      })
+
+                      });
                       if (this.previewForm.center_point && this.previewForm.positions) {
                         this.haveMap = true;
                         this.noMap = false;
@@ -1077,10 +1077,10 @@
                           row.month.forEach(function (e) {
                             total_count_amount = parseFloat(total_count_amount) + parseFloat(e.amount);
                           });
-                          if(isNaN(total_count_amount)){
-                            row.total_count_amount=0;
-                          }else{
-                            row.total_count_amount=total_count_amount.toFixed(2);
+                          if (isNaN(total_count_amount)) {
+                            row.total_count_amount = 0;
+                          } else {
+                            row.total_count_amount = total_count_amount.toFixed(2);
                           }
                           let CurrentDate = new Date();
                           let CurrentYear = CurrentDate.getFullYear();
@@ -1308,19 +1308,23 @@
     },
     methods: {
       init() {
+        let date = new Date();
+        this.currentYear = date.getFullYear();
         this.office = this.$store.getters.user.office;
         if (this.office === 2) {
           this.showLandMoney = true;
-          this.isShowAdjustmentBtn = true;
-          this.columns.unshift(
-            {
-              type: 'selection',
-              width: 50,
-              align: 'center',
-              fixed: 'left',
-              display: 'none'
-            },
-          );
+          this.isShowAdjustmentBtn = true
+          if (this.columns[0].type !== 'selection') {
+            this.columns.unshift(
+              {
+                type: 'selection',
+                width: 50,
+                align: 'center',
+                fixed: 'left',
+                display: 'none'
+              },
+            );
+          }
         }
         this.isShowButton = this.office === 0;
         this.showExportButton = !(this.office === 0);
@@ -2493,19 +2497,15 @@
             let year_count_amount = 0;
             if (this.form.projectPlan.length > 0) {
               let _this = this;
-              this.form.projectPlan.forEach(function (row, index) {
-                year_count_amount = year_count_amount + row.amount;
-                if (row.total_count_amount != row.amount) {
-                  if (err_sum != "") {
-                    err_sum = err_sum + ',' + row.date;
-                  } else {
-                    err_sum = row.date;
-                  }
+              this.form.projectPlan.forEach(function (row) {
+                year_count_amount += row.amount;
+                if (row.date === _this.currentYear && row.total_count_amount !== row.amount) {
+                  err_sum = row.date;
                 }
-              })
+              });
             }
-            if (err_sum != "") {
-              this.$Message.error(err_sum + "月度累计金额不等于年计划");
+            if (err_sum !== '') {
+              this.$Message.error(err_sum + "年月度累计金额不等于年计划");
             } else {
               if (year_count_amount > this.form.amount) {
                 this.$Message.error("年度累计金额不能大于总金额！");
@@ -2536,7 +2536,7 @@
           } else {
             this.$Message.error('请填写必填字段!');
           }
-        })
+        });
       },
       editSubmit(name) {
         this.$refs[name].validate((valid) => {
@@ -2545,48 +2545,43 @@
             let year_count_amount = 0;
             if (this.editForm.projectPlan.length > 0) {
               let _this = this;
-              this.editForm.projectPlan.forEach(function (row, index) {
-                year_count_amount = year_count_amount + row.amount;
-                if (row.total_count_amount != row.amount) {
-                  if (err_sum != "") {
-                    err_sum = err_sum + ',' + row.date;
-                  } else {
-                    err_sum = row.date;
-                  }
+              this.editForm.projectPlan.forEach(function (row) {
+                year_count_amount += row.amount;
+                if (row.date === _this.currentYear && parseFloat(row.total_count_amount) !== parseFloat(row.amount)) {
+                  err_sum = row.date;
                 }
               })
             }
-            if (err_sum != "") {
+            if (err_sum !== '') {
               this.$Message.error(err_sum + "月度累计金额不等于年计划");
+            } else if (parseFloat(year_count_amount) > parseFloat(this.form.amount)) {
+              this.$Message.error("年度累计金额不能大于总金额！");
             } else {
-              if (year_count_amount > this.form.amount) {
-                this.$Message.error("年度累计金额不能大于总金额！");
-              } else {
-                this.loading = true;
-                edit(this.editForm).then(e => {
-                  this.loading = false;
-                  if (e.result) {
-                    this.$Message.success('修改成功!');
-                    this.editModal = false;
-                    this.init();
+              this.loading = true;
+              edit(this.editForm).then(e => {
+                this.loading = false;
+                if (e.result) {
+                  this.$Message.success('修改成功!');
+                  this.editModal = false;
+                  this.init();
+                } else {
+                  if (e.message === '登录超时，请重新登陆') {
+                    this.$Message.error(e.message);
+                    this.$router.push({
+                      name: 'login'
+                    });
                   } else {
-                    if (e.message === '登录超时，请重新登陆') {
-                      this.$Message.error(e.message);
-                      this.$router.push({
-                        name: 'login'
-                      });
-                    } else {
-                      this.$Message.error('修改失败!');
-                    }
+                    this.$Message.error('修改失败!');
                   }
-                });
-              }
+                }
+              });
             }
           } else {
             this.$Message.error('请填写必填字段!');
           }
         })
-      },
+      }
+      ,
       handleReset(name) {
         this.form.projectPlan = '';
         this.planDisplay = false;
@@ -2673,27 +2668,27 @@
           if (endDate >= startDate) {
             buildPlanFields([startDate, endDate]).then(res => {
               if (res.result) {
-                let projectPlans=this.editForm.projectPlan;
+                let projectPlans = this.editForm.projectPlan;
                 res.result.forEach(function (row, index) {
                   let CurrentDate = new Date();
                   let CurrentYear = CurrentDate.getFullYear();
                   // 如果是当年，年度计划和月度计划都为必填
-                  
-                  projectPlans.forEach(function (rowP, indexP) {    
-                    if(rowP.date==row.date){
-                      row.amount=rowP.amount;
-                      row.image_progress=rowP.image_progress;
-                      row.month.forEach(function (e) {                        
+
+                  projectPlans.forEach(function (rowP, indexP) {
+                    if (rowP.date == row.date) {
+                      row.amount = rowP.amount;
+                      row.image_progress = rowP.image_progress;
+                      row.month.forEach(function (e) {
                         rowP.month.forEach(function (p) {
-                          if(e.date==p.date){
-                            e.amount=p.amount
-                            e.image_progress=p.image_progress;
+                          if (e.date == p.date) {
+                            e.amount = p.amount
+                            e.image_progress = p.image_progress;
                           }
                         });
                       });
                     }
                   })
-                  if (row.date === CurrentYear) {   
+                  if (row.date === CurrentYear) {
                     row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
                     row.imageProgress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
                     row.placeholder = '必填项';
@@ -2833,7 +2828,8 @@
         }
         this.pageCurrent = 1;
         this.loadingTable = false;
-      },//月投资计划金额   大于计划金额时不能填写
+      },
+      //月投资计划金额   大于计划金额时不能填写
       totalAmount(index_t, index) {
         let amount_total = this.form.projectPlan[index_t].amount;
         let month_total = this.form.projectPlan[index_t].month;
@@ -2855,7 +2851,8 @@
           this.form.projectPlan[index_t].total_count_amount = amounts - month_total[index].amount;
           month_total[index].amount = 0;
         }
-      },//修改月投资计划金额   大于计划金额时不能填写
+      },
+      //修改月投资计划金额   大于计划金额时不能填写
       totalAmountE(index_t, index) {
         let amount_total = this.editForm.projectPlan[index_t].amount;
         let month_total = this.editForm.projectPlan[index_t].month;
@@ -2923,11 +2920,12 @@
             });
           }
         })
-      },//调整项目  取消
+      },
+      //调整项目  取消
       projectAdjustmentCancel() {
         this.$Modal.remove()
-      }
-      ,//选中
+      },
+      //选中
       checkboxProject(selection) {
         console.log(selection.length);
         if (selection.length > 0) {

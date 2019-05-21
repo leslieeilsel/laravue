@@ -266,7 +266,7 @@ class ProjectController extends Controller
             $id = $data['id'];
             $data['reason'] = '';
             $projectPlan = $data['projectPlan'];
-            unset($data['id'], $data['projectPlan'],$data['unit_title']);
+            unset($data['id'], $data['projectPlan'], $data['unit_title']);
             $result = Projects::where('id', $id)->update($data);
 
             Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
@@ -469,7 +469,7 @@ class ProjectController extends Controller
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
-            $projects[$k]['unit'] = Departments::where('id',$row['unit'])->value('title');
+            $projects[$k]['unit'] = Departments::where('id', $row['unit'])->value('title');
         }
 
         return response()->json(['result' => $projects], 200);
@@ -929,19 +929,19 @@ class ProjectController extends Controller
         $month = (int) date('m', strtotime($projects['month']));
         $y = intval($year);
         $m = intval($month);
+        // 年计划
         $plans_amount_y = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', 0)->where('date', $y)->value('id');
+        // 月计划
         $plans_amount = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', $plans_amount_y)->where('date', $m)->value('amount');
         if ($data['status'] == 1) {
             $warResult = true;
             $warData = [];
             if ($plans_amount) {
-                $Percentage = 1 - ($projects['month_act_complete'] / $plans_amount);
-                if ($Percentage > 0) {
-                    if ($Percentage <= 0.1 && $Percentage > 0) {
-                        $warData['warning_type'] = 0;
-                    } elseif ($Percentage > 0.1 && $Percentage <= 0.2) {
+                $Percentage = $projects['month_act_complete'] / $plans_amount;
+                if ($Percentage < 1) {
+                    if ($Percentage >= 0.7 && $Percentage < 1) {
                         $warData['warning_type'] = 1;
-                    } elseif ($Percentage > 0.2) {
+                    } elseif ($Percentage < 0.7) {
                         $warData['warning_type'] = 2;
                     }
                     $warData['schedule_id'] = $data['id'];
@@ -1111,7 +1111,7 @@ class ProjectController extends Controller
      */
     public function getProjectNoScheduleList()
     {
-        $department_id=Auth::user()->department_id;
+        $department_id = Auth::user()->department_id;
         $user_ids = User::where('department_id', $department_id)->pluck('id')->toArray();
         $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->whereIn('user_id', $user_ids)->pluck('project_id')->toArray();
         $result = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->whereIn('user_id', $user_ids)->get()->toArray();

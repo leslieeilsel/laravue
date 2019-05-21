@@ -16,7 +16,11 @@ import 'ant-design-vue/dist/antd.css'
 
 Vue.use(iView);
 Vue.use(Antd);
-Vue.use(VueResource)
+Vue.use(VueResource);
+
+Vue.prototype.$Message.config({
+  duration: 5
+});
 
 const app = new Vue({
   el: '#app',
