@@ -394,6 +394,9 @@
                 let marker = new BMap.Marker(new BMap.Point(centerPoint.lng, centerPoint.lat), {icon: myIcon});  // 创建标注
                 points.push(marker.point);
                 map.addOverlay(marker);
+                if (warningColor === 'error.gif') {
+                  marker.setAnimation(BMAP_ANIMATION_DROP);
+                }
                 let labell;
                 // 添加多边形
                 if (project.type === '绿化' || project.type === '市政' || project.type === '水利') {
