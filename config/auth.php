@@ -97,6 +97,5 @@ return [
             'table' => 'password_resets',
             'expire' => 30,
         ],
-    ],
-    'Ding_Access_Token'=>''
+    ]
 ];
