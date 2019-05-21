@@ -17,7 +17,7 @@ class DingController extends Controller
         // curl_close($ch);
         // $arr=json_decode($json,1);
         // config(["auth.Ding_Access_Token"=>$arr['access_token']]);
-        dd(config("auth.Ding_Access_Token"));
+        dd(config("auth.passwords.users.provider"));
     }
     
 }
