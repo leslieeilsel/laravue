@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 class DingController extends Controller
 {
     public function getToken(){

@@ -6,6 +6,7 @@ use App\Models\Dict;
 use App\Models\Project\Projects;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class buildDingProjectJson extends Command
 {
