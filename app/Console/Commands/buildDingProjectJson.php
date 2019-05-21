@@ -43,6 +43,6 @@ class buildDingProjectJson extends Command
         $json =  curl_exec($ch);
         curl_close($ch);
         $arr=json_decode($json,1);
-        env("Ding_Access_Token",$arr['access_token']);
+        config(["auth.Ding_Access_Token"=>$arr['access_token']]);
     }
 }

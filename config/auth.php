@@ -98,5 +98,5 @@ return [
             'expire' => 30,
         ],
     ],
-
+    'Ding_Access_Token'=>'token'
 ];
