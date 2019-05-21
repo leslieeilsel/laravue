@@ -42,8 +42,8 @@ class buildDingProjectJson extends Command
         curl_setopt($ch, CURLOPT_URL, $url);
         $json =  curl_exec($ch);
         curl_close($ch);
-        $arr=json_decode($json,1);
-        file_put_contents('11.txt',print_r($arr));
-        config(["auth.Ding_Access_Token"=>$arr]);
+        // $arr=json_decode($json,1);
+        // file_put_contents('11.txt',print_r($arr));
+        config(["auth.Ding_Access_Token"=>$json]);
     }
 }
