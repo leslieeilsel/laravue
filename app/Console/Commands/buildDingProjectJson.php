@@ -44,6 +44,6 @@ class buildDingProjectJson extends Command
         curl_close($ch);
         $arr=json_decode($json,true);
         config(["auth.Ding_Access_Token"=>'ajsdkasjdh']);
-        file_put_contents('11.txt',var_dump($arr)."***".config("auth.Ding_Access_Token"));
+        file_put_contents('11.txt',var_dump($arr['access_token'])."***".config("auth.Ding_Access_Token"));
     }
 }
