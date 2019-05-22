@@ -120,8 +120,11 @@ import * as dd from 'dingtalk-jsapi'
     getProjectNoScheduleList,
     projectScheduleMonth,
     getProjectDictData,
-    projectScheduleDelete
+		projectScheduleDelete
   } from '../../../api/project';
+  import {
+		getUserNotify
+  } from '../../../api/ding';
   export default {
     data() {
       return {
@@ -177,17 +180,21 @@ import * as dd from 'dingtalk-jsapi'
 	  },
 	  aaa(){
 			dd.ready(function() {
-				dd.device.notification.alert({
-						message: "亲爱的",
-						title: "提示",//可传空
-						buttonName: "收到",
-						onSuccess : function() {
-							console.log(111);
-								//onSuccess将在点击button之后回调
-								/*回调*/
-						},
-						onFail : function(err) {}
-				});
+				getUserNotify().then(res => {
+          alert(JSON.stringify(res))
+					
+        });
+				// dd.device.notification.alert({
+				// 		message: "亲爱的",
+				// 		title: "提示",//可传空
+				// 		buttonName: "收到",
+				// 		onSuccess : function() {
+				// 			console.log(111);
+				// 				//onSuccess将在点击button之后回调
+				// 				/*回调*/
+				// 		},
+				// 		onFail : function(err) {}
+				// });
 			// 	dd.config({
 			// 		agentId: '252426258', // 必填，微应用ID
 			// 		corpId: 'dinge48f324dae7de1df35c2f4657eb6378f',//必填，企业ID
