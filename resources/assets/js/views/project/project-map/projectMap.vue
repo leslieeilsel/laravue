@@ -482,6 +482,7 @@
                 description = description === null ? '' : description;
                 description = description === undefined ? '' : description;
                 let sContent =
+                  "<img style='float:right;margin:4px' id='imgDemo' src='http://139.217.6.78:9000/storage/images/boy.gif' width='70' height='70' title=''/>" + 
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目名称：" + project.title + "</h5>" +
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span><span class='project-status'>" + project.status + "</span></h5>" +
