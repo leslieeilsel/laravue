@@ -53,7 +53,7 @@ class DingController extends Controller
         $appSecret=env("Ding_App_Secret");
         $appId='dingq5pc0ffixdxmkpwt';
         $time=time();
-        $s = hash_hmac($appId, $time, $appSecret, true);
+        $s = hash_hmac('sha256', $time, $appSecret, true);
         $signature = base64_encode($s);
         $urlencode_signature = urlencode($signature);
         return ['appId'=>$appId,'time'=>$time,'sign'=>$urlencode_signature];
