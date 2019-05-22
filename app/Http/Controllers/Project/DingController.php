@@ -52,11 +52,16 @@ class DingController extends Controller
     public function sign(){
         $appSecret=env("Ding_App_Secret");
         $appId='dingq5pc0ffixdxmkpwt';
-        $time=time();
-        $s = hash_hmac('sha256', $time, $appSecret, true);
+        $time=$this->getMillisecond();
+        $s = hash_hmac('sha256', $time , $appSecret, true);
         $signature = base64_encode($s);
         $urlencode_signature = urlencode($signature);
         return ['appId'=>$appId,'time'=>$time,'sign'=>$urlencode_signature];
+    }
+    // 毫秒级时间戳
+    public function getMillisecond() {
+        list($t1, $t2) = explode(' ', microtime());
+        return (float)sprintf('%.0f',(floatval($t1)+floatval($t2))*1000);
     }
 }
                      
