@@ -103,6 +103,8 @@
 		</ul>
 	</div>
 </template>
+<style scope src="./index.css"></style>
+<style scope src="./mui.css"></style>
 <script>
 import * as dd from 'dingtalk-jsapi'
   import {
@@ -120,8 +122,6 @@ import * as dd from 'dingtalk-jsapi'
     getProjectDictData,
     projectScheduleDelete
   } from '../../../api/project';
-  // import './index.css';
-  // import './mui.css';
   export default {
     data() {
       return {
@@ -145,26 +145,12 @@ import * as dd from 'dingtalk-jsapi'
           img_progress_pic: '',
           marker: '',
           is_audit: ''
-		},
-		project_id:[]
-	  }
+				},
+				project_id:[]
+	  	}
     },
     mounted() {
-	  this.init();
-			dd.biz.util.datepicker({
-				format: 'yyyy-MM-dd',//注意：format只支持android系统规范，即2015-03-31格式为yyyy-MM-dd
-				value: '2015-04-17', //默认显示日期
-				onSuccess : function(result) {
-					//onSuccess将在点击完成之后回调
-					/*{
-						value: "2015-02-10"
-					}
-					*/
-					console.log(result);
-					
-				},
-				onFail : function(err) {}
-			})
+	  	this.init();
     },
     methods: {
       init() {
@@ -191,18 +177,40 @@ import * as dd from 'dingtalk-jsapi'
 	  },
 	  aaa(){
 			dd.ready(function() {
-				dd.runtime.permission.requestAuthCode({
-						corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
-						onSuccess: function(result) {
-							console.log(result);
-							
-						/*{
-								code: 'hYLK98jkf0m' //string authCode
-						}*/
+				dd.device.notification.alert({
+						message: "亲爱的",
+						title: "提示",//可传空
+						buttonName: "收到",
+						onSuccess : function() {
+							console.log(111);
+								//onSuccess将在点击button之后回调
+								/*回调*/
 						},
 						onFail : function(err) {}
+				});
+			// 	dd.config({
+			// 		agentId: '252426258', // 必填，微应用ID
+			// 		corpId: 'dinge48f324dae7de1df35c2f4657eb6378f',//必填，企业ID
+			// 		timeStamp: '', // 必填，生成签名的时间戳
+			// 		nonceStr: '$10$q7IuhSqsnGL5g3CNQEypleEuDMZrJyQImZqwSlLEORMoGHBp9u9.u', // 必填，生成签名的随机串
+			// 		signature: '', // 必填，签名
+			// 		type:0/1,   //选填，0表示微应用的jsapi，1表示服务窗的jsapi，不填默认为0。该参数从dingtalk.js的0.8.3版本开始支持
+			// 		jsApiList:[
+			// 				'biz.contact.choose',
+			// 		],
+			// });
+				// dd.runtime.permission.requestAuthCode({
+				// 		corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
+				// 		onSuccess: function(result) {
+				// 			console.log(result);
+							
+				// 		/*{
+				// 				code: 'hYLK98jkf0m' //string authCode
+				// 		}*/
+				// 		},
+				// 		onFail : function(err) {}
 				
-				})
+				// })
 			})
 	  }
 	  
