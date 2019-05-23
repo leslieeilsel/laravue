@@ -879,8 +879,7 @@
           {
             title: '项目编号',
             key: 'num',
-            width: 210,
-            align: 'left'
+            width: 210
           },
           {
             title: '建设状态',
