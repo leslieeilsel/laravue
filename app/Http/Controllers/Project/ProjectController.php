@@ -631,7 +631,7 @@ class ProjectController extends Controller
                 }
             }
         } else {
-            if (is_dir($path)) {
+            if (file_exists($path)) {
                 $handler = opendir($path);
                 while (($filename = readdir($handler)) !== false) {
                     if ($filename != "." && $filename != "..") {
@@ -894,10 +894,12 @@ class ProjectController extends Controller
                 }
             }
         } else {
-            $handler = opendir($path);
-            while (($filename = readdir($handler)) !== false) {
-                if ($filename != "." && $filename != "..") {
-                    unlink($path . '/' . $filename);
+            if (file_exists($path)) {
+                $handler = opendir($path);
+                while (($filename = readdir($handler)) !== false) {
+                    if ($filename != "." && $filename != "..") {
+                        unlink($path . '/' . $filename);
+                    }
                 }
             }
         }
