@@ -1093,7 +1093,8 @@ class ProjectController extends Controller
             if ($k['date'] < 2019) {
                 $result = $result + $k['amount'];
             } else {
-                $result = $result + ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $year . '%')->sum('month_act_complete');
+                $sum=ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $k['date'] . '%')->where('is_audit',1)->sum('month_act_complete');
+                $result = $result + $sum;
             }
         }
         $result = $result + $params['month_act_complete'];
