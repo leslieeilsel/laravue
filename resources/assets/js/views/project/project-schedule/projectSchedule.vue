@@ -209,6 +209,13 @@
             </FormItem>
           </Col>
           <Col span="12">
+            <FormItem label="整改措施" prop="measures">
+              <Input v-model="form.measures" type="textarea" :rows="3" placeholder="请输入..."></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="24">
             <FormItem label="备注" prop="marker">
               <Input v-model="form.marker" type="textarea" :rows="3" placeholder="请输入..."></Input>
             </FormItem>
@@ -359,12 +366,19 @@
         <Row>
           <Col span="12">
             <FormItem label="存在问题" prop="problem">
-              <Input v-model="seeForm.problem" type="textarea" :rows="3"  placeholder="" readonly></Input>
+              <Input v-model="seeForm.problem" type="textarea" :rows="3" placeholder="" readonly></Input>
             </FormItem>
           </Col>
           <Col span="12">
+            <FormItem label="整改措施" prop="measures">
+              <Input v-model="seeForm.measures" type="textarea" :rows="3" placeholder="" readonly></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="24">
             <FormItem label="备注" prop="marker">
-              <Input v-model="seeForm.marker" type="textarea" :rows="3"  placeholder="" readonly></Input>
+              <Input v-model="seeForm.marker" type="textarea" :rows="3" placeholder="" readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -470,7 +484,8 @@
           </Col>
           <Col span="24">
             <FormItem :label="year_img" prop="plan_img_progress">
-              <Input type="textarea" :rows="2" v-model="editForm.plan_img_progress" placeholder="请输入..." readonly></Input>
+              <Input type="textarea" :rows="2" v-model="editForm.plan_img_progress" placeholder="请输入..."
+                     readonly></Input>
             </FormItem>
           </Col>
         </Row>
@@ -520,6 +535,13 @@
             </FormItem>
           </Col>
           <Col span="12">
+            <FormItem label="整改措施" prop="measures">
+              <Input v-model="editForm.measures" type="textarea" :rows="3" placeholder="请输入..."></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="24">
             <FormItem label="备注" prop="marker">
               <Input v-model="editForm.marker" type="textarea" :rows="3" placeholder="请输入..."></Input>
             </FormItem>
@@ -672,7 +694,7 @@
           {
             title: '项目编号',
             key: 'num',
-            width: 100
+            width: 210
           },
           {
             title: '负责人',
@@ -776,6 +798,11 @@
             width: 250
           },
           {
+            title: '整改措施',
+            key: 'measures',
+            width: 250
+          },
+          {
             title: '计划开工时间',
             key: 'plan_build_start_at',
             width: 120,
@@ -784,7 +811,7 @@
           {
             title: '填报员姓名',
             key: 'tianbao_name',
-            width: 250
+            width: 100
           },
           {
             title: '部门名称',
@@ -890,6 +917,7 @@
                           _seeThis.seeForm.acc_img_progress = em.acc_img_progress;
                           _seeThis.seeForm.acc_complete = em.acc_complete;
                           _seeThis.seeForm.problem = em.problem;
+                          _seeThis.seeForm.measures = em.measures;
                           _seeThis.seeForm.plan_build_start_at = em.plan_build_start_at;
                           _seeThis.seeForm.exp_preforma = em.exp_preforma;
                           _seeThis.seeForm.is_audit = em.is_audit;
@@ -899,13 +927,13 @@
                             let pics = em.img_progress_pic.split(",");
                             let i = 0;
                             pics.forEach(function (em_pic) {
-                              if (em_pic != 'null') {                                
-                                img_pic.push({url: em_pic.replace("#","%23"), name: i});
+                              if (em_pic != 'null') {
+                                img_pic.push({url: em_pic.replace("#", "%23"), name: i});
                               }
                               i++;
                             })
                           }
-                          
+
                           _seeThis.defaultList = img_pic;
                           _seeThis.seeForm.marker = em.marker;
                         }
@@ -951,6 +979,7 @@
                           _editThis.editForm.acc_img_progress = em.acc_img_progress;
                           _editThis.editForm.acc_complete = em.acc_complete;
                           _editThis.editForm.problem = em.problem;
+                          _editThis.editForm.measures = em.measures;
                           _editThis.editForm.is_audit = em.is_audit;
                           _editThis.editForm.reason = em.reason;
                           _editThis.editForm.plan_build_start_at = em.plan_build_start_at;
@@ -966,7 +995,7 @@
                               let files = item.split("/");
                               let fileName = files[files.length - 1];
                               if (fileName !== 'null') {
-                                edit_img_pic.push({url: item.replace("#","%23"), name: fileName});
+                                edit_img_pic.push({url: item.replace("#", "%23"), name: fileName});
                               }
                             })
                           }
@@ -1038,6 +1067,7 @@
           acc_complete: '',
           acc_img_progress: '',
           problem: '',
+          measures: '',
           plan_build_start_at: '',
           exp_preforma: '',
           img_progress_pic: '',
@@ -1059,6 +1089,7 @@
           acc_complete: '',
           acc_img_progress: '',
           problem: '',
+          measures: '',
           plan_build_start_at: '',
           exp_preforma: '',
           img_progress_pic: '',
@@ -1148,8 +1179,8 @@
         //   });
         //   this.dataDep = res.result;
         //   console.log(this.dataDep);
-          // this.loadDataTree();
-          this.getDictData();
+        // this.loadDataTree();
+        this.getDictData();
         // });
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
@@ -1361,7 +1392,7 @@
           if (file === fileObj.url) {
             fileList.splice(index, 1);
           }
-        });        
+        });
         if (fileList.length > 0) {
           let fileUrl = [];
           fileList.forEach(function (obj) {
@@ -1373,9 +1404,9 @@
         }
       },
       handleSuccess(res, file) {
-        if(this.form.img_progress_pic){
+        if (this.form.img_progress_pic) {
           this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
-        }else{
+        } else {
           this.form.img_progress_pic = res.result;
         }
       },
@@ -1385,11 +1416,11 @@
         if (fileName !== 'null') {
           this.editDefaultList.push({url: res.result, name: fileName});
         }
-        if(this.editForm.img_progress_pic){
+        if (this.editForm.img_progress_pic) {
           console.log(this.editForm.img_progress_pic);
-          
+
           this.editForm.img_progress_pic = this.editForm.img_progress_pic + ',' + res.result;
-        }else{
+        } else {
           this.editForm.img_progress_pic = res.result;
         }
       },
