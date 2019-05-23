@@ -995,7 +995,7 @@
                               let files = item.split("/");
                               let fileName = files[files.length - 1];
                               if (fileName !== 'null') {
-                                edit_img_pic.push({url: item.replace("#", "%23"), name: fileName});
+                                edit_img_pic.push({url: item.replace(/#/g, "%23"), name: fileName});
                               }
                             })
                           }
