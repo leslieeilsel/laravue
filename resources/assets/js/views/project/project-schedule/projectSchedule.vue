@@ -928,7 +928,7 @@
                             let i = 0;
                             pics.forEach(function (em_pic) {
                               if (em_pic != 'null') {
-                                img_pic.push({url: em_pic.replace("#/g", "%23"), name: i});
+                                img_pic.push({url: em_pic.replace(/#/g, "%23"), name: i});
                               }
                               i++;
                             })
