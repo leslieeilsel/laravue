@@ -1010,6 +1010,7 @@
                   },
                   on: {
                     click: () => {
+                      let _this = this;
                       this.showAuditButton = this.office === 1 ? params.row.is_audit === 0 : false;
                       this.previewForm = params.row;
                       this.formId = params.row.id;
@@ -1020,12 +1021,16 @@
                       this.previewForm.projectPlan.forEach(function (row, index) {
                         let total_count_amount = 0;
                         row.month.forEach(function (e) {
-                          total_count_amount += parseFloat(e.amount);
+                          total_count_amount += parseFloat(_this.clearComma(e.amount));
                         });
                         if (isNaN(total_count_amount)) {
                           row.total_count_amount = 0;
                         } else {
-                          row.total_count_amount = total_count_amount.toFixed(2);
+                          row.total_count_amount = total_count_amount.toLocaleString('zh', {
+                            style: 'decimal',
+                            minimumFractionDigits: 2,
+                            useGrouping: true
+                          });
                         }
 
                       });
@@ -2934,7 +2939,14 @@
           this.projectBtnDisable = true;
         }
         this.projectAdjustmentIds = selection;
-      }
+      },
+      clearComma(s) {
+        if ($.trim(s) == "") {
+          return s;
+        } else {
+          return (s + "").replace(/[,]/g, "");
+        }
+      },
     },
     mounted() {
       this.mapStyle.height = window.innerHeight - 112 + 'px';
