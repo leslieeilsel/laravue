@@ -29,14 +29,14 @@ class DingController extends Controller
         $signInfo=$this->sign();
         $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
         $post_data = array(
-            "accessKey" => $appKey,
-            "timestamp" => $signInfo['time'],
+            "accessKey" => $signInfo['appId'],
+            "timestamp" => $this->getMillisecond(),
             "signature"=>$signInfo['sign']
         );
         $json=$this->postCurl($url,$post_data);
         // $arr=json_decode($json,true);
         // dd($arr);
-        return $signInfo;
+        return $json;
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");
@@ -44,12 +44,7 @@ class DingController extends Controller
         $time=$this->getMillisecond();
         $s = hash_hmac('sha256', $time , $appSecret, true);
         $signature = base64_encode($s);
-        $urlencode_signature = http_build_query(
-            array(
-                'signature'=>$signature,
-                'timestamp'=>$time,
-                'accessKey'=>$appId
-            ));
+        $urlencode_signature = urlencode($signature);
         return ['appId'=>$appId,'time'=>$time,'sign'=>$urlencode_signature];
         // return $urlencode_signature;
     }
