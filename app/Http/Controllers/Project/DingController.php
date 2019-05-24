@@ -71,6 +71,7 @@ class DingController extends Controller
         curl_setopt($ch, CURLOPT_URL, $url);
         $json =  curl_exec($ch);
         curl_close($ch);
+        return $json;
     }
 }
                      
