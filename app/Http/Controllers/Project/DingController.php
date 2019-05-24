@@ -50,15 +50,10 @@ class DingController extends Controller
                 'timestamp'=>$time,
                 'accessKey'=>$appId
             ));
-        // $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
-        // $post_data = array(
-        //     "signature" => $urlencode_signature,
-        //     "timestamp" => $time,
-        //     "accessKey"=>$appId
-        // );
-        // $json=$this->postCurl($url,$post_data);
+        $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
+        $json=$this->postCurl($url,$urlencode_signature);
         // return ['appId'=>$appId,'time'=>$time,'sign'=>$json];
-        return $urlencode_signature;
+        return $json;
     }
     // 毫秒级时间戳
     public function getMillisecond() {
