@@ -46,9 +46,9 @@ class DingController extends Controller
         curl_setopt($ch, CURLOPT_URL, $url);
         $json =  curl_exec($ch);
         curl_close($ch);
-        $arr=json_decode($json,true);
+        // $arr=json_decode($json,true);
         // dd($arr);
-        return $arr;
+        return $json;
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");
