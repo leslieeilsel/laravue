@@ -6,7 +6,7 @@ import request from '../utils/request'
  */
 export function getUserNotify() {
   return request({
-    url: '/api/project/userNotify',
+    url: '/api/ding/userNotify',
     method: 'post'
   });
 }
