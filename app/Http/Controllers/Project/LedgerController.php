@@ -379,9 +379,11 @@ class LedgerController extends Controller
         $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
         // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
         foreach ($data as $k => $row) {
-            $data[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
-            $Projects = Projects::where('id', $row['project_id'])->value('title');
-            $data[$k]['project_title'] = $Projects;
+            $projects=Projects::where('id', $row['project_id'])->first();
+            $data[$k]['money_from'] = $projects['money_from'];
+            $data[$k]['project_title'] = $projects['title'];
+            $data[$k]['build_start_at'] = $projects['plan_start_at'];
+            $data[$k]['build_end_at'] = $projects['plan_end_at'];
         }       
         $schedule_data_month = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('month')->toArray();
         $departments = Departments::where('id', Auth::user()->department_id)->value('title');
