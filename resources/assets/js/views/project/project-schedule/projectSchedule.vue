@@ -1280,6 +1280,11 @@
             let month_time_0 = (month_time.getMonth() + 1) > 9 ? (month_time.getMonth() + 1) : '0' + (month_time.getMonth() + 1);
 
             month_time = month_time.getFullYear() + '-' + month_time_0;
+            
+            this.month_img = month_time + ' 月形象进度';
+            this.month_act = month_time + ' 月实际完成投资(万元)';
+            this.year_investors = month_time.substring(0, 4) + '年计划投资(万元)';
+            this.year_img = month_time.substring(0, 4) + '年形象进度';
             projectPlanInfo({month: month_time, project_id: this.form.project_id}).then(res => {
               this.form.plan_investors = res.result.amount;
               this.form.plan_img_progress = res.result.image_progress;
@@ -1299,10 +1304,10 @@
 
         month_time = month_time.getFullYear() + '-' + month_time_0;
         this.upData = {month: month_time, project_num: this.form.project_num, project_id: this.form.project_id};
-        this.month_img = e + ' 月形象进度';
-        this.month_act = e + ' 月实际完成投资(万元)';
-        this.year_investors = e.substring(0, 4) + '年计划投资(万元)';
-        this.year_img = e.substring(0, 4) + '年形象进度';
+        // this.month_img = e + ' 月形象进度';
+        // this.month_act = e + ' 月实际完成投资(万元)';
+        // this.year_investors = e.substring(0, 4) + '年计划投资(万元)';
+        // this.year_img = e.substring(0, 4) + '年形象进度';
         // if (this.form.project_id) {
         //   projectPlanInfo({month: this.form.month, project_id: this.form.project_id}).then(res => {
         //     this.form.plan_investors = res.result.amount;
