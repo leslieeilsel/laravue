@@ -42,7 +42,7 @@ class DingController extends Controller
         $appSecret=env("Ding_App_Secret");
         $appId='dingq5pc0ffixdxmkpwt';
         $time=$this->getMillisecond();
-        $s = hash_hmac('sha256', $time , $appSecret, true);
+        $s = hash_hmac('sha256', $time , $appId, true);
         $signature = base64_encode($s);
         $urlencode_signature = http_build_query(
             array(
