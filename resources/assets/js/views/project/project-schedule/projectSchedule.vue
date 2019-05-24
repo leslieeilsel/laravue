@@ -1193,6 +1193,8 @@
         // this.searchForm.start_at=new Date().getFullYear() + '-01';
         projectProgressList(this.searchForm).then(res => {
           this.data = res.result;
+          console.log(res.result);
+          
           //分页显示所有数据总数
           this.dataCount = this.data.length;
           //循环展示页面刚加载时需要的数据条数
