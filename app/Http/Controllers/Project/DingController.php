@@ -29,7 +29,7 @@ class DingController extends Controller
         $signInfo=$this->sign();
         $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
         $post_data = array(
-            "accessKey" => $appKey,
+            "accessKey" => $accessToken,
             "timestamp" => $this->getMillisecond(),
             "signature"=>$signInfo['sign']
         );
