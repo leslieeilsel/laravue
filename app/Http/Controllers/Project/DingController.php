@@ -27,16 +27,16 @@ class DingController extends Controller
         $appSecret=env("Ding_App_Secret");
         $accessToken=Cache::get('dingAccessToken');
         $signInfo=$this->sign();
-        // $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
-        // $post_data = array(
-        //     "accessKey" => $signInfo['appId'],
-        //     "timestamp" => $signInfo['time'],
-        //     "signature"=>$signInfo['sign']
-        // );
-        // $json=$this->postCurl($url,$post_data);
+        $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
+        $post_data = array(
+            "accessKey" => $signInfo['appId'],
+            "timestamp" => $signInfo['time'],
+            "signature"=>$signInfo['sign']
+        );
+        $json=$this->postCurl($url,$post_data);
         // $arr=json_decode($json,true);
         // dd($arr);
-        return $signInfo;
+        return $json;
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");
@@ -44,16 +44,21 @@ class DingController extends Controller
         $time=$this->getMillisecond();
         $s = hash_hmac('sha256', $time , $appSecret, true);
         $signature = base64_encode($s);
-        $urlencode_signature = urlencode($signature);
-        $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
-        $post_data = array(
-            "signature" => $urlencode_signature,
-            "timestamp" => $time,
-            "accessKey"=>$appId
-        );
-        $json=$this->postCurl($url,$post_data);
+        $urlencode_signature = http_build_query(
+            array(
+                'signature'=>$signature,
+                'timestamp'=>$time,
+                'accessKey'=>$appId
+            ));
+        // $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
+        // $post_data = array(
+        //     "signature" => $urlencode_signature,
+        //     "timestamp" => $time,
+        //     "accessKey"=>$appId
+        // );
+        // $json=$this->postCurl($url,$post_data);
         // return ['appId'=>$appId,'time'=>$time,'sign'=>$json];
-        return $json;
+        return $urlencode_signature;
     }
     // 毫秒级时间戳
     public function getMillisecond() {
