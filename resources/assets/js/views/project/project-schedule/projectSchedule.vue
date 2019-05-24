@@ -72,7 +72,7 @@
       <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">填报</Button>
       <Button type="primary" @click="noSchedule = true" v-if="noScheduleButton">查看当月未填报项目</Button>
       <Button class="exportReport" @click="exportSchedule" type="primary" :disabled="btnDisable" icon="md-cloud-upload">
-        导出台账
+        导出进度
       </Button>
       <Button class="exportReport" @click="downloadPic" type="primary" :disabled="picDisable" icon="md-cloud-upload">
         下载形象进度照片
