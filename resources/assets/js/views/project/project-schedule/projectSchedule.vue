@@ -1507,6 +1507,9 @@
         let subject = this.searchForm.subject;
         let end_at = this.searchForm.end_at;
         let department_id = this.searchForm.department_id;
+        let is_gc = this.searchForm.is_gc;
+        let nep_type = this.searchForm.nep_type;
+        let money_from = this.searchForm.money_from;
         let start_time = '';
         let end_time = '';
         if (end_at) {
