@@ -1488,6 +1488,9 @@
         let subject = this.searchForm.subject;
         let end_at = this.searchForm.end_at;
         let department_id = this.searchForm.department_id;
+        let is_gc = this.searchForm.is_gc;
+        let nep_type = this.searchForm.nep_type;
+        let money_from = this.searchForm.money_from;
         let start_time = '';
         let end_time = '';
         if (end_at) {
@@ -1495,7 +1498,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/exportSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id;
+        window.location.href = "/api/project/exportSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id+ "&is_gc=" + is_gc+ "&nep_type=" + nep_type+ "&money_from=" + money_from;
       },//下载
       downloadPic() {
         let title = this.searchForm.title;
@@ -1511,7 +1514,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/downLoadSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id;
+        window.location.href = "/api/project/downLoadSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id+ "&is_gc=" + is_gc+ "&nep_type=" + nep_type+ "&money_from=" + money_from;
       },
       changePage(index) {
         //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
