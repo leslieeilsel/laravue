@@ -43,7 +43,8 @@ class ZipDownload{
                         while (($filenameClass = readdir($handlerClass)) !== false) {
                             if ($filenameClass != "." && $filenameClass != "..") {
                                 if($filenameClass==$end_at){
-                                    $zip->folder($end_at)->add($path.'/'.$filename_data.'/'.$end_at);
+                                    $c=$path.'/'.$filename_data.'/'.$end_at;
+                                    $zip->folder($filename_data.'/'.$end_at)->add($c);
                                 }
                             }
                         }
