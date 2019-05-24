@@ -14,17 +14,11 @@ class DingController extends Controller
         $accessToken=Cache::get('dingAccessToken');
         $url='https://oapi.dingtalk.com/message/send_to_conversation';
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_POST, TRUE);
-        curl_setopt($ch, CURLOPT_URL, $url);
         $post_data = array(
             "access_token" => $accessToken,
             "sender" => "12345"
             );
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-        $json =  curl_exec($ch);
-        curl_close($ch);
+        $json=$this->postCurl($url,$post_data);
         $arr=json_decode($json,true);
         dd($arr);
     }
@@ -33,24 +27,16 @@ class DingController extends Controller
         $appSecret=env("Ding_App_Secret");
         $accessToken=Cache::get('dingAccessToken');
         $signInfo=$this->sign();
-        $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_POST, TRUE);
-        //设置post数据
-        $post_data = array(
-            "accessKey" => $signInfo['appId'],
-            "timestamp" => $signInfo['time'],
-            "signature"=>$signInfo['sign']
-            );
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        $json =  curl_exec($ch);
-        curl_close($ch);
+        // $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
+        // $post_data = array(
+        //     "accessKey" => $signInfo['appId'],
+        //     "timestamp" => $signInfo['time'],
+        //     "signature"=>$signInfo['sign']
+        // );
+        // $json=$this->postCurl($url,$post_data);
         // $arr=json_decode($json,true);
         // dd($arr);
-        return $json;
+        return json_encode($signInfo);
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");
@@ -59,12 +45,31 @@ class DingController extends Controller
         $s = hash_hmac('sha256', $time , $appSecret, true);
         $signature = base64_encode($s);
         $urlencode_signature = urlencode($signature);
-        return ['appId'=>$appId,'time'=>$time,'sign'=>$urlencode_signature];
+        $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode?signature='.$urlencode_signature.'&timestamp='.$time.'&accessKey='.$appId;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $json =  curl_exec($ch);
+        curl_close($ch);
+        return ['appId'=>$appId,'time'=>$time,'sign'=>$json];
     }
     // 毫秒级时间戳
     public function getMillisecond() {
         list($t1, $t2) = explode(' ', microtime());
         return (float)sprintf('%.0f',(floatval($t1)+floatval($t2))*1000);
+    }
+    // curl
+    public function postCurl($url,$data) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        //设置post数据
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $json =  curl_exec($ch);
+        curl_close($ch);
     }
 }
                      
