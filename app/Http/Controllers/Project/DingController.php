@@ -27,16 +27,16 @@ class DingController extends Controller
         $appSecret=env("Ding_App_Secret");
         $accessToken=Cache::get('dingAccessToken');
         $signInfo=$this->sign();
-        $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
-        $post_data = array(
-            "accessKey" => $signInfo['appId'],
-            "timestamp" => $signInfo['time'],
-            "signature"=>$signInfo['sign']
-        );
-        $json=$this->postCurl($url,$post_data);
+        // $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
+        // $post_data = array(
+        //     "accessKey" => $signInfo['appId'],
+        //     "timestamp" => $signInfo['time'],
+        //     "signature"=>$signInfo['sign']
+        // );
+        // $json=$this->postCurl($url,$post_data);
         // $arr=json_decode($json,true);
         // dd($arr);
-        return $json;
+        return $signInfo;
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");
