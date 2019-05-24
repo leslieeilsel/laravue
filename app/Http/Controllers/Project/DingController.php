@@ -45,13 +45,13 @@ class DingController extends Controller
         $s = hash_hmac('sha256', $time , $appSecret, true);
         $signature = base64_encode($s);
         $urlencode_signature = urlencode($signature);
-        $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode?signature='.$urlencode_signature.'&timestamp='.$time.'&accessKey='.$appId;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        $json =  curl_exec($ch);
-        curl_close($ch);
+        $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
+        $post_data = array(
+            "signature" => $urlencode_signature,
+            "timestamp" => $time,
+            "accessKey"=>$appId
+        );
+        $json=$this->postCurl($url,$post_data);
         // return ['appId'=>$appId,'time'=>$time,'sign'=>$json];
         return $json;
     }
