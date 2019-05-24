@@ -52,7 +52,8 @@ class DingController extends Controller
         curl_setopt($ch, CURLOPT_URL, $url);
         $json =  curl_exec($ch);
         curl_close($ch);
-        return ['appId'=>$appId,'time'=>$time,'sign'=>$json];
+        // return ['appId'=>$appId,'time'=>$time,'sign'=>$json];
+        return $json;
     }
     // 毫秒级时间戳
     public function getMillisecond() {
