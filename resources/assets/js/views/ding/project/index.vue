@@ -185,7 +185,7 @@ import * as dd from 'dingtalk-jsapi'
 						corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
 						onSuccess: function(result) {
 							getUserId({code:result.code}).then(res => {
-								alert(JSON.stringify(res));
+								alert(JSON.stringify(res)+"$$$");
 								if(res.errcode==0){									
 								}
 							});
