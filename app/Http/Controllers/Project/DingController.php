@@ -31,13 +31,16 @@ class DingController extends Controller
         curl_close($ch);
         $arr=json_decode($json,true);
         Cache::put('dingAccessToken', $arr['access_token'], 7200);
-        dd($arr);
+        dd($arr['access_token']);
     }
     public function userNotify(Request $request){
         $data = $request->all();
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
         $accessToken=Cache::get('dingAccessToken');
+        if(!$accessToken){
+            $this->getToken();
+        }
         $url='https://oapi.dingtalk.com/sns/getuserinfo?access_token=4b393f16f9f03217bed31fbcd045d9bb&code='.$data['code'];
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -57,7 +60,7 @@ class DingController extends Controller
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");
-        $appId='dingq5pc0ffixdxmkpwt';
+        $appId=env("Ding_App_Key");
         $time=$this->getMillisecond();
         $s = hash_hmac('sha256', $time , $appSecret, true);
         $signature = base64_encode($s);
