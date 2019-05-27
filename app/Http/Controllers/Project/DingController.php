@@ -27,7 +27,7 @@ class DingController extends Controller
         $appSecret=env("Ding_App_Secret");
         $accessToken=Cache::get('dingAccessToken');
         $signInfo=$this->sign();
-        $url='https://oapi.dingtalk.com/sns/getuserinfo_bycode';
+        $url='https://oapi.dingtalk.com/sns/getuserinfo?access_token='.$accessToken.'&code=code';
         $post_data = array(
             "accessKey" => $accessToken,
             "timestamp" => $this->getMillisecond(),

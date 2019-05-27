@@ -180,10 +180,21 @@ import * as dd from 'dingtalk-jsapi'
 	  },
 	  aaa(){
 			dd.ready(function() {
-				getUserNotify().then(res => {
-          alert(JSON.stringify(res))
+				// getUserNotify().then(res => {
+        //   alert(JSON.stringify(res))
 					
-        });
+        // });
+				dd.runtime.permission.requestAuthCode({
+						corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
+						onSuccess: function(result) {
+							console.log(result);
+						/*{
+								code: 'hYLK98jkf0m' //string authCode
+						}*/
+						},
+						onFail : function(err) {}
+				
+				})
 				// dd.device.notification.alert({
 				// 		message: "亲爱的",
 				// 		title: "提示",//可传空
