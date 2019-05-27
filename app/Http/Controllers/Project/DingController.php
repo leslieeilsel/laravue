@@ -14,16 +14,6 @@ class DingController extends Controller
     public function getToken(){
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
-        // $accessToken=Cache::get('dingAccessToken');
-        // $url='https://oapi.dingtalk.com/message/send_to_conversation';
-        // $ch = curl_init();
-        // $post_data = array(
-        //     "access_token" => $accessToken,
-        //     "sender" => "12345"
-        //     );
-        // $json=$this->postCurl($url,$post_data);
-        // $arr=json_decode($json,true);
-        
         $url='https://oapi.dingtalk.com/gettoken?appkey='.$appKey.'&appsecret='.$appSecret;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -51,7 +41,7 @@ class DingController extends Controller
         $json=$this->postCurl($url,[],'get');
         $arr=json_decode($json,true);
 
-        $result = DB::table('users')->where('phone', $arr['mobile'])->update('ding_user_id',$arr['userid']);
+        $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
         return $json;
     }
     public function userNotify(){
