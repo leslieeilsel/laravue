@@ -51,8 +51,8 @@ class DingController extends Controller
         $json=$this->postCurl($url,[],'get');
         return $json;
     }
-    public function userNotify(Request $request){
-        $data = $request->all();
+    public function userNotify(){
+        // $data = $request->all();
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
         $agent_id=env("Ding_Agent_Id");
