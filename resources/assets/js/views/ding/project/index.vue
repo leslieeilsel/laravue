@@ -161,7 +161,7 @@ import * as dd from 'dingtalk-jsapi'
         this.getProjectId();
 				this.aaa();
 				userNotify().then(res => {
-					alert(JSON.stringify(res));
+					alert(res);
 				});
       },
       getProjectId() {
