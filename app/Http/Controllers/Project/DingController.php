@@ -41,7 +41,7 @@ class DingController extends Controller
         if(!$accessToken){
             $this->getToken();
         }
-        $url='https://oapi.dingtalk.com/sns/getuserinfo?access_token=4b393f16f9f03217bed31fbcd045d9bb&code='.$data['code'];
+        $url='https://oapi.dingtalk.com/user/getuserinfo?access_token=4b393f16f9f03217bed31fbcd045d9bb&code='.$data['code'];
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
