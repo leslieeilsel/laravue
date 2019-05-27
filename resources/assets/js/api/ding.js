@@ -1,7 +1,7 @@
 import request from '../utils/request'
 
 /**
- * 获取一级部门
+ * 用户信息
  * @returns {*}
  */
 export function getUserNotify(form) {
