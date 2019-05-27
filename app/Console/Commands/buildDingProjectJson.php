@@ -45,6 +45,7 @@ class buildDingProjectJson extends Command
         curl_close($ch);
         $arr=json_decode($json,true);
         Cache::put('dingAccessToken', $arr['access_token'], 7200);
-        file_put_contents('11.txt',$json."***".Cache("dingAccessToken"));
+        $str=var_export($arr,TRUE);
+        file_put_contents('11.txt',$str."***".Cache("dingAccessToken"));
     }
 }
