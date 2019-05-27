@@ -183,9 +183,11 @@ import * as dd from 'dingtalk-jsapi'
 				dd.runtime.permission.requestAuthCode({
 						corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
 						onSuccess: function(result) {
-							alert(result.code)
 							getUserNotify({code:result.code}).then(res => {
-							  alert(JSON.stringify(res))
+								if(res.errcode==0){
+									alert(res.userid)
+									
+								}
 							});
 						},
 						onFail : function(err) {}
@@ -212,18 +214,6 @@ import * as dd from 'dingtalk-jsapi'
 			// 				'biz.contact.choose',
 			// 		],
 			// });
-				// dd.runtime.permission.requestAuthCode({
-				// 		corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
-				// 		onSuccess: function(result) {
-				// 			console.log(result);
-							
-				// 		/*{
-				// 				code: 'hYLK98jkf0m' //string authCode
-				// 		}*/
-				// 		},
-				// 		onFail : function(err) {}
-				
-				// })
 			})
 	  }
 	  
