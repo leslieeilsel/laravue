@@ -70,7 +70,7 @@ class DingController extends Controller
                 "text"=>["content"=>"张三的请假申请"]
             ])
         );
-        // $json=$this->postCurl($url,$post_data,'post');
+        $json=$this->postCurl($url,$post_data,'post');
         return json_encode([
             "msgtype"=>"text",
             "text"=>["content"=>"张三的请假申请"]
