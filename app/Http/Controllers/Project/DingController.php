@@ -7,6 +7,7 @@ use function GuzzleHttp\json_encode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use function GuzzleHttp\json_decode;
+use App\User;
 
 class DingController extends Controller
 {
@@ -45,9 +46,9 @@ class DingController extends Controller
         $user_id_url='https://oapi.dingtalk.com/user/getuserinfo?access_token='.$accessToken.'&code='.$data['code'];
         $user_ids=$this->postCurl($user_id_url,[],'get');
         $user_id=json_decode($user_ids,true);
-        $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid=zhangsan'.$user_id['userid'];
-        $json=$this->postCurl($url,[],'get');
-        return $json;
+        // $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid=zhangsan'.$user_id['userid'];
+        // $json=$this->postCurl($url,[],'get');
+        return $user_ids;
     }
     public function userNotify(Request $request){
         // $data = $request->all();
