@@ -66,37 +66,37 @@
 					<span class="ding_details_span">
 						<font class="details_name">累计完成投资(万元)</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" v-model="form.acc_complete" value='累计完成投资' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.acc_complete" placeholder="累计完成投资">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">计划开工时间</font>
 						<font class="details_det ding">
-							<input type="date" class="mui-input-text" v-model="form.plan_build_start_at" value='计划开工时间' placeholder="">
+							<input type="date" class="mui-input-text" v-model="form.plan_build_start_at" placeholder="计划开工时间">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">土地征收情况及前期手续办理情况</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" v-model="form.exp_preforma" value='土地征收情况及前期手续办理情况' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.exp_preforma" placeholder="土地征收情况及前期手续办理情况">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">存在问题</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" v-model="form.problem" value='存在问题' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.problem" placeholder="存在问题">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">备注</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" v-model="form.marker" value='备注' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.marker" placeholder="备注">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">形象进度</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" v-model="form.img_progress_pic" value='备注' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.img_progress_pic" placeholder="形象进度">
 						</font>
 					</span>
 				</div>
@@ -158,6 +158,7 @@ import * as dd from 'dingtalk-jsapi'
         });
       },
 			changeProject(e) {
+				alert(222)
 				this.project_id.forEach((em) => {
 					if (em.id === e) {
 						this.form.subject = em.subject;
