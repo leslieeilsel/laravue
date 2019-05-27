@@ -42,6 +42,7 @@ class DingController extends Controller
         $accessToken=Cache::get('dingAccessToken');
         if(!$accessToken){
             $this->getToken();
+            $accessToken=Cache::get('dingAccessToken');
         }
         $user_id_url='https://oapi.dingtalk.com/user/getuserinfo?access_token='.$accessToken.'&code='.$data['code'];
         $user_ids=$this->postCurl($user_id_url,[],'get');
@@ -51,19 +52,27 @@ class DingController extends Controller
         return $json;
     }
     public function userNotify(Request $request){
-        // $data = $request->all();
-        // $appKey=env("Ding_App_Key");
-        // $appSecret=env("Ding_App_Secret");
-        // $accessToken=Cache::get('dingAccessToken');
-        // if(!$accessToken){
-        //     $this->getToken();
-        // }
-        // $user_id_url='https://oapi.dingtalk.com/user/getuserinfo?access_token='.$accessToken.'&code='.$data['code'];
-        // $user_ids=$this->postCurl($user_id_url,[],'get');
-        // $user_id=json_decode($user_ids,true);
-        // $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid=zhangsan'.$user_id['userid'];
-        // $json=$this->postCurl($url,[],'get');
-        // return $json;
+        $data = $request->all();
+        $appKey=env("Ding_App_Key");
+        $appSecret=env("Ding_App_Secret");
+        $agent_id=env("Ding_Agent_Id");
+        $accessToken=Cache::get('dingAccessToken');
+        if(!$accessToken){
+            $this->getToken();
+            $accessToken=Cache::get('dingAccessToken');
+        }
+        $url='https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token='.$accessToken;
+        
+        $post_data=array(
+            'agent_id'=>$agent_id,
+            'userid_list'=>['0362614366942884'],
+            'msg'=>json_encode([
+                "msgtype"=>"text",
+                "text"=>["content"=>"张三的请假申请"]
+            ])
+        );
+        $json=$this->postCurl($url,$post_data,'post');
+        return $json;
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");
