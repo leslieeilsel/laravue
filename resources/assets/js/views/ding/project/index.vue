@@ -108,21 +108,7 @@
 <script>
 import * as dd from 'dingtalk-jsapi'
   import {
-    getAuditedProjects,
-    projectProgress,
-    projectProgressList,                                                                                    
-    projectPlanInfo,
-    editProjectProgress,
-    getData,
-    auditProjectProgress,
-    toAuditSchedule,
-    actCompleteMoney,
-    getProjectNoScheduleList,
-    projectScheduleMonth,
-    getProjectDictData,
-		projectScheduleDelete
-  } from '../../../api/project';
-  import {
+		getAuditedProjects,
 		getUserId,
 		userNotify
   } from '../../../api/ding';
@@ -150,7 +136,8 @@ import * as dd from 'dingtalk-jsapi'
           marker: '',
           is_audit: ''
 				},
-				project_id:[]
+				project_id:[],
+				userid:''
 	  	}
     },
     mounted() {
@@ -158,13 +145,12 @@ import * as dd from 'dingtalk-jsapi'
     },
     methods: {
       init() {
-        this.getProjectId();
 				this.aaa();
       },
       getProjectId() {
         getAuditedProjects().then(res => {
-					alert(res)
-          this.project_id = res.result;
+					this.project_id = res.result;
+					alert(JSON.stringify(this.project_id));
         });
       },
       changeProject(e) {
@@ -186,8 +172,10 @@ import * as dd from 'dingtalk-jsapi'
 						corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
 						onSuccess: function(result) {
 							getUserId({code:result.code}).then(res => {
-								alert(JSON.stringify(res)+"$$$");
-								if(res.errcode==0){									
+								// alert(JSON.stringify(res)+"$$$");
+								if(res.errcode==0){			
+									this.userid=res.userid;
+									this.getProjectId();
 								}
 							});
 						},

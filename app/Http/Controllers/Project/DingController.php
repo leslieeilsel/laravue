@@ -95,5 +95,12 @@ class DingController extends Controller
         curl_close($ch);
         return $json;
     }
+    //获取项目信息
+    public function getAuditedProjects()
+    {
+        $projects = Projects::where('is_audit', 1)->whereIn('user_id', 16)->get()->toArray();
+
+        return response()->json(['result' => $projects], 200);
+    }
 }
                      

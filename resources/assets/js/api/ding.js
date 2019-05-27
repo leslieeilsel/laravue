@@ -24,4 +24,15 @@ export function userNotify(form) {
   });
 }
 
+/**
+ * 获取项目进度填报已审核的项目列表（附加权限控制）
+ * @returns {*}
+ */
+export function getAuditedProjects() {
+  return request({
+    url: '/api/ding/getAuditedProjects',
+    method: 'get'
+  });
+}
+
 
