@@ -19,7 +19,7 @@ export function getUserId(form) {
 export function userNotify(form) {
   return request({
     url: '/api/ding/userNotify',
-    method: 'post',
+    method: 'get',
     data: {...form}
   });
 }
