@@ -22,18 +22,25 @@ class DingController extends Controller
         $arr=json_decode($json,true);
         dd($arr);
     }
-    public function userNotify(){
+    public function userNotify(Request $request){
+        $data = $request->all();
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
         $accessToken=Cache::get('dingAccessToken');
         $signInfo=$this->sign();
-        $url='https://oapi.dingtalk.com/sns/getuserinfo?access_token='.$accessToken.'&code=code';
-        $post_data = array(
-            "accessKey" => $accessToken,
-            "timestamp" => $this->getMillisecond(),
-            "signature"=>$signInfo['sign']
-        );
-        $json=$this->postCurl($url,$post_data);
+        $url='https://oapi.dingtalk.com/sns/getuserinfo?access_token='.$accessToken.'&code='.$data['code'];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $json =  curl_exec($ch);
+        curl_close($ch);
+        // $arr=json_decode($json,true);
+        // $post_data = array(
+        //     "accessKey" => $accessToken,
+        //     "timestamp" => $this->getMillisecond(),
+        //     "signature"=>$signInfo['sign']
+        // );
         // $arr=json_decode($json,true);
         // dd($arr);
         return $json;
