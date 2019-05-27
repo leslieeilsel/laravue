@@ -7,7 +7,7 @@ use function GuzzleHttp\json_encode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use function GuzzleHttp\json_decode;
-use App\User;
+use Illuminate\Support\Facades\DB;
 
 class DingController extends Controller
 {
