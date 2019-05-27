@@ -123,7 +123,7 @@ import * as dd from 'dingtalk-jsapi'
 		projectScheduleDelete
   } from '../../../api/project';
   import {
-		getUserNotify
+		getUserId
   } from '../../../api/ding';
   export default {
     data() {
@@ -183,9 +183,9 @@ import * as dd from 'dingtalk-jsapi'
 				dd.runtime.permission.requestAuthCode({
 						corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
 						onSuccess: function(result) {
-							getUserNotify({code:result.code}).then(res => {
+							getUserId({code:result.code}).then(res => {
 								if(res.errcode==0){
-									alert(res.userid)
+									alert(res)
 									
 								}
 							});

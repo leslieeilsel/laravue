@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use function GuzzleHttp\json_encode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use function GuzzleHttp\json_decode;
 
 class DingController extends Controller
 {
@@ -33,7 +34,7 @@ class DingController extends Controller
         Cache::put('dingAccessToken', $arr['access_token'], 7200);
         dd($arr['access_token']);
     }
-    public function userNotify(Request $request){
+    public function userId(Request $request){
         $data = $request->all();
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
@@ -41,14 +42,27 @@ class DingController extends Controller
         if(!$accessToken){
             $this->getToken();
         }
-        $url='https://oapi.dingtalk.com/user/getuserinfo?access_token=4b393f16f9f03217bed31fbcd045d9bb&code='.$data['code'];
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        $json =  curl_exec($ch);
-        curl_close($ch);
+        $user_id_url='https://oapi.dingtalk.com/user/getuserinfo?access_token='.$accessToken.'&code='.$data['code'];
+        $user_ids=$this->postCurl($user_id_url,[],'get');
+        $user_id=json_decode($user_ids,true);
+        $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid=zhangsan'.$user_id['userid'];
+        $json=$this->postCurl($url,[],'get');
         return $json;
+    }
+    public function userNotify(Request $request){
+        // $data = $request->all();
+        // $appKey=env("Ding_App_Key");
+        // $appSecret=env("Ding_App_Secret");
+        // $accessToken=Cache::get('dingAccessToken');
+        // if(!$accessToken){
+        //     $this->getToken();
+        // }
+        // $user_id_url='https://oapi.dingtalk.com/user/getuserinfo?access_token='.$accessToken.'&code='.$data['code'];
+        // $user_ids=$this->postCurl($user_id_url,[],'get');
+        // $user_id=json_decode($user_ids,true);
+        // $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid=zhangsan'.$user_id['userid'];
+        // $json=$this->postCurl($url,[],'get');
+        // return $json;
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");
@@ -66,13 +80,15 @@ class DingController extends Controller
         return (float)sprintf('%.0f',(floatval($t1)+floatval($t2))*1000);
     }
     // curl
-    public function postCurl($url,$data) {
+    public function postCurl($url,$data,$type) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_POST, TRUE);
-        //设置post数据
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        if($type=='post'){
+            curl_setopt($ch, CURLOPT_POST, TRUE);
+            //设置post数据
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        }
         curl_setopt($ch, CURLOPT_URL, $url);
         $json =  curl_exec($ch);
         curl_close($ch);

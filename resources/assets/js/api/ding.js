@@ -4,9 +4,9 @@ import request from '../utils/request'
  * 用户信息
  * @returns {*}
  */
-export function getUserNotify(form) {
+export function getUserId(form) {
   return request({
-    url: '/api/ding/userNotify',
+    url: '/api/ding/userId',
     method: 'post',
     data: {...form}
   });
