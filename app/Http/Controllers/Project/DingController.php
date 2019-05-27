@@ -13,15 +13,15 @@ class DingController extends Controller
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
         $accessToken=Cache::get('dingAccessToken');
-        $url='https://oapi.dingtalk.com/message/send_to_conversation';
-        $ch = curl_init();
-        $post_data = array(
-            "access_token" => $accessToken,
-            "sender" => "12345"
-            );
-        $json=$this->postCurl($url,$post_data);
-        $arr=json_decode($json,true);
-        dd($arr);
+        // $url='https://oapi.dingtalk.com/message/send_to_conversation';
+        // $ch = curl_init();
+        // $post_data = array(
+        //     "access_token" => $accessToken,
+        //     "sender" => "12345"
+        //     );
+        // $json=$this->postCurl($url,$post_data);
+        // $arr=json_decode($json,true);
+        dd($accessToken);
     }
     public function userNotify(Request $request){
         $data = $request->all();
