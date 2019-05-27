@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
-use function GuzzleHttp\json_encode;
+use App\Models\Project\Projects;
+use App\Models\Project\ProjectPlan;
+use App\Models\Project\ProjectSchedule;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use function GuzzleHttp\json_decode;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class DingController extends Controller
 {
@@ -98,7 +100,7 @@ class DingController extends Controller
     //获取项目信息
     public function getAuditedProjects()
     {
-        $projects = Projects::where('is_audit', 1)->whereIn('user_id', 16)->get()->toArray();
+        $projects = Projects::where('is_audit', 1)->whereIn('user_id', [16])->get()->toArray();
 
         return response()->json(['result' => $projects], 200);
     }

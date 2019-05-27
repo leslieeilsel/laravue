@@ -9,93 +9,94 @@
 					<span class="ding_details_span">
 						<font class="details_name">填报项目</font>
 						<font class="details_det ding">
-							<select class="mui-input-select" id="project_id" @on-change="changeProject">
-								<Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
+							<select class="mui-input-select" id="project_id" v-model="form.project_id" filterable @on-change="changeProject">
+								<option value="">请选择</option>
+								<option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</option>
 							</select>
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">填报时间</font>
 						<font class="details_det ding">
-							<input type="month" class="mui-input-text" name="month" value='' placeholder="填报时间">
+							<input type="month" class="mui-input-text" v-model="form.month" value='' placeholder="填报时间">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">项目编号</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="project_num" value='' placeholder="项目编号">
+							<input type="text" class="mui-input-text" v-model="form.project_num" value='' placeholder="项目编号">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">投资主体</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="subject" value='' placeholder="投资主体">
+							<input type="text" class="mui-input-text" v-model="form.subject" value='' placeholder="投资主体">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">建设起止年限</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="build_at" value='' placeholder="建设起止年限">
+							<input type="text" class="mui-input-text" v-model="form.build_at" value='' placeholder="建设起止年限">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">总投资(万元)</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="total_investors" value='' placeholder="总投资(万元)">
+							<input type="text" class="mui-input-text" v-model="form.total_investors" value='' placeholder="总投资(万元)">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">年计划投资(万元)</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="plan_investors" value='' placeholder="年计划投资">
+							<input type="text" class="mui-input-text" v-model="form.plan_investors" value='' placeholder="年计划投资">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">年形象进度</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="plan_img_progress" value='' placeholder="年形象进度">
+							<input type="text" class="mui-input-text" v-model="form.plan_img_progress" value='' placeholder="年形象进度">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">月实际完成投资(万元)</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="month_act_complete" value='' placeholder="从开始至今实际完成投资">
+							<input type="text" class="mui-input-text" v-model="form.month_act_complete" value='' placeholder="从开始至今实际完成投资">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">累计完成投资(万元)</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="acc_complete" value='累计完成投资' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.acc_complete" value='累计完成投资' placeholder="">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">计划开工时间</font>
 						<font class="details_det ding">
-							<input type="date" class="mui-input-text" name="plan_build_start_at" value='计划开工时间' placeholder="">
+							<input type="date" class="mui-input-text" v-model="form.plan_build_start_at" value='计划开工时间' placeholder="">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">土地征收情况及前期手续办理情况</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="exp_preforma" value='土地征收情况及前期手续办理情况' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.exp_preforma" value='土地征收情况及前期手续办理情况' placeholder="">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">存在问题</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="problem" value='存在问题' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.problem" value='存在问题' placeholder="">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">备注</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="marker" value='备注' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.marker" value='备注' placeholder="">
 						</font>
 					</span>
 					<span class="ding_details_span">
 						<font class="details_name">形象进度</font>
 						<font class="details_det ding">
-							<input type="text" class="mui-input-text" name="img_progress_pic" value='备注' placeholder="">
+							<input type="text" class="mui-input-text" v-model="form.img_progress_pic" value='备注' placeholder="">
 						</font>
 					</span>
 				</div>
@@ -107,6 +108,9 @@
 <style scope src="./mui.css"></style>
 <script>
 import * as dd from 'dingtalk-jsapi'
+  import {
+		projectPlanInfo,
+  } from '../../../api/project';
   import {
 		getAuditedProjects,
 		getUserId,
@@ -145,45 +149,53 @@ import * as dd from 'dingtalk-jsapi'
     },
     methods: {
       init() {
-				this.aaa();
+				// this.aaa();
+				this.getProjectId();
       },
       getProjectId() {
-        getAuditedProjects().then(res => {
-					this.project_id = res.result;
-					alert(JSON.stringify(this.project_id));
+        getAuditedProjects().then(res => {					
+					this.project_id = res.result;		
         });
       },
-      changeProject(e) {
-        this.project_id.forEach((em) => {
-          if (em.id === e) {
-            this.form.subject = em.subject;
-            this.form.project_num = em.num;
-            this.form.build_start_at = em.plan_start_at;
-            this.form.build_end_at = em.plan_end_at;
-            this.form.total_investors = em.amount;
-            this.form.plan_img_progress = em.image_progress;
-            this.form.plan_build_start_at = em.plan_start_at;
-          }
-        });
-	  },
-	  aaa(){
-			dd.ready(function() {
-				dd.runtime.permission.requestAuthCode({
-						corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
-						onSuccess: function(result) {
-							getUserId({code:result.code}).then(res => {
-								// alert(JSON.stringify(res)+"$$$");
-								if(res.errcode==0){			
-									this.userid=res.userid;
-									this.getProjectId();
-								}
-							});
-						},
-						onFail : function(err) {}
+			changeProject(e) {
+				this.project_id.forEach((em) => {
+					if (em.id === e) {
+						this.form.subject = em.subject;
+						this.form.project_num = em.num;
+						this.form.build_start_at = em.plan_start_at;
+						this.form.build_end_at = em.plan_end_at;
+						this.form.total_investors = em.amount;
+						this.form.plan_img_progress = em.image_progress;
+						this.form.plan_build_start_at = em.plan_start_at;
+						
+						let month_time = new Date();
+						let month_time_0 = (month_time.getMonth() + 1) > 9 ? (month_time.getMonth() + 1) : '0' + (month_time.getMonth() + 1);
+
+						month_time = month_time.getFullYear() + '-' + month_time_0;
+						projectPlanInfo({month: month_time, project_id: this.form.project_id}).then(res => {
+							this.form.plan_investors = res.result.amount;
+							this.form.plan_img_progress = res.result.image_progress;
+						});
+					}
+				});
+			},
+			aaa(){
+				dd.ready(function() {
+					dd.runtime.permission.requestAuthCode({
+							corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
+							onSuccess: function(result) {
+								getUserId({code:result.code}).then(res => {
+									// alert(JSON.stringify(res)+"$$$");
+									if(res.errcode==0){			
+										this.userid=res.userid;
+										this.getProjectId();
+									}
+								});
+							},
+							onFail : function(err) {}
+					})
 				})
-			})
-	  }
-	  
-    }
+			}
+		}
   }
 </script>
