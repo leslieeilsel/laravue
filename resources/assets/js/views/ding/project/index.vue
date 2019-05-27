@@ -187,7 +187,7 @@ import * as dd from 'dingtalk-jsapi'
 				dd.runtime.permission.requestAuthCode({
 						corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
 						onSuccess: function(result) {
-							console.log(result);
+							alert(JSON.stringify(result))
 						/*{
 								code: 'hYLK98jkf0m' //string authCode
 						}*/
