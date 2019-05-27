@@ -185,7 +185,7 @@ import * as dd from 'dingtalk-jsapi'
 						onSuccess: function(result) {
 							alert(result.code)
 							getUserId({code:result.code}).then(res => {
-								alert(JSON.stringify(res))
+								alert(res)
 								if(res.errcode==0){
 									alert(res)
 									
