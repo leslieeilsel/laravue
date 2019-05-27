@@ -158,7 +158,10 @@ import * as dd from 'dingtalk-jsapi'
     methods: {
       init() {
         this.getProjectId();
-        this.aaa();
+				this.aaa();
+				userNotify().then(res => {
+					alert(JSON.stringify(res));
+				});
       },
       getProjectId() {
         getAuditedProjects().then(res => {

@@ -12,5 +12,16 @@ export function getUserId(form) {
   });
 }
 
+/**
+ * 推送消息
+ * @returns {*}
+ */
+export function userNotify(form) {
+  return request({
+    url: '/api/ding/userNotify',
+    method: 'post',
+    data: {...form}
+  });
+}
 
 
