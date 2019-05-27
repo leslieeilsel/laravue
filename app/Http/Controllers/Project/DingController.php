@@ -49,6 +49,9 @@ class DingController extends Controller
         $user_id=json_decode($user_ids,true);
         $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid='.$user_id['userid'];
         $json=$this->postCurl($url,[],'get');
+        $arr=json_decode($json,true);
+
+        $result = DB::table('users')->where('phone', $arr['mobile'])->update('ding_user_id',$arr['userid']);
         return $json;
     }
     public function userNotify(){
@@ -71,10 +74,7 @@ class DingController extends Controller
             ])
         );
         $json=$this->postCurl($url,$post_data,'post');
-        return json_encode([
-            "msgtype"=>"text",
-            "text"=>["content"=>"张三的请假申请"]
-        ]);
+        return $json;
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");

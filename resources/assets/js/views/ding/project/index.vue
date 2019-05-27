@@ -160,9 +160,6 @@ import * as dd from 'dingtalk-jsapi'
       init() {
         this.getProjectId();
 				this.aaa();
-				userNotify().then(res => {
-					alert(res);
-				});
       },
       getProjectId() {
         getAuditedProjects().then(res => {
@@ -195,28 +192,6 @@ import * as dd from 'dingtalk-jsapi'
 						},
 						onFail : function(err) {}
 				})
-				// dd.device.notification.alert({
-				// 		message: "亲爱的",
-				// 		title: "提示",//可传空
-				// 		buttonName: "收到",
-				// 		onSuccess : function() {
-				// 			console.log(111);
-				// 				//onSuccess将在点击button之后回调
-				// 				/*回调*/
-				// 		},
-				// 		onFail : function(err) {}
-				// });
-			// 	dd.config({
-			// 		agentId: '252426258', // 必填，微应用ID
-			// 		corpId: 'dinge48f324dae7de1df35c2f4657eb6378f',//必填，企业ID
-			// 		timeStamp: '', // 必填，生成签名的时间戳
-			// 		nonceStr: '$10$q7IuhSqsnGL5g3CNQEypleEuDMZrJyQImZqwSlLEORMoGHBp9u9.u', // 必填，生成签名的随机串
-			// 		signature: '', // 必填，签名
-			// 		type:0/1,   //选填，0表示微应用的jsapi，1表示服务窗的jsapi，不填默认为0。该参数从dingtalk.js的0.8.3版本开始支持
-			// 		jsApiList:[
-			// 				'biz.contact.choose',
-			// 		],
-			// });
 			})
 	  }
 	  
