@@ -48,7 +48,7 @@ class DingController extends Controller
         $user_id=json_decode($user_ids,true);
         // $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid=zhangsan'.$user_id['userid'];
         // $json=$this->postCurl($url,[],'get');
-        return $user_ids['userid'];
+        return $user_id['userid'];
     }
     public function userNotify(Request $request){
         // $data = $request->all();
