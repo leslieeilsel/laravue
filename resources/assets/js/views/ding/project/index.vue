@@ -163,6 +163,7 @@ import * as dd from 'dingtalk-jsapi'
       },
       getProjectId() {
         getAuditedProjects().then(res => {
+					alert(res)
           this.project_id = res.result;
         });
       },
