@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Project;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use function GuzzleHttp\json_encode;
+use Illuminate\Http\Request;
 
 class DingController extends Controller
 {
