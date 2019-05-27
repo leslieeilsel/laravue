@@ -65,13 +65,16 @@ class DingController extends Controller
         $post_data=array(
             'agent_id'=>$agent_id,
             'userid_list'=>array('0362614366942884'),
-            'msg'=>json_encode([
+            'msg'=>[
                 "msgtype"=>"text",
                 "text"=>["content"=>"张三的请假申请"]
-            ])
+            ]
         );
         $json=$this->postCurl($url,$post_data,'post');
-        return $json;
+        return json_encode([
+            "msgtype"=>"text",
+            "text"=>["content"=>"张三的请假申请"]
+        ]);
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");
