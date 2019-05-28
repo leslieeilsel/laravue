@@ -128,7 +128,7 @@
           <span class="ding_details_span">
             <font class="details_name">形象进度</font>
             <font class="details_det ding">
-              <Upload></Upload>
+              <Upload :on-success="handleSuccess">上传</Upload>
               <!-- <Upload
                 ref="upload"
                 :disabled="upbtnDisabled"
@@ -153,19 +153,6 @@
       <Button @click="submitF()" style="width: 100%;height: 40px;top: -5;background: #029aed; color:#fff;position: fixed;bottom: 0;">提交</Button>
     </div>
   </div>
-  <!-- <div slot="footer">
-    
-  </div> -->
-  <!-- <div slot="footer">
-    <Button @click="handleReset('form')" :loading="loading">重置</Button>
-    <Button
-      @click="submitF('form')"
-      :loading="submitLoading"
-      type="primary"
-      style="margin-left:8px"
-    >保存
-    </Button>
-  </div> -->
 </template>
 <style scope src="./index.css"></style>
 <style scope src="./mui.css"></style>
@@ -277,6 +264,7 @@ export default {
       });
     },
     handleSuccess(res, file) {
+      alert(JSON.stringify(res))
       if (this.form.img_progress_pic) {
         this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
       } else {
