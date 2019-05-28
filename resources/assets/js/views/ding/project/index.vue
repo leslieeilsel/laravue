@@ -72,7 +72,7 @@
           <span class="ding_details_span">
             <font class="details_name">月实际完成投资(万元)</font>
             <font class="details_det ding">
-              <InputNumber @on-blur="changeMonthActComplete" :min="0" :step="1.2" style="width: 90%" v-model="form.month_act_complete"
+              <InputNumber @on-blur="changeMonthActComplete" :min="0" :step="1.2" style="width: 90%;border:none;" v-model="form.month_act_complete"
                            placeholder="必填项"></InputNumber>
             </font>
           </span>
@@ -154,7 +154,7 @@
 <style scope src="./mui.css"></style>
 <script>
 import * as dd from "dingtalk-jsapi";
-import { projectPlanInfo } from "../../../api/project";
+import { projectPlanInfo,actCompleteMoney } from "../../../api/project";
 import { getAuditedProjects, getUserId, userNotify } from "../../../api/ding";
 export default {
   data() {
