@@ -128,7 +128,15 @@
           <span class="ding_details_span">
             <font class="details_name">形象进度</font>
             <font class="details_det ding">
-              <Upload :on-success="handleSuccess"><Button icon="ios-cloud-upload-outline">上传</Button></Upload>
+              <Upload 
+                ref="upload"
+                :disabled="upbtnDisabled"
+                name="img_pic"
+                :on-success="handleSuccess"
+              >
+                <Button icon="ios-cloud-upload-outline">上传</Button>
+                <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
+              </Upload>
               <!-- <Upload
                 ref="upload"
                 :disabled="upbtnDisabled"
