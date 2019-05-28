@@ -150,7 +150,7 @@
       </li>
     </ul>
     <div slot="footer">
-      <button style="width: 100%;height: 40px;top: -5;background: #029aed; color:#fff;position: fixed;bottom: 0;">提交</button>
+      <button @on-click="submitF()" style="width: 100%;height: 40px;top: -5;background: #029aed; color:#fff;position: fixed;bottom: 0;">提交</button>
     </div>
   </div>
   <!-- <div slot="footer">
@@ -317,6 +317,26 @@ export default {
     },
     tornPic(){
       alert(222)
+    },
+    submitF(){
+      if(this.form.exp_preforma===''){
+          this.$Message.error('请填写土地征收情况及前期手续办理情况!');
+          return false;
+      }
+      if(this.form.month_act_complete===''){
+          this.$Message.error('请填写月实际完成投资!');
+          return false;
+      }
+      projectProgress(this.form).then(res => {
+        this.submitLoading = false;
+        if (res.result) {
+          this.$Message.success("填报成功");
+          this.modal = false;
+          this.init();
+        } else {
+          this.$Message.error('填报失败!');
+        }
+      });
     }
   }
 };
