@@ -1,6 +1,6 @@
 <template>
   <div class="mui-content">
-    <ul class="mui-table-view" style="padding:10px 15px;background:transparent;">
+    <ul class="mui-table-view" style="padding:10px 15px;background:transparent;top:0;margin-bottom: 30px;">
       <li class="ding_li">
         <div class="li_top">
           <div>项目填报</div>
@@ -128,7 +128,8 @@
           <span class="ding_details_span">
             <font class="details_name">形象进度</font>
             <font class="details_det ding">
-              <Upload
+              <Upload></Upload>
+              <!-- <Upload
                 ref="upload"
                 :disabled="upbtnDisabled"
                 name="img_pic"
@@ -142,13 +143,29 @@
                 action="/api/project/uploadPic">
                 <Button icon="ios-cloud-upload-outline">上传</Button>
                 <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
-              </Upload>
+              </Upload> -->
             </font>
           </span>
         </div>
       </li>
     </ul>
+    <div slot="footer">
+      <button style="width: 100%;height: 40px;top: -5;background: #029aed; color:#fff;position: fixed;bottom: 0;">提交</button>
+    </div>
   </div>
+  <!-- <div slot="footer">
+    
+  </div> -->
+  <!-- <div slot="footer">
+    <Button @click="handleReset('form')" :loading="loading">重置</Button>
+    <Button
+      @click="submitF('form')"
+      :loading="submitLoading"
+      type="primary"
+      style="margin-left:8px"
+    >保存
+    </Button>
+  </div> -->
 </template>
 <style scope src="./index.css"></style>
 <style scope src="./mui.css"></style>
@@ -297,6 +314,9 @@ export default {
       }).then(res => {
         this.form.acc_complete = res.result;
       });
+    },
+    tornPic(){
+      alert(222)
     }
   }
 };
