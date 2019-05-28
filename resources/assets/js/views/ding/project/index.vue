@@ -150,7 +150,7 @@
       </li>
     </ul>
     <div slot="footer">
-      <button @on-click="submitF()" style="width: 100%;height: 40px;top: -5;background: #029aed; color:#fff;position: fixed;bottom: 0;">提交</button>
+      <Button @click="submitF()" style="width: 100%;height: 40px;top: -5;background: #029aed; color:#fff;position: fixed;bottom: 0;">提交</Button>
     </div>
   </div>
   <!-- <div slot="footer">
