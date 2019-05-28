@@ -9,7 +9,7 @@
           <span class="ding_details_span">
             <font class="details_name">填报项目</font>
             <font class="details_det ding">
-              <Select v-model="form.project_id"  style="width: 90%;">
+              <Select v-model="form.project_id" @on-change='changeProject' style="width: 90%;">
                   <Option value="-1">请选择</Option>
                   <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
               </Select>
