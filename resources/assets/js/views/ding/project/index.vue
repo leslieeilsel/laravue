@@ -16,7 +16,7 @@
             </font>
           </span>
           <span class="ding_details_span">
-            <font class="details_name">填报时间</font>
+            <font class="details_name" @on-change='changeMonth'>填报时间</font>
             <font class="details_det ding">
               <DatePicker type="month" :options="month_options_0" placeholder="请选择"
                           format="yyyy-MM"
@@ -139,6 +139,7 @@
               </Upload> -->
               <Upload
                 ref="upload"
+                :disabled="upbtnDisabled"
                 name="img_pic"
                 :on-success="handleSuccess"
                 multiple
@@ -309,6 +310,19 @@ export default {
       }).then(res => {
         this.form.acc_complete = res.result;
       });
+    },
+    changeMonth(e) {
+      if (this.form.project_id === '') {
+        this.$Message.error('请先选择填报项目!');
+        this.form.month = '';
+        return;
+      }
+      this.upbtnDisabled = false;
+      let month_time = new Date(this.form.month);
+      let month_time_0 = (month_time.getMonth() + 1) > 9 ? (month_time.getMonth() + 1) : '0' + (month_time.getMonth() + 1);
+
+      month_time = month_time.getFullYear() + '-' + month_time_0;
+      this.upData = {month: month_time, project_num: this.form.project_num, project_id: this.form.project_id};
     },
     tornPic(){
       alert(222)
