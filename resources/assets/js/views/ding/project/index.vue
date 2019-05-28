@@ -242,8 +242,6 @@ export default {
       });
     },
     changeProject(e) {
-      console.log(e);
-
       this.project_id.forEach(em => {
         if (em.id === e) {
           this.form.subject = em.subject;
@@ -318,14 +316,12 @@ export default {
         return;
       }
       this.upbtnDisabled = false;
+      alert(this.upbtnDisabled)
       let month_time = new Date(this.form.month);
       let month_time_0 = (month_time.getMonth() + 1) > 9 ? (month_time.getMonth() + 1) : '0' + (month_time.getMonth() + 1);
 
       month_time = month_time.getFullYear() + '-' + month_time_0;
       this.upData = {month: month_time, project_num: this.form.project_num, project_id: this.form.project_id};
-    },
-    tornPic(){
-      alert(222)
     },
     submitF(){
       if(this.form.exp_preforma===''){
