@@ -11,8 +11,16 @@ html {font-size: 31.25vw; }
 }
 .ding input{
 	height:20px !important;
-	font-size:14px;
+	font-size:12px;
 	border:none !important;
+}
+.ding textarea{
+	font-size:12px;
+	border:none !important;
+}
+.ding select{
+	margin: 0;
+    padding: 0;
 }
 .ding_li{
 	background:#fff;
