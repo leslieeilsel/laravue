@@ -181,7 +181,22 @@ export default {
         is_audit: ""
       },
       project_id: [],
-      userid: ""
+      userid: "",
+      upData: {},
+      upbtnDisabled: true,
+      month_options_0: {
+        disabledDate(date) {
+          let date_at = new Date();
+          let curr_time_0 = (date_at.getMonth() + 1) > 9 ? (date_at.getMonth() + 1) : '0' + (date_at.getMonth() + 1);
+          let curr_time = date_at.getFullYear() + '-' + curr_time_0;
+
+          let time_0 = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1);
+          let time = date.getFullYear() + '-' + time_0;
+          const disabledMonth = time;
+          return disabledMonth !== curr_time;
+          // return disabledMonth > curr_time;
+        }
+      }
     };
   },
   mounted() {
@@ -189,20 +204,8 @@ export default {
   },
   methods: {
     init() {
-      // this.aaa();
+      this.aaa();
       this.getProjectId();
-      // dd.device.notification.actionSheet({
-      //     title: "谁是最棒哒？", //标题
-      //     cancelButton: '取消', //取消按钮文本
-      //     otherButtons: ["孙悟空","猪八戒","唐僧","沙和尚"],
-      //     onSuccess : function(result) {
-      //         //onSuccess将在点击button之后回调
-      //         /*{
-      //             buttonIndex: 0 //被点击按钮的索引值，Number，从0开始, 取消按钮为-1
-      //         }*/
-      //     },
-      //     onFail : function(err) {}
-      // })
     },
     getProjectId() {
       getAuditedProjects().then(res => {
@@ -255,12 +258,48 @@ export default {
           });
         }
       });
+    },
+    handleSuccess(res, file) {
+      if (this.form.img_progress_pic) {
+        this.form.img_progress_pic = this.form.img_progress_pic + ',' + res.result;
+      } else {
+        this.form.img_progress_pic = res.result;
+      }
+    },
+    handleFormatError(file) {
+      this.$Notice.warning({
+        title: '文件格式不正确',
+        desc: '文件格式不正确，请选择JPG或PNG'
+      });
+    },
+    handleMaxSize(file) {
+      this.$Notice.warning({
+        title: '超出文件大小限制',
+        desc: '文件太大，不能超过600KB'
+      });
+    },// 月实际完成投资发生改变时 改变累计投资
+    changeMonthActComplete(e) {
+      if (this.form.project_id === '') {
+        this.$Message.error('请先选择填报项目!');
+        this.form.month_act_complete = null;
+        return;
+      }
+      if (this.form.month === '') {
+        this.$Message.error('请先选择填报时间!');
+        this.form.month_act_complete = null;
+        return;
+      }
+      actCompleteMoney({
+        month: this.form.month,
+        project_id: this.form.project_id,
+        month_act_complete: this.form.month_act_complete,
+        type: 'add'
+      }).then(res => {
+        this.form.acc_complete = res.result;
+      });
     }
   }
 };
-function changeProject(){
-  alert(222)
-}
 </script>
 <style scope>
 .ivu-select-selection{
