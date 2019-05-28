@@ -328,7 +328,7 @@ export default {
           return false;
       }
       projectProgress(this.form).then(res => {
-        this.submitLoading = false;
+        alert(JSON.stringify(res))
         if (res.result) {
           this.$Message.success("填报成功");
           this.modal = false;
