@@ -59,9 +59,12 @@ export default {
       // this.getProject();
     },
     getProject() {
-      alert(sessionStorage.getItem('userid'))
+      if(sessionStorage.getItem('userid')==''){
+        this.$Message.success("请重新获取用户信息");
+        return false;
+      }
       getAllProjects({userid:sessionStorage.getItem('userid')}).then(e => {
-          alert(444)
+          alert(JSON.stringify(e))
       })
     }
     // getProject() {

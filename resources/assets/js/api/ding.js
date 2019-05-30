@@ -40,7 +40,7 @@ export function getAuditedProjects() {
  */
 export function projectProgress(form) {
   return request({
-    url: '/api/project/projectProgress',
+    url: '/api/ding/projectProgress',
     method: 'post',
     data: {...form}
   });
@@ -49,11 +49,11 @@ export function projectProgress(form) {
  * 获取所有部门
  * @returns {*}
  */
-export function getAllProjects(searchForm) {
+export function getAllProjects(form) {
   return request({
-    url: '/api/project/getAllProjects',
+    url: '/api/ding/getAllProjects',
     method: 'post',
-    data: {searchForm}
+    data: {...form}
   });
 }
 

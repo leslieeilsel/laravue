@@ -10,9 +10,38 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Role;
+use App\User;
 
 class DingController extends Controller
 {
+    public $seeIds;
+    public $office;
+    public $projectsCache;
+    public $projectPlanCache;
+    public function getSeeIds($userId)
+    {
+        if ($userId) {
+            $userInfo = User::where('id',$userId)->first();
+            $roleId = $userInfo['group_id'];
+            $this->office = $userInfo['office'];
+            $dataType = Role::where('id', $roleId)->first()->data_type;
+
+            if ($dataType === 0) {
+                $userIds = User::all()->toArray();
+                $this->seeIds = array_column($userIds, 'id');
+            }
+            if ($dataType === 1) {
+                $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
+                $departmentIds = array_column($departmentIds, 'department_id');
+                $userIds = User::whereIn('department_id', $departmentIds)->get()->toArray();
+                $this->seeIds = array_column($userIds, 'id');
+            }
+            if ($dataType === 2) {
+                $this->seeIds = [$userId];
+            }
+        }
+    }
     public function getToken(){
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
@@ -221,14 +250,15 @@ class DingController extends Controller
                 $query = $query->whereIn('is_audit', [1, 3]);
             }
         }
-        $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
+        $projects = $query->whereIn('user_id',$this->seeIds)->get()->toArray();
 
         return $projects;
     }
     //获取项目信息
     public function getAllProjects(Request $request)
     {
-        $params = $request->input('searchForm');
+        $params = $request->input();
+        $this->getSeeIds($params['userid']);
         $projects = $this->allProjects($params);
         $type = Dict::getOptionsArrByName('工程类项目分类');
         $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
