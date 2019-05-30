@@ -61,7 +61,6 @@ export default {
           onSuccess: function(result) {
             getUserId({ code: result.code }).then(res => {
               if (res.errcode == 0) {
-                alert(res.userid)
                 sessionStorage.setItem('userid',res.userid);
               }
             });

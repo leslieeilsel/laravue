@@ -60,7 +60,6 @@ export default {
     getProject() {
       // this.tableLoading = true;
       // this.searchForm.is_audit = this.$route.params.is_audit;
-      alert(sessionStorage.getItem('userid'))
       getAllProjects({userid:sessionStorage.getItem('user_id')}).then(e => {
         this.data = e.result;
         //分页显示所有数据总数
