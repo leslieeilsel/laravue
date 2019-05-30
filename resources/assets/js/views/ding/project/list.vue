@@ -59,7 +59,10 @@ export default {
       // this.getProject();
     },
     getProject() {
-      alert(444)
+      alert(sessionStorage.getItem('user_id'))
+      getAllProjects({userid:sessionStorage.getItem('user_id')}).then(e => {
+          alert(444)
+      })
     }
     // getProject() {
     //   // this.tableLoading = true;
