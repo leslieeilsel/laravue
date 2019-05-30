@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     init() {
-      this.getProject();
+      // this.getProject();
     },
     getProject() {
       // this.tableLoading = true;
