@@ -19,6 +19,10 @@ class CheckIsLogin
     {
         $whiteList = [
             'api/login',
+            'api/ding/getToken',
+            'api/ding/userId',
+            'api/ding/userNotify',
+            'api/ding/getAuditedProjects',
         ];
         $uri = $request->route()->uri();
         if (!in_array($uri, $whiteList)) {
