@@ -59,27 +59,30 @@ export default {
       // this.getProject();
     },
     getProject() {
-      // this.tableLoading = true;
-      // this.searchForm.is_audit = this.$route.params.is_audit;
-      getAllProjects({userid:sessionStorage.getItem('user_id')}).then(e => {
-        this.data = e.result;
-        // //分页显示所有数据总数
-        // this.dataCount = this.data.length;
-        // //循环展示页面刚加载时需要的数据条数
-        // this.nowData = [];
-        // for (let i = 0; i < this.pageSize; i++) {
-        //   if (this.data[i]) {
-        //     this.nowData.push(this.data[i]);
-        //   }
-        // }
-        // this.pageCurrent = 1;
-
-        // if (this.searchForm.title || this.searchForm.subject || this.searchForm.office || this.searchForm.unit || this.searchForm.num || this.searchForm.type || this.searchForm.build_type || this.searchForm.money_from || this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.status) {
-        //   this.exportBtnDisable = false;
-        // }
-        // this.tableLoading = false;
-      });
+      alert(444)
     }
+    // getProject() {
+    //   // this.tableLoading = true;
+    //   // this.searchForm.is_audit = this.$route.params.is_audit;
+    //   getAllProjects({userid:sessionStorage.getItem('user_id')}).then(e => {
+    //     this.data = e.result;
+    //     // //分页显示所有数据总数
+    //     // this.dataCount = this.data.length;
+    //     // //循环展示页面刚加载时需要的数据条数
+    //     // this.nowData = [];
+    //     // for (let i = 0; i < this.pageSize; i++) {
+    //     //   if (this.data[i]) {
+    //     //     this.nowData.push(this.data[i]);
+    //     //   }
+    //     // }
+    //     // this.pageCurrent = 1;
+
+    //     // if (this.searchForm.title || this.searchForm.subject || this.searchForm.office || this.searchForm.unit || this.searchForm.num || this.searchForm.type || this.searchForm.build_type || this.searchForm.money_from || this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.status) {
+    //     //   this.exportBtnDisable = false;
+    //     // }
+    //     // this.tableLoading = false;
+    //   });
+    // }
   }
 };
 </script>
