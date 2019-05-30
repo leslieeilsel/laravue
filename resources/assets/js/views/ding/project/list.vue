@@ -59,8 +59,8 @@ export default {
       // this.getProject();
     },
     getProject() {
-      alert(sessionStorage.getItem('user_id'))
-      getAllProjects({userid:sessionStorage.getItem('user_id')}).then(e => {
+      alert(sessionStorage.getItem('userid'))
+      getAllProjects({userid:sessionStorage.getItem('userid')}).then(e => {
           alert(444)
       })
     }
