@@ -14,6 +14,8 @@ export const constantRouterMap = [
   { path: '/password/reset/:token', component: require('views/login/password/reset') },
   { path: '/ding/project', component: require('views/ding/project/index') },
   { path: '/ding/project/list', component: require('views/ding/project/list') },
+  { path: '/ding/project/projectSchedule', component: require('views/ding/project/projectSchedule') },
+  { path: '/ding/project/projectScheduleList', component: require('views/ding/project/projectScheduleList') },
   {
     path: '/',
     component: layout,

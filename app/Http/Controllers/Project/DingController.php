@@ -104,5 +104,152 @@ class DingController extends Controller
 
         return response()->json(['result' => $projects], 200);
     }
+    /**
+     * 项目信息填报
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function projectProgress(Request $request)
+    {
+        $datas = $request->all();
+        $data=$datas['form'];
+        $user_id=$datas['userid'];
+        unset($data['project_num'], $data['subject'], $data['build_start_at'], $data['build_end_at'],
+            $data['total_investors'], $data['plan_investors'], $data['plan_img_progress'], $data['acc_complete'],
+            $data['plan_build_start_at']);
+        $data['month'] = date('Y-m', strtotime($data['month']));
+        $year = (int) date('Y', strtotime($data['month']));
+        $month = (int) date('m', strtotime($data['month']));
+        $plan_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('date', $year)->value('id');
+        $plan_month_id = DB::table('iba_project_plan')->where('project_id', $data['project_id'])->where('parent_id', $plan_id)->where('date', $month)->value('id');
+
+        // $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
+        // $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
+        // if ($data['plan_build_start_at']) {
+        //     $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
+        // }
+        $project_title = Projects::where('id', $data['project_id'])->value('title');
+        $path = 'storage/project/project-schedule/' . $project_title . '/' . $data['month'];
+        if ($data['img_progress_pic']) {
+            $imgProgressPic = explode(',', $data['img_progress_pic']);
+            $handler = opendir($path);
+            while (($filename = readdir($handler)) !== false) {
+                if ($filename != "." && $filename != "..") {
+                    if (!in_array($path . '/' . $filename, $imgProgressPic)) {
+                        unlink($path . '/' . $filename);
+                    }
+                }
+            }
+        } else {
+            if (file_exists($path)) {
+                $handler = opendir($path);
+                while (($filename = readdir($handler)) !== false) {
+                    if ($filename != "." && $filename != "..") {
+                        unlink($path . '/' . $filename);
+                    }
+                }
+            }
+        }
+        $data['is_audit'] = 4;
+        $data['plan_id'] = $plan_month_id;
+        $data['created_at'] = date('Y-m-d H:i:s');
+        $data['user_id'] = DB::table('users')->where('ding_user_id', $user_id)->value('id');
+        $schedule_id = DB::table('iba_project_schedule')->insertGetId($data);
+        $result = $schedule_id;
+        return response()->json(['result' => $result], 200);
+    }
+    /**
+     * 获取所有项目信息
+     *
+     * @param $params
+     * @return mixed
+     */
+    public function allProjects($params)
+    {
+        $query = new Projects;
+        if (isset($params['title'])) {
+            $query = $query->where('title', 'like', '%' . $params['title'] . '%');
+        }
+        if (isset($params['subject'])) {
+            $query = $query->where('subject', 'like', '%' . $params['subject'] . '%');
+        }
+        if (isset($params['unit'])) {
+            $query = $query->where('unit', 'like', '%' . $params['unit'] . '%');
+        }
+        if (isset($params['num'])) {
+            $query = $query->where('num', $params['num']);
+        }
+        if (isset($params['type'])) {
+            if ($params['type'] != -1) {
+                $query = $query->where('type', $params['type']);
+            }
+        }
+        if (isset($params['build_type'])) {
+            if ($params['build_type'] != -1) {
+                $query = $query->where('build_type', $params['build_type']);
+            }
+        }
+        if (isset($params['money_from'])) {
+            if ($params['money_from'] != -1) {
+                $query = $query->where('money_from', $params['money_from']);
+            }
+        }
+        if (isset($params['is_gc'])) {
+            if ($params['is_gc'] != -1) {
+                $query = $query->where('is_gc', $params['is_gc']);
+            }
+        }
+        if (isset($params['nep_type'])) {
+            if ($params['nep_type'] != -1) {
+                $query = $query->where('nep_type', $params['nep_type']);
+            }
+        }
+        if (isset($params['status'])) {
+            if ($params['status'] != -1) {
+                $query = $query->where('status', $params['status']);
+            }
+        }
+        if (isset($params['is_audit'])) {
+            $query = $query->where('is_audit', 0);
+        } else {
+            if ($this->office === 1) {
+                $query = $query->where('is_audit', '!=', 4);
+            }
+            if ($this->office === 2) {
+                $query = $query->whereIn('is_audit', [1, 3]);
+            }
+        }
+        $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
+
+        return $projects;
+    }
+    //获取项目信息
+    public function getAllProjects(Request $request)
+    {
+        $params = $request->input('searchForm');
+        $projects = $this->allProjects($params);
+        $type = Dict::getOptionsArrByName('工程类项目分类');
+        $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
+        $status = Dict::getOptionsArrByName('项目状态');
+        $money_from = Dict::getOptionsArrByName('资金来源');
+        $build_type = Dict::getOptionsArrByName('建设性质');
+        $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
+        foreach ($projects as $k => $row) {
+            $projects[$k]['amount'] = number_format($row['amount'], 2);
+            $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
+            $projects[$k]['type'] = $type[$row['type']];
+            $projects[$k]['is_gc'] = $is_gc[$row['is_gc']];
+            $projects[$k]['status'] = $status[$row['status']];
+            $projects[$k]['money_from'] = $money_from[$row['money_from']];
+            $projects[$k]['build_type'] = $build_type[$row['build_type']];
+            $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
+            $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
+            $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
+            $projects[$k]['unit'] = Departments::where('id', $row['unit'])->value('title');
+        }
+
+        return response()->json(['result' => $projects], 200);
+    }
 }
                      

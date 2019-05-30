@@ -34,5 +34,27 @@ export function getAuditedProjects() {
     method: 'get'
   });
 }
+/**
+ * 投资项目进度填报
+ * @returns {*}
+ */
+export function projectProgress(form) {
+  return request({
+    url: '/api/project/projectProgress',
+    method: 'post',
+    data: {...form}
+  });
+}
+/**
+ * 获取所有部门
+ * @returns {*}
+ */
+export function getAllProjects(searchForm) {
+  return request({
+    url: '/api/project/getAllProjects',
+    method: 'post',
+    data: {searchForm}
+  });
+}
 
 

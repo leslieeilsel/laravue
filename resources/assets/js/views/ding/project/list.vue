@@ -1,103 +1,92 @@
 <template>
-    <div class="mui_content">
-        <ul class="mui-table-view" style="margin:10px 15px;border-radius: 8px;">
-            <li class="mui-table-view-cell mui-media">
-                <a href="javascript:;">
-                    <div class="mui-media-body">
-                        幸福
-                        <p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
-                    </div>
-                </a>
-            </li>
-            <li class="mui-table-view-cell mui-media">
-                <a href="javascript:;">
-                    <div class="mui-media-body">
-                        木屋
-                        <p class='mui-ellipsis'>想要这样一间小木屋，夏天挫冰吃瓜，冬天围炉取暖.</p>
-                    </div>
-                </a>
-            </li>
-            <li class="mui-table-view-cell mui-media">
-                <a href="javascript:;">
-                    <div class="mui-media-body">
-                        CBD
-                        <p class='mui-ellipsis'>烤炉模式的城，到黄昏，如同打翻的调色盘一般.</p>
-                    </div>
-                </a>
-            </li>
-        </ul>
+  <div class="mui-content">
+    <header class="mui-bar mui-bar-nav">
+      <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" href="this.$router.go(-1)"></a>
+      <h1 class="mui-title">项目列表</h1>
+    </header>
+    <div class="mui-content"> 
+			<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+				<li class="mui-table-view-cell">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-10">
+							<h4 class="mui-ellipsis">信息化推进办公室张彦合同付款信息化</h4>
+							<h5>申请人：李四</h5>
+							<p class="mui-h6 mui-ellipsis">Hi，李明明，申请交行信息卡，100元等你拿，李明明，申请交行信息卡，100元等你拿，</p>
+						</div>
+						<div class="mui-table-cell mui-col-xs-2 mui-text-right">
+							<span class="mui-h5">12:25</span>
+						</div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-10">
+							<h4 class="mui-ellipsis-2">信息化推进办公室张彦合同付款信息化推进办公室张彦合同付款信息化推进办公室张彦合同付款</h4>
+							<h5>申请人：李四</h5>
+							<p class="mui-h6 mui-ellipsis">Hi，李明明，申请交行信息卡，100元等你拿，李明明，申请交行信息卡，100元等你拿，</p>
+						</div>
+						<div class="mui-table-cell mui-col-xs-2 mui-text-right">
+							<span class="mui-h5">12:25</span>
+						</div>
+					</div>
+				</li>
+			</ul>
     </div>
+    <nav class="mui-bar mui-bar-tab">
+      <a class="mui-tab-item mui-active" href="/ding/project">
+        <span class="mui-icon mui-icon-home"></span>
+        <span class="mui-tab-label">应用</span>
+      </a>
+      <a class="mui-tab-item" href="#">
+        <span class="mui-icon mui-icon-email"><span class="mui-badge">9</span></span>
+        <span class="mui-tab-label">消息</span>
+      </a>
+    </nav>
+  </div> 
 </template>
+<style scope src="./index.css"></style>
+<style scope src="./mui.css"></style>
 <script>
-import * as dd from 'dingtalk-jsapi'
-  import {
-    getAuditedProjects,
-    projectProgress,
-    projectProgressList,                                                                                                              projectPlanInfo,
-    editProjectProgress,
-    getData,
-    auditProjectProgress,
-    toAuditSchedule,
-    actCompleteMoney,
-    getProjectNoScheduleList,
-    projectScheduleMonth,
-    getProjectDictData,
-    projectScheduleDelete
-  } from '../../../api/project';
-  // import './index.css';
-  // import './mui.css';
-  export default {
-    data() {
-      return {
-		    project_list:[]
-	    }
+import * as dd from "dingtalk-jsapi";
+import { getAllProjects } from "../../../api/ding";
+export default {
+  data() {
+    return {
+    };
+  },
+  mounted() {
+    this.init();
+  },
+  methods: {
+    init() {
+      this.getProject();
     },
-    mounted() {
-	  this.init();
-	 	// dd.biz.util.datepicker({
-		// 	format: 'yyyy-MM-dd',//注意：format只支持android系统规范，即2015-03-31格式为yyyy-MM-dd
-		// 	value: '2015-04-17', //默认显示日期
-		// 	onSuccess : function(result) {
-		// 		//onSuccess将在点击完成之后回调
-		// 		/*{
-		// 			value: "2015-02-10"
-		// 		}
-		// 		*/
-		// 	},
-		// 	onFail : function(err) {}
-		// })
-    },
-    methods: {
-      init() {
-        this.getProjectId();
-      },
-      getProjectId() {
-        getAuditedProjects().then(res => {
-          this.project_id = res.result;
-        });
-      },
-	  aaa(){
-			dd.ready(function() {
-				dd.device.base.getPhoneInfo({
-					onSuccess : function(data) {
-						alert(json.stringify(data));
-						console.log(data);
-						
-						// {
-						//     screenWidth: 1080, // 手机屏幕宽度
-						//     screenHeight: 1920, // 手机屏幕高度
-						//     brand:'Mi', // 手机品牌
-						//     model:'Note4', // 手机型号
-						//     version:'7.0', // 版本
-						//     netInfo:'wifi' , // 网络类型 wifi／4g／3g 
-						//     operatorType:'xx' // 运营商信息
-						// }
-					},
-					onFail : function(err) {}
-				});
-			})
-	  }
-	  
+    getProject() {
+      // this.tableLoading = true;
+      // this.searchForm.is_audit = this.$route.params.is_audit;
+      alert(sessionStorage.getItem('userid'))
+      getAllProjects({userid:sessionStorage.getItem('user_id')}).then(e => {
+        this.data = e.result;
+        //分页显示所有数据总数
+        this.dataCount = this.data.length;
+        //循环展示页面刚加载时需要的数据条数
+        this.nowData = [];
+        for (let i = 0; i < this.pageSize; i++) {
+          if (this.data[i]) {
+            this.nowData.push(this.data[i]);
+          }
+        }
+        this.pageCurrent = 1;
+
+        if (this.searchForm.title || this.searchForm.subject || this.searchForm.office || this.searchForm.unit || this.searchForm.num || this.searchForm.type || this.searchForm.build_type || this.searchForm.money_from || this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.status) {
+          this.exportBtnDisable = false;
+        }
+        this.tableLoading = false;
+      });
     }
   }
+};
 </script>
+<style scope>
+</style>
+
