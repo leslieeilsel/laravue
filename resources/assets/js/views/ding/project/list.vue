@@ -1,9 +1,5 @@
 <template>
   <div class="mui-content">
-    <header class="mui-bar mui-bar-nav">
-      <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" href="this.$router.go(-1)"></a>
-      <h1 class="mui-title">项目列表</h1>
-    </header>
     <div class="mui-content"> 
 			<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
 				<li class="mui-table-view-cell">

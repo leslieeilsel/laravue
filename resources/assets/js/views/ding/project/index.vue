@@ -1,8 +1,5 @@
 <template>
   <div class="mui-content">
-    <header class="mui-bar mui-bar-nav">
-      <h1 class="mui-title">首页</h1>
-    </header>
     <div class="mui-content"> 
         <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
               <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">

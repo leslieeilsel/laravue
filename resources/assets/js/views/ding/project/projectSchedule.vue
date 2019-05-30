@@ -1,9 +1,5 @@
 <template>
   <div class="mui-content">
-    <div slot="header">
-      <i class="mui-icon mui-icon-back"></i>
-      <div>项目填报</div>
-    </div>
     <ul class="mui-table-view" style="padding:10px 15px;background:transparent;top:0;margin-bottom: 30px;">
       <li class="ding_li">
         <div class="li_top">
