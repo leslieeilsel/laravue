@@ -48,6 +48,7 @@ import { getAllProjects } from "../../../api/ding";
 export default {
   data() {
     return {
+      data:[]
     };
   },
   mounted() {
