@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Role;
 use App\User;
+use App\Models\Dict;
 
 class DingController extends Controller
 {
@@ -22,7 +23,7 @@ class DingController extends Controller
     public function getSeeIds($userId)
     {
         if ($userId) {
-            $userInfo = User::where('id',$userId)->first();
+            $userInfo = User::where('ding_user_id',$userId)->first();
             $roleId = $userInfo['group_id'];
             $this->office = $userInfo['office'];
             $dataType = Role::where('id', $roleId)->first()->data_type;

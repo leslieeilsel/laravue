@@ -63,6 +63,7 @@ export default {
         this.$Message.success("请重新获取用户信息");
         return false;
       }
+      alert(sessionStorage.getItem('userid'))
       getAllProjects({userid:sessionStorage.getItem('userid')}).then(e => {
           alert(JSON.stringify(e))
       })
