@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "ant-design-vue": "^1.3.9",
-    "axios": "^0.18",
+    "axios": "^0.19",
     "dingtalk-jsapi": "^2.6.44",
     "iview": "^3.4.2",
     "jquery": "^3.4.1",
