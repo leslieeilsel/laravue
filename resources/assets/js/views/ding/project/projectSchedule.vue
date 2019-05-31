@@ -139,7 +139,7 @@
               </Upload> -->
               <Upload
                 ref="upload"
-                :disabled="upbtnDisabled"
+                disabled="false"
                 name="img_pic"
                 :on-success="handleSuccess"
                 multiple
