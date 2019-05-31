@@ -21,7 +21,7 @@
                 </a>
             </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <a href="/#/ding/project/projectSchedule">  
+                <a href="/#/ding/project/projectWarning">  
                       <span class="mui-icon mui-icon-info"></span>  
                       <div class="mui-media-body">预警</div>
                 </a>

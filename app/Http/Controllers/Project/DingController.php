@@ -385,5 +385,44 @@ class DingController extends Controller
         }
         return response()->json(['result' => $ProjectSchedules], 200);
     }
+    public function getAllWarning(Request $request)
+    {
+        $params = $request->input();
+        $this->getSeeIds($params['userid']);
+        $data = [];
+        $projects = Projects::whereIn('user_id', $this->seeIds)->get()->toArray();
+        $projectIds = array_column($projects, 'id');
+        $projectSchedules = ProjectSchedule::whereIn('project_id', $projectIds)->get()->toArray();
+        $scheduleIds = array_column($projectSchedules, 'id');
+
+        $earlyWarning = new ProjectEarlyWarning;
+        if (isset($params['warning_type'])) {
+            if ($params['warning_type'] != -1) {
+                $earlyWarning = $earlyWarning->where('warning_type', $params['warning_type']);
+            }
+        }
+        if (isset($params['start_at']) && isset($params['end_at'])) {
+            $params['start_at'] = date('Y-m', strtotime($params['start_at']));
+            $params['end_at'] = date('Y-m', strtotime($params['end_at']));
+            $earlyWarning = $earlyWarning->whereBetween('schedule_at', [$params['start_at'], $params['end_at']]);
+        }
+        $result = $earlyWarning->whereIn('schedule_id', $scheduleIds)->get()->toArray();
+        foreach ($result as $k => $row) {
+            $data[$k]['key'] = $row['id'];
+            $res = ProjectSchedule::where('id', $row['schedule_id'])->first();
+            foreach ($projects as $kk => $v) {
+                if ($v['id'] === (int) $res->project_id) {
+                    $data[$k]['title'] = $v['title'];
+                }
+            }
+            $data[$k]['project_id'] = $res->project_id;
+            $data[$k]['problem'] = $res->problem;
+            $data[$k]['tags'] = $row['warning_type'];
+            $data[$k]['schedule_at'] = $row['schedule_at'];
+        }
+
+        return response()->json(['result' => $data], 200);
+    }
+
 }
                      

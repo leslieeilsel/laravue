@@ -20,7 +20,7 @@
 <style scope src="./mui.css"></style>
 <script>
 import * as dd from "dingtalk-jsapi";
-import { projectProgressList } from "../../../api/ding";
+import { getAllWarning } from "../../../api/ding";
 export default {
   data() {
     return {
@@ -29,39 +29,39 @@ export default {
     };
   },
   mounted() {
-    this.getProjectSchedule();
+    this.getProjectWarning();
   },
   methods: {
     init() {
     },
-    getProjectSchedule() {
+    getProjectWarning() {
       if(sessionStorage.getItem('userid')==''){
         this.$Message.error("请重新获取用户信息");
         return false;
       }
-      projectProgressList({userid:sessionStorage.getItem('userid')}).then(res => {
+      getAllWarning({userid:sessionStorage.getItem('userid')}).then(res => {
         alert(JSON.stringify(res))
         if(res.result){
-            let str='';
-            e.result.forEach(function (row, index) {
-              str += '<li class="mui-table-view-cell">'+
-                    '<div class="mui-table">'+
-                      '<div class="mui-table-cell mui-col-xs-10">'+
-                        '<h4 class="mui-ellipsis">'+row.project_title+'</h4>'+
-                        '<h5>'+row.month_img_progress+'</h5>'+
-                        '<p class="mui-h6 mui-ellipsis">'+row.month_act_complete+'</p>'+
-                      '</div>'+
-                      '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
-                        '<span class="mui-h5">'+row.month+'</span>'+
-                      '</div>'+
-                    '</div>'+
-                  '</li>';
-            })
-            this.con_str=str;
-          }else{
-            this.$Message.error("无项目进度信息");
-          }
-      })
+          let str='';
+          // e.result.forEach(function (row, index) {
+          //   str += '<li class="mui-table-view-cell">'+
+          //         '<div class="mui-table">'+
+          //           '<div class="mui-table-cell mui-col-xs-10">'+
+          //             '<h4 class="mui-ellipsis">'+row.title+'</h4>'+
+          //             '<h5>'+row.status+'</h5>'+
+          //             '<p class="mui-h6 mui-ellipsis">'+row.type+'</p>'+
+          //           '</div>'+
+          //           '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
+          //             '<span class="mui-h5">'+row.created_at+'</span>'+
+          //           '</div>'+
+          //         '</div>'+
+          //       '</li>';
+          // })
+          this.con_str=str;
+        }else{
+          this.$Message.error("无项目进度信息");
+        }
+      });
     }
   }
 };
