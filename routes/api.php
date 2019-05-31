@@ -32,6 +32,7 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::get('ding/getAuditedProjects', 'Project\DingController@getAuditedProjects');
     Route::post('ding/projectProgress', 'Project\DingController@projectProgress');
     Route::post('ding/getAllProjects', 'Project\DingController@getAllProjects');
+    Route::post('ding/projectProgressList', 'Project\DingController@projectProgressList');
 
     Route::post('user/regist', 'User\RegistController@registUser');
     Route::any('user/users', 'User\RegistController@getUsers');

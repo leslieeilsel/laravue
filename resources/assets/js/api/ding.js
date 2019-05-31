@@ -56,5 +56,16 @@ export function getAllProjects(form) {
     data: {...form}
   });
 }
+/**
+ * 获取进度
+ * @returns {*}
+ */
+export function projectProgressList(form) {
+  return request({
+    url: '/api/ding/projectProgressList',
+    method: 'post',
+    data: {...form}
+  });
+}
 
 

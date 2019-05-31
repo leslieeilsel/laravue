@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Project;
 
+
 use App\Http\Controllers\Controller;
 use App\Models\Project\Projects;
 use App\Models\Project\ProjectPlan;
 use App\Models\Project\ProjectSchedule;
+use App\Models\Role;
+use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
-use App\Models\Role;
-use App\User;
+use App\Models\ProjectEarlyWarning;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Dict;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Departments;
 
 class DingController extends Controller
@@ -286,6 +290,99 @@ class DingController extends Controller
         }
 
         return response()->json(['result' => $projects], 200);
+    }
+    /**
+     * 获取项目进度列表
+     *
+     * @return JsonResponse
+     */
+    public function projectProgressM($data)
+    {
+        $query = new ProjectSchedule;
+        if (isset($data['department_id'])) {
+            if (gettype($data['department_id']) == 'string') {
+                $data['department_id'] = explode(',', $data['department_id']);
+            }
+            if (count($data['department_id']) > 0) {
+                $user_ids = DB::table('users')->select('id')->where('department_id', $data['department_id'][1])->get()->toArray();
+                $user_id = array_column($user_ids, 'id');
+                $query = $query->whereIn('user_id', $user_id);
+            }
+        }
+        if (isset($data['title']) || isset($data['project_num']) || isset($data['subject']) || isset($data['money_from']) || isset($data['is_gc']) || isset($data['nep_type'])) {
+            $projects = Projects::select('id');
+            if (isset($data['title'])) {
+                $projects = $projects->where('title', 'like', '%' . $data['title'] . '%');
+            }
+
+            if (isset($data['project_num'])) {
+                $projects = $projects->where('num', $data['project_num']);
+            }
+            if (isset($data['subject'])) {
+                $projects = $projects->where('subject', 'like', '%' . $data['subject'] . '%');
+            }
+            if (isset($data['money_from'])) {
+                if ($data['money_from'] != -1) {
+                    $projects = $projects->where('money_from', $data['money_from']);
+                }
+            }
+            if (isset($data['is_gc'])) {
+                if ($data['is_gc'] != -1) {
+                    $projects = $projects->where('is_gc', $data['is_gc']);
+                }
+            }
+            if (isset($data['nep_type'])) {
+                if ($data['nep_type'] != -1) {
+                    $projects = $projects->where('nep_type', $data['nep_type']);
+                }
+            }
+            $projects = $projects->get()->toArray();
+            $ids = array_column($projects, 'id');
+            $query = $query->whereIn('project_id', $ids);
+        }
+        if (isset($data['end_at'])) {
+            $data['end_at'] = date('Y-m', strtotime($data['end_at']));
+            $query = $query->where('month', $data['end_at']);
+        }
+        if (isset($data['is_audit'])) {
+            $query = $query->where('is_audit', 0);
+        }
+        if ($this->office === 1) {
+            $query = $query->where('is_audit', '!=', 4);
+        }
+        if ($this->office === 2) {
+            $query = $query->where('is_audit', 1);
+        }
+        $ProjectSchedules = $query->whereIn('user_id', $this->seeIds);
+        return $ProjectSchedules;
+    }
+    public function projectProgressList(Request $request)
+    {
+        $params = $request->all();
+        $result = $this->projectProgressM($params);
+        $this->getSeeIds($params['userid']);
+        $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
+        foreach ($ProjectSchedules as $k => $row) {
+            $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
+            $Projects = Projects::where('id', $row['project_id'])->first();
+            $ProjectSchedules[$k]['money_from'] = $Projects['money_from'];
+            $ProjectSchedules[$k]['project_title'] = $Projects['title'];
+            $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
+            $users = user::where('id', $row['user_id'])->first();
+            $ProjectSchedules[$k]['tianbao_name'] = $users['name'];
+            $ProjectSchedules[$k]['department'] = Departments::where('id', $users['department_id'])->value('title');
+            $year = date('Y', strtotime($row['month']));
+            $ProjectPlans = ProjectPlan::where('project_id', $row['project_id'])->where('date', $year)->first();
+            $ProjectSchedules[$k]['project_num'] = $Projects['num'];
+            $ProjectSchedules[$k]['subject'] = $Projects['subject'];
+            $ProjectSchedules[$k]['build_start_at'] = $Projects['plan_start_at'];
+            $ProjectSchedules[$k]['build_end_at'] = $Projects['plan_end_at'];
+            $ProjectSchedules[$k]['total_investors'] = $Projects['amount'];
+            $ProjectSchedules[$k]['plan_investors'] = $ProjectPlans['amount'];
+            $ProjectSchedules[$k]['plan_img_progress'] = $ProjectPlans['img_progress'];
+            $ProjectSchedules[$k]['plan_build_start_at'] = $Projects['plan_start_at'];
+        }
+        return response()->json(['result' => $ProjectSchedules], 200);
     }
 }
                      
