@@ -39,25 +39,29 @@ export default {
         this.$Message.error("请重新获取用户信息");
         return false;
       }
-      alert(sessionStorage.getItem('userid'))
       getAllWarning({userid:sessionStorage.getItem('userid')}).then(res => {
         alert(JSON.stringify(res))
         if(res.result){
           let str='';
-          // e.result.forEach(function (row, index) {
-          //   str += '<li class="mui-table-view-cell">'+
-          //         '<div class="mui-table">'+
-          //           '<div class="mui-table-cell mui-col-xs-10">'+
-          //             '<h4 class="mui-ellipsis">'+row.title+'</h4>'+
-          //             '<h5>'+row.status+'</h5>'+
-          //             '<p class="mui-h6 mui-ellipsis">'+row.type+'</p>'+
-          //           '</div>'+
-          //           '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
-          //             '<span class="mui-h5">'+row.created_at+'</span>'+
-          //           '</div>'+
-          //         '</div>'+
-          //       '</li>';
-          // })
+          let war_title='';
+          e.result.forEach(function (row, index) {
+            if (row.tags === 1) {
+            war_title = '警告滞后';
+          } else if (row.tags === 2) {
+            war_title = '严重滞后';
+          }
+            str += '<li class="mui-table-view-cell">'+
+                  '<div class="mui-table">'+
+                    '<div class="mui-table-cell mui-col-xs-10">'+
+                      '<h4 class="mui-ellipsis">'+row.title+'</h4>'+
+                      '<h5>'+war_title+'</h5>'+
+                    '</div>'+
+                    '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
+                      '<span class="mui-h5">'+row.schedule_at+'</span>'+
+                    '</div>'+
+                  '</div>'+
+                '</li>';
+          })
           this.con_str=str;
         }else{
           this.$Message.error("无项目进度信息");
