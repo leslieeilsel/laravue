@@ -43,7 +43,7 @@ export default {
         if(res.result){
           let str='';
           let war_title='';
-          e.result.forEach(function (row, index) {
+          resresult.forEach(function (row, index) {
             if (row.tags === 1) {
               war_title = '警告滞后';
             } else if (row.tags === 2) {
