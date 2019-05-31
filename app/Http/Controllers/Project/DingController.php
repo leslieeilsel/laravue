@@ -423,6 +423,29 @@ class DingController extends Controller
 
         return response()->json(['result' => $data], 200);
     }
+    //项目详细信息
+    public function projectInfo(Request $request)
+    {
+        $params = $request->all();
+        $this->getSeeIds($params['userid']);
+        $projectInfo = Projects::where('id', $params['id'])->first();
+        $type = Dict::getOptionsArrByName('工程类项目分类');
+        $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
+        $status = Dict::getOptionsArrByName('项目状态');
+        $money_from = Dict::getOptionsArrByName('资金来源');
+        $build_type = Dict::getOptionsArrByName('建设性质');
+        $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
+        
+        $projectInfo['amount'] = number_format($projectInfo['amount'], 2);
+        $projectInfo['land_amount'] = isset($projectInfo['land_amount']) ? number_format($projectInfo['land_amount'], 2) : '';
+        $projectInfo['type'] = $type[$projectInfo['type']];
+        $projectInfo['is_gc'] = $is_gc[$projectInfo['is_gc']];
+        $projectInfo['status'] = $status[$projectInfo['status']];
+        $projectInfo['money_from'] = $money_from[$projectInfo['money_from']];
+        $projectInfo['build_type'] = $build_type[$projectInfo['build_type']];
+        $projectInfo['nep_type'] = isset($projectInfo['nep_type']) ? $nep_type[$projectInfo['nep_type']] : '';
+        return response()->json(['result' => $projectInfo], 200);
+    }
 
 }
                      

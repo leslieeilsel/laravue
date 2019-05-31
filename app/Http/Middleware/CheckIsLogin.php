@@ -27,6 +27,10 @@ class CheckIsLogin
             'api/ding/getAllProjects',
             'api/ding/projectProgressList',
             'api/ding/getAllWarning',
+            'api/ding/getProjectInfo',
+            'api/ding/getProjectScheduleInfo',
+            'api/ding/getProjectScheduleEdit',
+            'api/ding/getProjectScheduleAuto',
         ];
         $uri = $request->route()->uri();
         if (!in_array($uri, $whiteList)) {

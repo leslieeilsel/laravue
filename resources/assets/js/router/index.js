@@ -16,7 +16,7 @@ export const router = new VueRouter({
   routes: constantRouterMap
 });
 
-const whiteList = ['/login', '/password/send', '/password/reset','/ding/project','/ding/project/list','/ding/project/projectSchedule','/ding/project/projectScheduleList','/ding/project/projectWarning'];
+const whiteList = ['/login', '/password/send', '/password/reset','/ding/project','/ding/project/list','/ding/project/projectSchedule','/ding/project/projectScheduleList','/ding/project/projectWarning','/ding/project/projectInfo','/ding/project/projectEdit','/ding/project/projectAuto'];
 export let getRouters; //用来获取后台拿到的路由
 
 router.beforeEach((to, from, next) => {

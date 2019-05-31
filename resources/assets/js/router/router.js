@@ -17,6 +17,9 @@ export const constantRouterMap = [
   { path: '/ding/project/projectSchedule', component: require('views/ding/project/projectSchedule') },
   { path: '/ding/project/projectScheduleList', component: require('views/ding/project/projectScheduleList') },
   { path: '/ding/project/projectWarning', component: require('views/ding/project/projectWarning') },
+  { path: '/ding/project/projectInfo', component: require('views/ding/project/projectInfo') },
+  { path: '/ding/project/projectEdit', component: require('views/ding/project/projectEdit') },
+  { path: '/ding/project/projectAuto', component: require('views/ding/project/projectAuto') },
   {
     path: '/',
     component: layout,

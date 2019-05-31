@@ -78,5 +78,16 @@ export function getAllWarning(form) {
     data: {...form}
   });
 }
+/**
+ * 获取所有预警信息
+ * @returns {*}
+ */
+export function getProjectInfo(form) {
+  return request({
+    url: '/api/ding/getProjectInfo',
+    method: 'post',
+    data: {...form}
+  });
+}
 
 
