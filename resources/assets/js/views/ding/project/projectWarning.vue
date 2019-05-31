@@ -40,16 +40,15 @@ export default {
         return false;
       }
       getAllWarning({userid:sessionStorage.getItem('userid')}).then(res => {
-        alert(JSON.stringify(res))
         if(res.result){
           let str='';
           let war_title='';
           e.result.forEach(function (row, index) {
             if (row.tags === 1) {
-            war_title = '警告滞后';
-          } else if (row.tags === 2) {
-            war_title = '严重滞后';
-          }
+              war_title = '警告滞后';
+            } else if (row.tags === 2) {
+              war_title = '严重滞后';
+            }
             str += '<li class="mui-table-view-cell">'+
                   '<div class="mui-table">'+
                     '<div class="mui-table-cell mui-col-xs-10">'+
