@@ -1,8 +1,9 @@
 <template>
   <div class="mui-content">
     <div class="mui-content"> 
-			<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" id='ul_content'>
-				<li class="mui-table-view-cell">
+			<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+        {{con_str}}
+				<!-- <li class="mui-table-view-cell">
 					<div class="mui-table">
 						<div class="mui-table-cell mui-col-xs-10">
 							<h4 class="mui-ellipsis">信息化推进办公室张彦合同付款信息化</h4>
@@ -25,7 +26,7 @@
 							<span class="mui-h5">12:25</span>
 						</div>
 					</div>
-				</li>
+				</li> -->
 			</ul>
     </div>
     <nav class="mui-bar mui-bar-tab">
@@ -48,7 +49,8 @@ import { getAllProjects } from "../../../api/ding";
 export default {
   data() {
     return {
-      data:[]
+      data:[],
+      con_str:''
     };
   },
   mounted() {
@@ -81,7 +83,8 @@ export default {
                     '</div>'+
                   '</li>';
             })
-            $('#ul_content').html(str);
+            alert(JSON.stringify(e))
+            this.con_str=str;
           }else{
             this.$Message.error("无项目信息");
           }
