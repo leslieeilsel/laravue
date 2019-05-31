@@ -446,6 +446,52 @@ class DingController extends Controller
         $projectInfo['nep_type'] = isset($projectInfo['nep_type']) ? $nep_type[$projectInfo['nep_type']] : '';
         return response()->json(['result' => $projectInfo], 200);
     }
+    /**
+     * 查询项目计划
+     *
+     * @return JsonResponse
+     */
+    public function projectPlanInfo(Request $request)
+    {
+        $data = $request->input();
+        $year = date('Y');
+        if ($data['month']) {
+            $year = date('Y', strtotime($data['month']));
+        }
+        $plans = DB::table('iba_project_plan')->where('date', $year)->where('project_id', $data['project_id'])->where('parent_id', 0)->first();
+
+        return response()->json(['result' => $plans], 200);
+    }
+    /**
+     * 填报，当当月实际投资发生改变时，修改累计投资
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function actCompleteMoney(Request $request)
+    {
+        $params = $request->input();
+        $plan_date = ProjectPlan::select('date', 'amount')->where('project_id', $params['project_id'])->where('parent_id', 0)->get()->toArray();
+        if ($params['month']) {
+            $month = date('Y-m', strtotime($params['month']));
+            $year = date('Y', strtotime($params['month']));
+        }
+        $result = 0;
+        foreach ($plan_date as $k) {
+            if ($k['date'] < 2019) {
+                $result = $result + $k['amount'];
+            } else {
+                $sum = ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $k['date'] . '%')->where('user_id','!=','')->sum('month_act_complete');
+                $result = $result + $sum;
+            }
+        }
+        $result = $result + $params['month_act_complete'];
+        if ($params['type'] == 'edit') {
+            $month_money = ProjectSchedule::where('project_id', $params['project_id'])->where('month', $month)->value('month_act_complete');
+            $result = $result - $month_money;
+        }
+        return response()->json(['result' => $result], 200);
+    }
 
 }
                      

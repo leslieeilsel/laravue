@@ -45,12 +45,12 @@ export default {
             let str='';
             e.result.forEach(function (row, index) {
               str += '<li class="mui-table-view-cell">'+
-                    '<div class="mui-table" @click="url_router">'+
-                      '<div class="mui-table-cell mui-col-xs-10">'+
+                    '<div class="mui-table">'+
+                      '<div class="mui-table-cell mui-col-xs-10"><a href="/#/ding/project/projectInfo?id="'+row.id+'>'+
                         '<h4 class="mui-ellipsis">'+row.title+'</h4>'+
                         '<h5>'+row.status+'</h5>'+
                         '<p class="mui-h6 mui-ellipsis">'+row.type+'</p>'+
-                      '</div>'+
+                      '</div></a>'+
                       '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
                         '<span class="mui-h5">'+row.created_at+'</span>'+
                       '</div>'+
@@ -62,10 +62,6 @@ export default {
             this.$Message.error("无项目信息");
           }
       })
-    },
-    url_router(e){
-      alert(JSON.stringify(e))
-      // this.$router.push({name: 'projectInfo',params:{id:e}})
     }
   }
 };

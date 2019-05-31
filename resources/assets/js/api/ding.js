@@ -90,4 +90,27 @@ export function getProjectInfo(form) {
   });
 }
 
+/**
+ * 查询项目计划
+ * @returns {*}
+ */
+export function projectPlanInfo(form) {
+  return request({
+    url: '/api/ding/projectPlanInfo',
+    method: 'post',
+    data: {...form}
+  });
+}
+/**
+ * 填报，当当月实际投资发生改变时，修改累计投资
+ * @returns {*}
+ */
+export function actCompleteMoney(form) {
+  return request({
+    url: '/api/ding/actCompleteMoney',
+    method: 'post',
+    data: {...form}
+  });
+}
+
 

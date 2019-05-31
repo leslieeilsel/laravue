@@ -135,6 +135,8 @@ export default {
       this.getProject();
     },
     getProject() {
+      let id=this.$route.query.id;
+      alert(id)
       getProjectInfo({id:id}).then(res => {
         this.form = res.result;
       });
