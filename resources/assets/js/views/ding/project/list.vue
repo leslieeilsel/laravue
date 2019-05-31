@@ -42,7 +42,6 @@ export default {
         return false;
       }
       getAllProjects({userid:sessionStorage.getItem('userid')}).then(e => {
-          alert(JSON.stringify(e))
           if(e.result){
             let str='';
             e.result.forEach(function (row, index) {
@@ -59,7 +58,7 @@ export default {
                     '</div>'+
                   '</li>';
             })
-            alert(JSON.stringify(e))
+            alert(str);
             this.con_str=str;
           }else{
             this.$Message.error("无项目信息");
