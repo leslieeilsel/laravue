@@ -33,6 +33,7 @@ class CheckIsLogin
             'api/ding/getProjectScheduleAuto',
             'api/ding/actCompleteMoney',
             'api/ding/projectPlanInfo',
+            'api/ding/uploadPic',
         ];
         $uri = $request->route()->uri();
         if (!in_array($uri, $whiteList)) {

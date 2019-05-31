@@ -492,6 +492,25 @@ class DingController extends Controller
         }
         return response()->json(['result' => $result], 200);
     }
+    /**
+     * 上传
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function uploadPic(Request $request)
+    {
+        $params = $request->all();
+        $project_title = Projects::where('id', $params['project_id'])->value('title');
+        $suffix = $params['img_pic']->getClientOriginalExtension();
+        $path = Storage::putFileAs(
+            'public/project/project-schedule/' . $project_title . '/' . $params['month'],
+            $request->file('img_pic'),
+            rand(1000000, time()) . '.' . $suffix
+        );
+        $path = 'storage/' . substr($path, 7);
+        return response()->json(['result' => $path], 200);
+    }
 
 }
                      
