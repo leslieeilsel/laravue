@@ -359,15 +359,16 @@ class DingController extends Controller
     public function projectProgressList(Request $request)
     {
         $params = $request->all();
-        $result = $this->projectProgressM($params);
         $this->getSeeIds($params['userid']);
+        $result = $this->projectProgressM($params);
+        $ProjectC = new ProjectController();
         $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
             $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->first();
             $ProjectSchedules[$k]['money_from'] = $Projects['money_from'];
             $ProjectSchedules[$k]['project_title'] = $Projects['title'];
-            $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
+            $ProjectSchedules[$k]['acc_complete'] = $ProjectC->allActCompleteMoney($row['project_id'], $row['month']);
             $users = user::where('id', $row['user_id'])->first();
             $ProjectSchedules[$k]['tianbao_name'] = $users['name'];
             $ProjectSchedules[$k]['department'] = Departments::where('id', $users['department_id'])->value('title');
