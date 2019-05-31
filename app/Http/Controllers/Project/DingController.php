@@ -24,22 +24,24 @@ class DingController extends Controller
     {
         if ($userId) {
             $userInfo = User::where('ding_user_id',$userId)->first();
-            $roleId = $userInfo['group_id'];
-            $this->office = $userInfo['office'];
-            $dataType = Role::where('id', $roleId)->first()->data_type;
+            if($userInfo){
+                $roleId = $userInfo['group_id'];
+                $this->office = $userInfo['office'];
+                $dataType = Role::where('id', $roleId)->first()->data_type;
 
-            if ($dataType === 0) {
-                $userIds = User::all()->toArray();
-                $this->seeIds = array_column($userIds, 'id');
-            }
-            if ($dataType === 1) {
-                $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
-                $departmentIds = array_column($departmentIds, 'department_id');
-                $userIds = User::whereIn('department_id', $departmentIds)->get()->toArray();
-                $this->seeIds = array_column($userIds, 'id');
-            }
-            if ($dataType === 2) {
-                $this->seeIds = [$userId];
+                if ($dataType === 0) {
+                    $userIds = User::all()->toArray();
+                    $this->seeIds = array_column($userIds, 'id');
+                }
+                if ($dataType === 1) {
+                    $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
+                    $departmentIds = array_column($departmentIds, 'department_id');
+                    $userIds = User::whereIn('department_id', $departmentIds)->get()->toArray();
+                    $this->seeIds = array_column($userIds, 'id');
+                }
+                if ($dataType === 2) {
+                    $this->seeIds = [$userId];
+                }
             }
         }
     }
@@ -261,6 +263,7 @@ class DingController extends Controller
         $params = $request->input();
         $this->getSeeIds($params['userid']);
         $projects = $this->allProjects($params);
+        $ProjectC = new ProjectController();
         $type = Dict::getOptionsArrByName('工程类项目分类');
         $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
         $status = Dict::getOptionsArrByName('项目状态');
@@ -276,7 +279,7 @@ class DingController extends Controller
             $projects[$k]['money_from'] = $money_from[$row['money_from']];
             $projects[$k]['build_type'] = $build_type[$row['build_type']];
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
-            $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
+            $projects[$k]['projectPlan'] = $ProjectC->getPlanData($row['id'], 'preview');
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
             $projects[$k]['unit'] = Departments::where('id', $row['unit'])->value('title');
         }
