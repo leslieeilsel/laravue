@@ -45,7 +45,7 @@ export default {
             let str='';
             e.result.forEach(function (row, index) {
               str += '<li class="mui-table-view-cell">'+
-                    '<div class="mui-table">'+
+                    '<div class="mui-table" @click="url_router">'+
                       '<div class="mui-table-cell mui-col-xs-10">'+
                         '<h4 class="mui-ellipsis">'+row.title+'</h4>'+
                         '<h5>'+row.status+'</h5>'+
@@ -62,6 +62,10 @@ export default {
             this.$Message.error("无项目信息");
           }
       })
+    },
+    url_router(e){
+      alert(JSON.stringify(e))
+      // this.$router.push({name: 'projectInfo',params:{id:e}})
     }
   }
 };
