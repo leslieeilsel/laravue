@@ -39,6 +39,7 @@ export default {
         this.$Message.error("请重新获取用户信息");
         return false;
       }
+      alert(sessionStorage.getItem('userid'))
       getAllWarning({userid:sessionStorage.getItem('userid')}).then(res => {
         alert(JSON.stringify(res))
         if(res.result){
