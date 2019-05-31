@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\Role;
 use App\User;
 use App\Models\Dict;
+use App\Models\Departments;
 
 class DingController extends Controller
 {
