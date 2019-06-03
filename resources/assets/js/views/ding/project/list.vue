@@ -44,6 +44,7 @@ export default {
       this.is_loading(1);
       getAllProjects({userid:sessionStorage.getItem('userid')}).then(e => {
         this.is_loading(0);
+        alert(JSON.stringify(e))
           if(e.result){
             let str='';
             e.result.forEach(function (row, index) {

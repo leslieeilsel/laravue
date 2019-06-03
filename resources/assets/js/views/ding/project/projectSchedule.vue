@@ -309,12 +309,36 @@ export default {
       this.upData = {month: month_time, project_num: this.form.project_num, project_id: this.form.project_id};
     },
     submitF(){
+      if(this.form.project_id===''){
+          this.$Message.error('请选择项目名称!');
+          return false;
+      }
+      if(this.form.month===''){
+          this.$Message.error('请选择填报月份!');
+          return false;
+      }
       if(this.form.exp_preforma===''){
           this.$Message.error('请填写土地征收情况及前期手续办理情况!');
           return false;
       }
       if(this.form.month_act_complete===''){
           this.$Message.error('请填写月实际完成投资!');
+          return false;
+      }
+      if(this.form.month_img_progress===''){
+          this.$Message.error('请填写月形象进度!');
+          return false;
+      }
+      if(this.form.acc_img_progress===''){
+          this.$Message.error('请填写累计形象进度!');
+          return false;
+      }
+      if(this.form.problem===''){
+          this.$Message.error('请填写存在问题!');
+          return false;
+      }
+      if(this.form.measures===''){
+          this.$Message.error('请填写整改措施!');
           return false;
       }
       this.is_loading(1);

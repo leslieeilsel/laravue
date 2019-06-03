@@ -1114,6 +1114,18 @@
           exp_preforma: [
             {required: true, message: '土地征收情况及前期手续办理情况不能为空', trigger: 'blur'}
           ],
+          month_img_progress: [
+            {required: true, message: '月形象进度不能为空', trigger: 'blur'}
+          ],
+          acc_img_progress: [
+            {required: true, message: '累计形象进度不能为空', trigger: 'blur'}
+          ],
+          problem: [
+            {required: true, message: '存在问题不能为空', trigger: 'blur'}
+          ],
+          measures: [
+            {required: true, message: '整改措施不能为空', trigger: 'blur'}
+          ]
         },
         project_id: [],
         imgName: '',
