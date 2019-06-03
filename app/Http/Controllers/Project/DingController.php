@@ -50,6 +50,7 @@ class DingController extends Controller
             }
         }
     }
+    //获取钉钉token
     public function getToken(){
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
@@ -65,6 +66,7 @@ class DingController extends Controller
         // dd($arr['access_token']);
         dd($arr);
     }
+    //获取钉钉用户信息
     public function userId(Request $request){
         $data = $request->all();
         $appKey=env("Ding_App_Key");
@@ -83,6 +85,7 @@ class DingController extends Controller
         $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
         return $json;
     }
+    //发送消息
     public function userNotify(){
         $appKey=env("Ding_App_Key");
         $appSecret=env("Ding_App_Secret");
@@ -512,5 +515,99 @@ class DingController extends Controller
         return response()->json(['result' => $path], 200);
     }
 
+    /**
+     * 审核项目进度填报
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function auditProjectProgress(Request $request)
+    {
+        $data = $request->all();
+        $result = ProjectSchedule::where('id', $data['id'])->update(['is_audit' => $data['status'], 'reason' => $data['reason']]);
+        $projects = ProjectSchedule::where('id', $data['id'])->first();
+        $year = (int) date('Y', strtotime($projects['month']));
+        $month = (int) date('m', strtotime($projects['month']));
+        $y = intval($year);
+        $m = intval($month);
+        // 年计划
+        $plans_amount_y = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', 0)->where('date', $y)->value('id');
+        // 月计划
+        $plans_amount = DB::table('iba_project_plan')->where('project_id', $projects['project_id'])->where('parent_id', $plans_amount_y)->where('date', $m)->value('amount');
+        if ($data['status'] == 1) {
+            $warResult = true;
+            $warData = [];
+            if ($plans_amount) {
+                $Percentage = $projects['month_act_complete'] / $plans_amount;
+                if ($Percentage < 1) {
+                    if ($Percentage >= 0.7 && $Percentage < 1) {
+                        $warData['warning_type'] = 1;
+                    } elseif ($Percentage < 0.7) {
+                        $warData['warning_type'] = 2;
+                    }
+                    $warData['schedule_id'] = $data['id'];
+                    $warData['schedule_at'] = date('Y-m');
+                    $warResult = ProjectEarlyWarning::insert($warData);
+                }
+            }
+        }
+        $result = $result || $result >= 0;
+
+        return response()->json(['result' => $result], 200);
+    }
+    /**
+     * 修改项目进度填报
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function editProjectProgress(Request $request)
+    {
+        $data = $request->all();
+        $data['month'] = date('Y-m', strtotime($data['month']));
+        $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
+        $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));
+        if ($data['plan_build_start_at']) {
+            $data['plan_build_start_at'] = date('Y-m', strtotime($data['plan_build_start_at']));
+        }
+        if ($this->office === 0) {
+            if ($data['is_audit'] === 2 || $data['is_audit'] === 3) {
+                $data['is_audit'] = 4;
+            }
+        }
+        $id = $data['id'];
+        $path = 'storage/project/project-schedule/' . $data['project_title'] . '/' . $data['month'];
+        if ($data['img_progress_pic']) {
+            $imgProgressPic = explode(',', $data['img_progress_pic']);
+            $handler = opendir($path);
+            while (($filename = readdir($handler)) !== false) {
+                if ($filename != "." && $filename != "..") {
+                    if (!in_array($path . '/' . $filename, $imgProgressPic)) {
+                        unlink($path . '/' . $filename);
+                    }
+                }
+            }
+        } else {
+            if (file_exists($path)) {
+                $handler = opendir($path);
+                while (($filename = readdir($handler)) !== false) {
+                    if ($filename != "." && $filename != "..") {
+                        unlink($path . '/' . $filename);
+                    }
+                }
+            }
+        }
+        unset($data['id'], $data['updated_at'], $data['project_id'], $data['subject'], $data['project_num'],
+            $data['build_start_at'], $data['build_end_at'], $data['total_investors'], $data['plan_start_at'],
+            $data['plan_investors'], $data['plan_img_progress'], $data['month'], $data['project_title']);
+        $result = ProjectSchedule::where('id', $id)->update($data);
+
+        //        if ($result) {
+        //            $log = new OperationLog();
+        //            $log->eventLog($request, '修改项目进度信息');
+        //        }
+
+        return response()->json(['result' => $result], 200);
+    }
 }
                      

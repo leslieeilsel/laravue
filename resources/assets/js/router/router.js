@@ -18,8 +18,8 @@ export const constantRouterMap = [
   { path: '/ding/project/projectScheduleList', component: require('views/ding/project/projectScheduleList') },
   { path: '/ding/project/projectWarning', component: require('views/ding/project/projectWarning') },
   { path: '/ding/project/projectInfo', component: require('views/ding/project/projectInfo') },
-  { path: '/ding/project/projectEdit', component: require('views/ding/project/projectEdit') },
-  { path: '/ding/project/projectAuto', component: require('views/ding/project/projectAuto') },
+  { path: '/ding/project/projectScheduleEdit', component: require('views/ding/project/projectScheduleEdit') },
+  { path: '/ding/project/projectScheduleAudit', component: require('views/ding/project/projectScheduleAudit') },
   {
     path: '/',
     component: layout,

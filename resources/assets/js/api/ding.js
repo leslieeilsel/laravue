@@ -112,5 +112,27 @@ export function actCompleteMoney(form) {
     data: {...form}
   });
 }
+/**
+ * 修改进度
+ * @returns {*}
+ */
+export function editProjectProgress(form) {
+  return request({
+    url: '/api/ding/editProjectProgress',
+    method: 'post',
+    data: {...form}
+  });
+}
+/**
+ * 审核进度
+ * @returns {*}
+ */
+export function auditProjectProgress(form) {
+  return request({
+    url: '/api/ding/auditProjectProgress',
+    method: 'post',
+    data: {...form}
+  });
+}
 
 

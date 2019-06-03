@@ -41,6 +41,8 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('ding/actCompleteMoney', 'Project\DingController@actCompleteMoney');
     Route::post('ding/projectPlanInfo', 'Project\DingController@projectPlanInfo');
     Route::post('ding/uploadPic', 'Project\DingController@uploadPic');
+    Route::post('ding/auditProjectProgress', 'Project\DingController@auditProjectProgress');
+    Route::post('ding/editProjectProgress', 'Project\DingController@editProjectProgress');
 
     Route::post('user/regist', 'User\RegistController@registUser');
     Route::any('user/users', 'User\RegistController@getUsers');
