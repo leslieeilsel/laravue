@@ -40,7 +40,17 @@ export default {
         this.$Message.error("请重新获取用户信息");
         return false;
       }
+      dd.device.notification.showPreloader({
+          text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+          showIcon: true, //是否显示icon，默认true
+          onSuccess : function(result) {},
+          onFail : function(err) {}
+      })
       getAllProjects({userid:sessionStorage.getItem('userid')}).then(e => {
+        dd.device.notification.hidePreloader({
+            onSuccess : function(result) {},
+            onFail : function(err) {}
+        })
           if(e.result){
             let str='';
             e.result.forEach(function (row, index) {
