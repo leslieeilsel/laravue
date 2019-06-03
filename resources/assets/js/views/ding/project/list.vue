@@ -49,7 +49,7 @@ export default {
             e.result.forEach(function (row, index) {
               str += '<li class="mui-table-view-cell">'+
                     '<div class="mui-table">'+
-                      '<div class="mui-table-cell mui-col-xs-10"><a href="/#/ding/project/projectInfo?id="'+row.id+'>'+
+                      '<div class="mui-table-cell mui-col-xs-10"><a href="/#/ding/project/projectInfo?id='+row.id+'">'+
                         '<h4 class="mui-ellipsis">'+row.title+'</h4>'+
                         '<h5>'+row.status+'</h5>'+
                         '<p class="mui-h6 mui-ellipsis">'+row.type+'</p>'+
