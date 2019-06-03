@@ -137,7 +137,7 @@ export default {
     getProject() {
       let id=this.$route.query.id;
       this.is_loading(1);
-      getProjectInfo({id:id}).then(res => {
+      getProjectInfo({userid:sessionStorage.getItem('userid'),id:id}).then(res => {
         alert(JSON.stringify(res))
         this.is_loading(0);
         this.form = res.result;
