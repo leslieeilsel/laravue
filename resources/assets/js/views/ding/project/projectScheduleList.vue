@@ -1,7 +1,19 @@
 <template>
     <div class="mui-content"> 
       <div class="mui-content" style="margin-bottom:30px"> 
-        <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" v-html="con_str">
+        <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+          <!-- <li class="mui-table-view-cell">
+            <div class="mui-table">
+              <div class="mui-table-cell mui-col-xs-20">
+                <h4 class="mui-ellipsis">sdfsff</h4>
+                <h5>sdfsdfsfdsf</h5>
+                <p class="mui-h6 mui-ellipsis">dsfsdfdsfs</p>
+              </div>
+              <div class="mui-table-cell mui-col-xs-4 mui-text-right">
+                <span class="mui-h5">2019</span>
+              </div>
+            </div>
+          </li> -->
         </ul>
       </div>
       <nav class="mui-bar mui-bar-tab">
@@ -58,12 +70,10 @@ export default {
                             '<span class="mui-h5">'+row.month+'</span>'+
                           '</div>'+
                         '</div>'+
-                          // '<div class="mui-table">'+
-                            '<div class="mui-table-cell mui-col-xs-12"><a href="/#/ding/project/projectScheduleAudit?id='+row.id+'">查看'+
-                            '</a></div>'+
-                            '<div class="mui-table-cell mui-col-xs-12 mui-text-right"><a href="/#/ding/project/projectScheduleEdit?id='+row.id+'">编辑'+                  
-                            '</a></div>'+
-                        // '</div>'+
+                        '<div class="mui-table" style="height: 40px;line-height: 40px;border-top: #bbbaba solid 1px;font-size: 14px;">'+
+                            '<Button @click="submitF()" style="width: 50%;height: 30px;background: #029aed; color:#fff">查看</Button>'+
+                            '<Button @click="submitE()" style="width: 50%;height: 30px;background: #029aed; color:#fff ">编辑</Button>'+
+                        '</div>'+
                       '</li>';
             })
             alert(JSON.stringify(str))
