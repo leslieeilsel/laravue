@@ -84,7 +84,7 @@ export function getAllWarning(form) {
  */
 export function getProjectInfo(form) {
   return request({
-    url: '/api/ding/getProjectInfo',
+    url: '/api/ding/projectInfo',
     method: 'post',
     data: {...form}
   });

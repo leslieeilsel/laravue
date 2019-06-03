@@ -27,7 +27,7 @@ class CheckIsLogin
             'api/ding/getAllProjects',
             'api/ding/projectProgressList',
             'api/ding/getAllWarning',
-            'api/ding/getProjectInfo',
+            'api/ding/projectInfo',
             'api/ding/getProjectScheduleInfo',
             'api/ding/getProjectScheduleEdit',
             'api/ding/getProjectScheduleAuto',
