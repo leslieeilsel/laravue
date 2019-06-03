@@ -61,15 +61,15 @@ export default {
             res.result.forEach(function (row, index) {
               str += '<li class="mui-table-view-cell">'+
                         '<div class="mui-table">'+
-                          '<div class="mui-table-cell mui-col-xs-24">'+
+                          '<div class="mui-table-cell mui-col-xs-12">'+
                             '<h4 class="mui-ellipsis">'+row.project_title+'</h4>'+
                             '<h5>'+row.month_img_progress+'</h5>'+
                             '<p class="mui-h6 mui-ellipsis">'+row.month_act_complete+'</p>'+
                           '</div>'+
-                          '<div class="mui-table-cell mui-col-xs-8">'+
+                          '<div class="mui-table-cell mui-col-xs-4">'+
                             '<span class="mui-h5">'+row.month+'</span>'+
                           '</div>'+
-                          '<div class="mui-table-cell mui-col-xs-16">'+
+                          '<div class="mui-table-cell mui-col-xs-8">'+
                           '</div>'+
                         '</div>'+
                       '</li>';
