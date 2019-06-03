@@ -41,9 +41,10 @@ export default {
         this.$Message.error("请重新获取用户信息");
         return false;
       }
-      this.is_loading(1);
+      alert(sessionStorage.getItem('userid'));
+      // this.is_loading(1);
       getAllProjects({userid:sessionStorage.getItem('userid')}).then(e => {
-        this.is_loading(0);
+        // this.is_loading(0);
         alert(JSON.stringify(e))
           if(e.result){
             let str='';
