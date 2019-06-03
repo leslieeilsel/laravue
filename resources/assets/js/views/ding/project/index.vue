@@ -59,6 +59,7 @@ export default {
         dd.runtime.permission.requestAuthCode({
           corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
           onSuccess: function(result) {
+            alert(result.code)
             this.is_loading(1);
             getUserId({ code: result.code }).then(res => {
               this.is_loading(0);
