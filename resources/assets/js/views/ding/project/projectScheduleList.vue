@@ -59,9 +59,7 @@ export default {
       this.is_loading(1);
       projectProgressList({userid:sessionStorage.getItem('userid')}).then(res => {
         this.is_loading(0);
-        alert(JSON.stringify(res.result))
         if(res.result){
-          alert(22)
             let str='';
             res.result.forEach(function (row, index) {
               str += '<li class="mui-table-view-cell">'+
@@ -73,20 +71,18 @@ export default {
                           '</div>'+
                           '<div class="mui-col-xs-4" style="padding: 5px; border-top:#e1e1e1 solid 1px;"><span class="mui-h5">'+row.month+'</span></div>'+
                           '<div class="mui-col-xs-8" style="padding: 5px; border-top:#e1e1e1 solid 1px;">'+
-                              '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left">查看</Button>'+
+                              '<Button @click="route_url('+row.month+')" style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left">查看</Button>'+
                               '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left ">编辑</Button>'+
                           '</div>'+
                       '</li>';
             })
-                            // //  style="height: 40px;line-height: 40px;border-top: #bbbaba solid 1px;font-size: 14px;"
-                            //   '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff">查看</Button>'+
-                            //   '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff ">编辑</Button>'+
-            alert(JSON.stringify(str))
             this.con_str=str;
           }else{
             this.$Message.error("无项目进度信息");
           }
       })
+    },route_url(id){
+      this.$router.push({ name: '/#/ding/project/projectInfo', params: { id: id }})
     },
     //加载样式
     is_loading(type){
