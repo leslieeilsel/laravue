@@ -70,10 +70,10 @@ export default {
                             '<span class="mui-h5">'+row.month+'</span>'+
                           '</div>'+
                         '</div>'+
-                        '<div class="mui-table" style="height: 40px;line-height: 40px;border-top: #bbbaba solid 1px;font-size: 14px;">'+
+                        // '<div class="mui-table" style="height: 40px;line-height: 40px;border-top: #bbbaba solid 1px;font-size: 14px;">'+
                             '<Button @click="submitF()" style="width: 50%;height: 30px;background: #029aed; color:#fff">查看</Button>'+
                             '<Button @click="submitE()" style="width: 50%;height: 30px;background: #029aed; color:#fff ">编辑</Button>'+
-                        '</div>'+
+                        // '</div>'+
                       '</li>';
             })
             alert(JSON.stringify(str))
