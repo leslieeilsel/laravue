@@ -58,11 +58,9 @@ export default {
                       '</div>'+
                     '</div>'+
                     '<div class="mui-table">'+
-                      '<div class="mui-table-cell mui-col-xs-6"><a href="/#/ding/project/projectScheduleAudit?id='+row.id+'">'+
-                        查看
+                      '<div class="mui-table-cell mui-col-xs-6"><a href="/#/ding/project/projectScheduleAudit?id='+row.id+'">查看'+
                       '</a></div>'+
-                      '<div class="mui-table-cell mui-col-xs-6 mui-text-right"><a href="/#/ding/project/projectScheduleEdit?id='+row.id+'">'+
-                        编辑
+                      '<div class="mui-table-cell mui-col-xs-6 mui-text-right"><a href="/#/ding/project/projectScheduleEdit?id='+row.id+'">编辑'+                  
                       '</a></div>'+
                     '</div>'+
                   '</li>';
