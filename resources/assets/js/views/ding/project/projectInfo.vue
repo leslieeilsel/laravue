@@ -9,13 +9,13 @@
           <span class="ding_details_span">
             <font class="details_name">项目名称</font>
             <font class="details_det ding">
-              <Input v-model="form.project_title" placeholder="项目名称" style="width: 90%" readonly></Input>
+              <Input v-model="form.title" placeholder="项目名称" style="width: 90%" readonly></Input>
             </font>
           </span>
           <span class="ding_details_span">
             <font class="details_name" onClick='changeProject()'>项目编号</font>
             <font class="details_det ding">
-                <Input v-model="form.project_num" placeholder="项目编号" style="width: 90%" readonly></Input>
+                <Input v-model="form.num" placeholder="项目编号" style="width: 90%" readonly></Input>
             </font>
           </span>
           <span class="ding_details_span">
@@ -39,7 +39,7 @@
           <span class="ding_details_span">
             <font class="details_name">承建单位</font>
             <font class="details_det ding">
-              <Input v-model="form.unit_title" placeholder="承建单位" style="width: 90%" readonly></Input>
+              <Input v-model="form.unit" placeholder="承建单位" style="width: 90%" readonly></Input>
             </font>
           </span>
           <span class="ding_details_span">
@@ -114,7 +114,6 @@ export default {
         build_type: '',
         money_from: '',
         status: '',
-        unit_title: '',
         unit: '',
         amount: null,
         land_amount: null,
