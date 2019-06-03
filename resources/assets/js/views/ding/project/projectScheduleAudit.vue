@@ -3,16 +3,13 @@
     <ul class="mui-table-view" style="padding:10px 15px;background:transparent;top:0;margin-bottom: 30px;">
       <li class="ding_li">
         <div class="li_top">
-          <div>项目填报</div>
+          <div>项目审核</div>
         </div>
         <div class="ding_detail ding_details">
           <span class="ding_details_span">
             <font class="details_name">填报项目</font>
             <font class="details_det ding">
-              <Select v-model="form.project_id" @on-change='changeProject' style="width: 90%;">
-                  <Option value="-1">请选择</Option>
-                  <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
-              </Select>
+              <Input v-model="form.project_title" placeholder="项目名称" style="width: 90%" readonly></Input>
             </font>
           </span>
           <span class="ding_details_span">
@@ -183,6 +180,7 @@ export default {
       form: {
         month: "",
         project_id: "",
+        project_title: "",
         project_num: "",
         subject: "",
         build_start_at: "",
@@ -216,11 +214,10 @@ export default {
     },//进度详情
     getScheduleInfo(){
       let id=this.$route.query.id;
-      alert(id)
       this.is_loading(1);
       projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(res => {
         this.is_loading(0);
-        alert(JSON.stringify(res))
+        alert(JSON.stringify(res.result))
         this.form = res.result;
       })
     },

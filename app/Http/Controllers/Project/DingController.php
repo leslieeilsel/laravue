@@ -396,7 +396,7 @@ class DingController extends Controller
         $Projects = Projects::where('id', $ProjectSchedules['project_id'])->first();
         $ProjectSchedules['money_from'] = $Projects['money_from'];
         $ProjectSchedules['project_title'] = $Projects['title'];
-        $ProjectSchedules['acc_complete'] = $$this->allActCompleteMoney($ProjectSchedules['project_id'], $ProjectSchedules['month']);
+        $ProjectSchedules['acc_complete'] = $this->allActCompleteMoney($ProjectSchedules['project_id'], $ProjectSchedules['month']);
         $users = user::where('id', $ProjectSchedules['user_id'])->first();
         $ProjectSchedules['tianbao_name'] = $users['name'];
         $ProjectSchedules['department'] = Departments::where('id', $users['department_id'])->value('title');
