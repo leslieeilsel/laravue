@@ -71,10 +71,10 @@ export default {
                           '</div>'+
                           '<div class="mui-col-xs-4" style="padding: 5px; border-top:#e1e1e1 solid 1px;"><span class="mui-h5">'+row.month+'</span></div>'+
                           '<div class="mui-col-xs-8" style="padding: 5px; border-top:#e1e1e1 solid 1px;">'+
-                              '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left">'+
-                              '<a href="/#/ding/project/projectScheduleAudit?id='+row.id+'">查看</a></Button>'+
+                              '<Button style="width: 50%;height: 30px;background: #029aed; float:left">'+
+                              '<a href="/#/ding/project/projectScheduleAudit?id='+row.id+'" style="color:#fff;">查看</a></Button>'+
                               '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left ">'+
-                              '<a href="/#/ding/project/projectScheduleEdit?id='+row.id+'">编辑</a></Button>'+
+                              '<a href="/#/ding/project/projectScheduleEdit?id='+row.id+'" style="color:#fff;">编辑</a></Button>'+
                           '</div>'+
                       '</li>';
             })

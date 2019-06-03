@@ -364,14 +364,12 @@ class DingController extends Controller
         $params = $request->all();
         $this->getSeeIds($params['userid']);
         $result = $this->projectProgressM($params);
-        $ProjectC = new ProjectController();
         $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
-            $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
             $Projects = Projects::where('id', $row['project_id'])->first();
             $ProjectSchedules[$k]['money_from'] = $Projects['money_from'];
             $ProjectSchedules[$k]['project_title'] = $Projects['title'];
-            $ProjectSchedules[$k]['acc_complete'] = $ProjectC->allActCompleteMoney($row['project_id'], $row['month']);
+            $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
             $users = user::where('id', $row['user_id'])->first();
             $ProjectSchedules[$k]['tianbao_name'] = $users['name'];
             $ProjectSchedules[$k]['department'] = Departments::where('id', $users['department_id'])->value('title');
@@ -388,6 +386,33 @@ class DingController extends Controller
         }
         return response()->json(['result' => $ProjectSchedules], 200);
     }
+    //获取进度详细信息
+    public function projectScheduleInfo(Request $request)
+    {
+        $params = $request->all();
+        $this->getSeeIds($params['userid']);
+        $ProjectSchedules = ProjectSchedule::where('id', $params['id'])->first();
+        
+        $Projects = Projects::where('id', $ProjectSchedules['project_id'])->first();
+        $ProjectSchedules['money_from'] = $Projects['money_from'];
+        $ProjectSchedules['project_title'] = $Projects['title'];
+        $ProjectSchedules['acc_complete'] = $$this->allActCompleteMoney($ProjectSchedules['project_id'], $ProjectSchedules['month']);
+        $users = user::where('id', $ProjectSchedules['user_id'])->first();
+        $ProjectSchedules['tianbao_name'] = $users['name'];
+        $ProjectSchedules['department'] = Departments::where('id', $users['department_id'])->value('title');
+        $year = date('Y', strtotime($ProjectSchedules['month']));
+        $ProjectPlans = ProjectPlan::where('project_id', $ProjectSchedules['project_id'])->where('date', $year)->first();
+        $ProjectSchedules['project_num'] = $Projects['num'];
+        $ProjectSchedules['subject'] = $Projects['subject'];
+        $ProjectSchedules['build_start_at'] = $Projects['plan_start_at'];
+        $ProjectSchedules['build_end_at'] = $Projects['plan_end_at'];
+        $ProjectSchedules['total_investors'] = $Projects['amount'];
+        $ProjectSchedules['plan_investors'] = $ProjectPlans['amount'];
+        $ProjectSchedules['plan_img_progress'] = $ProjectPlans['img_progress'];
+        $ProjectSchedules['plan_build_start_at'] = $Projects['plan_start_at'];
+        return response()->json(['result' => $ProjectSchedules], 200);
+    }
+    //获取预警列表
     public function getAllWarning(Request $request)
     {
         $params = $request->input();
@@ -464,6 +489,25 @@ class DingController extends Controller
         $plans = DB::table('iba_project_plan')->where('date', $year)->where('project_id', $data['project_id'])->where('parent_id', 0)->first();
 
         return response()->json(['result' => $plans], 200);
+    }
+    /**
+     * 累计投资
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function allActCompleteMoney($project_id, $month)
+    {
+        $plan_date = ProjectPlan::select('date', 'amount')->where('project_id', $project_id)->where('parent_id', 0)->get()->toArray();
+        $result = 0;
+        foreach ($plan_date as $k) {
+            if ($k['date'] < 2019) {
+                $result = $result + $k['amount'];
+            }
+        }
+        $allMonth = ProjectSchedule::where('project_id', $project_id)->where('month', '<=', $month)->sum('month_act_complete');
+        $result = $result + $allMonth;
+        return $result;
     }
     /**
      * 填报，当当月实际投资发生改变时，修改累计投资

@@ -209,7 +209,6 @@ export default {
   },
   mounted() {
     this.init();
-    alert(this.$route.query.id)
   },
   methods: {
     init() {
@@ -218,8 +217,9 @@ export default {
     getScheduleInfo(){
       let id=this.$route.query.id;
       this.is_loading(1);
-      projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(e => {
+      projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(res => {
         this.is_loading(0);
+        alert(JSON.stringify(res))
         this.form = res.result;
       })
     },
