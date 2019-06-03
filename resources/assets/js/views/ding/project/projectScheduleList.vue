@@ -2,15 +2,20 @@
     <div class="mui-content"> 
       <div class="mui-content" style="margin-bottom:30px"> 
         <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" v-html="con_str">
+          <!--  v-html="con_str" -->
+          
+
           <!-- <li class="mui-table-view-cell">
-            <div class="mui-table">
-              <div class="mui-table-cell mui-col-xs-20">
+            <div class="mui-row">
+              <div class="mui-col-xs-12">
                 <h4 class="mui-ellipsis">sdfsff</h4>
                 <h5>sdfsdfsfdsf</h5>
                 <p class="mui-h6 mui-ellipsis">dsfsdfdsfs</p>
               </div>
-              <div class="mui-table-cell mui-col-xs-4 mui-text-right">
-                <span class="mui-h5">2019</span>
+              <div class="mui-col-xs-4"><span class="mui-h5">2019</span></div>
+              <div class="mui-col-xs-8" style="padding: 5px;">
+                  <Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left">查看</Button>
+                  <Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left ">编辑</Button>
               </div>
             </div>
           </li> -->
@@ -60,18 +65,17 @@ export default {
             let str='';
             res.result.forEach(function (row, index) {
               str += '<li class="mui-table-view-cell">'+
-                        '<div class="mui-table">'+
-                          '<div class="mui-table-cell mui-col-xs-12">'+
+                        '<div class="mui-row">'+
+                          '<div class="mui-col-xs-12">'+
                             '<h4 class="mui-ellipsis">'+row.project_title+'</h4>'+
                             '<h5>'+row.month_img_progress+'</h5>'+
                             '<p class="mui-h6 mui-ellipsis">'+row.month_act_complete+'</p>'+
                           '</div>'+
-                          '<div class="mui-table-cell mui-col-xs-4">'+
-                            '<span class="mui-h5">'+row.month+'</span>'+
+                          '<div class="mui-col-xs-4" style="padding: 5px; border-top:#e1e1e1 solid 1px;"><span class="mui-h5">'+row.month+'</span></div>'+
+                          '<div class="mui-col-xs-8" style="padding: 5px; border-top:#e1e1e1 solid 1px;">'+
+                              '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left">查看</Button>'+
+                              '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left ">编辑</Button>'+
                           '</div>'+
-                          '<div class="mui-table-cell mui-col-xs-8">'+
-                          '</div>'+
-                        '</div>'+
                       '</li>';
             })
                             // //  style="height: 40px;line-height: 40px;border-top: #bbbaba solid 1px;font-size: 14px;"
