@@ -63,6 +63,7 @@ export default {
             getUserId({ code: result.code }).then(res => {
               this.is_loading(0);
               if (res.errcode == 0) {
+                alert(res.userid)
                 sessionStorage.setItem('userid',res.userid);
               }
             });
