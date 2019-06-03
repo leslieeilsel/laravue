@@ -47,7 +47,6 @@ export default {
           if(e.result){
             let str='';
             e.result.forEach(function (row, index) {
-              alert(row.id)
               str += '<li class="mui-table-view-cell">'+
                     '<div class="mui-table">'+
                       '<div class="mui-table-cell mui-col-xs-10"><a href="/#/ding/project/projectInfo?id="'+row.id+'>'+
