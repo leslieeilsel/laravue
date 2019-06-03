@@ -82,7 +82,8 @@ export default {
           }
       })
     },route_url(id){
-      this.$router.push({ name: '/#/ding/project/projectInfo', params: { id: id }})
+      alert(id)
+      this.$router.push({ name: '/#/ding/project/projectScheduleAudit', params: { id: id }})
     },
     //加载样式
     is_loading(type){
