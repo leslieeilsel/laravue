@@ -1,7 +1,7 @@
 <template>
     <div class="mui-content"> 
       <div class="mui-content" style="margin-bottom:30px"> 
-        <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+        <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" v-html="con_str">
           <!-- <li class="mui-table-view-cell">
             <div class="mui-table">
               <div class="mui-table-cell mui-col-xs-20">
