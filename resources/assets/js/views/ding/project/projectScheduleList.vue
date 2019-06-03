@@ -42,10 +42,9 @@ export default {
       this.is_loading(1);
       projectProgressList({userid:sessionStorage.getItem('userid')}).then(res => {
         this.is_loading(0);
-        alert(JSON.stringify(res))
         if(res.result){
             let str='';
-            e.result.forEach(function (row, index) {
+            res.result.forEach(function (row, index) {
               str += '<li class="mui-table-view-cell">'+
                     '<div class="mui-table">'+
                       '<div class="mui-table-cell mui-col-xs-10">'+
