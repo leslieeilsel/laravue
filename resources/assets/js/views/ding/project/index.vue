@@ -63,6 +63,7 @@ export default {
             this.is_loading(1);
             getUserId({ code: result.code }).then(res => {
               this.is_loading(0);
+              alert(JSON.stringify(res))
               if (res.errcode == 0) {
                 alert(res.userid)
                 sessionStorage.setItem('userid',res.userid);
