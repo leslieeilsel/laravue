@@ -60,6 +60,7 @@ export default {
                     '</div>'+
                   '</li>';
             })
+            alert(str);
             this.con_str=str;
           }else{
             this.$Message.error("无项目信息");
