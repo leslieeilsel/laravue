@@ -65,6 +65,7 @@ export default {
                     '</div>'+
                   '</li>';
             })
+            alert(JSON.stringify(str))
             this.con_str=str;
           }else{
             this.$Message.error("无项目进度信息");
