@@ -129,6 +129,7 @@ export default {
   },
   mounted() {
     this.init();
+    alert(this.$route.query.id)
   },
   methods: {
     init() {
