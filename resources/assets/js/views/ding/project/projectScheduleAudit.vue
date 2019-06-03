@@ -155,7 +155,7 @@
       </li>
     </ul>
     <div>
-      <Button @click="submitF()" style="width: 100%;height: 40px;top: -5;background: #029aed; color:#fff;position: fixed;bottom: 0;">提交</Button>
+      <Button @click="submitF()" style="width: 100%;height: 40px;top: -5;background: #029aed; color:#fff;position: fixed;bottom: 40;">提交</Button>
     </div>
     <nav class="mui-bar mui-bar-tab">
       <a class="mui-tab-item mui-active" href="/ding/project">
@@ -218,7 +218,8 @@ export default {
       projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(res => {
         this.is_loading(0);
         alert(JSON.stringify(res.result))
-        this.form = res.result;
+        this.form.project_title = res.result.project_title;
+        this.form.project_num = 11;
       })
     },
     //加载样式
