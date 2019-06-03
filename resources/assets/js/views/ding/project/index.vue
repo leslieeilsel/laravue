@@ -76,6 +76,7 @@ export default {
     },
     //加载样式
     is_loading(type){
+      alert(222)
       if(type==1){
         dd.device.notification.showPreloader({
             text: "使劲加载中..", //loading显示的字符，空表示不显示文字
