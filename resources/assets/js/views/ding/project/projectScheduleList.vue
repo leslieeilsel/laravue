@@ -71,8 +71,8 @@ export default {
                           '</div>'+
                           '<div class="mui-col-xs-4" style="padding: 5px; border-top:#e1e1e1 solid 1px;"><span class="mui-h5">'+row.month+'</span></div>'+
                           '<div class="mui-col-xs-8" style="padding: 5px; border-top:#e1e1e1 solid 1px;">'+
-                              '<Button @click="route_url('+row.month+')" style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left">查看</Button>'+
-                              '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left ">编辑</Button>'+
+                              '<Button to="/#/ding/project/projectScheduleAudit?id='+row.id+'" style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left">查看</Button>'+
+                              '<Button to="/#/ding/project/projectScheduleEdit?id='+row.id+'" style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left ">编辑</Button>'+
                           '</div>'+
                       '</li>';
             })
@@ -81,9 +81,6 @@ export default {
             this.$Message.error("无项目进度信息");
           }
       })
-    },route_url(id){
-      alert(id)
-      this.$router.push({ name: '/#/ding/project/projectScheduleAudit', params: { id: id }})
     },
     //加载样式
     is_loading(type){
