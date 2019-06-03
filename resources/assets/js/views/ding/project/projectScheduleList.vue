@@ -48,25 +48,22 @@ export default {
             let str='';
             res.result.forEach(function (row, index) {
               str += '<li class="mui-table-view-cell">'+
-                    '<div class="mui-table">'+
-                      '<div class="mui-table-cell mui-col-xs-10">'+
-                        '<h4 class="mui-ellipsis">'+row.project_title+'</h4>'+
-                        '<h5>'+row.month_img_progress+'</h5>'+
-                        '<p class="mui-h6 mui-ellipsis">'+row.month_act_complete+'</p>'+
-                      '</div>'+
-                      '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
-                        '<span class="mui-h5">'+row.month+'</span>'+
-                      '</div>'+
-                    '</div>'+
-                  '</li>';
+                        '<div class="mui-table">'+
+                          '<div class="mui-table-cell mui-col-xs-10">'+
+                            '<h4 class="mui-ellipsis">'+row.project_title+'</h4>'+
+                            '<h5>'+row.month_img_progress+'</h5>'+
+                            '<p class="mui-h6 mui-ellipsis">'+row.month_act_complete+'</p>'+
+                          '</div>'+
+                          '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
+                            '<span class="mui-h5">'+row.month+'</span>'+
+                          '</div>'+
+                            '<div class="mui-table-cell mui-col-xs-6"><a href="/#/ding/project/projectScheduleAudit?id='+row.id+'">查看'+
+                            '</a></div>'+
+                            '<div class="mui-table-cell mui-col-xs-6 mui-text-right"><a href="/#/ding/project/projectScheduleEdit?id='+row.id+'">编辑'+                  
+                            '</a></div>'+
+                        '</div>'+
+                      '</li>';
             })
-            
-                    // '<div class="mui-table">'+
-                    //   '<div class="mui-table-cell mui-col-xs-6"><a href="/#/ding/project/projectScheduleAudit?id='+row.id+'">查看'+
-                    //   '</a></div>'+
-                    //   '<div class="mui-table-cell mui-col-xs-6 mui-text-right"><a href="/#/ding/project/projectScheduleEdit?id='+row.id+'">编辑'+                  
-                    //   '</a></div>'+
-                    // '</div>'+
             alert(JSON.stringify(str))
             this.con_str=str;
           }else{
