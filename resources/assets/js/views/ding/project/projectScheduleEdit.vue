@@ -157,17 +157,26 @@
         </div>
       </li>
     </ul>
-    <div slot="footer">
+    <div>
       <Button @click="submitF()" style="width: 100%;height: 40px;top: -5;background: #029aed; color:#fff;position: fixed;bottom: 0;">提交</Button>
     </div>
+    <nav class="mui-bar mui-bar-tab">
+      <a class="mui-tab-item mui-active" href="/ding/project">
+        <span class="mui-icon mui-icon-home"></span>
+        <span class="mui-tab-label">应用</span>
+      </a>
+      <a class="mui-tab-item" href="#">
+        <span class="mui-icon mui-icon-email"><span class="mui-badge">1</span></span>
+        <span class="mui-tab-label">消息</span>
+      </a>
+    </nav>
   </div>
 </template>
 <style scope src="./index.css"></style>
 <style scope src="./mui.css"></style>
 <script>
 import * as dd from "dingtalk-jsapi";
-import { projectPlanInfo,actCompleteMoney } from "../../../api/project";
-import { getAuditedProjects, getUserId, userNotify,projectProgress } from "../../../api/ding";
+import { getAuditedProjects,projectPlanInfo,actCompleteMoney, getUserId, userNotify,projectProgress,getScheduleInfo } from "../../../api/ding";
 export default {
   data() {
     return {
@@ -216,40 +225,15 @@ export default {
   },
   methods: {
     init() {
-      this.getProjectId();
-    },
-    getProjectId() {
-      getAuditedProjects().then(res => {
-        this.project_id = res.result;
-      });
-    },
-    changeProject(e) {
-      this.project_id.forEach(em => {
-        if (em.id === e) {
-          this.form.subject = em.subject;
-          this.form.project_num = em.num;
-          this.form.build_start_at = em.plan_start_at;
-          this.form.build_end_at = em.plan_end_at;
-          this.form.total_investors = em.amount;
-          this.form.plan_img_progress = em.image_progress;
-          this.form.plan_build_start_at = em.plan_start_at;
-
-          let month_time = new Date();
-          let month_time_0 =
-            month_time.getMonth() + 1 > 9
-              ? month_time.getMonth() + 1
-              : "0" + (month_time.getMonth() + 1);
-
-          month_time = month_time.getFullYear() + "-" + month_time_0;
-          projectPlanInfo({
-            month: month_time,
-            project_id: this.form.project_id
-          }).then(res => {
-            this.form.plan_investors = res.result.amount;
-            this.form.plan_img_progress = res.result.image_progress;
-          });
-        }
-      });
+      this.getScheduleInfo();
+    },//进度详情
+    getScheduleInfo(){
+      let id=this.$route.query.id;
+      this.is_loading(1);
+      projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(e => {
+        this.is_loading(0);
+        this.form = res.result;
+      })
     },
     handleSuccess(res, file) {
       if (this.form.img_progress_pic) {

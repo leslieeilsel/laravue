@@ -113,6 +113,17 @@ export function actCompleteMoney(form) {
   });
 }
 /**
+ * 进度详情
+ * @returns {*}
+ */
+export function projectScheduleInfo(form) {
+  return request({
+    url: '/api/ding/projectScheduleInfo',
+    method: 'post',
+    data: {...form}
+  });
+}
+/**
  * 修改进度
  * @returns {*}
  */

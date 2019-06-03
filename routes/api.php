@@ -35,9 +35,7 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('ding/projectProgressList', 'Project\DingController@projectProgressList');
     Route::post('ding/getAllWarning', 'Project\DingController@getAllWarning');
     Route::post('ding/projectInfo', 'Project\DingController@projectInfo');
-    Route::post('ding/getProjectScheduleInfo', 'Project\DingController@getProjectScheduleInfo');
-    Route::post('ding/getProjectScheduleEdit', 'Project\DingController@getProjectScheduleEdit');
-    Route::post('ding/getProjectScheduleAuto', 'Project\DingController@getProjectScheduleAuto');
+    Route::post('ding/projectScheduleInfo', 'Project\DingController@projectScheduleInfo');
     Route::post('ding/actCompleteMoney', 'Project\DingController@actCompleteMoney');
     Route::post('ding/projectPlanInfo', 'Project\DingController@projectPlanInfo');
     Route::post('ding/uploadPic', 'Project\DingController@uploadPic');
