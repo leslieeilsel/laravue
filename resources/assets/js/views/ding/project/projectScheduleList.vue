@@ -70,13 +70,13 @@ export default {
                             '<span class="mui-h5">'+row.month+'</span>'+
                           '</div>'+
                           '<div class="mui-table-cell mui-col-xs-16">'+
-                            //  style="height: 40px;line-height: 40px;border-top: #bbbaba solid 1px;font-size: 14px;"
-                              '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff">查看</Button>'+
-                              '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff ">编辑</Button>'+
                           '</div>'+
                         '</div>'+
                       '</li>';
             })
+                            // //  style="height: 40px;line-height: 40px;border-top: #bbbaba solid 1px;font-size: 14px;"
+                            //   '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff">查看</Button>'+
+                            //   '<Button style="width: 50%;height: 30px;background: #029aed; color:#fff ">编辑</Button>'+
             alert(JSON.stringify(str))
             this.con_str=str;
           }else{
