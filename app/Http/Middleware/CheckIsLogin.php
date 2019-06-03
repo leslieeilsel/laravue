@@ -34,6 +34,7 @@ class CheckIsLogin
             'api/ding/uploadPic',
             'api/ding/auditProjectProgress',
             'api/ding/editProjectProgress',
+            'ding/allActCompleteMoney'
         ];
         $uri = $request->route()->uri();
         if (!in_array($uri, $whiteList)) {
