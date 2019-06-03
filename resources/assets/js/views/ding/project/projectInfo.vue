@@ -129,7 +129,6 @@ export default {
   },
   mounted() {
     this.init();
-    alert(this.$route.query.id)
   },
   methods: {
     init() {
@@ -137,10 +136,10 @@ export default {
     },
     getProject() {
       let id=this.$route.query.id;
-      alert(id+'***')
       this.is_loading(1);
       getProjectInfo({id:id}).then(res => {
-      this.is_loading(0);
+        alert(JSON.stringify(res))
+        this.is_loading(0);
         this.form = res.result;
       });
     },
