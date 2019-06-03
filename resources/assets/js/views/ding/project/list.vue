@@ -66,6 +66,7 @@ export default {
           }
       })
     },
+    //加载样式
     is_loading(type){
       if(type==1){
         dd.device.notification.showPreloader({

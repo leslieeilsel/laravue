@@ -321,6 +321,22 @@ export default {
           this.$Message.error('填报失败!');
         }
       });
+    },
+    //加载样式
+    is_loading(type){
+      if(type==1){
+        dd.device.notification.showPreloader({
+            text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+            showIcon: true, //是否显示icon，默认true
+            onSuccess : function(result) {},
+            onFail : function(err) {}
+        })
+      }else{
+        dd.device.notification.hidePreloader({
+            onSuccess : function(result) {},
+            onFail : function(err) {}
+        })
+      }
     }
   }
 };

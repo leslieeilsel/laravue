@@ -218,7 +218,9 @@ export default {
       this.getProjectId();
     },
     getProjectId() {
+      this.is_loading(1);
       getAuditedProjects().then(res => {
+        this.is_loading(0);
         this.project_id = res.result;
       });
     },
@@ -240,10 +242,12 @@ export default {
               : "0" + (month_time.getMonth() + 1);
 
           month_time = month_time.getFullYear() + "-" + month_time_0;
+          this.is_loading(1);
           projectPlanInfo({
             month: month_time,
             project_id: this.form.project_id
           }).then(res => {
+            this.is_loading(0);
             this.form.plan_investors = res.result.amount;
             this.form.plan_img_progress = res.result.image_progress;
           });
@@ -280,12 +284,14 @@ export default {
         this.form.month_act_complete = null;
         return;
       }
+      this.is_loading(1);
       actCompleteMoney({
         month: this.form.month,
         project_id: this.form.project_id,
         month_act_complete: this.form.month_act_complete,
         type: 'add'
       }).then(res => {
+        this.is_loading(0);
         this.form.acc_complete = res.result;
       });
     },
@@ -311,7 +317,9 @@ export default {
           this.$Message.error('请填写月实际完成投资!');
           return false;
       }
+      this.is_loading(1);
       projectProgress({form:this.form,userid:sessionStorage.getItem('user_id')}).then(res => {
+        this.is_loading(0);
         if (res.result) {
           this.$Message.success("填报成功");
           this.modal = false;
@@ -320,6 +328,22 @@ export default {
           this.$Message.error('填报失败!');
         }
       });
+    },
+    //加载样式
+    is_loading(type){
+      if(type==1){
+        dd.device.notification.showPreloader({
+            text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+            showIcon: true, //是否显示icon，默认true
+            onSuccess : function(result) {},
+            onFail : function(err) {}
+        })
+      }else{
+        dd.device.notification.hidePreloader({
+            onSuccess : function(result) {},
+            onFail : function(err) {}
+        })
+      }
     }
   }
 };

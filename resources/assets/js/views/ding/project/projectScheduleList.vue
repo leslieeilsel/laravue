@@ -39,8 +39,9 @@ export default {
         this.$Message.error("请重新获取用户信息");
         return false;
       }
+      this.is_loading(1);
       projectProgressList({userid:sessionStorage.getItem('userid')}).then(res => {
-        alert(JSON.stringify(res))
+        this.is_loading(0);
         if(res.result){
             let str='';
             e.result.forEach(function (row, index) {
@@ -62,6 +63,22 @@ export default {
             this.$Message.error("无项目进度信息");
           }
       })
+    },
+    //加载样式
+    is_loading(type){
+      if(type==1){
+        dd.device.notification.showPreloader({
+            text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+            showIcon: true, //是否显示icon，默认true
+            onSuccess : function(result) {},
+            onFail : function(err) {}
+        })
+      }else{
+        dd.device.notification.hidePreloader({
+            onSuccess : function(result) {},
+            onFail : function(err) {}
+        })
+      }
     }
   }
 };
