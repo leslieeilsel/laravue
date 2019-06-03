@@ -42,8 +42,9 @@ export default {
       this.is_loading(1);
       projectProgressList({userid:sessionStorage.getItem('userid')}).then(res => {
         this.is_loading(0);
-        alert(JSON.stringify(res))
+        alert(JSON.stringify(res.result))
         if(res.result){
+          alert(22)
             let str='';
             res.result.forEach(function (row, index) {
               str += '<li class="mui-table-view-cell">'+
@@ -57,14 +58,15 @@ export default {
                         '<span class="mui-h5">'+row.month+'</span>'+
                       '</div>'+
                     '</div>'+
-                    '<div class="mui-table">'+
-                      '<div class="mui-table-cell mui-col-xs-6"><a href="/#/ding/project/projectScheduleAudit?id='+row.id+'">查看'+
-                      '</a></div>'+
-                      '<div class="mui-table-cell mui-col-xs-6 mui-text-right"><a href="/#/ding/project/projectScheduleEdit?id='+row.id+'">编辑'+                  
-                      '</a></div>'+
-                    '</div>'+
                   '</li>';
             })
+            
+                    // '<div class="mui-table">'+
+                    //   '<div class="mui-table-cell mui-col-xs-6"><a href="/#/ding/project/projectScheduleAudit?id='+row.id+'">查看'+
+                    //   '</a></div>'+
+                    //   '<div class="mui-table-cell mui-col-xs-6 mui-text-right"><a href="/#/ding/project/projectScheduleEdit?id='+row.id+'">编辑'+                  
+                    //   '</a></div>'+
+                    // '</div>'+
             alert(JSON.stringify(str))
             this.con_str=str;
           }else{
