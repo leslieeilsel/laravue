@@ -59,7 +59,6 @@ export default {
         dd.runtime.permission.requestAuthCode({
           corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
           onSuccess: function(result) {
-            alert(result.code)
             dd.device.notification.showPreloader({
                 text: "使劲加载中..", //loading显示的字符，空表示不显示文字
                 showIcon: true, //是否显示icon，默认true
@@ -71,9 +70,7 @@ export default {
                   onSuccess : function(result) {},
                   onFail : function(err) {}
               })
-              alert(JSON.stringify(res))
               if (res.errcode == 0) { 
-                alert(res.userid)
                 sessionStorage.setItem('userid',res.userid);
               }
             });

@@ -41,14 +41,13 @@ export default {
         this.$Message.error("请重新获取用户信息");
         return false;
       }
-      alert(sessionStorage.getItem('userid'));
       this.is_loading(1);
       getAllProjects({userid:sessionStorage.getItem('userid')}).then(e => {
         this.is_loading(0);
-        alert(JSON.stringify(e))
           if(e.result){
             let str='';
             e.result.forEach(function (row, index) {
+              alert(row.id)
               str += '<li class="mui-table-view-cell">'+
                     '<div class="mui-table">'+
                       '<div class="mui-table-cell mui-col-xs-10"><a href="/#/ding/project/projectInfo?id="'+row.id+'>'+
