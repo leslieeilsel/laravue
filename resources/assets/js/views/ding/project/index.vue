@@ -60,9 +60,17 @@ export default {
           corpId: "dinge48f324dae7de1df35c2f4657eb6378f",
           onSuccess: function(result) {
             alert(result.code)
-            this.is_loading(1);
+            dd.device.notification.showPreloader({
+                text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+                showIcon: true, //是否显示icon，默认true
+                onSuccess : function(result) {},
+                onFail : function(err) {}
+            })
             getUserId({ code: result.code }).then(res => {
-              this.is_loading(0);
+              dd.device.notification.hidePreloader({
+                  onSuccess : function(result) {},
+                  onFail : function(err) {}
+              })
               alert(JSON.stringify(res))
               if (res.errcode == 0) { 
                 alert(res.userid)
@@ -73,23 +81,6 @@ export default {
           onFail: function(err) {}
         });
       });
-    },
-    //加载样式
-    is_loading(type){
-      alert(222)
-      if(type==1){
-        dd.device.notification.showPreloader({
-            text: "使劲加载中..", //loading显示的字符，空表示不显示文字
-            showIcon: true, //是否显示icon，默认true
-            onSuccess : function(result) {},
-            onFail : function(err) {}
-        })
-      }else{
-        dd.device.notification.hidePreloader({
-            onSuccess : function(result) {},
-            onFail : function(err) {}
-        })
-      }
     }
   }
 };
