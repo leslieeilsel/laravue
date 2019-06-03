@@ -57,6 +57,8 @@ export default {
                           '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
                             '<span class="mui-h5">'+row.month+'</span>'+
                           '</div>'+
+                        '</div>'+
+                          '<div class="mui-table">'+
                             '<div class="mui-table-cell mui-col-xs-6"><a href="/#/ding/project/projectScheduleAudit?id='+row.id+'">查看'+
                             '</a></div>'+
                             '<div class="mui-table-cell mui-col-xs-6 mui-text-right"><a href="/#/ding/project/projectScheduleEdit?id='+row.id+'">编辑'+                  
