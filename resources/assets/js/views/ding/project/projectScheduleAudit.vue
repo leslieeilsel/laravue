@@ -261,13 +261,13 @@ export default {
               dd.device.notification.prompt({
                   message: "审核不通过原因",
                   title: "审核不通过原因",
-                  defaultText:"默认提示",
                   buttonLabels: ['提交'],
                   onSuccess : function(result) {
+                    alert(result.buttonIndex)
                     if(result.buttonIndex==0){
-                      this.is_loading(1);
+                      // this.is_loading(1);
                       auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:2,reason:result.value}).then(res => {
-                        this.is_loading(0);
+                        // this.is_loading(0);
                         alert(JSON.stringify(res))
                       })
                     }
