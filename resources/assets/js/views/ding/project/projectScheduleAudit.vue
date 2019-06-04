@@ -124,37 +124,13 @@
           </span>
           <span class="ding_details_span">
             <font class="details_name">形象进度</font>
-            <font class="details_det ding">
-              <div class="demo-upload-list" v-for="item in defaultList">
-                <template>
-                  <img :src="item.url">
-                  <div class="demo-upload-list-cover">
-                    <Icon type="ios-eye-outline" @click="handleView(item.url)"></Icon>
-                  </div>
-                </template>
-                <template>
-                  <Progress hide-info></Progress>
-                </template>
+              <div style="width: 100%;float: left;">
+                <ul class="posunjilu_pic oul" v-for="item in defaultList">
+                    <li class="posun_img posun_li">
+                      <img :src="item.url">
+                    </li>
+                </ul>
               </div>
-              <!-- <Modal title="查看照片" v-model="visible">
-                <img :src="imgUrl" style="width: 100%">
-              </Modal> -->
-              <!-- <Upload
-                ref="upload"
-                :disabled="upbtnDisabled"
-                name="img_pic"
-                :on-success="handleSuccess"
-                multiple
-                :data="upData"
-                :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
-                :max-size="600"
-                :on-format-error="handleFormatError"
-                :on-exceeded-size="handleMaxSize"
-                action="/api/project/uploadPic">
-                <Button icon="ios-cloud-upload-outline">上传</Button>
-                <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
-              </Upload> -->
-            </font>
           </span>
         </div>
       </li>
