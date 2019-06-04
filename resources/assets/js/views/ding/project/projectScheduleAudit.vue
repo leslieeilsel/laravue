@@ -279,10 +279,19 @@ export default {
           onFail : function(err) {}
       })
     },handleView(url){
-      alert(url)
+        let img_pic = [];
+        if (this.defaultList) {
+          let i = 0;
+          this.defaultList.forEach(function (em_pic) {
+            if (em_pic != 'null') {
+              img_pic.push({url: 'http://139.217.6.78:9000/'+em_pic, name: i});
+            }
+            i++;
+          })
+        }
       dd.biz.util.previewImage({
-          urls: ['/'+url],//图片地址列表
-          current: '/'+url,//当前显示的图片链接
+          urls: img_pic,//图片地址列表
+          current: 'http://139.217.6.78:9000/'+url,//当前显示的图片链接
           onSuccess : function(result) {
               /**/
             alert(JSON.stringify(result))
