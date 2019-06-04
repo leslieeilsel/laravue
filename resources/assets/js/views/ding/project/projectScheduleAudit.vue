@@ -222,30 +222,42 @@ export default {
         this.is_loading(0);
         this.form = res.result;
       })
-    },submitF(){
+    },
+    submitF(){
+      let id=this.$route.query.id;
       dd.device.notification.actionSheet({
           title: "审核", //标题
           cancelButton: '取消', //取消按钮文本
           otherButtons: ["审核通过","审核不通过"],
           onSuccess : function(result) {
             //审核通过1 审核不通过2
-            alert(JSON.stringify(result))
-            // dd.device.notification.prompt({
-            //     message: "审核不通过原因",
-            //     title: "审核不通过原因",
-            //     defaultText:"默认提示",
-            //     buttonLabels: ['提交'],
-            //     onSuccess : function(result) {
-            //         //onSuccess将在点击button之后回调
-            //         /*
-            //         {
-            //             buttonIndex: 0, //被点击按钮的索引值，Number类型，从0开始
-            //             value: '' //输入的值
-            //         }
-            //         */
-            //     },
-            //     onFail : function(err) {}
-            // });
+            if(result.buttonIndex==0){
+              //通过
+              this.is_loading(1);
+              auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
+                this.is_loading(0);
+                alert(JSON.stringify(res))
+              })
+            }else{
+              //不通过
+              dd.device.notification.prompt({
+                  message: "审核不通过原因",
+                  title: "审核不通过原因",
+                  defaultText:"默认提示",
+                  buttonLabels: ['提交'],
+                  onSuccess : function(result) {
+                    if(result.buttonIndex==0){
+                      this.is_loading(1);
+                      auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:2,reason:result.value}).then(res => {
+                        this.is_loading(0);
+                        alert(JSON.stringify(res))
+                      })
+                    }
+                  },
+                  onFail : function(err) {}
+              });
+            }
+            
           },
           onFail : function(err) {}
       })
