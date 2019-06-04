@@ -127,7 +127,7 @@
               <div style="width: 100%;float: left;">
                 <ul class="posunjilu_pic oul" v-for="item in defaultList">
                     <li class="posun_img posun_li" >
-                      <img :src="item.url">
+                      <img :src="item.url" @click="handleView(item.url)">
                     </li>
                 </ul>
               </div>
