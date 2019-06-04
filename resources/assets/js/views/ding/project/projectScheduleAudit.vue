@@ -3,7 +3,7 @@
     <ul class="mui-table-view" style="padding:10px 15px;background:transparent;top:0;margin-bottom: 30px;">
       <li class="ding_li">
         <div class="li_top">
-          <div>项目审核</div>
+          <div>项目填报审核</div>
         </div>
         <div class="ding_detail ding_details">
           <span class="ding_details_span">
@@ -126,7 +126,7 @@
             <font class="details_name">形象进度</font>
               <div style="width: 100%;float: left;">
                 <ul class="posunjilu_pic oul" v-for="item in defaultList">
-                    <li class="posun_img posun_li" @click="handleView(item.url)">
+                    <li class="posun_img posun_li" >
                       <img :src="item.url">
                     </li>
                 </ul>
@@ -207,7 +207,6 @@ export default {
             i++;
           })
         }
-
         this.defaultList = img_pic;
         this.form = res.result;
       })

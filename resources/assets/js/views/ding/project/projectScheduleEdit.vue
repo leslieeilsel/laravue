@@ -3,7 +3,7 @@
     <ul class="mui-table-view" style="padding:10px 15px;background:transparent;top:0;margin-bottom: 30px;">
       <li class="ding_li">
         <div class="li_top">
-          <div>项目填报</div>
+          <div>项目填报编辑</div>
         </div>
         <div class="ding_detail ding_details">
           <span class="ding_details_span">
