@@ -1,6 +1,6 @@
 <template>
     <div class="mui-content"> 
-      <div class="mui-content" style="margin-bottom:30px"> 
+      <div class="mui-content" style="margin-bottom:50px"> 
         <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" v-html="con_str">
           <!--  v-html="con_str" -->
           
