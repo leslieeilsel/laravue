@@ -125,16 +125,21 @@
           <span class="ding_details_span">
             <font class="details_name">形象进度</font>
             <font class="details_det ding">
-              <!-- <Upload 
-                ref="upload"
-                name="img_pic"
-                :on-success="handleSuccess"
-                action="/api/project/uploadPic"
-              >
-                <Button icon="ios-cloud-upload-outline">上传</Button>
-                <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
-              </Upload> -->
-              <Upload
+              <div class="demo-upload-list" v-for="item in defaultList">
+                <template>
+                  <img :src="item.url">
+                  <div class="demo-upload-list-cover">
+                    <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
+                  </div>
+                </template>
+                <template>
+                  <Progress hide-info></Progress>
+                </template>
+              </div>
+              <Modal title="查看照片" v-model="visible">
+                <img :src="imgUrl" style="width: 100%">
+              </Modal>
+              <!-- <Upload
                 ref="upload"
                 :disabled="upbtnDisabled"
                 name="img_pic"
@@ -148,7 +153,7 @@
                 action="/api/project/uploadPic">
                 <Button icon="ios-cloud-upload-outline">上传</Button>
                 <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
-              </Upload>
+              </Upload> -->
             </font>
           </span>
         </div>
@@ -202,7 +207,7 @@ export default {
       project_id: [],
       userid: "",
       upData: {},
-      upbtnDisabled: true
+      defaultList: []
     };
   },
   mounted() {
@@ -217,7 +222,6 @@ export default {
       this.is_loading(1);
       projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(res => {
         this.is_loading(0);
-        alert(JSON.stringify(res.result))
         this.form = res.result;
       })
     },

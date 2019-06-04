@@ -230,6 +230,20 @@ export default {
       projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(res => {
         this.is_loading(0);
         alert(JSON.stringify(res))
+        
+        let img_pic = [];
+        if (res.result.img_progress_pic) {
+          let pics = res.result.img_progress_pic.split(",");
+          let i = 0;
+          pics.forEach(function (em_pic) {
+            if (em_pic != 'null') {
+              img_pic.push({url: em_pic.replace(/#/g, "%23"), name: i});
+            }
+            i++;
+          })
+        }
+
+        this.defaultList = img_pic;
         this.form = res.result;
       })
     },
