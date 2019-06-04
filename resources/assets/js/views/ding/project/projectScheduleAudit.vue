@@ -225,10 +225,22 @@ export default {
     },
     submitF(){
       let id=this.$route.query.id;
-      auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
-        alert(211)
-        // this.is_loading(0);
-        alert(JSON.stringify(res))
+      
+      dd.ready(function() {
+        dd.device.notification.confirm({
+            message: "审核",
+            title: "是否通过审核",
+            buttonLabels: ['通过', '不通过'],
+            onSuccess : function(result) {
+              auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
+                alert(211)
+                // this.is_loading(0);
+                alert(JSON.stringify(res))
+              })
+            },
+            onFail : function(err) {}
+        });
+
       })
       // dd.device.notification.actionSheet({
       //     title: "审核", //标题
