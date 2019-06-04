@@ -230,6 +230,22 @@ export default {
           onSuccess : function(result) {
             //审核通过1 审核不通过2
             alert(JSON.stringify(result))
+            // dd.device.notification.prompt({
+            //     message: "审核不通过原因",
+            //     title: "审核不通过原因",
+            //     defaultText:"默认提示",
+            //     buttonLabels: ['提交'],
+            //     onSuccess : function(result) {
+            //         //onSuccess将在点击button之后回调
+            //         /*
+            //         {
+            //             buttonIndex: 0, //被点击按钮的索引值，Number类型，从0开始
+            //             value: '' //输入的值
+            //         }
+            //         */
+            //     },
+            //     onFail : function(err) {}
+            // });
           },
           onFail : function(err) {}
       })
