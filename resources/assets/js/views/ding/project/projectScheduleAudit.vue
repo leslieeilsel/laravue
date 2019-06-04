@@ -222,6 +222,17 @@ export default {
         this.is_loading(0);
         this.form = res.result;
       })
+    },submitF(){
+      dd.device.notification.actionSheet({
+          title: "审核", //标题
+          cancelButton: '取消', //取消按钮文本
+          otherButtons: ["审核通过","审核不通过"],
+          onSuccess : function(result) {
+            //审核通过1 审核不通过2
+            alert(JSON.stringify(result))
+          },
+          onFail : function(err) {}
+      })
     },
     //加载样式
     is_loading(type){
