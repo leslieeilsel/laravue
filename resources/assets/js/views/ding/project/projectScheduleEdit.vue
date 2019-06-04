@@ -173,7 +173,7 @@
 <style scope src="./mui.css"></style>
 <script>
 import * as dd from "dingtalk-jsapi";
-import { getAuditedProjects,projectPlanInfo,actCompleteMoney, getUserId, userNotify,projectProgress,getScheduleInfo } from "../../../api/ding";
+import { getAuditedProjects,projectPlanInfo,actCompleteMoney, getUserId, userNotify,projectProgress,projectScheduleInfo } from "../../../api/ding";
 export default {
   data() {
     return {
