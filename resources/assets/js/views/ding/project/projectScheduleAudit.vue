@@ -158,7 +158,7 @@
           </span>
         </div>
       </li>
-      <Button @click="submitF()" style="width: 100%;height: 40px;background: #029aed; color:#fff; bottom:30px">提交</Button>
+      <Button @click="submitF()" style="width: 100%;height: 40px;background: #029aed; color:#fff; bottom:30px">审核</Button>
     </ul>
     <nav class="mui-bar mui-bar-tab">
       <a class="mui-tab-item mui-active" href="/ding/project">
@@ -225,44 +225,49 @@ export default {
     },
     submitF(){
       let id=this.$route.query.id;
-      dd.device.notification.actionSheet({
-          title: "审核", //标题
-          cancelButton: '取消', //取消按钮文本
-          otherButtons: ["审核通过","审核不通过"],
-          onSuccess : function(result) {
-            //审核通过1 审核不通过2
-            if(result.buttonIndex==0){
-              //通过
-              alert(id)
-              // this.is_loading(1);
-              auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
-                alert(211)
-                // this.is_loading(0);
-                alert(JSON.stringify(res))
-              })
-            }else{
-              //不通过
-              dd.device.notification.prompt({
-                  message: "审核不通过原因",
-                  title: "审核不通过原因",
-                  defaultText:"默认提示",
-                  buttonLabels: ['提交'],
-                  onSuccess : function(result) {
-                    if(result.buttonIndex==0){
-                      this.is_loading(1);
-                      auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:2,reason:result.value}).then(res => {
-                        this.is_loading(0);
-                        alert(JSON.stringify(res))
-                      })
-                    }
-                  },
-                  onFail : function(err) {}
-              });
-            }
-            
-          },
-          onFail : function(err) {}
+      auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
+        alert(211)
+        // this.is_loading(0);
+        alert(JSON.stringify(res))
       })
+      // dd.device.notification.actionSheet({
+      //     title: "审核", //标题
+      //     cancelButton: '取消', //取消按钮文本
+      //     otherButtons: ["审核通过","审核不通过"],
+      //     onSuccess : function(result) {
+      //       //审核通过1 审核不通过2
+      //       if(result.buttonIndex==0){
+      //         //通过
+      //         alert(id)
+      //         // this.is_loading(1);
+      //         auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
+      //           alert(211)
+      //           // this.is_loading(0);
+      //           alert(JSON.stringify(res))
+      //         })
+      //       }else{
+      //         //不通过
+      //         dd.device.notification.prompt({
+      //             message: "审核不通过原因",
+      //             title: "审核不通过原因",
+      //             defaultText:"默认提示",
+      //             buttonLabels: ['提交'],
+      //             onSuccess : function(result) {
+      //               if(result.buttonIndex==0){
+      //                 this.is_loading(1);
+      //                 auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:2,reason:result.value}).then(res => {
+      //                   this.is_loading(0);
+      //                   alert(JSON.stringify(res))
+      //                 })
+      //               }
+      //             },
+      //             onFail : function(err) {}
+      //         });
+      //       }
+            
+      //     },
+      //     onFail : function(err) {}
+      // })
     },
     //加载样式
     is_loading(type){
