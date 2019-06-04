@@ -234,9 +234,10 @@ export default {
             if(result.buttonIndex==0){
               //通过
               alert(id)
-              this.is_loading(1);
+              // this.is_loading(1);
               auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
-                this.is_loading(0);
+                alert(211)
+                // this.is_loading(0);
                 alert(JSON.stringify(res))
               })
             }else{
