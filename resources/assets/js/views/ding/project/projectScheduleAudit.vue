@@ -233,8 +233,23 @@ export default {
             //审核通过1 审核不通过2
             if(result.buttonIndex==0){
               //通过
+              dd.device.notification.showPreloader({
+                  text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+                  showIcon: true, //是否显示icon，默认true
+                  onSuccess : function(result) {},
+                  onFail : function(err) {}
+              })
               auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
+                dd.device.notification.hidePreloader({
+                    onSuccess : function(result) {},
+                    onFail : function(err) {}
+                })
                 if(res.result==true){
+                  dd.device.notification.toast({
+                      text: '提交成功', //提示信息
+                      onSuccess : function(result) {},
+                      onFail : function(err) {}
+                  })
                   this.$Message.success("提交成功");
                 }
               })
@@ -245,10 +260,24 @@ export default {
                   title: "审核不通过原因",
                   buttonLabels: ['提交'],
                   onSuccess : function(result) {
-                    alert(result.buttonIndex)
                     if(result.buttonIndex==0){
+                      dd.device.notification.showPreloader({
+                          text: "使劲加载中..", //loading显示的字符，空表示不显示文字
+                          showIcon: true, //是否显示icon，默认true
+                          onSuccess : function(result) {},
+                          onFail : function(err) {}
+                      })
                       auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:2,reason:result.value}).then(res => {
+                        dd.device.notification.hidePreloader({
+                            onSuccess : function(result) {},
+                            onFail : function(err) {}
+                        })
                         if(res.result==true){
+                            dd.device.notification.toast({
+                                text: '提交失败', //提示信息
+                                onSuccess : function(result) {},
+                                onFail : function(err) {}
+                            })
                           this.$Message.success("提交失败");
                         }
                       })
