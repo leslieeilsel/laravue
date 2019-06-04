@@ -126,8 +126,8 @@
             <font class="details_name">形象进度</font>
               <div style="width: 100%;float: left;">
                 <ul class="posunjilu_pic oul" v-for="item in defaultList">
-                    <li class="posun_img posun_li" >
-                      <img :src="item.url" @click="handleView(item.url)">
+                    <li class="posun_img posun_li" @click="handleView(item.url)">
+                      <img :src="item.url">
                     </li>
                 </ul>
               </div>
@@ -279,7 +279,7 @@ export default {
           onFail : function(err) {}
       })
     },handleView(url){
-      alert(222)
+      alert(url)
       dd.biz.util.previewImage({
           urls: this.defaultList,//图片地址列表
           current: url,//当前显示的图片链接
