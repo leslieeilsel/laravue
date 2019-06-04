@@ -171,7 +171,7 @@
 <style scope src="./mui.css"></style>
 <script>
 import * as dd from "dingtalk-jsapi";
-import { getAuditedProjects,projectPlanInfo,actCompleteMoney, getUserId, userNotify,projectProgress,projectScheduleInfo } from "../../../api/ding";
+import { getAuditedProjects,projectPlanInfo,actCompleteMoney, getUserId, userNotify,projectProgress,projectScheduleInfo,editProjectProgress } from "../../../api/ding";
 export default {
   data() {
     return {
@@ -227,8 +227,6 @@ export default {
       this.is_loading(1);
       projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(res => {
         this.is_loading(0);
-        alert(JSON.stringify(res))
-        
         let img_pic = [];
         if (res.result.img_progress_pic) {
           let pics = res.result.img_progress_pic.split(",");
@@ -293,13 +291,29 @@ export default {
           this.$Message.error('请填写月实际完成投资!');
           return false;
       }
-      projectProgress({form:this.form,userid:sessionStorage.getItem('user_id')}).then(res => {
+      if(this.form.month_img_progress===''){
+          this.$Message.error('请填写月形象进度!');
+          return false;
+      }
+      if(this.form.acc_img_progress===''){
+          this.$Message.error('请填写累计形象进度!');
+          return false;
+      }
+      if(this.form.problem===''){
+          this.$Message.error('请填写存在问题!');
+          return false;
+      }
+      if(this.form.measures===''){
+          this.$Message.error('请填写整改措施!');
+          return false;
+      }
+      editProjectProgress({form:this.form,userid:sessionStorage.getItem('user_id')}).then(res => {
         if (res.result) {
-          this.$Message.success("填报成功");
+          this.$Message.success("填报编辑成功");
           this.modal = false;
-          this.init();
+          this.$router.go(-1);
         } else {
-          this.$Message.error('填报失败!');
+          this.$Message.error('填报编辑失败!');
         }
       });
     },
