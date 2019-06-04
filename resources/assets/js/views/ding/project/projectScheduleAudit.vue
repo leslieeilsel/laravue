@@ -285,8 +285,11 @@ export default {
           current: url,//当前显示的图片链接
           onSuccess : function(result) {
               /**/
+            alert(JSON.stringify(result))
           },
-          onFail : function(err) {}
+          onFail : function(err) {
+            alert(JSON.stringify(err))
+          }
       })
     },
     //加载样式
