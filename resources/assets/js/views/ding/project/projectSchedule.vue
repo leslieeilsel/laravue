@@ -350,7 +350,7 @@ export default {
           return false;
       }
       this.is_loading(1);
-      projectProgress({form:this.form,userid:sessionStorage.getItem('user_id')}).then(res => {
+      projectProgress({form:this.form,userid:sessionStorage.getItem('userid')}).then(res => {
         this.is_loading(0);
         if (res.result) {
           this.$Message.success("填报成功");
