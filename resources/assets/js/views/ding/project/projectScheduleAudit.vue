@@ -225,22 +225,6 @@ export default {
     },
     submitF(){
       let id=this.$route.query.id;
-      
-      // dd.ready(function() {
-      //   dd.device.notification.confirm({
-      //       message: "审核",
-      //       title: "是否通过审核",
-      //       buttonLabels: ['通过', '不通过'],
-      //       onSuccess : function(result) {
-      //         auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
-      //           alert(211)
-      //           // this.is_loading(0);
-      //           alert(JSON.stringify(res))
-      //         })
-      //       },
-      //       onFail : function(err) {}
-      //   });
-      // })
       dd.device.notification.actionSheet({
           title: "审核", //标题
           cancelButton: '取消', //取消按钮文本
@@ -249,12 +233,10 @@ export default {
             //审核通过1 审核不通过2
             if(result.buttonIndex==0){
               //通过
-              alert(id)
-              // this.is_loading(1);
               auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:1,reason:''}).then(res => {
-                alert(211)
-                // this.is_loading(0);
-                alert(JSON.stringify(res))
+                if(res.result==true){
+                  this.$Message.success("提交成功");
+                }
               })
             }else{
               //不通过
@@ -265,10 +247,10 @@ export default {
                   onSuccess : function(result) {
                     alert(result.buttonIndex)
                     if(result.buttonIndex==0){
-                      // this.is_loading(1);
                       auditProjectProgress({userid:sessionStorage.getItem('userid'),id:id,status:2,reason:result.value}).then(res => {
-                        // this.is_loading(0);
-                        alert(JSON.stringify(res))
+                        if(res.result==true){
+                          this.$Message.success("提交失败");
+                        }
                       })
                     }
                   },
