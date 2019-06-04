@@ -15,7 +15,7 @@
           <span class="ding_details_span">
             <font class="details_name">填报时间</font>
             <font class="details_det ding">
-              <DatePicker type="month" :options="month_options_0" placeholder="请选择"
+              <DatePicker type="month" placeholder="请选择"
                           format="yyyy-MM"
                           v-model="form.month" style="width: 90%"></DatePicker>
             </font>
@@ -136,9 +136,9 @@
                   <Progress hide-info></Progress>
                 </template>
               </div>
-              <Modal title="查看照片" v-model="visible">
+              <!-- <Modal title="查看照片" v-model="visible">
                 <img :src="imgUrl" style="width: 100%">
-              </Modal>
+              </Modal> -->
               <!-- <Upload
                 ref="upload"
                 :disabled="upbtnDisabled"
