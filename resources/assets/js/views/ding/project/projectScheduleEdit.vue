@@ -253,12 +253,10 @@ export default {
     },handleView(url){
         let img_pic = [];
         if (this.defaultList) {
-          let i = 0;
           this.defaultList.forEach(function (em_pic) {
             if (em_pic != 'null') {
-              img_pic.push({url: 'http://139.217.6.78:9000/'+em_pic, name: i});
+              img_pic.push('http://139.217.6.78:9000/'+em_pic.url);
             }
-            i++;
           })
         }
       dd.biz.util.previewImage({
