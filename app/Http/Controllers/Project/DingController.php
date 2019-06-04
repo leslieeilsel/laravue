@@ -607,7 +607,8 @@ class DingController extends Controller
      */
     public function editProjectProgress(Request $request)
     {
-        $data = $request->all();
+        $datas = $request->all();
+        $data=$datas['form'];
         $data['month'] = date('Y-m', strtotime($data['month']));
         $data['build_start_at'] = date('Y-m', strtotime($data['build_start_at']));
         $data['build_end_at'] = date('Y-m', strtotime($data['build_end_at']));

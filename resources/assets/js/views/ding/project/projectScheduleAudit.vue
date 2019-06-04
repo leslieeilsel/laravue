@@ -129,7 +129,7 @@
                 <template>
                   <img :src="item.url">
                   <div class="demo-upload-list-cover">
-                    <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
+                    <Icon type="ios-eye-outline" @click="handleView(item.url)"></Icon>
                   </div>
                 </template>
                 <template>
@@ -287,6 +287,16 @@ export default {
               });
             }
             
+          },
+          onFail : function(err) {}
+      })
+    },handleView(url){
+      alert(222)
+      dd.biz.util.previewImage({
+          urls: this.defaultList,//图片地址列表
+          current: url,//当前显示的图片链接
+          onSuccess : function(result) {
+              /**/
           },
           onFail : function(err) {}
       })
