@@ -126,7 +126,7 @@
             <font class="details_name">形象进度</font>
             <div style="width: 100%;float: left;">
               <ul class="posunjilu_pic oul" v-for="item in defaultList">
-                  <li class="posun_img posun_li">
+                  <li class="posun_img posun_li" @click="handleView(item.url)">
                     <img :src="item.url">
                   </li>
               </ul>
@@ -249,6 +249,28 @@ export default {
 
         this.defaultList = img_pic;
         this.form = res.result;
+      })
+    },handleView(url){
+        let img_pic = [];
+        if (this.defaultList) {
+          let i = 0;
+          this.defaultList.forEach(function (em_pic) {
+            if (em_pic != 'null') {
+              img_pic.push({url: 'http://139.217.6.78:9000/'+em_pic, name: i});
+            }
+            i++;
+          })
+        }
+      dd.biz.util.previewImage({
+          urls: img_pic,//图片地址列表
+          current: 'http://139.217.6.78:9000/'+url,//当前显示的图片链接
+          onSuccess : function(result) {
+              /**/
+            alert(JSON.stringify(result))
+          },
+          onFail : function(err) {
+            alert(JSON.stringify(err))
+          }
       })
     },
     handleSuccess(res, file) {
