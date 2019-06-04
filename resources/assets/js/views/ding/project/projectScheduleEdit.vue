@@ -9,18 +9,15 @@
           <span class="ding_details_span">
             <font class="details_name">填报项目</font>
             <font class="details_det ding">
-              <Select v-model="form.project_id" @on-change='changeProject' style="width: 90%;">
-                  <Option value="-1">请选择</Option>
-                  <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
-              </Select>
+              <Input v-model="form.project_title" placeholder="项目名称" style="width: 90%" readonly></Input>
             </font>
           </span>
           <span class="ding_details_span">
-            <font class="details_name" @on-change='changeMonth'>填报时间</font>
+            <font class="details_name">填报时间</font>
             <font class="details_det ding">
               <DatePicker type="month" :options="month_options_0" placeholder="请选择"
                           format="yyyy-MM"
-                          v-model="form.month" style="width: 90%"></DatePicker>
+                          v-model="form.month" style="width: 90%" readonly></DatePicker>
             </font>
           </span>
           <span class="ding_details_span">
@@ -41,12 +38,12 @@
               <Row>
                 <Col span="11">
                   <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" readonly
-                              v-model="form.build_start_at" style="width: 90%"></DatePicker>
+                              v-model="form.build_start_at" style="width: 90%" readonly></DatePicker>
                 </Col>
                 <Col span="2" style="text-align: center">-</Col>
                 <Col span="11">
                   <DatePicker type="month" placeholder="结束时间" format="yyyy-MM" readonly
-                              v-model="form.build_end_at" style="width: 90%"></DatePicker>
+                              v-model="form.build_end_at" style="width: 90%" readonly></DatePicker>
                 </Col>
               </Row>
             </font>
@@ -229,7 +226,6 @@ export default {
     },//进度详情
     getScheduleInfo(){
       let id=this.$route.query.id;
-      alert(id)
       this.is_loading(1);
       projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(res => {
         this.is_loading(0);
@@ -275,19 +271,6 @@ export default {
       }).then(res => {
         this.form.acc_complete = res.result;
       });
-    },
-    changeMonth(e) {
-      if (this.form.project_id === '') {
-        this.$Message.error('请先选择填报项目!');
-        this.form.month = '';
-        return;
-      }
-      this.upbtnDisabled = false;
-      let month_time = new Date(this.form.month);
-      let month_time_0 = (month_time.getMonth() + 1) > 9 ? (month_time.getMonth() + 1) : '0' + (month_time.getMonth() + 1);
-
-      month_time = month_time.getFullYear() + '-' + month_time_0;
-      this.upData = {month: month_time, project_num: this.form.project_num, project_id: this.form.project_id};
     },
     submitF(){
       if(this.form.exp_preforma===''){
