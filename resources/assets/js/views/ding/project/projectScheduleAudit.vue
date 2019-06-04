@@ -209,6 +209,7 @@ export default {
         }
 
         this.defaultList = img_pic;
+        alert(defaultList)
         this.form = res.result;
       })
     },
