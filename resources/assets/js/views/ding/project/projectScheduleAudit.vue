@@ -126,7 +126,7 @@
             <font class="details_name">形象进度</font>
               <div style="width: 100%;float: left;">
                 <ul class="posunjilu_pic oul" v-for="item in defaultList">
-                    <li class="posun_img posun_li">
+                    <li class="posun_img posun_li" @click="handleView(item.url)">
                       <img :src="item.url">
                     </li>
                 </ul>
@@ -209,7 +209,6 @@ export default {
         }
 
         this.defaultList = img_pic;
-        alert(defaultList)
         this.form = res.result;
       })
     },
