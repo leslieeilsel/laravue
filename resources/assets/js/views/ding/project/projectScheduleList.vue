@@ -1,24 +1,9 @@
 <template>
     <div class="mui-content"> 
       <div class="mui-content" style="margin-bottom:50px"> 
-        <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" v-html="con_str">
+        <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" style="margin-bottom:60px" v-html="con_str">
           <!--  v-html="con_str" -->
           
-
-          <!-- <li class="mui-table-view-cell">
-            <div class="mui-row">
-              <div class="mui-col-xs-12">
-                <h4 class="mui-ellipsis">sdfsff</h4>
-                <h5>sdfsdfsfdsf</h5>
-                <p class="mui-h6 mui-ellipsis">dsfsdfdsfs</p>
-              </div>
-              <div class="mui-col-xs-4"><span class="mui-h5">2019</span></div>
-              <div class="mui-col-xs-8" style="padding: 5px;">
-                  <Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left">查看</Button>
-                  <Button style="width: 50%;height: 30px;background: #029aed; color:#fff;float:left ">编辑</Button>
-              </div>
-            </div>
-          </li> -->
         </ul>
       </div>
       <nav class="mui-bar mui-bar-tab">
