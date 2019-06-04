@@ -13,7 +13,7 @@
             </font>
           </span>
           <span class="ding_details_span">
-            <font class="details_name" @on-change='changeMonth'>填报时间</font>
+            <font class="details_name">填报时间</font>
             <font class="details_det ding">
               <DatePicker type="month" :options="month_options_0" placeholder="请选择"
                           format="yyyy-MM"
@@ -69,7 +69,7 @@
           <span class="ding_details_span">
             <font class="details_name">月实际完成投资(万元)</font>
             <font class="details_det ding">
-              <InputNumber @on-blur="changeMonthActComplete" :min="0" :step="1.2" style="width: 90%;border:none;" v-model="form.month_act_complete"
+              <InputNumber :min="0" :step="1.2" style="width: 90%;border:none;" v-model="form.month_act_complete"
                            placeholder="必填项"></InputNumber>
             </font>
           </span>
