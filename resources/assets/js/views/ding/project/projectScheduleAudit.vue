@@ -281,8 +281,8 @@ export default {
     },handleView(url){
       alert(url)
       dd.biz.util.previewImage({
-          urls: ['http://139.217.6.78:9000/'+url],//图片地址列表
-          current: 'http://139.217.6.78:9000/'+url,//当前显示的图片链接
+          urls: ['/'+url],//图片地址列表
+          current: '/'+url,//当前显示的图片链接
           onSuccess : function(result) {
               /**/
             alert(JSON.stringify(result))
