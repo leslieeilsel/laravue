@@ -218,8 +218,7 @@ export default {
       projectScheduleInfo({userid:sessionStorage.getItem('userid'),id:id}).then(res => {
         this.is_loading(0);
         alert(JSON.stringify(res.result))
-        this.form.project_title = res.result.project_title;
-        this.form.project_num = 11;
+        this.form = res.result;
       })
     },
     //加载样式
