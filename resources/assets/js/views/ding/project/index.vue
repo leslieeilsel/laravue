@@ -1,5 +1,5 @@
 <template>
-  <div class="mui-content" style="overflow:hidden">
+  <div class="mui-content">
     <div class="mui-content"> 
         <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
               <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
