@@ -41,6 +41,7 @@ export default {
       }
       this.is_loading(1);
       getAllWarning({userid:sessionStorage.getItem('userid')}).then(res => {
+        alert(JSON.stringify(res))
         this.is_loading(0);
         if(res.result){
           let str='';
