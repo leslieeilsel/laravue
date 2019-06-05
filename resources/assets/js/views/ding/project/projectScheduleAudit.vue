@@ -292,10 +292,10 @@ export default {
           current: 'http://139.217.6.78:9000/'+url,//当前显示的图片链接
           onSuccess : function(result) {
               /**/
-            alert(JSON.stringify(result))
+            // alert(JSON.stringify(result))
           },
           onFail : function(err) {
-            alert(JSON.stringify(err))
+            // alert(JSON.stringify(err))
           }
       })
     },
