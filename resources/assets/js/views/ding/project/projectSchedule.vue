@@ -220,6 +220,7 @@ export default {
   },
   mounted() {
     this.init();
+    DatePicker.setDescendantFocusability(DatePicker.FOCUS_BLOCK_DESCENDANTS);
   },
   methods: {
     init() {
