@@ -41,12 +41,11 @@ export default {
       }
       this.is_loading(1);
       getAllWarning({userid:sessionStorage.getItem('userid')}).then(res => {
-        alert(JSON.stringify(res))
         this.is_loading(0);
         if(res.result){
           let str='';
           let war_title='';
-          resresult.forEach(function (row, index) {
+          res.result.forEach(function (row, index) {
             if (row.tags === 1) {
               war_title = '警告滞后';
             } else if (row.tags === 2) {
