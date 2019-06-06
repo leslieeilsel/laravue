@@ -117,7 +117,7 @@ class LedgerController extends Controller
             $projects=$projects->get()->toArray();
             if($i>0){
                 $ids = array_column($projects, 'id');
-                $ids = array_intersect($ids, $this->seeIds);
+                // $ids = array_intersect($ids, $this->seeIds);
                 $sql = $sql->whereIn('project_id', $ids);
             }
         }
