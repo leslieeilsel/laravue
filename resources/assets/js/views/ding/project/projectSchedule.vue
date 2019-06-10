@@ -8,8 +8,8 @@
         <div class="ding_detail ding_details">
           <span class="ding_details_span">
             <font class="details_name">填报项目</font>
-            <font class="details_det ding">
-              <Select v-model="form.project_id" @on-change='changeProject' style="width: 90%;">
+            <font class="details_det ding" style="height:50px">
+              <Select v-model="form.project_id" @on-change='changeProject' style="width: 90%;height:40px">
                   <Option value="-1">请选择</Option>
                   <Option v-for="item in project_id" :value="item.id" :key="item.id">{{ item.title }}</Option>
               </Select>
