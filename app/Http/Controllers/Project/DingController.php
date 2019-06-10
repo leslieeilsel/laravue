@@ -141,8 +141,10 @@ class DingController extends Controller
     }
     //获取项目信息
     public function getAuditedProjects()
-    {
-        $projects = Projects::where('is_audit', 1)->whereIn('user_id', [16])->get()->toArray();
+    {        
+        $userid=Cache::get('userid');
+        $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->whereIn('user_id', $userid)->pluck('project_id')->toArray();
+        $projects = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->whereIn('user_id', [16])->get()->toArray();
 
         return response()->json(['result' => $projects], 200);
     }

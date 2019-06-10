@@ -90,7 +90,8 @@ class ProjectController extends Controller
 
     public function getAuditedProjects()
     {
-        $projects = Projects::where('is_audit', 1)->whereIn('user_id', $this->seeIds)->get()->toArray();
+        $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->whereIn('user_id', $this->seeIds)->pluck('project_id')->toArray();
+        $projects = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->whereIn('user_id', $this->seeIds)->get()->toArray();
 
         return response()->json(['result' => $projects], 200);
     }
