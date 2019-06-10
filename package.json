@@ -12,9 +12,9 @@
   "devDependencies": {
     "cross-env": "^5.2",
     "css-loader": "^1.0.1",
+    "laravel-mix": "^3.0",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
-    "laravel-mix": "^3.0",
     "node-sass": "^4.11.0",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-dev-server": "^3.2.1"
@@ -24,6 +24,7 @@
     "axios": "^0.19",
     "iview": "^3.3.0",
     "js-cookie": "^2.2.0",
+    "js-yaml": "3.13.1",
     "particles.js": "^2.0.0",
     "vue": "^2.6.7",
     "vue-i18n": "^8.8.2",
