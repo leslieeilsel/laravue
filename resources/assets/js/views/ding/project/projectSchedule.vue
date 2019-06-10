@@ -17,11 +17,11 @@
           </span>
           <span class="ding_details_span">
             <font class="details_name">填报时间</font>
-            <!-- <font class="details_det ding"> -->
+            <font class="details_det ding">
               <DatePicker type="month" :options="month_options_0" placeholder="请选择"
                           format="yyyy-MM"
                           v-model="form.month" style="width: 90%"  @on-change='changeMonth'></DatePicker>
-            <!-- </font> -->
+            </font>
           </span>
           <span class="ding_details_span">
             <font class="details_name" onClick='changeProject()'>项目编号</font>
