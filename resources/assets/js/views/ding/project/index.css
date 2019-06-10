@@ -128,3 +128,6 @@ html {font-size: 31.25vw; }
 	position: relative;
   padding-left: 2.5%;
 }
+.ivu-input-prefix i, .ivu-input-suffix i{
+	line-height: 50px;
+}
