@@ -143,7 +143,7 @@ class DingController extends Controller
     public function getAuditedProjects()
     {        
         $this->getSeeIds(cache::get('userid'));
-        $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->whereIn('ding_user_id', $this->seeIds)->pluck('project_id')->toArray();
+        $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->whereIn('user_id', $this->seeIds)->pluck('project_id')->toArray();
         $projects = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->whereIn('user_id', [16])->get()->toArray();
 
         return response()->json(['result' => $projects], 200);
