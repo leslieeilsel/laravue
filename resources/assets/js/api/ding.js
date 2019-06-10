@@ -145,5 +145,16 @@ export function auditProjectProgress(form) {
     data: {...form}
   });
 }
+/**
+ * 消息
+ * @returns {*}
+ */
+export function getNotifyList(form) {
+  return request({
+    url: '/api/ding/notifyList',
+    method: 'post',
+    data: {...form}
+  });
+}
 
 

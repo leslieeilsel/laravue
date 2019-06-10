@@ -21,7 +21,7 @@ const whiteList = ['/login', '/password/send',
                   '/ding/project/list','/ding/project/projectSchedule',
                   '/ding/project/projectScheduleList','/ding/project/projectWarning',
                   '/ding/project/projectInfo','/ding/project/projectScheduleEdit',
-                  '/ding/project/projectScheduleAudit'];
+                  '/ding/project/projectScheduleAudit','/ding/project/notify'];
 export let getRouters; //用来获取后台拿到的路由
 
 router.beforeEach((to, from, next) => {

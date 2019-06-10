@@ -33,7 +33,7 @@
         <span class="mui-icon mui-icon-home"></span>
         <span class="mui-tab-label">应用</span>
       </a>
-      <a class="mui-tab-item" href="#">
+      <a class="mui-tab-item" href="/#/ding/project/notify">
         <span class="mui-icon mui-icon-email"><span class="mui-badge">1</span></span>
         <span class="mui-tab-label">消息</span>
       </a>

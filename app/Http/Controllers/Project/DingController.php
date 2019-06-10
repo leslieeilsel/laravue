@@ -82,6 +82,7 @@ class DingController extends Controller
         $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid='.$user_id['userid'];
         $json=$this->postCurl($url,[],'get');
         $arr=json_decode($json,true);
+        Cache::put('userid', $arr['userid'], 7200);
         $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
         return $json;
     }
@@ -654,5 +655,44 @@ class DingController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+    /**
+     * 消息列表
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function notifyList(Request $request)
+    {
+        $params = $request->input();
+        $this->getSeeIds($params['userid']);
+        $data = [];
+
+        $result = DB::table('iba_system_notify')->whereIn('user_id', $this->seeIds)->get()->toArray();
+        foreach ($result as $k => $row) {
+            $user_name = user::where('id', $row['user_id'])->value('name');
+            $send_user_name = user::where('id', $row['send_user_id'])->value('name');
+            $data[$k]['user_name'] = $user_name;
+            $data[$k]['send_user_name'] = $send_user_name;
+        }
+
+        return response()->json(['result' => $data], 200);
+    }
+    /**
+     * 当月项目未填报列表
+     *
+     * @return JsonResponse
+     */
+    public function getProjectNoScheduleList()
+    {
+        $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->pluck('project_id')->toArray();
+        $result = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->get()->toArray();
+        foreach ($result as $k => $val) {
+            $users = User::select('username', 'phone')->where('id', $val['user_id'])->value('');
+            $result[$k]['username'] = $users[0]['username'];
+            $result[$k]['phone'] = $users[0]['phone'];
+        }
+        return response()->json(['result' => $result], 200);
+    }
+    
 }
                      

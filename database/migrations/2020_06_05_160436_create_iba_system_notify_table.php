@@ -19,7 +19,8 @@ class CreateIbaSystemNotifyTable extends Migration
             $table->string('description')->nullable();
             $table->integer('user_id')->nullable();
             $table->integer('type')->nullable();
-            $table->integer('user_id')->nullable();
+            $table->integer('send_user_id')->nullable();
+            $table->timestamps();
         });
     }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="mui-content"> 
-      <div class="mui-content" style="margin-bottom:50px"> 
+      <div class="mui-content" style="margin-bottom:30px"> 
         <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" v-html="con_str">
         </ul>
       </div>
@@ -20,7 +20,7 @@
 <style scope src="./mui.css"></style>
 <script>
 import * as dd from "dingtalk-jsapi";
-import { getAllWarning } from "../../../api/ding";
+import { getNotifyList } from "../../../api/ding";
 export default {
   data() {
     return {
@@ -29,43 +29,38 @@ export default {
     };
   },
   mounted() {
-    this.getProjectWarning();
+    this.getNotify();
   },
   methods: {
     init() {
     },
-    getProjectWarning() {
+    getNotify() {
       if(sessionStorage.getItem('userid')==''){
         this.$Message.error("请重新获取用户信息");
         return false;
       }
       this.is_loading(1);
-      getAllWarning({userid:sessionStorage.getItem('userid')}).then(res => {
+      getNotifyList({userid:sessionStorage.getItem('userid')}).then(res => {
         this.is_loading(0);
         if(res.result){
           let str='';
           let war_title='';
           res.result.forEach(function (row, index) {
-            if (row.tags === 1) {
-              war_title = '警告滞后';
-            } else if (row.tags === 2) {
-              war_title = '严重滞后';
-            }
             str += '<li class="mui-table-view-cell">'+
                   '<div class="mui-table">'+
                     '<div class="mui-table-cell mui-col-xs-10">'+
                       '<h4 class="mui-ellipsis">'+row.title+'</h4>'+
-                      '<h5>'+war_title+'</h5>'+
+                      '<h5>'+row.send_user_name+'</h5>'+
                     '</div>'+
                     '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
-                      '<span class="mui-h5">'+row.schedule_at+'</span>'+
+                      '<span class="mui-h5">'+row.description+'</span>'+
                     '</div>'+
                   '</div>'+
                 '</li>';
           })
           this.con_str=str;
         }else{
-          this.$Message.error("无项目预警信息");
+          this.$Message.error("无消息");
         }
       });
     },
