@@ -8,6 +8,7 @@ use App\Models\Project\ProjectSchedule;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use DB;
 
 class buildDingNotifyProjectJson extends Command
 {
