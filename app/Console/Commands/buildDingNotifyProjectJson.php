@@ -44,15 +44,18 @@ class buildDingNotifyProjectJson extends Command
         }
         $url='https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token='.$accessToken;
         $user=$this->getProjectNoScheduleList();
-        $post_data=array(
-            'agent_id'=>$agent_id,
-            'userid_list'=>$user,
-            'msg'=>json_encode([
-                "msgtype"=>"您的项目还没填报",
-                "text"=>["content"=>"您的项目还没填报"]
-            ])
-        );
-        $json=$this->postCurl($url,$post_data,'post');
+        $json=false;
+        if($user){
+            $post_data=array(
+                'agent_id'=>$agent_id,
+                'userid_list'=>$user,
+                'msg'=>json_encode([
+                    "msgtype"=>"您的项目还没填报",
+                    "text"=>["content"=>"您的项目还没填报"]
+                ])
+            );
+            $json=$this->postCurl($url,$post_data,'post');
+        }
         return $json;
     }
     /**
