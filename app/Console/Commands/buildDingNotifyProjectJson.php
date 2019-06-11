@@ -67,7 +67,9 @@ class buildDingNotifyProjectJson extends Command
         $str='';
         foreach ($result as $val) {
             $user=DB::table('users')->where('id', $val['user_id'])->value('ding_user_id');
-            $str = $str.','.$user;
+            if($user){
+                $str = $str.','.$user;
+            }
         }
         return substr($str,1);
     }
