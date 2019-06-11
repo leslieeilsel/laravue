@@ -50,7 +50,7 @@ class buildDingNotifyProjectJson extends Command
                 'agent_id'=>$agent_id,
                 'userid_list'=>$user,
                 'msg'=>json_encode([
-                    "msgtype"=>"您的项目还没填报",
+                    "msgtype"=>"text",
                     "text"=>["content"=>"您的项目还没填报"]
                 ])
             );
@@ -64,7 +64,6 @@ class buildDingNotifyProjectJson extends Command
             curl_setopt($ch, CURLOPT_URL, $url);
             $json =  curl_exec($ch);
             curl_close($ch);
-            $json=$this->postCurl($url,$post_data,'post');
         }
         return $json;
     }
