@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Dict;
 use App\Models\Project\Projects;
+use App\Models\Project\ProjectSchedule;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
@@ -64,7 +65,8 @@ class buildDingNotifyProjectJson extends Command
         $result = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->get()->toArray();
         $str='';
         foreach ($result as $val) {
-            $str = $str.','.User::where('id', $val['user_id'])->value('ding_user_id');
+            $user=DB::table('users')->where('id', $val['user_id'])->value('ding_user_id');
+            $str = $str.','.$user;
         }
         return substr($str,1);
     }
