@@ -54,6 +54,16 @@ class buildDingNotifyProjectJson extends Command
                     "text"=>["content"=>"您的项目还没填报"]
                 ])
             );
+            
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($ch, CURLOPT_POST, TRUE);
+            //设置post数据
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            $json =  curl_exec($ch);
+            curl_close($ch);
             $json=$this->postCurl($url,$post_data,'post');
         }
         return $json;
