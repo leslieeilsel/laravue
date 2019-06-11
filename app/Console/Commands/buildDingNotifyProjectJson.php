@@ -8,14 +8,14 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 
-class buildDingProjectJson extends Command
+class buildDingNotifyProjectJson extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'buildDingProjectJson';
+    protected $signature = 'buildDingNotifyProjectJson';
 
     /**
      * The console command description.
