@@ -214,7 +214,7 @@ class LedgerController extends Controller
                 ->mergeCells('I7:O7');
                 $num = 8;
             foreach($month_data as $m=>$m_val){
-                $num = $num + $m * 11;
+                $num = $num + 11;
                 $spreadsheet->getActiveSheet()->mergeCells('B' . $num . ':C' . ($num + 10));
                 $spreadsheet->getActiveSheet()->mergeCells('D' . $num . ':J' . ($num + 10));
                 $spreadsheet->getActiveSheet()->mergeCells('K' . $num . ':L' . ($num + 10));
