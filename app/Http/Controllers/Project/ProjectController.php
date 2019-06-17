@@ -667,9 +667,9 @@ class ProjectController extends Controller
             if (gettype($data['department_id']) == 'string') {
                 $data['department_id'] = explode(',', $data['department_id']);
             }
-            $departmentCount=count($data['department_id']);
+            $departmentCount=count($data['department_id'])-1;
             if (count($data['department_id']) > 0) {
-                $user_ids = DB::table('users')->select('id')->where('department_id', $data['department_id'][$departmentCount-1])->get()->toArray();
+                $user_ids = DB::table('users')->select('id')->where('department_id', $data['department_id'][$departmentCount])->get()->toArray();
                 $user_id = array_column($user_ids, 'id');
                 $query = $query->whereIn('user_id', $user_id);
             }

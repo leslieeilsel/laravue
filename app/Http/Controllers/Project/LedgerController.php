@@ -383,7 +383,7 @@ class LedgerController extends Controller
         $params = $request->input();
         $ProjectC = new ProjectController();
         $data=$ProjectC->projectProgressM($params)->groupBy('project_id')->orderBy('project_id','asc')->get()->toArray();
-        $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
+        // $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
         // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
         foreach ($data as $k => $row) {
             $projects=Projects::where('id', $row['project_id'])->first();
@@ -677,7 +677,7 @@ class LedgerController extends Controller
         $params = $request->input();
         $ProjectC = new ProjectController();
         $data=$ProjectC->allProjects($params);
-        $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
+        // $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
         // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
         $countAmount=0;
         $countPlanAmount=0;
