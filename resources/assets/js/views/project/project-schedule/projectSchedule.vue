@@ -1218,7 +1218,7 @@
           }
           this.pageCurrent = 1;
           if (res.result) {
-            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.department_id || this.searchForm.project_id || this.searchForm.project_num || this.searchForm.subject || this.searchForm.end_at || this.searchForm.title) {
+            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.department_id || this.searchForm.title || this.searchForm.project_id|| this.searchForm.project_num || this.searchForm.subject || this.searchForm.end_at || this.searchForm.title) {
               this.btnDisable = false;
             }
             this.tableLoading = false;
