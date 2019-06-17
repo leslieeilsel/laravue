@@ -215,7 +215,7 @@ class LedgerController extends Controller
                 $num = 8;
             foreach($month_data as $m=>$m_val){
                 if($m>0){
-                    $num = $num + $m * 11;
+                    $num = $num + 11;
                 }
                 $spreadsheet->getActiveSheet()->mergeCells('B' . $num . ':C' . ($num + 10));
                 $spreadsheet->getActiveSheet()->mergeCells('D' . $num . ':J' . ($num + 10));
@@ -274,7 +274,7 @@ class LedgerController extends Controller
             $num = 8;
             foreach($month_data as $m=>$m_val){
                 if($m>0){
-                    $num = $num + $m * 11;
+                    $num = $num + 11;
                 }
                 
                 $spreadsheet->getActiveSheet()->getStyle('B' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
@@ -312,7 +312,7 @@ class LedgerController extends Controller
             $num = 8;
             foreach($month_data as $m=>$m_val){
                 if($m>0){
-                    $num = $num + $m*11;
+                    $num = $num + 11;
                 }
                 $spreadsheet->getActiveSheet()->getStyle('B' . $num . ':C' . ($num + 10))->applyFromArray($borderStyleArray);
                 $spreadsheet->getActiveSheet()->getStyle('D' . $num . ':J' . ($num + 10))->applyFromArray($borderStyleArray);
