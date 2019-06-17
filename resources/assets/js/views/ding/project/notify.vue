@@ -1,11 +1,20 @@
 <template>
     <div class="mui-content"> 
-      <div class="mui-content" style="margin-bottom:30px"> 
-        <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed" v-html="con_str">
-        </ul>
-      </div>
+      <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff; text-align: center;">
+        <li class="mui-table-view-cell mui-media mui-col-xs-10 mui-col-sm-10">
+          <a href="/#/ding/project/projectSchedule">  
+            <div class="mui-media-body">未填报</div> 
+            <div class="mui-media-body">{{noSchedule}}</div>
+          </a>
+        </li>  
+        <li class="mui-table-view-cell mui-media mui-col-xs-12 mui-col-sm-12">
+          <a href="/#/ding/project/projectSchedule">  
+            <div class="mui-media-body">发送消息</div> 
+          </a>
+        </li>  
+      </ul>
       <nav class="mui-bar mui-bar-tab">
-        <a class="mui-tab-item mui-active" href="/ding/project">
+        <a class="mui-tab-item mui-active" href="/#/ding/project">
           <span class="mui-icon mui-icon-home"></span>
           <span class="mui-tab-label">应用</span>
         </a>
@@ -25,15 +34,14 @@ export default {
   data() {
     return {
       data:[],
-      con_str:''
+      con_str:'',
+      noSchedule:0
     };
   },
   mounted() {
     this.getNotify();
   },
   methods: {
-    init() {
-    },
     getNotify() {
       if(sessionStorage.getItem('userid')==''){
         this.$Message.error("请重新获取用户信息");
