@@ -187,7 +187,9 @@ class LedgerController extends Controller
                 ->setCellValue('I7', $row['plan_img_progress']);
             $num = 8;
             foreach($month_data as $m=>$m_val){
-                $num = $num + $m * 11;
+                if($m>0){
+                    $num = $num + 11;
+                }
                 $spreadsheet->getActiveSheet()->setCellValue('B' . $num, $m_val['month'] . '项目进度（需详细说明完成投资额、完成形象进度及相关手续办理情况）');
                 $spreadsheet->getActiveSheet()->setCellValue('D' . $num, $m_val['month_act_complete'].','.$m_val['month_img_progress']);
                 $spreadsheet->getActiveSheet()->setCellValue('K' . $num, '存在问题（详细描述项目建设中需协调解决的手续办理、征地拆迁及影响项目施工进度的其他问题）');
