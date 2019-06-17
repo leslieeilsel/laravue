@@ -153,7 +153,7 @@ class LedgerController extends Controller
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         foreach ($data as $k => $row) {
-            if($params['search_project_id']>0&&isset($params['search_project_id'])){
+            if($params['project_id']>0&&isset($params['project_id'])){
                 $month_data = $this->listData($params)->where('iba_project_schedule.is_audit', 1)
                         ->whereIn('iba_project_schedule.user_id', $this->seeIds)
                         ->get()->toArray();
