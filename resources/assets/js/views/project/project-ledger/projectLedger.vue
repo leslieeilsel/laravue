@@ -201,7 +201,7 @@
             }
             this.pageCurrent = 1;
             if (res.result) {
-              if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.search_project_id || this.searchForm.start_at || this.searchForm.end_at) {
+              if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.project_id || this.searchForm.start_at || this.searchForm.end_at) {
                 this.btnDisable = false;
               }
             }
@@ -233,7 +233,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/exportLedger?search_project_id=" + search_project_id + "&start_at=" + start_time + "&end_at=" + end_time;
+        window.location.href = "/api/project/exportLedger?project_id=" + search_project_id + "&start_at=" + start_time + "&end_at=" + end_time;
       },
       changePage(index) {
         //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
