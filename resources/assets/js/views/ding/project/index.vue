@@ -49,7 +49,7 @@ import { getUserId } from "../../../api/ding";
 export default {
   data() {
     return {
-      projectScheduleDsp:'dsp',
+      projectScheduleDsp:'dspn',
       listDsp:'dsp',
       projectScheduleListDsp:'dsp',
       projectWarningDsp:'dsp'
