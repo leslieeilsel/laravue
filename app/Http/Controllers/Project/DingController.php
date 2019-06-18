@@ -711,7 +711,7 @@ class DingController extends Controller
             $users = $users.','.User::select('username', 'phone')->where('id', $val['user_id'])->value('ding_user_id');
         }
         $users=substr($users,1);
-        $this->userNotify($users,$msg,$send_user_id);
+        $this->userNotify($users,$msg,$params['userid']);
     }
 }
                      
