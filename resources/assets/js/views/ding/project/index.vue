@@ -81,7 +81,7 @@ export default {
               if (res.result.errcode == 0) { 
                 sessionStorage.setItem('userid',res.result.userid);
               }
-              if (res.result.ids) { 
+              if (res.ids) { 
                 this.projectSchedule="/#/ding/project/projectSchedule";
                 this.list="/#/ding/project/list";
                 this.projectScheduleList='/#/ding/project/projectScheduleList'
