@@ -49,10 +49,10 @@ import { getUserId } from "../../../api/ding";
 export default {
   data() {
     return {
-      projectSchedule:'/#/ding/project/projectSchedule',
-      list:'/#/ding/project/list',
-      projectScheduleList:'/#/ding/project/projectScheduleList',
-      projectWarning:'/#/ding/project/projectWarning',
+      projectSchedule:'#',
+      list:'#',
+      projectScheduleList:'#',
+      projectWarning:'#',
     };
   },
   mounted() {
