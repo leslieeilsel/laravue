@@ -15,12 +15,12 @@
         <Button @click="submitF()" style="margin-left: 30%;width: 33.33%;height: 40px;background: #029aed; color:#fff;">发送消息</Button>
       </ul>
       <nav class="mui-bar mui-bar-tab">
-        <a class="mui-tab-item mui-active" href="/#/ding/project">
+        <a class="mui-tab-item" href="/#/ding/project">
           <span class="mui-icon mui-icon-home"></span>
           <span class="mui-tab-label">应用</span>
         </a>
-        <a class="mui-tab-item" href="#">
-          <span class="mui-icon mui-icon-email"><span class="mui-badge">1</span></span>
+        <a class="mui-tab-item mui-active" href="#">
+          <!-- <span class="mui-icon mui-icon-email"><span class="mui-badge">1</span></span> -->
           <span class="mui-tab-label">消息</span>
         </a>
       </nav>
