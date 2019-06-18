@@ -3,28 +3,32 @@
     <div class="mui-content" :style='index_display'> 
         <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
               <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <a :href="projectSchedule">  
+                <router-view name="projectSchedule">
+                <!-- <a :href="projectSchedule">   -->
                       <span class="mui-icon mui-icon-compose"></span>  
                       <div class="mui-media-body">填报</div>
-                </a>
+                </router-view>
               </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <a :href="list">  
+                <router-view name="list">
+                <!-- <a :href="list">   -->
                       <span class="mui-icon mui-icon-bars"></span>  
                       <div class="mui-media-body">项目</div>
-                </a>
+                </router-view>
             </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <a :href="projectScheduleList">  
+                <router-view name="projectScheduleList">
+                <!-- <a :href="projectScheduleList">   -->
                       <span class="mui-icon mui-icon-settings"></span>  
                       <div class="mui-media-body">进度</div>
-                </a>
+                </router-view>
             </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <a :href="projectWarning">  
+                <router-view name="projectWarning">
+                <!-- <a :href="projectWarning">   -->
                       <span class="mui-icon mui-icon-info"></span>  
                       <div class="mui-media-body">预警</div>
-                </a>
+                </router-view>
             </li>  
         </ul>
     </div>
@@ -49,10 +53,6 @@ import { getUserId } from "../../../api/ding";
 export default {
   data() {
     return {
-      projectSchedule:'#',
-      list:'#',
-      projectScheduleList:'#',
-      projectWarning:'#',
     };
   },
   mounted() {
@@ -75,24 +75,41 @@ export default {
                   onSuccess : function(result) {},
                   onFail : function(err) {}
               })
-              
-              alert(res.ids);
-              
               if (res.result.errcode == 0) { 
                 sessionStorage.setItem('userid',res.result.userid);
               }
               if (res.ids) {
-                alert(2) 
-                this.projectSchedule="/#/ding/project/projectSchedule";
-                this.list="/#/ding/project/list";
-                this.projectScheduleList='/#/ding/project/projectScheduleList'
-                this.projectWarning="/#/ding/project/projectWarning";
+                const router = new VueRouter({
+                  routes: [
+                    {
+                      path: '/',
+                      components: {
+                        projectSchedule: '/#/ding/project/projectSchedule',
+                        list: '/#/ding/project/list',
+                        projectScheduleList: '/#/ding/project/projectScheduleList',
+                        projectWarning: '/#/ding/project/projectWarning'
+                      }
+                    }
+                  ]
+                })
+                // this.projectSchedule={ name: '/#/ding/project/projectSchedule' };
+                // this.list="/#/ding/project/list";
+                // this.projectScheduleList='/#/ding/project/projectScheduleList'
+                // this.projectWarning="/#/ding/project/projectWarning";
               }else{
-                alert(1)
-                this.projectSchedule="#";
-                this.list="#";
-                this.projectScheduleList='#'
-                this.projectWarning="#";
+                const router = new VueRouter({
+                  routes: [
+                    {
+                      path: '/',
+                      components: {
+                        projectSchedule: '#',
+                        list: '#',
+                        projectScheduleList: '#',
+                        projectWarning: '#'
+                      }
+                    }
+                  ]
+                })
               }
               
             });
