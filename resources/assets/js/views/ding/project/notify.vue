@@ -12,7 +12,7 @@
             <div class="mui-media-body">发送消息</div> 
           </a>
         </li>   -->
-        <Button @click="submitF()" style="width: 30%;height: 40px;background: #029aed; color:#fff;">发送消息</Button>
+        <Button @click="submitF()" style="margin-left: 30%;width: 30%;height: 40px;background: #029aed; color:#fff;">发送消息</Button>
       </ul>
       <nav class="mui-bar mui-bar-tab">
         <a class="mui-tab-item mui-active" href="/#/ding/project">
@@ -30,7 +30,7 @@
 <style scope src="./mui.css"></style>
 <script>
 import * as dd from "dingtalk-jsapi";
-import { getNotifyList } from "../../../api/ding";
+import { getProjectNoScheduleList } from "../../../api/ding";
 export default {
   data() {
     return {
@@ -49,25 +49,10 @@ export default {
         return false;
       }
       this.is_loading(1);
-      getNotifyList({userid:sessionStorage.getItem('userid')}).then(res => {
+      getProjectNoScheduleList({userid:sessionStorage.getItem('userid')}).then(res => {
         this.is_loading(0);
         if(res.result){
-          let str='';
-          let war_title='';
-          res.result.forEach(function (row, index) {
-            str += '<li class="mui-table-view-cell">'+
-                  '<div class="mui-table">'+
-                    '<div class="mui-table-cell mui-col-xs-10">'+
-                      '<h4 class="mui-ellipsis">'+row.title+'</h4>'+
-                      '<h5>'+row.send_user_name+'</h5>'+
-                    '</div>'+
-                    '<div class="mui-table-cell mui-col-xs-2 mui-text-right">'+
-                      '<span class="mui-h5">'+row.description+'</span>'+
-                    '</div>'+
-                  '</div>'+
-                '</li>';
-          })
-          this.con_str=str;
+          this.noSchedule=res.result;
         }else{
           this.$Message.error("无消息");
         }

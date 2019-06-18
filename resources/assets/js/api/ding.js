@@ -156,5 +156,16 @@ export function getNotifyList(form) {
     data: {...form}
   });
 }
+/**
+ * 未填报总数
+ * @returns {*}
+ */
+export function getProjectNoScheduleList(form) {
+  return request({
+    url: '/api/ding/getProjectNoScheduleList',
+    method: 'post',
+    data: {...form}
+  });
+}
 
 
