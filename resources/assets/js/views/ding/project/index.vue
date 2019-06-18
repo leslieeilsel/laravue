@@ -3,25 +3,25 @@
     <div class="mui-content" :style='index_display'> 
         <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
               <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <a href="/#/ding/project/projectSchedule">  
+                <a :href="projectSchedule">  
                       <span class="mui-icon mui-icon-compose"></span>  
                       <div class="mui-media-body">填报</div>
                 </a>
               </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <a href="/#/ding/project/list">  
+                <a :href="list">  
                       <span class="mui-icon mui-icon-bars"></span>  
                       <div class="mui-media-body">项目</div>
                 </a>
             </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <a href="/#/ding/project/projectScheduleList">  
+                <a :href="projectScheduleList">  
                       <span class="mui-icon mui-icon-settings"></span>  
                       <div class="mui-media-body">进度</div>
                 </a>
             </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <a href="/#/ding/project/projectWarning">  
+                <a :href="projectWarning">  
                       <span class="mui-icon mui-icon-info"></span>  
                       <div class="mui-media-body">预警</div>
                 </a>
@@ -34,7 +34,8 @@
         <span class="mui-tab-label">应用</span>
       </a>
       <a class="mui-tab-item" href="/#/ding/project/notify">
-        <span class="mui-icon mui-icon-email"><span class="mui-badge">1</span></span>
+      <!-- <span class="mui-badge">1</span> -->
+        <span class="mui-icon mui-icon-email"></span>
         <span class="mui-tab-label">消息</span>
       </a>
     </nav>
@@ -48,7 +49,10 @@ import { getUserId } from "../../../api/ding";
 export default {
   data() {
     return {
-      index_display:''
+      projectSchedule:'/#/ding/project/projectSchedule',
+      list:'/#/ding/project/list',
+      projectScheduleList:'/#/ding/project/projectScheduleList',
+      projectWarning:'/#/ding/project/projectWarning',
     };
   },
   mounted() {
@@ -78,9 +82,15 @@ export default {
                 sessionStorage.setItem('userid',res.result.userid);
               }
               if (res.result.ids) { 
-                this.index_display="display: block;"
+                this.projectSchedule="/#/ding/project/projectSchedule";
+                this.list="/#/ding/project/list";
+                this.projectScheduleList='/#/ding/project/projectScheduleList'
+                this.projectWarning="/#/ding/project/projectWarning";
               }else{
-                this.index_display="display: none;"
+                this.projectSchedule="#";
+                this.list="#";
+                this.projectScheduleList='#'
+                this.projectWarning="#";
               }
               
             });
