@@ -1,6 +1,6 @@
 <template>
   <div class="mui-content">
-    <div class="mui-content"> 
+    <div class="mui-content" :style='index_display'> 
         <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
               <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
                 <a href="/#/ding/project/projectSchedule">  
@@ -48,6 +48,7 @@ import { getUserId } from "../../../api/ding";
 export default {
   data() {
     return {
+      index_display:''
     };
   },
   mounted() {
@@ -70,9 +71,15 @@ export default {
                   onSuccess : function(result) {},
                   onFail : function(err) {}
               })
-              if (res.errcode == 0) { 
-                sessionStorage.setItem('userid',res.userid);
+              if (res.result.errcode == 0) { 
+                sessionStorage.setItem('userid',res.result.userid);
               }
+              if (res.result.ids) { 
+                this.index_display="display: block;"
+              }else{
+                this.index_display="display: none;"
+              }
+              
             });
           },
           onFail: function(err) {}

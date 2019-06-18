@@ -83,8 +83,11 @@ class DingController extends Controller
         $json=$this->postCurl($url,[],'get');
         $arr=json_decode($json,true);
         Cache::put('userid', $arr['userid'], 7200);
-        $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
-        return $json;
+        $ids = DB::table('users')->where('phone', $arr['mobile'])->value('id');
+        if($ids){
+            $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
+        }
+        return response()->json(['result' => $json,'ids'=>$ids?$ids:false], 200);;
     }
     //发送消息
     public function userNotify($userid_list,$msg,$send_user_id){
