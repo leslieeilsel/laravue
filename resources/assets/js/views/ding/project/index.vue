@@ -2,7 +2,7 @@
   <div class="mui-content">
     <div class="mui-content" :style='index_display'> 
         <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
-              <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6" :class-name="projectScheduleDsp">
+              <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6" :class="projectScheduleDsp">
                 <a href="/#/ding/project/projectSchedule">  
                       <span class="mui-icon mui-icon-compose"></span>  
                       <div class="mui-media-body">填报</div>
