@@ -1,17 +1,18 @@
 <template>
     <div class="mui-content"> 
-      <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff; text-align: center;">
+      <ul class="mui-table-view mui-grid-view mui-grid-9">
         <li class="mui-table-view-cell mui-media mui-col-xs-10 mui-col-sm-10">
-          <a href="/#/ding/project/projectSchedule">  
+          <a href="#">  
             <div class="mui-media-body">未填报</div> 
             <div class="mui-media-body">{{noSchedule}}</div>
           </a>
         </li>  
-        <li class="mui-table-view-cell mui-media mui-col-xs-12 mui-col-sm-12">
-          <a href="/#/ding/project/projectSchedule">  
+        <!-- <li class="mui-table-view-cell mui-media mui-col-xs-12 mui-col-sm-12">
+          <a href="/api/ding/project">  
             <div class="mui-media-body">发送消息</div> 
           </a>
-        </li>  
+        </li>   -->
+        <Button @click="submitF()" style="width: 30%;height: 40px;background: #029aed; color:#fff;">发送消息</Button>
       </ul>
       <nav class="mui-bar mui-bar-tab">
         <a class="mui-tab-item mui-active" href="/#/ding/project">
@@ -71,6 +72,8 @@ export default {
           this.$Message.error("无消息");
         }
       });
+    },submitF(){
+
     },
     //加载样式
     is_loading(type){
