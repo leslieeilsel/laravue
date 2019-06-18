@@ -87,9 +87,7 @@ class DingController extends Controller
         return $json;
     }
     //发送消息
-    public function userNotify(){
-        $appKey=env("Ding_App_Key");
-        $appSecret=env("Ding_App_Secret");
+    public function userNotify($userid_list,$msg){
         $agent_id=env("Ding_Agent_Id");
         $accessToken=Cache::get('dingAccessToken');
         if(!$accessToken){
@@ -100,14 +98,25 @@ class DingController extends Controller
         
         $post_data=array(
             'agent_id'=>$agent_id,
-            'userid_list'=>'0362614366942884',
-            'msg'=>json_encode([
-                "msgtype"=>"text",
-                "text"=>["content"=>"张三的请假申请"]
-            ])
+            'userid_list'=>$userid_list,
+            'msg'=>$msg
         );
         $json=$this->postCurl($url,$post_data,'post');
         return $json;
+    }//钉钉点击发送消息
+    public function dingSendNotify(){
+        $msg=json_encode([
+            "msgtype"=>"text",
+            "text"=>["content"=>"张三的请假申请"]
+        ]);        
+        $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->pluck('project_id')->toArray();
+        $result = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->get()->toArray();
+        $users='';
+        foreach ($result as $k => $val) {
+            $users = $users.','.User::select('username', 'phone')->where('id', $val['user_id'])->value('ding_user_id');
+        }
+        $users=substr($users,1);
+        $this->postCurluserNotify($users,$msg);
     }
     public function sign(){
         $appSecret=env("Ding_App_Secret");

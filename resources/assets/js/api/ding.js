@@ -167,5 +167,16 @@ export function getProjectNoScheduleList(form) {
     data: {...form}
   });
 }
+/**
+ * 点击发送消息
+ * @returns {*}
+ */
+export function dingSendNotify(form) {
+  return request({
+    url: '/api/ding/dingSendNotify',
+    method: 'post',
+    data: {...form}
+  });
+}
 
 

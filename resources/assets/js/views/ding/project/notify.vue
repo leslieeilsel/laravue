@@ -30,7 +30,7 @@
 <style scope src="./mui.css"></style>
 <script>
 import * as dd from "dingtalk-jsapi";
-import { getProjectNoScheduleList } from "../../../api/ding";
+import { getProjectNoScheduleList,dingSendNotify } from "../../../api/ding";
 export default {
   data() {
     return {
@@ -58,7 +58,19 @@ export default {
         }
       });
     },submitF(){
-
+      if(sessionStorage.getItem('userid')==''){
+        this.$Message.error("请重新获取用户信息");
+        return false;
+      }
+      this.is_loading(1);
+      getProjectNoScheduleList({userid:sessionStorage.getItem('userid')}).then(res => {
+        this.is_loading(0);
+        if(res.result){
+          this.noSchedule=res.result;
+        }else{
+          this.$Message.error("无消息");
+        }
+      });
     },
     //加载样式
     is_loading(type){
