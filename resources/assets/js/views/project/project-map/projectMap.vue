@@ -21,6 +21,10 @@
           <Form-item label="承建单位" prop="unit">
             <Input clearable v-model="searchForm.unit" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
+          <FormItem label="部门" prop="department_id">
+            <Cascader :data="dataDep1" v-model="searchForm.department_id" placeholder="选择部门" trigger="hover"
+                      style="width: 200px" :render-format="format"></Cascader>
+          </FormItem>
           <FormItem label="项目类型" prop="type">
             <Select v-model="searchForm.type" style="width: 200px">
               <Option value='-1' key='-1'>全部</Option>
@@ -69,6 +73,7 @@
 <script>
   import "./projectMap.css";
   import {getAllProjects, getProjectDictData, locationPosition} from "../../../api/project";
+  import {loadClassDepartment} from '../../../api/system';
 
   export default {
     data() {
@@ -83,8 +88,10 @@
           build_type: '',
           money_from: '',
           is_gc: '',
-          nep_type: ''
+          nep_type: '',
+          department_id:[],
         },
+        dataDep1: [],
         dict: {
           type: [],
           is_gc: [],
@@ -112,6 +119,10 @@
     },
     mounted() {
       this.init();
+      
+      loadClassDepartment().then(res => {
+        this.dataDep1 = res;
+      });
     },
     methods: {
       init() {
@@ -553,6 +564,14 @@
         }
         this.drop = !this.drop;
       },
+      format(labels, selectedData) {
+        const index = labels.length - 1;
+        const data = selectedData[index] || false;
+        if (data && data.code) {
+          return labels[index];
+        }
+        return labels[index];
+      }
     }
   };
 </script>

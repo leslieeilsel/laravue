@@ -1167,6 +1167,7 @@
     },
     methods: {
       init() {
+        this.getProjectScheduleList();
         this.month_im = '-月形象进度';
         this.month_ac = '-月实际完成投资(万元)';
         this.year_investor = '--年计划投资(万元)';
@@ -1196,17 +1197,13 @@
         // });
         this.$refs.form.resetFields();// 获取项目名称
         this.getProjectId();
-        this.getProjectScheduleList();
         this.getProjectNoScheduleList();
       },
       getProjectScheduleList() {
         this.tableLoading = true;
         this.searchForm.is_audit = this.$route.params.is_audit;
-        // this.searchForm.start_at=new Date().getFullYear() + '-01';
         projectProgressList(this.searchForm).then(res => {
-          this.data = res.result;
-          console.log(res.result);
-          
+          this.data = res.result;         
           //分页显示所有数据总数
           this.dataCount = this.data.length;
           //循环展示页面刚加载时需要的数据条数
@@ -1217,19 +1214,15 @@
             }
           }
           this.pageCurrent = 1;
-          if (res.result) {
-            if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.department_id || this.searchForm.title || this.searchForm.project_id|| this.searchForm.project_num || this.searchForm.subject || this.searchForm.end_at || this.searchForm.title) {
-              this.btnDisable = false;
-            }
-            this.tableLoading = false;
+          if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.department_id || this.searchForm.title || this.searchForm.project_id|| this.searchForm.project_num || this.searchForm.subject || this.searchForm.end_at || this.searchForm.title) {
+            this.btnDisable = false;
           }
+          this.tableLoading = false;
         });
       },
       getProjectNoScheduleList() {
-        this.tableLoading = true;
-        getProjectNoScheduleList().then(res => {
+        getProjectNoScheduleList().then(res => {  
           this.scheduleData = res.result;
-          this.tableLoading = false;
         });
       },
       audit(name) {

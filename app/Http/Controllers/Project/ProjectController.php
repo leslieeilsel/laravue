@@ -392,6 +392,17 @@ class ProjectController extends Controller
     public function allProjects($params)
     {
         $query = new Projects;
+        if (isset($params['department_id'])) {
+            if (gettype($params['department_id']) == 'string') {
+                $params['department_id'] = explode(',', $params['department_id']);
+            }
+            $departmentCount=count($params['department_id'])-1;
+            if (count($params['department_id']) > 0) {
+                $user_ids = DB::table('users')->select('id')->where('department_id', $params['department_id'][$departmentCount])->get()->toArray();
+                $user_id = array_column($user_ids, 'id');
+                $query = $query->whereIn('user_id', $user_id);
+            }
+        }
         if (isset($params['title'])) {
             $query = $query->where('title', 'like', '%' . $params['title'] . '%');
         }
@@ -741,24 +752,23 @@ class ProjectController extends Controller
         $result = $this->projectProgressM($params);
         $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
-            $ProjectSchedules[$k]['money_from'] = Projects::where('id', $row['project_id'])->value('money_from');
-            $Projects = Projects::where('id', $row['project_id'])->first();
+            $Projects = Projects::select('money_from','title','num','subject','plan_start_at','plan_end_at','amount')->where('id', $row['project_id'])->first();
             $ProjectSchedules[$k]['money_from'] = $Projects['money_from'];
             $ProjectSchedules[$k]['project_title'] = $Projects['title'];
             $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
-            $users = user::where('id', $row['user_id'])->first();
-            $ProjectSchedules[$k]['tianbao_name'] = $users['name'];
-            $ProjectSchedules[$k]['department'] = Departments::where('id', $users['department_id'])->value('title');
-            $year = date('Y', strtotime($row['month']));
-            $ProjectPlans = ProjectPlan::where('project_id', $row['project_id'])->where('date', $year)->first();
             $ProjectSchedules[$k]['project_num'] = $Projects['num'];
             $ProjectSchedules[$k]['subject'] = $Projects['subject'];
             $ProjectSchedules[$k]['build_start_at'] = $Projects['plan_start_at'];
             $ProjectSchedules[$k]['build_end_at'] = $Projects['plan_end_at'];
             $ProjectSchedules[$k]['total_investors'] = $Projects['amount'];
+            $ProjectSchedules[$k]['plan_build_start_at'] = $Projects['plan_start_at'];
+            $users = user::where('id', $row['user_id'])->first();
+            $ProjectSchedules[$k]['tianbao_name'] = $users['name'];
+            $ProjectSchedules[$k]['department'] = Departments::where('id', $users['department_id'])->value('title');
+            $year = date('Y', strtotime($row['month']));
+            $ProjectPlans = ProjectPlan::where('project_id', $row['project_id'])->where('date', $year)->first();
             $ProjectSchedules[$k]['plan_investors'] = $ProjectPlans['amount'];
             $ProjectSchedules[$k]['plan_img_progress'] = $ProjectPlans['img_progress'];
-            $ProjectSchedules[$k]['plan_build_start_at'] = $Projects['plan_start_at'];
         }
         return response()->json(['result' => $ProjectSchedules], 200);
     }
