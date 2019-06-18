@@ -1,7 +1,7 @@
 <template>
     <div class="mui-content"> 
       <ul class="mui-table-view mui-grid-view mui-grid-9">
-        <li class="mui-table-view-cell mui-media mui-col-xs-10 mui-col-sm-10">
+        <li class="mui-table-view-cell mui-media mui-col-xs-12 mui-col-sm-12">
           <a href="#">  
             <div class="mui-media-body">未填报</div> 
             <div class="mui-media-body">{{noSchedule}}</div>
@@ -12,7 +12,7 @@
             <div class="mui-media-body">发送消息</div> 
           </a>
         </li>   -->
-        <Button @click="submitF()" style="margin-left: 30%;width: 30%;height: 40px;background: #029aed; color:#fff;">发送消息</Button>
+        <Button @click="submitF()" style="margin-left: 30%;width: 33.33%;height: 40px;background: #029aed; color:#fff;">发送消息</Button>
       </ul>
       <nav class="mui-bar mui-bar-tab">
         <a class="mui-tab-item mui-active" href="/#/ding/project">
