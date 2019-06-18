@@ -685,16 +685,18 @@ class DingController extends Controller
      *
      * @return JsonResponse
      */
-    public function getProjectNoScheduleList()
+    public function getProjectNoScheduleList(Request $request)
     {
+        $params = $request->input();
+        $this->getSeeIds($params['userid']);
         $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->pluck('project_id')->toArray();
-        $result = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->get()->toArray();
+        $result = Projects::whereNotIn('id', $Project_id)->whereIn('user_id', $this->seeIds)->where('is_audit', 1)->count();
         // foreach ($result as $k => $val) {
         //     $users = User::select('username', 'phone')->where('id', $val['user_id'])->get()->toArray();
         //     $result[$k]['username'] = $users[0]['username'];
         //     $result[$k]['phone'] = $users[0]['phone'];
         // }
-        return response()->json(['result' => count($result)], 200);
+        return response()->json(['result' => $result], 200);
     }
     //钉钉点击发送消息
     public function dingSendNotify(Request $request){
