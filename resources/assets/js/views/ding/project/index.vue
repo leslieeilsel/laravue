@@ -81,12 +81,14 @@ export default {
               if (res.result.errcode == 0) { 
                 sessionStorage.setItem('userid',res.result.userid);
               }
-              if (res.ids) { 
+              if (res.ids) {
+                alert(2) 
                 this.projectSchedule="/#/ding/project/projectSchedule";
                 this.list="/#/ding/project/list";
                 this.projectScheduleList='/#/ding/project/projectScheduleList'
                 this.projectWarning="/#/ding/project/projectWarning";
               }else{
+                alert(1)
                 this.projectSchedule="#";
                 this.list="#";
                 this.projectScheduleList='#'
