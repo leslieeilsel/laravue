@@ -2,33 +2,29 @@
   <div class="mui-content">
     <div class="mui-content" :style='index_display'> 
         <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
-              <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <router-view name="projectSchedule">
-                <!-- <a :href="projectSchedule">   -->
+              <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6" :class-name="projectScheduleDsp">
+                <a href="/#/ding/project/projectSchedule">  
                       <span class="mui-icon mui-icon-compose"></span>  
                       <div class="mui-media-body">填报</div>
-                </router-view>
+                </router-link>
               </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <router-view name="list">
-                <!-- <a :href="list">   -->
+                <a href="/#/ding/project/list">  
                       <span class="mui-icon mui-icon-bars"></span>  
                       <div class="mui-media-body">项目</div>
-                </router-view>
+                </a>
             </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <router-view name="projectScheduleList">
-                <!-- <a :href="projectScheduleList">   -->
+                <a href="/#/ding/project/projectScheduleList">  
                       <span class="mui-icon mui-icon-settings"></span>  
                       <div class="mui-media-body">进度</div>
-                </router-view>
+                </a>
             </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
-                <router-view name="projectWarning">
-                <!-- <a :href="projectWarning">   -->
+                <a href="/#/ding/project/projectWarning">  
                       <span class="mui-icon mui-icon-info"></span>  
                       <div class="mui-media-body">预警</div>
-                </router-view>
+                </a>
             </li>  
         </ul>
     </div>
@@ -53,6 +49,10 @@ import { getUserId } from "../../../api/ding";
 export default {
   data() {
     return {
+      projectScheduleDsp:'dsp',
+      listDsp:'dsp',
+      projectScheduleListDsp:'dsp',
+      projectWarningDsp:'dsp'
     };
   },
   mounted() {
@@ -79,37 +79,15 @@ export default {
                 sessionStorage.setItem('userid',res.result.userid);
               }
               if (res.ids) {
-                const router = new VueRouter({
-                  routes: [
-                    {
-                      path: '/',
-                      components: {
-                        projectSchedule: '/#/ding/project/projectSchedule',
-                        list: '/#/ding/project/list',
-                        projectScheduleList: '/#/ding/project/projectScheduleList',
-                        projectWarning: '/#/ding/project/projectWarning'
-                      }
-                    }
-                  ]
-                })
-                // this.projectSchedule={ name: '/#/ding/project/projectSchedule' };
-                // this.list="/#/ding/project/list";
-                // this.projectScheduleList='/#/ding/project/projectScheduleList'
-                // this.projectWarning="/#/ding/project/projectWarning";
+                this.projectScheduleDsp='dsp'
+                this.listDsp='dsp'
+                this.projectScheduleListDsp='dsp'
+                this.projectWarningDsp='dsp'
               }else{
-                const router = new VueRouter({
-                  routes: [
-                    {
-                      path: '/',
-                      components: {
-                        projectSchedule: '#',
-                        list: '#',
-                        projectScheduleList: '#',
-                        projectWarning: '#'
-                      }
-                    }
-                  ]
-                })
+                this.projectScheduleDsp='dspn'
+                this.listDsp='dspn'
+                this.projectScheduleListDsp='dspn'
+                this.projectWarningDsp='dspn'
               }
               
             });
@@ -122,5 +100,11 @@ export default {
 };
 </script>
 <style scope>
+.dsp{
+  display: block;
+}
+.dspn{
+  display: none;
+}
 </style>
 
