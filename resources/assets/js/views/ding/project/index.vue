@@ -71,6 +71,9 @@ export default {
                   onSuccess : function(result) {},
                   onFail : function(err) {}
               })
+              
+              alert(JSON.stringify(res));
+              
               if (res.result.errcode == 0) { 
                 sessionStorage.setItem('userid',res.result.userid);
               }
