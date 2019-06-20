@@ -1,13 +1,13 @@
 <template>
   <div class="mui-content">
-    <div class="mui-content" :style='index_display'> 
-        <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
-              <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6" :class="projectScheduleDsp">
-                <a href="/#/ding/project/projectSchedule">  
-                      <span class="mui-icon mui-icon-compose"></span>  
-                      <div class="mui-media-body">填报</div>
-                </router-link>
-              </li>  
+    <div class="mui-content"> 
+        <ul class="mui-table-view mui-grid-view mui-grid-9">
+            <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
+              <a href="/#/ding/project/projectSchedule">  
+                    <span class="mui-icon mui-icon-compose"></span>  
+                    <div class="mui-media-body">填报</div>
+              </a>
+            </li>  
             <li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
                 <a href="/#/ding/project/list">  
                       <span class="mui-icon mui-icon-bars"></span>  
@@ -49,10 +49,6 @@ import { getUserId } from "../../../api/ding";
 export default {
   data() {
     return {
-      projectScheduleDsp:'dspn',
-      listDsp:'dsp',
-      projectScheduleListDsp:'dsp',
-      projectWarningDsp:'dsp'
     };
   },
   mounted() {
@@ -78,17 +74,8 @@ export default {
               if (res.result.errcode == 0) { 
                 sessionStorage.setItem('userid',res.result.userid);
               }
-              if (res.ids) {
-                this.projectScheduleDsp='dsp'
-                this.listDsp='dsp'
-                this.projectScheduleListDsp='dsp'
-                this.projectWarningDsp='dsp'
-              }else{
-                this.projectScheduleDsp='dspn'
-                this.listDsp='dspn'
-                this.projectScheduleListDsp='dspn'
-                this.projectWarningDsp='dspn'
-              }
+              // if (res.ids) {
+              // }
               
             });
           },
@@ -100,11 +87,5 @@ export default {
 };
 </script>
 <style scope>
-.dsp{
-  display: block;
-}
-.dspn{
-  display: none;
-}
 </style>
 
