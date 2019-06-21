@@ -507,7 +507,7 @@ class LedgerController extends Controller
             //     $ac=$ac[0]*2;
                 $month_act_complete=ProjectSchedule::whereBetween('month',[$start_at,$end_at])->where('project_id',$data[$i]['project_id'])->sum('month_act_complete');     
                 $spreadsheet->getActiveSheet()->setCellValue('H' . $num, $data[$i]['month_act_complete']);
-                $spreadsheet->getActiveSheet()->setCellValue('I' . $num, $data[$i]['month_img_progress']);
+                $spreadsheet->getActiveSheet()->setCellValue('I' . $num, $data[$i]['acc_img_progress']);
                 $spreadsheet->getActiveSheet()->setCellValue('J' . $num, $month_act_complete);
 
                 $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(18.88);
