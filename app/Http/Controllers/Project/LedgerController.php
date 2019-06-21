@@ -391,10 +391,12 @@ class LedgerController extends Controller
         $Letter=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO'];
         $params = $request->input();
         $ProjectC = new ProjectController();
-        $data=$ProjectC->projectProgressM($params)->groupBy('project_id')->orderBy('project_id','asc')->get()->toArray();
+        $datas=$ProjectC->projectProgressM($params)->select('project_id')->groupBy('project_id')->orderBy('project_id','asc')->get()->toArray();
         // $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
         // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
-        foreach ($data as $k => $row) {
+        $data=[];
+        foreach ($datas as $k => $row) {
+            $data[$k]=ProjectSchedule::where('project_id',$row['project_id'])->orderBy('id','desc')->first();
             $projects=Projects::where('id', $row['project_id'])->first();
             $data[$k]['money_from'] = $projects['money_from'];
             $data[$k]['project_title'] = $projects['title'];
