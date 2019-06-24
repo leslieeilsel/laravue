@@ -154,8 +154,11 @@
         btnDisable: true,
         searchForm: {
           project_id: '',
-          year: '',
-          quarter: ''
+          start_at: '',
+          end_at: '',
+          money_from: '',
+          is_gc:'',
+          nep_type:''
         },
         submitLoading: false,
         quarter: [],
@@ -221,6 +224,9 @@
         let search_project_id = this.searchForm.project_id;
         let start_at = this.searchForm.start_at;
         let end_at = this.searchForm.end_at;
+        let money_from = this.searchForm.money_from;
+        let is_gc = this.searchForm.is_gc;
+        let nep_type = this.searchForm.nep_type;
         let start_time = '';
         if (start_at) {
           let start_time_0 = new Date(start_at);
@@ -233,7 +239,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/exportLedger?project_id=" + search_project_id + "&start_at=" + start_time + "&end_at=" + end_time;
+        window.location.href = "/api/project/exportLedger?project_id=" + search_project_id + "&start_at=" + start_time + "&end_at=" + end_time + "&money_from=" + money_from + "&is_gc=" + is_gc + "&nep_type=" + nep_type;
       },
       changePage(index) {
         //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
