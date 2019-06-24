@@ -63,7 +63,7 @@ class LedgerController extends Controller
         $sql = $sql->where('iba_project_schedule.is_audit', 1)->whereIn('iba_project_schedule.user_id', $this->seeIds)->get()->toArray();
         foreach ($sql as $k => $row) {
             $projectsData=Projects::select('amount','description')->where('id',$row['project_id'])->first();
-            $ProjectPlanData=ProjectPlan::select('amount','description')->where('project_id',$row['project_id'])->where('date',date('Y'))->first();
+            $ProjectPlanData=ProjectPlan::select('amount','image_progress')->where('project_id',$row['project_id'])->where('date',date('Y'))->first();
             $sql[$k]['nature'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
             $sql[$k]['description'] = $projectsData['description'];
             $sql[$k]['total_investors'] = $projectsData['amount'];
