@@ -487,8 +487,8 @@ class LedgerController extends Controller
         $total_investors=0;
         $plan_investors=0;
         for ($i = 0; $i < count($data); $i++) {
-            $total_investor = $ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->where('is_audit',1)->max('total_investors');
-            $plan_investor = ProjectPlan::where('project_id',$data[$i]['project_id'])->where('date',date('Y'))->value('amount');
+            $amount=Projects::where('id',$data[$i]['project_id'])->value('amount');
+            $plan_data = ProjectPlan::where('project_id',$data[$i]['project_id'])->where('date',date('Y'))->first();
             $schedule_data = $ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->get()->toArray();
             // $l=7;
             // foreach($schedule_data as $k=>$v){
@@ -497,16 +497,16 @@ class LedgerController extends Controller
             //     $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', '1-'.$m.'月实际完成投资');
             //     $l=$l+1;
             // }
-            $total_investors=$total_investors+$total_investor;
-            $plan_investors=$plan_investors+$plan_investor;
+            $total_investors=$total_investors+$amount;
+            $plan_investors=$plan_investors+$plan_data['amount'];
             $money_from = Dict::getOptionsByName('资金来源');
             $spreadsheet->getActiveSheet()->setCellValue('A' . $num, $i + 1);
             $spreadsheet->getActiveSheet()->setCellValue('B' . $num, $data[$i]['project_title']);
             $spreadsheet->getActiveSheet()->setCellValue('C' . $num, $data[$i]['subject']);
             $spreadsheet->getActiveSheet()->setCellValue('D' . $num, $data[$i]['build_start_at'] . "/" . $data[$i]['build_end_at']);
-            $spreadsheet->getActiveSheet()->setCellValue('E' . $num, $total_investor);
-            $spreadsheet->getActiveSheet()->setCellValue('F' . $num, $plan_investor);
-            $spreadsheet->getActiveSheet()->setCellValue('G' . $num, $data[$i]['plan_img_progress']);
+            $spreadsheet->getActiveSheet()->setCellValue('E' . $num, $amount);
+            $spreadsheet->getActiveSheet()->setCellValue('F' . $num, $plan_data['amount']);
+            $spreadsheet->getActiveSheet()->setCellValue('G' . $num, $plan_data['image_progress']);
             // $le=7;
             // foreach($schedule_data as $k=>$v){
             //     $ac=array_keys($schedule_data_month,$v['month']);
