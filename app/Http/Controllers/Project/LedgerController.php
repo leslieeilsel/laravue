@@ -141,7 +141,6 @@ class LedgerController extends Controller
                 ->whereIn('iba_project_schedule.user_id', $this->seeIds)
                 ->groupBy('project_id')
                 ->get()->toArray();
-
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性
@@ -153,6 +152,8 @@ class LedgerController extends Controller
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         foreach ($data as $k => $row) {
+            $amount=Projects::where('id',$params['project_id'])->value('amount');
+            $ProjectPlanData=ProjectPlan::where('project_id',$params['project_id'])->where('date',date('Y'))->first();
             if($params['project_id']>0&&isset($params['project_id'])){
                 $month_data = $this->listData($params)->where('iba_project_schedule.is_audit', 1)
                         ->whereIn('iba_project_schedule.user_id', $this->seeIds)
@@ -178,13 +179,13 @@ class LedgerController extends Controller
                 ->setCellValue('B5', '投资主体')
                 ->setCellValue('D5', $row['subject'])
                 ->setCellValue('K5', '项目总投资')
-                ->setCellValue('M5', $row['total_investors'])
+                ->setCellValue('M5', $amount)
                 ->setCellValue('B6', "项目建设规模及主要内容")
                 ->setCellValue('D6', $row['description'])
                 ->setCellValue('B7', '年度项目计划投资')
-                ->setCellValue('D7', $row['plan_investors'])
+                ->setCellValue('D7', $ProjectPlanData['amount'])
                 ->setCellValue('G7', '年度项目主要建设内容')
-                ->setCellValue('I7', $row['plan_img_progress']);
+                ->setCellValue('I7', $ProjectPlanData['img_progress']);
             $num = 8;
             foreach($month_data as $m=>$m_val){
                 if($m>0){
