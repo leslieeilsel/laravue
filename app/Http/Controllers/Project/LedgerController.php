@@ -408,6 +408,7 @@ class LedgerController extends Controller
             $data[$k]['project_title'] = $projects['title'];
             $data[$k]['build_start_at'] = $projects['plan_start_at'];
             $data[$k]['build_end_at'] = $projects['plan_end_at'];
+            $data[$k]['subject'] = $projects['subject'];
         }       
         $schedule_data_month = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('month')->toArray();
         $departments = Departments::where('id', Auth::user()->department_id)->value('title');
