@@ -62,8 +62,13 @@ class LedgerController extends Controller
         $sql = $this->listData($params);
         $sql = $sql->where('iba_project_schedule.is_audit', 1)->whereIn('iba_project_schedule.user_id', $this->seeIds)->get()->toArray();
         foreach ($sql as $k => $row) {
+            $projectsData=Projects::select('amount','description')->where('id',$row['project_id'])->first();
+            $ProjectPlanData=ProjectPlan::select('amount','description')->where('project_id',$row['project_id'])->where('date',date('Y'))->first();
             $sql[$k]['nature'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
-            $sql[$k]['description'] = Projects::where('id',$row['project_id'])->value('description');
+            $sql[$k]['description'] = $projectsData['description'];
+            $sql[$k]['total_investors'] = $projectsData['amount'];
+            $sql[$k]['plan_investors'] = $ProjectPlanData['amount'];
+            $sql[$k]['plan_img_progress'] = $ProjectPlanData['image_progress'];
         }
         return response()->json(['result' => $sql], 200);
     }
@@ -152,8 +157,8 @@ class LedgerController extends Controller
             ->setKeywords('office 2007 openxml php')
             ->setCategory('Test result file');
         foreach ($data as $k => $row) {
-            $amount=Projects::where('id',$params['project_id'])->value('amount');
-            $ProjectPlanData=ProjectPlan::where('project_id',$params['project_id'])->where('date',date('Y'))->first();
+            $amount=Projects::where('id',$row['project_id'])->value('amount');
+            $ProjectPlanData=ProjectPlan::where('project_id',$row['project_id'])->where('date',date('Y'))->first();
             if($params['project_id']>0&&isset($params['project_id'])){
                 $month_data = $this->listData($params)->where('iba_project_schedule.is_audit', 1)
                         ->whereIn('iba_project_schedule.user_id', $this->seeIds)
