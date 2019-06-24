@@ -185,7 +185,7 @@ class LedgerController extends Controller
                 ->setCellValue('B7', '年度项目计划投资')
                 ->setCellValue('D7', $ProjectPlanData['amount'])
                 ->setCellValue('G7', '年度项目主要建设内容')
-                ->setCellValue('I7', $ProjectPlanData['img_progress']);
+                ->setCellValue('I7', $ProjectPlanData['image_progress']);
             $num = 8;
             foreach($month_data as $m=>$m_val){
                 if($m>0){
