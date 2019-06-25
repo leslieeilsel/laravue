@@ -39,6 +39,9 @@ php artisan migrate
 php artisan db:seed
 
 # 将database/data/laravue.sql导入数据库
+
+# 替换VAPTCHA vid，可免费申请，https://www.vaptcha.com
+# 替换位置：resources\assets\js\views\login\index.vue:135行
 ```
 
 #### 编译运行
