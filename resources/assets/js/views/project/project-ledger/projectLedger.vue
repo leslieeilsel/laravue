@@ -204,7 +204,7 @@
             }
             this.pageCurrent = 1;
             if (res.result) {
-              if (this.searchForm.is_gc>=0 || this.searchForm.nep_type>=0 || this.searchForm.money_from>=0 || this.searchForm.project_id>=0 || this.searchForm.start_at>=0 || this.searchForm.end_at>=0) {
+              if (typeof(this.searchForm.is_gc)==='number' || typeof(this.searchForm.nep_type)==='number' || typeof(this.searchForm.money_from)==='number' || typeof(this.searchForm.project_id)==='number' || typeof(this.searchForm.start_at)==='number' || typeof(this.searchForm.end_at)==='number') {
                 this.btnDisable = false;
               }
             }
