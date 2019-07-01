@@ -1131,9 +1131,10 @@ class ProjectController extends Controller
         $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->whereIn('user_id', $user_ids)->pluck('project_id')->toArray();
         $result = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->whereIn('user_id', $user_ids)->get()->toArray();
         foreach ($result as $k => $val) {
-            $users = User::select('username', 'phone')->where('id', $val['user_id'])->get()->toArray();
-            $result[$k]['username'] = $users[0]['username'];
-            $result[$k]['phone'] = $users[0]['phone'];
+            $users = User::select('username', 'phone','ding_user_id')->where('id', $val['user_id'])->first();
+            $result[$k]['username'] = $users['username'];
+            $result[$k]['phone'] = $users['phone'];
+            $result[$k]['ding_user_id'] = $users['ding_user_id'];
         }
         return response()->json(['result' => $result], 200);
     }
@@ -1287,5 +1288,18 @@ class ProjectController extends Controller
         $projects['scheduleInfo'] = ProjectSchedule::where('project_id', $projects['id'])->orderBy('id', 'desc')->first();
 
         return response()->json(['result' => $projects], 200);
+    }
+    //未填报列表，推送消息    
+    public function scheduleNoSendNotify(Request $request)
+    {
+        $params = $request->input();
+        $msg=json_encode([
+            "msgtype"=>"text",
+            "text"=>["content"=>"张三的请假申请"]
+        ]);     
+        $send_users=substr($params,1); 
+        $user_id = Auth::id();    
+        $ProjectC = new DingController();
+        $data=$ProjectC->userNotify($send_users,$msg,$user_id);
     }
 }

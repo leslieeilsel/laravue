@@ -2445,7 +2445,7 @@
           }
           this.pageCurrent = 1;
 
-          if (this.searchForm.title || this.searchForm.subject || this.searchForm.office || this.searchForm.unit || this.searchForm.num || this.searchForm.type || this.searchForm.build_type || this.searchForm.money_from || this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.status) {
+          if (this.searchForm.title>=0 || this.searchForm.subject>=0 || this.searchForm.office>=0 || this.searchForm.unit>=0 || this.searchForm.num>=0 || this.searchForm.type>=0 || this.searchForm.build_type>=0 || this.searchForm.money_from>=0 || this.searchForm.is_gc>=0 || this.searchForm.nep_type>=0 || this.searchForm.status>=0) {
             this.exportBtnDisable = false;
           }
           this.tableLoading = false;

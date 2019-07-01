@@ -204,7 +204,7 @@
             }
             this.pageCurrent = 1;
             if (res.result) {
-              if (this.searchForm.is_gc || this.searchForm.nep_type || this.searchForm.money_from || this.searchForm.project_id || this.searchForm.start_at || this.searchForm.end_at) {
+              if (this.searchForm.is_gc>=0 || this.searchForm.nep_type>=0 || this.searchForm.money_from>=0 || this.searchForm.project_id>=0 || this.searchForm.start_at>=0 || this.searchForm.end_at>=0) {
                 this.btnDisable = false;
               }
             }
