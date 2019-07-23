@@ -392,31 +392,327 @@ class LedgerController extends Controller
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
+    // public function exportSchedule(Request $request)
+    // {
+    //     $Letter=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO'];
+    //     $params = $request->input();
+    //     $ProjectC = new ProjectController();
+    //     $datas=$ProjectC->projectProgressM($params)->select('project_id')->groupBy('project_id')->orderBy('project_id','asc')->get()->toArray();
+    //     // $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
+    //     // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
+    //     $data=[];
+    //     foreach ($datas as $k => $row) {
+    //         $data[$k]=ProjectSchedule::where('project_id',$row['project_id'])->orderBy('id','desc')->first();
+    //         $projects=Projects::where('id', $row['project_id'])->first();
+    //         $data[$k]['money_from'] = $projects['money_from'];
+    //         $data[$k]['project_title'] = $projects['title'];
+    //         $data[$k]['build_start_at'] = $projects['plan_start_at'];
+    //         $data[$k]['build_end_at'] = $projects['plan_end_at'];
+    //         $data[$k]['subject'] = $projects['subject'];
+    //     }       
+    //     $schedule_data_month = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('month')->toArray();
+    //     $departments = Departments::where('id', Auth::user()->department_id)->value('title');
+    //     // if(isset($params['end_at'])) {
+    //     //     $end_at = date('Y-m', strtotime($params['end_at']));
+    //     // }else{
+    //     //     $end_at = date('Y-m');
+    //     // }
+        
+    //     $start_m = 1;
+    //     $start_at = date('Y-01');
+    //     if (isset($params['end_at'])) {
+    //         $end_at = date('Y-m', strtotime($params['end_at']));
+    //         $end_m = (int)date('m', strtotime($params['end_at']));
+    //     }else{
+    //         $end_at = date('Y-m');
+    //         $end_m = (int)date('m');
+    //     }
+            
+    //     // 创建一个Spreadsheet对象
+    //     $spreadsheet = new Spreadsheet();
+    //     // 设置文档属性
+    //     $spreadsheet->getProperties()->setCreator('Maarten Balliauw')
+    //         ->setLastModifiedBy('Maarten Balliauw')
+    //         ->setTitle('Office 2007 XLSX Test Document')
+    //         ->setSubject('Office 2007 XLSX Test Document')
+    //         ->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')
+    //         ->setKeywords('office 2007 openxml php')
+    //         ->setCategory('Test result file');
+    //     // 添加表头
+    //     $spreadsheet->setActiveSheetIndex(0)
+    //         ->setCellValue('A2', '沣西新城重点项目建设进度表')
+    //         ->setCellValue('A3', '报送部门：'.$departments)
+    //         ->setCellValue('O3', '单位：万元')
+    //         ->setCellValue('A4', '序号')
+    //         ->setCellValue('B4', '项目名称')
+    //         ->setCellValue('C4', '投资主体')
+    //         ->setCellValue('D4', '建设起止年限')
+    //         ->setCellValue('E4', '总投资')
+    //         ->setCellValue('F4', '年计划投资')
+    //         ->setCellValue('G4', '年计划形象进度');
+    //     $l=7;
+    //     $spreadsheet->getActiveSheet()->setCellValue('H4', $end_m.'月实际完成投资');
+    //     $spreadsheet->getActiveSheet()->setCellValue('I4', $start_m.'-'.$end_m.'月形象进度');
+    //     $spreadsheet->getActiveSheet()->setCellValue('J4', $start_m.'-'.$end_m.'月实际完成投资');
+    //     $schedule_count = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('id')->toArray();
+    //     $s_count=count($schedule_count)*2+6;
+    //     $spreadsheet->getActiveSheet()->setCellValue('K4', '自开始累积完成投资');
+    //     $spreadsheet->getActiveSheet()->setCellValue('L4', '存在问题');
+    //     $spreadsheet->getActiveSheet()->setCellValue('M4', '开工/计划开工时间');
+    //     $spreadsheet->getActiveSheet()->setCellValue('N4', '土地征收情况及前期手续办理情况');
+    //     $spreadsheet->getActiveSheet()->setCellValue('O4', '资金来源');
+    //     $spreadsheet->getActiveSheet()->setCellValue('P4', '形象进度照片');
+    //     $spreadsheet->getActiveSheet()->setCellValue('Q4', '备注');
+    //     //居中
+    //     $numberStyleCenter = [
+    //         'alignment' => [
+    //             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+    //             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    //         ],
+    //     ];
+    //     //右
+    //     $numberStyleRight = [
+    //         'alignment' => [
+    //             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+    //             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    //         ],
+    //     ];
+    //     //左
+    //     $numberStyleLeft = [
+    //         'alignment' => [
+    //             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+    //             'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    //         ],
+    //     ];
+    //     $num = 5;
+    //     $total_investors=0;
+    //     $plan_investors=0;
+    //     for ($i = 0; $i < count($data); $i++) {
+    //         $amount=Projects::where('id',$data[$i]['project_id'])->value('amount');
+    //         $plan_data = ProjectPlan::where('project_id',$data[$i]['project_id'])->where('date',date('Y'))->first();
+    //         $schedule_data = $ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->get()->toArray();
+    //         // $l=7;
+    //         // foreach($schedule_data as $k=>$v){
+    //         //     $m = (int)date('m', strtotime($v['month']));
+    //         //     $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k].'4', '1-'.$m.'月形象进度');
+    //         //     $spreadsheet->getActiveSheet()->setCellValue($Letter[$l+$k+1].'4', '1-'.$m.'月实际完成投资');
+    //         //     $l=$l+1;
+    //         // }
+    //         $total_investors=$total_investors+$amount;
+    //         $plan_investors=$plan_investors+$plan_data['amount'];
+    //         $money_from = Dict::getOptionsByName('资金来源');
+    //         $spreadsheet->getActiveSheet()->setCellValue('A' . $num, $i + 1);
+    //         $spreadsheet->getActiveSheet()->setCellValue('B' . $num, $data[$i]['project_title']);
+    //         $spreadsheet->getActiveSheet()->setCellValue('C' . $num, $data[$i]['subject']);
+    //         $spreadsheet->getActiveSheet()->setCellValue('D' . $num, $data[$i]['build_start_at'] . "/" . $data[$i]['build_end_at']);
+    //         $spreadsheet->getActiveSheet()->setCellValue('E' . $num, $amount);
+    //         $spreadsheet->getActiveSheet()->setCellValue('F' . $num, $plan_data['amount']);
+    //         $spreadsheet->getActiveSheet()->setCellValue('G' . $num, $plan_data['image_progress']);
+    //         // $le=7;
+    //         // foreach($schedule_data as $k=>$v){
+    //         //     $ac=array_keys($schedule_data_month,$v['month']);
+    //         //     $ac=$ac[0]*2;
+    //             $month_act_complete=ProjectSchedule::whereBetween('month',[$start_at,$end_at])->where('project_id',$data[$i]['project_id'])->sum('month_act_complete');     
+    //             $spreadsheet->getActiveSheet()->setCellValue('H' . $num, $data[$i]['month_act_complete']);
+    //             $spreadsheet->getActiveSheet()->setCellValue('I' . $num, $data[$i]['acc_img_progress']);
+    //             $spreadsheet->getActiveSheet()->setCellValue('J' . $num, $month_act_complete);
+
+    //             $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(18.88);
+    //             $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(9.75);
+    //             $spreadsheet->getActiveSheet()->getStyle('H'.'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //             $spreadsheet->getActiveSheet()->getStyle('I'.'4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+                
+    //             $spreadsheet->getActiveSheet()->getStyle('H'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //             $spreadsheet->getActiveSheet()->getStyle('i'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //             $spreadsheet->getActiveSheet()->getStyle('H'. '4')->getFont()->setBold(true);
+    //             $spreadsheet->getActiveSheet()->getStyle('i'.'4')->getFont()->setBold(true);
+    //             // $le++;
+    //         // }
+    //         $acc_complete=$ProjectC->allActCompleteMoney($data[$i]['project_id'],$end_at);
+    //         $spreadsheet->getActiveSheet()->setCellValue('K' . $num, $acc_complete);
+    //         $spreadsheet->getActiveSheet()->setCellValue('L' . $num, $data[$i]['problem']);
+    //         $spreadsheet->getActiveSheet()->setCellValue('M' . $num, $data[$i]['plan_build_start_at']);
+    //         $spreadsheet->getActiveSheet()->setCellValue('N' . $num, $data[$i]['exp_preforma']);
+    //         $spreadsheet->getActiveSheet()->setCellValue('O' . $num, $money_from[$data[$i]['money_from']]['title']);
+    //         $spreadsheet->getActiveSheet()->setCellValue('P' . $num, $data[$i]['project_title']);
+    //         $spreadsheet->getActiveSheet()->setCellValue('Q' . $num, $data[$i]['marker']);
+    //         $num++;
+    //     }
+    //     $spreadsheet->getActiveSheet()->setCellValue('A' . $num, '合计：' . count($data) . ' 个');
+    //     $spreadsheet->getActiveSheet()->setCellValue('E' . $num, $total_investors);
+    //     $spreadsheet->getActiveSheet()->setCellValue('F' . $num, $plan_investors);
+    //     // 合并行、列
+    //     $spreadsheet->getActiveSheet()
+    //         ->mergeCells('A1:'.'Q1')
+    //         ->mergeCells('A2:'.'Q2')
+    //         ->mergeCells('A3:N3')
+    //         ->mergeCells('O3:'.'Q3');
+    //     $num = 5+count($data);
+    //     $spreadsheet->getActiveSheet()->mergeCells('A' . $num . ":C" . $num);
+    //     $spreadsheet->getActiveSheet()->mergeCells('H' . $num . ":I" . $num);
+    //     //  设置宽度
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(8.38);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(18.13);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(12.38);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(16.38);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(11.29);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(11.29);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(27.63);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(18.88);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(9.75);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(9.75);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(9.75);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('L')->setWidth(16.75);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('M')->setWidth(9.75);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('N')->setWidth(20.51);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('O')->setWidth(17.63);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('P')->setWidth(17.63);
+    //     $spreadsheet->getActiveSheet()->getColumnDimension('Q')->setWidth(17.63);
+    //     // 设置高度
+    //     $spreadsheet->getActiveSheet()->getRowDimension('1')->setRowHeight(19);
+    //     $spreadsheet->getActiveSheet()->getRowDimension('2')->setRowHeight(52);
+    //     $spreadsheet->getActiveSheet()->getRowDimension('3')->setRowHeight(41);
+    //     $spreadsheet->getActiveSheet()->getRowDimension('4')->setRowHeight(93.75);
+    //     $num = 5;
+    //     for ($i = 0; $i < count($data); $i++) {
+    //         $spreadsheet->getActiveSheet()->getRowDimension($num)->setRowHeight(147);
+    //         $num++;
+    //     }
+    //     $spreadsheet->getActiveSheet()->getRowDimension($num)->setRowHeight(55);
+    //     $spreadsheet->getActiveSheet()->getStyle('A2')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('A3')->applyFromArray($numberStyleLeft)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('O3')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('A4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('B4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('C4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('D4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('E4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('F4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('G4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('J4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('K4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('L4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('M4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('N4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('O4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('P4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('Q4')->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+
+
+    //     $num = 5;
+    //     for ($i = 0; $i < count($data); $i++) {
+    //         $spreadsheet->getActiveSheet()->getStyle('A' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('B' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('C' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('D' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('E' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('F' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('G' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('H'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('I'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('J'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('K'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('L'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('M'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('N'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('O'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('P'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $spreadsheet->getActiveSheet()->getStyle('Q'. $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //         $num++;
+    //     }
+    //     $spreadsheet->getActiveSheet()->getStyle('A' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('E' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('F' . $num)->applyFromArray($numberStyleCenter)->getAlignment()->setWrapText(true);
+
+    //     // 设置边框
+    //     $borderStyleArray = [
+    //         'borders' => [
+    //             'outline' => [
+    //                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+    //                 'color' => ['argb' => '000000000'],
+    //             ]
+    //         ],
+    //     ];
+    //     $spreadsheet->getActiveSheet()->getStyle('A1:Q1')->applyFromArray($borderStyleArray);
+    //     $spreadsheet->getActiveSheet()->getStyle('A2:Q2')->applyFromArray($borderStyleArray);
+    //     $spreadsheet->getActiveSheet()->getStyle('A3:N3')->applyFromArray($borderStyleArray);
+    //     $spreadsheet->getActiveSheet()->getStyle('O3:Q3')->applyFromArray($borderStyleArray);  
+    //     for($c=3;$c<count($data)+6;$c++){
+    //         for($l=0;$l<17;$l++){
+    //             $spreadsheet->getActiveSheet()->getStyle($Letter[$l].$c)->applyFromArray($borderStyleArray);
+    //         }
+    //     }
+    //     //设置字体
+    //     $spreadsheet->getActiveSheet()->getStyle('A2')->getFont()->setSize(20);
+    //     $spreadsheet->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('B4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('C4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('D4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('E4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('F4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('G4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('J4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('H4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('I4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('J4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('K4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('L4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('M4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('N4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('O4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('p4')->getFont()->setBold(true);
+    //     $spreadsheet->getActiveSheet()->getStyle('Q4')->getFont()->setBold(true);
+    //     // 重命名 worksheet
+    //     $spreadsheet->getActiveSheet()->setTitle('项目进度报表');
+    //     // 将活动工作表索引设置为第一个工作表，以便Excel将其作为第一个工作表打开
+    //     $spreadsheet->setActiveSheetIndex(0);
+    //     // 将输出重定向到客户端的Web浏览器 (Xlsx)
+    //     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    //     header('Content-Disposition: attachment;filename="投资项目进度报表.xlsx"');
+    //     header('Cache-Control: max-age=0');
+    //     // 如果正在使用IE 9
+    //     header('Cache-Control: max-age=1');
+    //     // If you're serving to IE over SSL, then the following may be needed
+    //     header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+    //     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+    //     header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+    //     header('Pragma: public'); // HTTP/1.0
+    //     $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+    //     $writer->save('php://output');
+    //     exit;
+    // }
     public function exportSchedule(Request $request)
     {
         $Letter=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO'];
         $params = $request->input();
+        // $project_params = $request->input();
         $ProjectC = new ProjectController();
-        $datas=$ProjectC->projectProgressM($params)->select('project_id')->groupBy('project_id')->orderBy('project_id','asc')->get()->toArray();
+        $datas=$ProjectC->allProjects($params);
+
+        // $datas=$ProjectC->projectProgressM($params)->select('project_id')->groupBy('project_id')->orderBy('project_id','asc')->get()->toArray();
         // $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
         // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
+        if (isset($params['end_at'])) {
+            $end_at = date('Y-m', strtotime($params['end_at']));
+        }else{
+            $end_at=date('Y-m');
+        }
         $data=[];
         foreach ($datas as $k => $row) {
-            $data[$k]=ProjectSchedule::where('project_id',$row['project_id'])->orderBy('id','desc')->first();
-            $projects=Projects::where('id', $row['project_id'])->first();
-            $data[$k]['money_from'] = $projects['money_from'];
-            $data[$k]['project_title'] = $projects['title'];
-            $data[$k]['build_start_at'] = $projects['plan_start_at'];
-            $data[$k]['build_end_at'] = $projects['plan_end_at'];
-            $data[$k]['subject'] = $projects['subject'];
+            $projectSch=ProjectSchedule::where('project_id',$row['id'])->where('month',$end_at)->orderBy('id','desc')->first();
+            if(!$projectSch){
+               $projectSch=ProjectSchedule::where('project_id',$row['id'])->orderBy('id','desc')->first();
+            }
+            $data[$k]=$projectSch;
+            $data[$k]['money_from'] = $row['money_from'];
+            $data[$k]['project_title'] = $row['title'];
+            $data[$k]['build_start_at'] = $row['plan_start_at'];
+            $data[$k]['build_end_at'] = $row['plan_end_at'];
+            $data[$k]['subject'] = $row['subject'];
+            $data[$k]['amount'] = $row['amount'];
         }       
         $schedule_data_month = $ProjectC->projectProgressM($params)->groupBy('month')->pluck('month')->toArray();
         $departments = Departments::where('id', Auth::user()->department_id)->value('title');
-        // if(isset($params['end_at'])) {
-        //     $end_at = date('Y-m', strtotime($params['end_at']));
-        // }else{
-        //     $end_at = date('Y-m');
-        // }
         
         $start_m = 1;
         $start_at = date('Y-01');
@@ -488,7 +784,7 @@ class LedgerController extends Controller
         $total_investors=0;
         $plan_investors=0;
         for ($i = 0; $i < count($data); $i++) {
-            $amount=Projects::where('id',$data[$i]['project_id'])->value('amount');
+            $amount=$data[$i]['amount'];
             $plan_data = ProjectPlan::where('project_id',$data[$i]['project_id'])->where('date',date('Y'))->first();
             $schedule_data = $ProjectC->projectProgressM($params)->where('project_id',$data[$i]['project_id'])->get()->toArray();
             // $l=7;
@@ -681,7 +977,6 @@ class LedgerController extends Controller
         $writer->save('php://output');
         exit;
     }
-    
     /**
      * 导出项目
      *
