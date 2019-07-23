@@ -808,7 +808,7 @@ class LedgerController extends Controller
             // foreach($schedule_data as $k=>$v){
             //     $ac=array_keys($schedule_data_month,$v['month']);
             //     $ac=$ac[0]*2;
-                $month_act_complete=ProjectSchedule::whereBetween('month',[$start_at,$end_at])->where('project_id',$data[$i]['project_id'])->sum('month_act_complete');     
+                $month_act_complete=ProjectSchedule::whereBetween('month',[$start_at,$end_at])->where('project_id',$data[$i]['project_id'])->where('is_audit',1)->sum('month_act_complete');     
                 $spreadsheet->getActiveSheet()->setCellValue('H' . $num, $data[$i]['month_act_complete']);
                 $spreadsheet->getActiveSheet()->setCellValue('I' . $num, $data[$i]['acc_img_progress']);
                 $spreadsheet->getActiveSheet()->setCellValue('J' . $num, $month_act_complete);
