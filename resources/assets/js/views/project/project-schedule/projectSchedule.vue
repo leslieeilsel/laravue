@@ -1214,7 +1214,7 @@
             }
           }
           this.pageCurrent = 1;
-          if (typeof(this.searchForm.is_gc)==='number' || typeof(this.searchForm.nep_type)==='number' || typeof(this.searchForm.money_from)==='number' || typeof(this.searchForm.department_id)==='number' || typeof(this.searchForm.title)==='number' || typeof(this.searchForm.project_id)==='number'|| typeof(this.searchForm.project_num)==='number' || typeof(this.searchForm.subject)==='number' || typeof(this.searchForm.end_at)==='number' || typeof(this.searchForm.title)==='number') {
+          if (typeof(this.searchForm.is_gc)==='number' || typeof(this.searchForm.nep_type)==='number' || typeof(this.searchForm.money_from)==='number' || typeof(this.searchForm.department_id)==='number' || this.searchForm.title || typeof(this.searchForm.project_id)==='number'|| this.searchForm.project_num || typeof(this.searchForm.subject)==='number' || this.searchForm.end_at) {
             this.btnDisable = false;
           }
           this.tableLoading = false;
