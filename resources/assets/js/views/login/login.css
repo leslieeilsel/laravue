@@ -1,4 +1,5 @@
-.ivu-input-group-large .ivu-input {
+.ivu-input-group-large .ivu-input,
+.ivu-input-wrapper-large .ivu-input {
     font-size: 14px !important;
     padding: 6px 11px !important;
     height: 40px !important;
