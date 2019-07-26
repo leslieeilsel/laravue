@@ -783,13 +783,13 @@
     <Modal
       v-model="projectModal"
       title="是否调整所选项目"
-      ok-text="取消"
-      cancel-text="确定"
-      @on-cancel="projectAdjustmentOk"
-      @on-ok="projectAdjustmentCancel"
     >
       <div v-for="(item,index) in projectAdjustmentIds">
         <p>{{item.title}}</p>
+      </div>
+      <div slot="footer">
+        <Button type="text" @click="projectAdjustmentOk()">确定</Button>
+        <Button type="primary" @click="projectAdjustmentCancel()">取消</Button>
       </div>
     </Modal>
   </Card>
@@ -877,11 +877,6 @@
             fixed: 'left'
           },
           {
-            title: '项目编号',
-            key: 'num',
-            width: 210
-          },
-          {
             title: '建设状态',
             key: 'status',
             width: 100,
@@ -938,6 +933,11 @@
             key: 'nep_type',
             width: 150,
             align: "center"
+          },
+          {
+            title: '项目编号',
+            key: 'num',
+            width: 210
           },
           {
             title: '创建时间',
@@ -1317,7 +1317,7 @@
         this.office = this.$store.getters.user.office;
         if (this.office === 2) {
           this.showLandMoney = true;
-          this.isShowAdjustmentBtn = true
+          this.isShowAdjustmentBtn = true;
           if (this.columns[0].type !== 'selection') {
             this.columns.unshift(
               {
@@ -2444,7 +2444,7 @@
             }
           }
           this.pageCurrent = 1;
-          if (typeof(this.searchForm.title)==='number' || typeof(this.searchForm.subject)==='number' || typeof(this.searchForm.office)==='number' || typeof(this.searchForm.unit)==='number' || typeof(this.searchForm.num)==='number' || typeof(this.searchForm.type)==='number' || typeof(this.searchForm.build_type)==='number' || typeof(this.searchForm.money_from)==='number' || typeof(this.searchForm.is_gc)==='number' || typeof(this.searchForm.nep_type)==='number' || typeof(this.searchForm.status)==='number') {
+          if (typeof (this.searchForm.title) === 'number' || typeof (this.searchForm.subject) === 'number' || typeof (this.searchForm.office) === 'number' || typeof (this.searchForm.unit) === 'number' || typeof (this.searchForm.num) === 'number' || typeof (this.searchForm.type) === 'number' || typeof (this.searchForm.build_type) === 'number' || typeof (this.searchForm.money_from) === 'number' || typeof (this.searchForm.is_gc) === 'number' || typeof (this.searchForm.nep_type) === 'number' || typeof (this.searchForm.status) === 'number') {
             this.exportBtnDisable = false;
           }
           this.tableLoading = false;
@@ -2678,19 +2678,19 @@
                   // 如果是当年，年度计划和月度计划都为必填
 
                   projectPlans.forEach(function (rowP, indexP) {
-                    if (rowP.date == row.date) {
+                    if (rowP.date === row.date) {
                       row.amount = rowP.amount;
                       row.image_progress = rowP.image_progress;
                       row.month.forEach(function (e) {
                         rowP.month.forEach(function (p) {
-                          if (e.date == p.date) {
-                            e.amount = p.amount
+                          if (e.date === p.date) {
+                            e.amount = p.amount;
                             e.image_progress = p.image_progress;
                           }
                         });
                       });
                     }
-                  })
+                  });
                   if (row.date === CurrentYear) {
                     row.role = {required: true, message: '计划投资金额不能为空', trigger: 'blur', type: 'number'};
                     row.imageProgress = {required: true, message: '计划形象进度不能为空', trigger: 'blur'};
@@ -2841,7 +2841,7 @@
           month_total[index].amount = 0;
           return;
         }
-        month_total.length
+        month_total.length;
         let amounts = 0;
         for (let i = 0; i < month_total.length; i++) {
           if (month_total[i].amount) {
@@ -2898,6 +2898,7 @@
       },
       // 调整项目
       projectAdjustmentOk() {
+        this.projectModal = false;
         this.$Modal.confirm({
           title: "本次调整将不可撤销，确认是否需要调整",
           loading: true,
@@ -2915,6 +2916,7 @@
             projectAdjustment({project_ids: project_ids}).then(e => {
               if (e.result) {
                 this.$Message.success("调整成功");
+                this.getProject();
               } else {
                 this.$Message.error('调整失败!');
               }
@@ -2930,16 +2932,12 @@
       },
       //选中
       checkboxProject(selection) {
-        console.log(selection.length);
-        if (selection.length > 0) {
-          this.projectBtnDisable = false;
-        } else {
-          this.projectBtnDisable = true;
-        }
+        // console.log(selection.length);
+        this.projectBtnDisable = selection.length <= 0;
         this.projectAdjustmentIds = selection;
       },
       clearComma(s) {
-        if ($.trim(s) == "") {
+        if ($.trim(s) === "") {
           return s;
         } else {
           return (s + "").replace(/[,]/g, "");
