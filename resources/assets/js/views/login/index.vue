@@ -69,7 +69,7 @@
         let imgCode = this.imgCode.toLowerCase();
         if (verifyCode !== '') {
           if (verifyCode !== imgCode) {
-            callback(new Error('验证码错误'));
+            callback(new Error('验证码错误，请重新输入'));
           } else {
             callback();
           }
@@ -106,7 +106,6 @@
           if (valid) {
             this.loading = true;
             this.$store.dispatch('login', this.form).then((res) => {
-              // this.vaptchaObj.reset(); //重置验证码
               this.loading = false;
               this.$router.push({name: 'home'})
             });
@@ -116,6 +115,7 @@
       // 点击图片获取验证码
       getImgCode(code) {
         this.imgCode = code;
+        this.form.verifyCode = '';
         // console.log('验证码: ' + this.imgCode);
       },
     },
