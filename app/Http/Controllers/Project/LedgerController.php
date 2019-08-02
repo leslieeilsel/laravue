@@ -411,9 +411,9 @@ class LedgerController extends Controller
         $data=[];
         foreach ($datas as $k => $row) {
             if($row['is_audit']==1){
-                $projectSch=ProjectSchedule::where('project_id',$row['id'])->where('month',$end_at)->orderBy('id','desc')->get()->toArray();
+                $projectSch=ProjectSchedule::where('project_id',$row['id'])->where('month',$end_at)->where('is_audit',1)->orderBy('id','desc')->get()->toArray();
                 if(count($projectSch)<=0){
-                    $projectSch=ProjectSchedule::where('project_id',$row['id'])->orderBy('id','desc')->get()->toArray();
+                    $projectSch=ProjectSchedule::where('project_id',$row['id'])->where('is_audit',1)->orderBy('id','desc')->get()->toArray();
                 }
                 if(count($projectSch)>0){
                     $data[$k]=$projectSch[0];
