@@ -410,18 +410,22 @@ class LedgerController extends Controller
         }
         $data=[];
         foreach ($datas as $k => $row) {
-            $projectSch=ProjectSchedule::where('project_id',$row['id'])->where('month',$end_at)->orderBy('id','desc')->get()->toArray();
-            if(count($projectSch)<=0){
-                $projectSch=ProjectSchedule::where('project_id',$row['id'])->orderBy('id','desc')->get()->toArray();
-            }
-            if(count($projectSch)>0){
-                $data[$k]=$projectSch[0];
-                $data[$k]['money_from'] = $row['money_from'];
-                $data[$k]['project_title'] = $row['title'];
-                $data[$k]['build_start_at'] = $row['plan_start_at'];
-                $data[$k]['build_end_at'] = $row['plan_end_at'];
-                $data[$k]['subject'] = $row['subject'];
-                $data[$k]['amount'] = $row['amount'];
+            if($row['is_audit']==1){
+                $projectSch=ProjectSchedule::where('project_id',$row['id'])->where('month',$end_at)->orderBy('id','desc')->get()->toArray();
+                if(count($projectSch)<=0){
+                    $projectSch=ProjectSchedule::where('project_id',$row['id'])->orderBy('id','desc')->get()->toArray();
+                }
+                if(count($projectSch)>0){
+                    $data[$k]=$projectSch[0];
+                    $data[$k]['money_from'] = $row['money_from'];
+                    $data[$k]['project_title'] = $row['title'];
+                    $data[$k]['build_start_at'] = $row['plan_start_at'];
+                    $data[$k]['build_end_at'] = $row['plan_end_at'];
+                    $data[$k]['subject'] = $row['subject'];
+                    $data[$k]['amount'] = $row['amount'];
+                }else{
+                    unset($data[$k]);
+                }
             }else{
                 unset($data[$k]);
             }
