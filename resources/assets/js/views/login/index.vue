@@ -1,61 +1,56 @@
 <template>
   <div id="background" class="content">
-  
     <Row class="header">
-      <img src="../../images/logo.png" width="200px" />
+      <img src="../../images/logo.png" style="width:200px" alt="沣西集团投资云平台"/>
       <p class="description">沣西集团投资云平台</p>
     </Row>
     <Row type="flex" justify="center" class-name="row">
       <br>
       <Col class="loginFrom">
-<!--        <Tabs value="name1">-->
-<!--          <TabPane label="账户密码登录" name="name1"></TabPane>-->
-<!--        </Tabs>-->
+        <!--        <Tabs value="name1">-->
+        <!--          <TabPane label="账户密码登录" name="name1"></TabPane>-->
+        <!--        </Tabs>-->
         <Form ref="form" :model="form" :rules="ruleInline">
           <FormItem prop="email">
             <Input type="text" size="large" v-model="form.email" :placeholder="$t('login.username')">
               <Icon type="md-person" slot="prepend"></Icon>
             </Input>
           </FormItem>
-          <FormItem prop="password" class="bottom">
+          <FormItem prop="password">
             <Input type="password" size="large" v-model="form.password" :placeholder="$t('login.password')">
               <Icon type="md-lock" slot="prepend"></Icon>
             </Input>
           </FormItem>
+          <FormItem prop="verifyCode">
+            <Input type="text" size="large" v-model="form.verifyCode" placeholder="请输入验证码（不区分大小写）"
+                   style="width: 238px;"/>
+            <vue-img-verify @getImgCode="getImgCode" ref="vueImgVerify"/>
+          </FormItem>
           <FormItem class="bottom">
-            <Checkbox size="large" v-model="form.remember" class="rememberMe">记住我</Checkbox>
+            <Checkbox size="large" v-model="form.remember" class="rememberMe">自动登录</Checkbox>
             <router-link to="/password/send" class="forgetPassword">
               <span>忘记密码</span>
             </router-link>
           </FormItem>
-          <div ref="vaptcha" class="bottom" style="width: 368px;height: 40px">
-            <div class="vaptcha-init-main">
-              <div class="vaptcha-init-loading">
-                <a href="https://www.vaptcha.com/" target="_blank">
-                  <img src="https://cdn.vaptcha.com/vaptcha-loading.gif" alt=""/>
-                </a>
-                <span class="vaptcha-text">Vaptcha启动中...</span>
-              </div>
-            </div>
-          </div>
           <FormItem class="bottom">
-            <Button type="primary" @click="submit('form')" :disabled="disabled" id="loginButton"
-                    size="large" long :loading="loading">登录
+            <Button type="primary" @click="submit('form')" id="loginButton" size="large" long :loading="loading">
+              登录
             </Button>
           </FormItem>
         </Form>
       </Col>
     </Row>
-<!--    <Footer class="layout-footer-center">-->
-<!--      <p>版权所有：陕西微软创新中心有限公司 陕ICP备15012717号</p>-->
-<!--      <p>地址：陕西省西咸新区沣西新城康定路与兴咸路十字西南角（西部云谷B3楼5层）</p>-->
-<!--      <p>E-mail：mic@micshaanxi.com 邮编：712000 电话：（029）38020667</p>-->
-<!--    </Footer>-->
+    <!--    <Footer class="layout-footer-center">-->
+    <!--      <p>版权所有：陕西微软创新中心有限公司 陕ICP备15012717号</p>-->
+    <!--      <p>地址：陕西省西咸新区沣西新城康定路与兴咸路十字西南角（西部云谷B3楼5层）</p>-->
+    <!--      <p>E-mail：mic@micshaanxi.com 邮编：712000 电话：（029）38020667</p>-->
+    <!--    </Footer>-->
   </div>
 </template>
 
 <script>
-  import './login.css'
+  import './login.css';
+  import vueImgVerify from '../../components/ImgVerify';
 
   const extend = function (to, _from) {
     for (const key in _from) {
@@ -64,98 +59,68 @@
     return to
   };
   export default {
-    props: {
-      type: {
-        type: String,
-        default: 'click'
-      },
-      scene: {
-        type: String,
-        default: ''
-      },
-      vpStyle: {
-        type: String,
-        default: 'light'
-      },
-      color: {
-        type: String,
-        color: '#2d8cf0'
-      },
-      lang: {
-        type: String,
-        default: 'zh-CN'
-      },
-    },
     name: "index",
+    components: {
+      vueImgVerify
+    },
     data() {
+      const verifyCodeCheckValidate = (rule, value, callback) => {
+        let verifyCode = this.form.verifyCode.toLowerCase();
+        let imgCode = this.imgCode.toLowerCase();
+        if (verifyCode !== '') {
+          if (verifyCode !== imgCode) {
+            callback(new Error('验证码错误，请重新输入'));
+          } else {
+            callback();
+          }
+        } else {
+          callback(new Error('请输入验证码'));
+        }
+      };
       return {
-        disabled: true,
+        verifyCodeCheckValidate,
+        imgCode: '',
         loading: false,
         form: {
           email: '',
           password: '',
+          verifyCode: '',
           remember: false
         },
-        vaptchaObj: {},
         ruleInline: {
           email: [
             {required: true, message: '请填写用户名', trigger: 'blur'},
           ],
           password: [
             {required: true, message: '请填写登录密码', trigger: 'blur'},
+          ],
+          verifyCode: [
+            {required: true, validator: verifyCodeCheckValidate, trigger: 'blur'}
           ]
         }
       }
     },
     methods: {
-      loadV2Script() {
-        if (typeof window.vaptcha === 'function') { //如果已经加载就直接放回
-          return Promise.resolve()
-        } else {
-          return new Promise(resolve => {
-            let script = document.createElement('script');
-            script.src = 'https://cdn.vaptcha.com/v2.js';
-            script.async = true;
-            script.onload = script.onreadystatechange = function () {
-              if (!this.readyState || this.readyState === 'loaded' || this.readyState === 'complete') {
-                resolve();
-                script.onload = script.onreadystatechange = null
-              }
-            };
-            document.getElementsByTagName("head")[0].appendChild(script)
-          })
-        }
-      },
       submit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.loading = true;
             this.$store.dispatch('login', this.form).then((res) => {
-              this.vaptchaObj.reset(); //重置验证码
               this.loading = false;
               this.$router.push({name: 'home'})
             });
           }
         })
-      }
+      },
+      // 点击图片获取验证码
+      getImgCode(code) {
+        this.imgCode = code;
+        this.form.verifyCode = '';
+        // console.log('验证码: ' + this.imgCode);
+      },
     },
     mounted() {
-      let config = extend({
-        vid: '5bffa64bfc650eb8507698ed',
-        container: this.$refs.vaptcha,
-        style: this.vpStyle
-      }, this.$props);
-      this.loadV2Script().then(() => {
-        window.vaptcha(config).then(obj => {
-          this.$emit('input', obj);
-          let _this = this;
-          _this.vaptchaObj = obj;
-          obj.listen('pass', function () {
-            _this.disabled = false;
-          });
-          obj.render()
-        })
-      })
+      this.imgCode = this.$refs.vueImgVerify.draw();
     }
   }
 </script>

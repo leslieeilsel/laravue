@@ -16,7 +16,7 @@
             <span>{{userForm.email}}</span>
           </FormItem>
           <FormItem label="所属部门：">
-            <span>{{userForm.department_id}}</span>
+            <span>{{userForm.department_name}}</span>
           </FormItem>
           <FormItem label="注册时间：">
             <span>{{userForm.created_at}}</span>
@@ -70,9 +70,9 @@
         callback();
       };
       const pwdCheckValidate = (rule, value, callback) => {
-        if (this.formResetPassword.newPassword != '' && value == '') {
+        if (this.formResetPassword.newPassword !== '' && value === '') {
           callback(new Error('确认密码不能为空'));
-        } else if (this.formResetPassword.confirmNewPassword != value) {
+        } else if (this.formResetPassword.confirmNewPassword !== value) {
           callback(new Error('新密码和确认密码应相同'));
         } else {
           callback();
@@ -87,7 +87,7 @@
           name: '',
           phone: '',
           email: '',
-          department_id: '',
+          department_name: '',
           desc: '',
           created_at: '',
         },
@@ -121,7 +121,7 @@
           if (res.result) {
             this.departments = res.result;
             let departmentId = this.$store.getters.user.department_id;
-            this.$store.getters.user.department_id = this.departments[departmentId];
+            this.$store.getters.user.department_name = this.departments[departmentId];
             this.userForm = this.$store.getters.user;
             this.infoLoading = false;
           }
