@@ -1,22 +1,22 @@
 <template>
   <Card>
     <Row>
-      <Form ref="searchForm" :model="searchForm" inline :label-width="90" class="search-form">
+      <Form ref="searchForm" :model="searchForm" inline :label-width="70" class="search-form">
         <FormItem label="项目名称" prop="title">
           <Input clearable v-model="searchForm.title" placeholder="支持模糊搜索" style="width: 200px"/>
         </FormItem>
         <FormItem label="填报时间" prop="build_at">
-          <Row style="width: 110px">
+<!--          <Row style="width: 110px">-->
             <!-- <Col span="11">
               <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
               </DatePicker>
             </Col>
             <Col span="2" style="text-align: center">-</Col> -->
-            <Col span="24">
-              <DatePicker type="month" placeholder="填报时间" format="yyyy-MM" v-model="searchForm.end_at">
+<!--            <Col span="24">-->
+              <DatePicker type="month" placeholder="填报时间" format="yyyy-MM" v-model="searchForm.end_at" style="width: 200px">
               </DatePicker>
-            </Col>
-          </Row>
+<!--            </Col>-->
+<!--          </Row>-->
         </FormItem>
         <span v-if="drop">
           <Form-item label="项目编号" prop="project_num">
@@ -25,19 +25,10 @@
           <Form-item label="投资主体" prop="subject">
             <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
-        <FormItem label="部门" prop="department_id">
-          <Cascader :data="dataDep1" v-model="searchForm.department_id" placeholder="选择部门" trigger="hover"
-                    style="width: 200px" :render-format="format"></Cascader>
-          <!-- <Poptip trigger="click" placement="right" title="选择部门" width="340">
-            <div style="display:flex;">
-              <Input v-model="searchForm.department_title" readonly style="width: 200px;" placeholder=""/>
-            </div>
-            <div slot="content" class="tree-bar">
-              <Tree :data="dataDep" :load-data="loadDataTree" @on-select-change="selectTreeS"></Tree>
-              <Spin size="large" fix v-if="dpLoading"></Spin>
-            </div>
-          </Poptip> -->
-        </FormItem>
+          <FormItem label="部门" prop="department_id">
+            <Cascader :data="dataDep1" v-model="searchForm.department_id" placeholder="选择部门" trigger="hover"
+                      style="width: 200px" :render-format="format"></Cascader>
+          </FormItem>
           <FormItem label="资金来源">
             <Select v-model="searchForm.money_from" prop="money_from" style="width: 200px">
               <Option value='-1' key='-1'>全部</Option>
@@ -641,7 +632,7 @@
     getProjectDictData,
     projectScheduleDelete
   } from '../../../api/project';
-  import {initDepartment, loadDepartment, loadClassDepartment} from '../../../api/system';
+  import {loadClassDepartment} from '../../../api/system';
   import './projectSchedule.css'
 
   export default {
@@ -675,7 +666,6 @@
           subject: '',
           end_at: '',
           department_id: [],
-          department_title: '',
           money_from: '',
           is_gc: '',
           nep_type: '',
@@ -1546,35 +1536,6 @@
         }
         this.pageCurrent = 1;
         this.loadingTable = false;
-      },
-      loadDataTree(item, callback) {
-        loadDepartment(item.id).then(res => {
-          res.result.forEach(function (e) {
-            if (e.is_parent) {
-              e.loading = false;
-              e.children = [];
-            }
-            if (e.status === 0) {
-              e.title = "[已禁用] " + e.title;
-              e.disabled = true;
-            }
-          });
-          callback(res.result);
-        });
-      },
-      selectTreeS(v) {
-        if (v.length > 0) {
-          // 转换null为""
-          for (let attr in v[0]) {
-            if (v[0][attr] === null) {
-              v[0][attr] = "";
-            }
-          }
-          let str = JSON.stringify(v[0]);
-          let data = JSON.parse(str);
-          this.searchForm.department_id = data.id;
-          this.searchForm.department_title = data.title;
-        }
       },
       onSearchIsGcChange(value) {
         this.searchNepDisabled = value !== 1;

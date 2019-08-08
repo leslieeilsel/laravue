@@ -20,6 +20,7 @@
           <div class="main-breadcrumb">
             <img src="../../images/xixian.png" width="30px"/>
             <span>沣西集团投资云平台</span>
+<!--            <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>-->
           </div>
         </div>
         <div class="header-avator-con">

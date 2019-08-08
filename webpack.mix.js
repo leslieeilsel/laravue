@@ -10,8 +10,6 @@ let webpack = require('webpack');
  | file for the application as well as bundling up all the JS files.
  |
  */
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
 mix.js('resources/assets/js/app.js', 'public/js')
   .extract(['vue', 'vue-router', 'axios', 'iview'])
   .sass('resources/assets/sass/app.scss', 'public/css')

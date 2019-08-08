@@ -10,7 +10,7 @@ use App\Models\Role;
 use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-//use App\Models\OperationLog;
+use App\Models\OperationLog;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProjectEarlyWarning;
 use Illuminate\Support\Facades\Storage;
@@ -25,22 +25,25 @@ class ProjectController extends Controller
     public $office;
     public $projectsCache;
     public $projectPlanCache;
+    public $departmentCache;
 
     public function __construct()
     {
         $this->getSeeIds();
-        if (Cache::has('projectsCache')) {
-            $this->projectsCache = Cache::get('projectsCache');
-        } else {
+        if (!Cache::has('projectsCache')) {
             Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
-            $this->projectsCache = Cache::get('projectsCache');
         }
-        if (Cache::has('projectPlanCache')) {
-            $this->projectPlanCache = Cache::get('projectPlanCache');
-        } else {
+        $this->projectsCache = Cache::get('projectsCache');
+
+        if (!Cache::has('projectPlanCache')) {
             Cache::put('projectPlanCache', collect(ProjectPlan::all()->toArray()), 10080);
-            $this->projectPlanCache = Cache::get('projectPlanCache');
         }
+        $this->projectPlanCache = Cache::get('projectPlanCache');
+
+        if (!Cache::has('departmentsCache')) {
+            Cache::put('departmentsCache', Departments::all(), 10080);
+        }
+        $this->departmentCache = Cache::get('departmentsCache');
     }
 
     public function getSeeIds()
@@ -74,7 +77,7 @@ class ProjectController extends Controller
      */
     public function getProjects()
     {
-        $query = new Projects();
+        $query = $this->projectsCache;
 
         if ($this->office === 1) {
             $query = $query->where('is_audit', '!=', 4);
@@ -83,7 +86,7 @@ class ProjectController extends Controller
             $query = $query->where('is_audit', 1);
         }
 
-        $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
+        $projects = $query->whereIn('user_id', $this->seeIds)->all();
 
         return response()->json(['result' => $projects], 200);
     }
@@ -134,10 +137,10 @@ class ProjectController extends Controller
 
             $result = $id ? true : false;
 
-            //            if ($result) {
-            //                $log = new OperationLog();
-            //                $log->eventLog($request, '创建项目信息');
-            //            }
+            if ($result) {
+                $log = new OperationLog();
+                $log->eventLog($request, '新建项目');
+            }
 
             return response()->json(['result' => $result], 200);
         } else {
@@ -276,6 +279,10 @@ class ProjectController extends Controller
 
             $result = ($result >= 0) ? true : false;
 
+            if ($result) {
+                $log = new OperationLog();
+                $log->eventLog($request, '修改项目');
+            }
             return response()->json(['result' => $result], 200);
         } else {
             return response()->json(['result' => false, 'message' => '登录超时，请重新登陆']);
@@ -391,12 +398,15 @@ class ProjectController extends Controller
      */
     public function allProjects($params)
     {
-        $query = new Projects;
+        $query = $this->projectsCache;
+
+        $query->whereIn('user_id', $this->seeIds);
+
         if (isset($params['department_id'])) {
             if (gettype($params['department_id']) == 'string') {
                 $params['department_id'] = explode(',', $params['department_id']);
             }
-            $departmentCount=count($params['department_id'])-1;
+            $departmentCount = count($params['department_id']) - 1;
             if (count($params['department_id']) > 0) {
                 $user_ids = DB::table('users')->select('id')->where('department_id', $params['department_id'][$departmentCount])->get()->toArray();
                 $user_id = array_column($user_ids, 'id');
@@ -404,16 +414,19 @@ class ProjectController extends Controller
             }
         }
         if (isset($params['title'])) {
-            $query = $query->where('title', 'like', '%' . $params['title'] . '%');
+            $query = $query->filter(function ($item) use ($params) {
+                return false !== stripos($item['title'], $params['title']);
+            });
         }
         if (isset($params['subject'])) {
-            $query = $query->where('subject', 'like', '%' . $params['subject'] . '%');
-        }
-        if (isset($params['unit'])) {
-            $query = $query->where('unit', 'like', '%' . $params['unit'] . '%');
+            $query = $query->filter(function ($item) use ($params) {
+                return false !== stripos($item['subject'], $params['subject']);
+            });
         }
         if (isset($params['num'])) {
-            $query = $query->where('num', $params['num']);
+            $query = $query->filter(function ($item) use ($params) {
+                return false !== stripos($item['num'], $params['num']);
+            });
         }
         if (isset($params['type'])) {
             if ($params['type'] != -1) {
@@ -455,21 +468,26 @@ class ProjectController extends Controller
                 $query = $query->whereIn('is_audit', [1, 3]);
             }
         }
-        $projects = $query->whereIn('user_id', $this->seeIds)->get()->toArray();
+        $projects = array_values($query->whereIn('user_id', $this->seeIds)->all());
 
         return $projects;
     }
 
     public function getAllProjects(Request $request)
     {
+        $t1 = microtime(true);
         $params = $request->input('searchForm');
         $projects = $this->allProjects($params);
+        $t2 = microtime(true);
+        $s1 =  '耗时 '. round($t2-$t1,3) . '秒';
         $type = Dict::getOptionsArrByName('工程类项目分类');
         $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
         $status = Dict::getOptionsArrByName('项目状态');
         $money_from = Dict::getOptionsArrByName('资金来源');
         $build_type = Dict::getOptionsArrByName('建设性质');
         $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
+        $t3 = microtime(true);
+        $s2 =  '耗时 '. round($t3-$t2,3) . '秒';
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
@@ -481,10 +499,16 @@ class ProjectController extends Controller
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
-            $projects[$k]['unit'] = Departments::where('id', $row['unit'])->value('title');
+            $unit = $this->departmentCache->firstWhere('id', $row['unit']);
+            if ($unit) {
+                $projects[$k]['unit'] = $unit->title;
+            }
         }
+        $t4 = microtime(true);
+        $s3 =  '耗时 '. round($t4-$t3,3) . '秒';
+        $sFull =  '耗时 '. round($t4-$t1,3) . '秒';
 
-        return response()->json(['result' => $projects], 200);
+        return response()->json(['result' => $projects, 's1' => $s1, 's2' => $s2, 's3' => $s3], 200);
     }
 
     public function getEditFormData(Request $request)
@@ -658,10 +682,11 @@ class ProjectController extends Controller
         $data['user_id'] = Auth::id();
         $schedule_id = DB::table('iba_project_schedule')->insertGetId($data);
         $result = $schedule_id;
-        //        if ($result) {
-        //            $log = new OperationLog();
-        //            $log->eventLog($request, '投资项目进度填报');
-        //        }
+
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '投资项目进度填报');
+        }
 
         return response()->json(['result' => $result], 200);
     }
@@ -920,10 +945,10 @@ class ProjectController extends Controller
             $data['plan_investors'], $data['plan_img_progress'], $data['month'], $data['project_title']);
         $result = ProjectSchedule::where('id', $id)->update($data);
 
-        //        if ($result) {
-        //            $log = new OperationLog();
-        //            $log->eventLog($request, '修改项目进度信息');
-        //        }
+        if ($result) {
+            $log = new OperationLog();
+            $log->eventLog($request, '修改项目进度信息');
+        }
 
         return response()->json(['result' => $result], 200);
     }
@@ -1192,10 +1217,10 @@ class ProjectController extends Controller
             } else {
                 $result = false;
             }
-            //            if ($result) {
-            //                $log = new OperationLog();
-            //                $log->eventLog($request, '删除项目');
-            //            }
+                if ($result) {
+                    $log = new OperationLog();
+                    $log->eventLog($request, '删除项目');
+                }
 
             Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
         } else {
@@ -1222,10 +1247,11 @@ class ProjectController extends Controller
             } else {
                 $result = false;
             }
-            //            if ($result) {
-            //                $log = new OperationLog();
-            //                $log->eventLog($request, '删除项目进度');
-            //            }
+
+            if ($result) {
+                $log = new OperationLog();
+                $log->eventLog($request, '删除项目进度');
+            }
         } else {
             $result = false;
         }

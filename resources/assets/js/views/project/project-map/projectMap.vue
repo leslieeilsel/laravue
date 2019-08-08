@@ -72,7 +72,7 @@
 </template>
 <script>
   import "./projectMap.css";
-  import {getAllProjects, getProjectDictData, locationPosition} from "../../../api/project";
+  import {getAllProjects, getProjectDictData,} from "../../../api/project";
   import {loadClassDepartment} from '../../../api/system';
 
   export default {

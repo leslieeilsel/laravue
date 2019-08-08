@@ -6,15 +6,16 @@
           <Input clearable v-model="searchForm.title" placeholder="支持模糊搜索" style="width: 200px"/>
         </Form-item>
         <Form-item label="项目编号" prop="num">
-          <Input clearable v-model="searchForm.num" placeholder="请输入项目编号" style="width: 200px"/>
+          <Input clearable v-model="searchForm.num" placeholder="支持模糊搜索" style="width: 200px"/>
         </Form-item>
         <span v-if="drop">
           <Form-item label="投资主体" prop="subject">
             <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
-          <Form-item label="承建单位" prop="unit">
-            <Input clearable v-model="searchForm.unit" placeholder="支持模糊搜索" style="width: 200px"/>
-          </Form-item>
+          <FormItem label="承建单位" prop="department_id">
+            <Cascader :data="dataDep1" v-model="searchForm.department_id" placeholder="选择部门" trigger="hover"
+                      style="width: 200px" :render-format="format"></Cascader>
+          </FormItem>
           <FormItem label="项目类型" prop="type">
             <Select v-model="searchForm.type" style="width: 200px">
               <Option value='-1' key='-1'>全部</Option>
@@ -54,7 +55,7 @@
           </FormItem>
         </span>
         <Form-item style="margin-left:-70px;" class="br">
-          <Button @click="getProject" type="primary" icon="ios-search">搜索</Button>
+          <Button @click="searchProject" type="primary" icon="ios-search">搜索</Button>
           <Button @click="handleResetSearch">重置</Button>
           <a class="drop-down" @click="dropDown">
             {{dropDownContent}}
@@ -807,20 +808,21 @@
     projectDelete,
     projectAdjustment
   } from '../../../api/project';
-  import {getAllDepartment} from '../../../api/system';
+  import {getAllDepartment, loadClassDepartment} from '../../../api/system';
   import './projects.css'
   import '../../../../../../public/assets/css/DrawingManager_min.css';
-  import $ from 'jquery'
+  import $ from 'jquery';
 
   export default {
     data: function () {
       return {
+        dataDep1: [],
+        clickSearch: false,
         currentYear: 2019,
         isShowAdjustmentBtn: false,
         isGcRole: {required: false},
         noMap: false,
         haveMap: false,
-        iframeHeight: 0,
         modal11: false,
         modal222: false,
         projectModal: false,
@@ -850,8 +852,7 @@
         searchForm: {
           title: '',
           subject: '',
-          office: '',
-          unit: '',
+          department_id: [],
           num: '',
           type: '',
           build_type: '',
@@ -859,6 +860,7 @@
           is_gc: '',
           nep_type: '',
           status: '',
+          is_audit: ''
         },
         columns: [
           {
@@ -1333,14 +1335,16 @@
         this.isShowButton = this.office === 0;
         this.showExportButton = !(this.office === 0);
         this.$refs.formValidate.resetFields();
-        this.iframeHeight = this.$parent.$el.clientHeight - 160;
         this.getDictData();
         this.getProject();
         getAllDepartment().then(res => {
           if (res.result) {
             this.departmentIds = res.result;
           }
-        })
+        });
+        loadClassDepartment().then(res => {
+          this.dataDep1 = res;
+        });
       },
       loadStaticMapData(fileName) {
         let basePath = window.document.location.host;
@@ -2429,6 +2433,10 @@
           }
         }
       },
+      searchProject() {
+        this.clickSearch = true;
+        this.getProject();
+      },
       getProject() {
         this.tableLoading = true;
         this.searchForm.is_audit = this.$route.params.is_audit;
@@ -2444,9 +2452,7 @@
             }
           }
           this.pageCurrent = 1;
-          if ( this.searchForm.title || typeof (this.searchForm.subject) === 'number' || typeof (this.searchForm.office) === 'number' || typeof (this.searchForm.unit) === 'number' || typeof (this.searchForm.num) === 'number' || typeof (this.searchForm.type) === 'number' || typeof (this.searchForm.build_type) === 'number' || typeof (this.searchForm.money_from) === 'number' || typeof (this.searchForm.is_gc) === 'number' || typeof (this.searchForm.nep_type) === 'number' || typeof (this.searchForm.status) === 'number') {
-            this.exportBtnDisable = false;
-          }
+          this.exportBtnDisable = !this.clickSearch;
           this.tableLoading = false;
         });
       },
@@ -2469,8 +2475,7 @@
         this.searchForm = {
           title: '',
           subject: '',
-          office: '',
-          unit: '',
+          department_id: [],
           num: '',
           type: '',
           build_type: '',
@@ -2943,6 +2948,14 @@
           return (s + "").replace(/[,]/g, "");
         }
       },
+      format(labels, selectedData) {
+        const index = labels.length - 1;
+        const data = selectedData[index] || false;
+        if (data && data.code) {
+          return labels[index];
+        }
+        return labels[index];
+      }
     },
     mounted() {
       this.mapStyle.height = window.innerHeight - 112 + 'px';
