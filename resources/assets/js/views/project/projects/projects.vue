@@ -2444,7 +2444,7 @@
             }
           }
           this.pageCurrent = 1;
-          if (typeof (this.searchForm.title) === 'number' || typeof (this.searchForm.subject) === 'number' || typeof (this.searchForm.office) === 'number' || typeof (this.searchForm.unit) === 'number' || typeof (this.searchForm.num) === 'number' || typeof (this.searchForm.type) === 'number' || typeof (this.searchForm.build_type) === 'number' || typeof (this.searchForm.money_from) === 'number' || typeof (this.searchForm.is_gc) === 'number' || typeof (this.searchForm.nep_type) === 'number' || typeof (this.searchForm.status) === 'number') {
+          if ( this.searchForm.title || typeof (this.searchForm.subject) === 'number' || typeof (this.searchForm.office) === 'number' || typeof (this.searchForm.unit) === 'number' || typeof (this.searchForm.num) === 'number' || typeof (this.searchForm.type) === 'number' || typeof (this.searchForm.build_type) === 'number' || typeof (this.searchForm.money_from) === 'number' || typeof (this.searchForm.is_gc) === 'number' || typeof (this.searchForm.nep_type) === 'number' || typeof (this.searchForm.status) === 'number') {
             this.exportBtnDisable = false;
           }
           this.tableLoading = false;
