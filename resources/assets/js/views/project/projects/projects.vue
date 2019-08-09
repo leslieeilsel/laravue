@@ -126,8 +126,8 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="承建单位" prop="unit_title">
-              <Input v-model="form.unit_title" readonly placeholder="子公司或部门"></Input>
+            <FormItem label="承建单位" prop="unit">
+              <Input v-model="form.unit" readonly placeholder="子公司或部门"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -401,7 +401,7 @@
           </Col>
           <Col span="12">
             <FormItem label="承建单位" prop="unit">
-              <Input v-model="editForm.unit_title" placeholder="子公司或部门" :disabled="isAdjustReadOnly"></Input>
+              <Input v-model="editForm.unit" readonly placeholder="子公司或部门" :disabled="isAdjustReadOnly"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -625,7 +625,7 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="承建单位" prop="unit_title">
+            <FormItem label="承建单位" prop="unit">
               <Input v-model="previewForm.unit" placeholder="" :readonly="isReadOnly"></Input>
             </FormItem>
           </Col>
@@ -1061,9 +1061,6 @@
                       // this.editFormLoading = true;
                       getEditFormData(params.row.id).then(res => {
                         this.editForm = res.result;
-                        let departmentId = this.editForm.unit;
-                        this.editForm.unit_title = this.departmentIds[departmentId];
-                        this.form.unit = departmentId;
                         if ((typeof this.editForm.plan_start_at === 'string') && this.editForm.plan_start_at.constructor === String) {
                           this.editForm.plan_start_at = new Date(Date.parse(this.editForm.plan_start_at));
                         }
@@ -1225,7 +1222,6 @@
           build_type: '',
           money_from: '',
           status: '',
-          unit_title: '',
           unit: '',
           amount: null,
           land_amount: null,
@@ -1284,9 +1280,6 @@
           ],
           is_gc: [
             {required: true, message: '项目标识不能为空', trigger: 'change', type: 'number'}
-          ],
-          unit: [
-            {required: true, message: '建设单位不能为空', trigger: 'blur'}
           ],
           plan_start_at: [
             {required: true, message: '计划开始时间不能为空', trigger: 'change', type: 'date'},
@@ -2495,8 +2488,7 @@
         this.modal = true;
         this.form.projectPlan = '';
         let departmentId = this.$store.getters.user.department_id;
-        this.form.unit_title = this.departmentIds[departmentId];
-        this.form.unit = departmentId;
+        this.form.unit = this.departmentIds[departmentId];
       },
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {

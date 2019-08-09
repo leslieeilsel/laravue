@@ -19,7 +19,7 @@
               ref="tree"
               :data="treeData"
               :load-data="loadData"
-              empty-text=""
+              empty-text="暂无数据"
               @on-check-change="changeSelect"
               @on-select-change="selectTree"
               show-checkbox
@@ -30,13 +30,13 @@
         <Col span="9">
           <Form ref="form" :model="form" :label-width="85" :rules="menuFormValidate">
             <FormItem label="上级部门" prop="parent_title">
-              <Poptip trigger="click" placement="right-start" title="选择上级部门" width="250">
-                <Input v-model="form.parent_title" readonly placeholder=""/>
-                <div slot="content" style="position:relative;min-height:5vh">
-                  <Tree :data="dataEdit" :load-data="loadData" @on-select-change="selectTreeEdit"></Tree>
-                  <Spin size="large" fix v-if="loadingEdit"></Spin>
-                </div>
-              </Poptip>
+              <!--              <Poptip trigger="click" placement="right-start" title="选择上级部门" width="250">-->
+              <Input v-model="form.parent_title" readonly placeholder=""/>
+              <!--                <div slot="content" style="position:relative;min-height:5vh">-->
+              <!--                  <Tree :data="dataEdit" :load-data="loadData" @on-select-change="selectTreeEdit"></Tree>-->
+              <!--                  <Spin size="large" fix v-if="loadingEdit"></Spin>-->
+              <!--                </div>-->
+              <!--              </Poptip>-->
             </FormItem>
             <FormItem label="部门名称" prop="title">
               <Input v-model="form.title" placeholder=""/>
@@ -68,7 +68,7 @@
           </Form>
         </Col>
       </Row>
-    
+      
       <Modal :title="modalTitle" v-model="menuModalVisible" :mask-closable='false' :width="500">
         <Form ref="formAdd" :model="formAdd" :label-width="85" :rules="menuFormValidate">
           <div v-if="showParent">
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-  import {initDepartment, loadDepartment, addDepartment, editDepartment} from "api/system";
+  import {initDepartment, loadDepartment, addDepartment, editDepartment} from "../../../api/system";
   import "./departmentManage.css";
 
   export default {
@@ -140,7 +140,7 @@
     methods: {
       init() {
         this.getParentList();
-        this.getParentListEdit();
+        // this.getParentListEdit();
       },
       getParentList() {
         this.loading = true;

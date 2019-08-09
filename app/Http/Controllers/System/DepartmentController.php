@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Departments;
 use Illuminate\Support\Facades\Auth;
 use App\Models\OperationLog;
+use Illuminate\Support\Facades\Cache;
 
 class DepartmentController extends Controller
 {
@@ -44,12 +45,14 @@ class DepartmentController extends Controller
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['create_by'] = Auth::user()->name;
         $result = Departments::insert($data);
+
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '创建部门');
+            Cache::put('departmentsCache', Departments::all(), 10080);
         }
 
-        return $result ? response()->json(['result' => true], 200) : response()->json(['result' => false], 200);
+        return response()->json(['result' => $result], 200);
     }
 
     /**
@@ -73,6 +76,7 @@ class DepartmentController extends Controller
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '修改部门');
+            Cache::put('departmentsCache', Departments::all(), 10080);
         }
 
         return response()->json(['result' => $result], 200);

@@ -41,7 +41,7 @@ class ProjectController extends Controller
         $this->projectPlanCache = Cache::get('projectPlanCache');
 
         if (!Cache::has('departmentsCache')) {
-            Cache::put('departmentsCache', Departments::all(), 10080);
+            Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
         }
         $this->departmentCache = Cache::get('departmentsCache');
     }
@@ -121,7 +121,6 @@ class ProjectController extends Controller
             } else {
                 unset($data['positions']);
             }
-            unset($data['unit_title']);
             $data['created_at'] = date('Y-m-d H:i:s');
             $data['is_audit'] = 4;
             $data['user_id'] = Auth::id();
@@ -133,11 +132,10 @@ class ProjectController extends Controller
             $id = DB::table('iba_project_projects')->insertGetId($data);
             $this->insertPlan($id, $planData);
 
-            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
-
             $result = $id ? true : false;
 
             if ($result) {
+                Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
                 $log = new OperationLog();
                 $log->eventLog($request, '新建项目');
             }
@@ -273,13 +271,12 @@ class ProjectController extends Controller
             unset($data['id'], $data['projectPlan'], $data['unit_title']);
             $result = Projects::where('id', $id)->update($data);
 
-            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
-
             $this->updatePlan($id, $projectPlan);
 
             $result = ($result >= 0) ? true : false;
 
             if ($result) {
+                Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
                 $log = new OperationLog();
                 $log->eventLog($request, '修改项目');
             }
@@ -475,11 +472,9 @@ class ProjectController extends Controller
 
     public function getAllProjects(Request $request)
     {
-        $t1 = microtime(true);
         $params = $request->input('searchForm');
         $projects = $this->allProjects($params);
         $t2 = microtime(true);
-        $s1 =  '耗时 '. round($t2-$t1,3) . '秒';
         $type = Dict::getOptionsArrByName('工程类项目分类');
         $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
         $status = Dict::getOptionsArrByName('项目状态');
@@ -487,7 +482,6 @@ class ProjectController extends Controller
         $build_type = Dict::getOptionsArrByName('建设性质');
         $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
         $t3 = microtime(true);
-        $s2 =  '耗时 '. round($t3-$t2,3) . '秒';
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
@@ -501,14 +495,11 @@ class ProjectController extends Controller
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
             $unit = $this->departmentCache->firstWhere('id', $row['unit']);
             if ($unit) {
-                $projects[$k]['unit'] = $unit->title;
+                $projects[$k]['unit'] = $unit['title'];
             }
         }
-        $t4 = microtime(true);
-        $s3 =  '耗时 '. round($t4-$t3,3) . '秒';
-        $sFull =  '耗时 '. round($t4-$t1,3) . '秒';
 
-        return response()->json(['result' => $projects, 's1' => $s1, 's2' => $s2, 's3' => $s3], 200);
+        return response()->json(['result' => $projects], 200);
     }
 
     public function getEditFormData(Request $request)
@@ -703,7 +694,7 @@ class ProjectController extends Controller
             if (gettype($data['department_id']) == 'string') {
                 $data['department_id'] = explode(',', $data['department_id']);
             }
-            $departmentCount=count($data['department_id'])-1;
+            $departmentCount = count($data['department_id']) - 1;
             if (count($data['department_id']) > 0) {
                 $user_ids = DB::table('users')->select('id')->where('department_id', $data['department_id'][$departmentCount])->get()->toArray();
                 $user_id = array_column($user_ids, 'id');
@@ -768,6 +759,7 @@ class ProjectController extends Controller
             $query = $query->where('is_audit', 1);
         }
         $ProjectSchedules = $query->whereIn('user_id', $this->seeIds);
+
         return $ProjectSchedules;
     }
 
@@ -777,7 +769,7 @@ class ProjectController extends Controller
         $result = $this->projectProgressM($params);
         $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
         foreach ($ProjectSchedules as $k => $row) {
-            $Projects = Projects::select('money_from','title','num','subject','plan_start_at','plan_end_at','amount')->where('id', $row['project_id'])->first();
+            $Projects = Projects::select('money_from', 'title', 'num', 'subject', 'plan_start_at', 'plan_end_at', 'amount')->where('id', $row['project_id'])->first();
             $ProjectSchedules[$k]['money_from'] = $Projects['money_from'];
             $ProjectSchedules[$k]['project_title'] = $Projects['title'];
             $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
@@ -1132,7 +1124,7 @@ class ProjectController extends Controller
             if ($k['date'] < 2019) {
                 $result = $result + $k['amount'];
             } else {
-                $sum = ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $k['date'] . '%')->where('user_id','!=','')->sum('month_act_complete');
+                $sum = ProjectSchedule::where('project_id', $params['project_id'])->where('month', 'like', $k['date'] . '%')->where('user_id', '!=', '')->sum('month_act_complete');
                 $result = $result + $sum;
             }
         }
@@ -1156,7 +1148,7 @@ class ProjectController extends Controller
         $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->whereIn('user_id', $user_ids)->pluck('project_id')->toArray();
         $result = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->whereIn('user_id', $user_ids)->get()->toArray();
         foreach ($result as $k => $val) {
-            $users = User::select('username', 'phone','ding_user_id')->where('id', $val['user_id'])->first();
+            $users = User::select('username', 'phone', 'ding_user_id')->where('id', $val['user_id'])->first();
             $result[$k]['username'] = $users['username'];
             $result[$k]['phone'] = $users['phone'];
             $result[$k]['ding_user_id'] = $users['ding_user_id'];
@@ -1217,12 +1209,13 @@ class ProjectController extends Controller
             } else {
                 $result = false;
             }
-                if ($result) {
-                    $log = new OperationLog();
-                    $log->eventLog($request, '删除项目');
-                }
 
-            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
+            if ($result) {
+                Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
+                Cache::put('projectPlanCache', collect(ProjectPlan::all()->toArray()), 10080);
+                $log = new OperationLog();
+                $log->eventLog($request, '删除项目');
+            }
         } else {
             $result = false;
         }
@@ -1315,17 +1308,18 @@ class ProjectController extends Controller
 
         return response()->json(['result' => $projects], 200);
     }
-    //未填报列表，推送消息    
+
+    //未填报列表，推送消息
     public function scheduleNoSendNotify(Request $request)
     {
         $params = $request->input();
-        $msg=json_encode([
-            "msgtype"=>"text",
-            "text"=>["content"=>"张三的请假申请"]
-        ]);     
-        $send_users=substr($params,1); 
-        $user_id = Auth::id();    
+        $msg = json_encode([
+            "msgtype" => "text",
+            "text" => ["content" => "张三的请假申请"],
+        ]);
+        $send_users = substr($params, 1);
+        $user_id = Auth::id();
         $ProjectC = new DingController();
-        $data=$ProjectC->userNotify($send_users,$msg,$user_id);
+        $data = $ProjectC->userNotify($send_users, $msg, $user_id);
     }
 }
