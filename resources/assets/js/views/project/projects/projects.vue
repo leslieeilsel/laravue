@@ -75,12 +75,17 @@
       </Button>
     </p>
     <Row>
-      <Table type="selection" stripe border :columns="columns" :data="nowData" :loading="tableLoading"
+      <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"
              @on-selection-change="checkboxProject"></Table>
     </Row>
     <Row type="flex" justify="end" class="page">
-      <Page :total="dataCount" :page-size="pageSize" @on-change="changePage" @on-page-size-change="_nowPageSize"
-            show-total show-sizer :current="pageCurrent"/>
+      <Page
+        :total="dataCount"
+        :page-size="searchForm.pageSize"
+        @on-change="changePage"
+        @on-page-size-change="changePageSize"
+        show-total
+        :current="searchForm.pageNumber"/>
     </Row>
     <Modal
       :mask-closable="false"
@@ -330,7 +335,6 @@
           <Button type="primary" @click="isEdit('enable')">开启编辑</Button>
           <Button type="info" @click="isEdit('disable')">关闭编辑</Button>
         </ButtonGroup>
-        <!--        <Input id="suggestId" search placeholder="Enter something..." />-->
         <Button type="error" @click="clearAll()" style="margin-left: 8px">清除重绘</Button>
         <Button type="success" @click="complete()">完成</Button>
       </div>
@@ -826,9 +830,7 @@
         modal11: false,
         modal222: false,
         projectModal: false,
-        pageSize: 10,   // 每页显示多少条
         dataCount: 0,   // 总条数
-        pageCurrent: 1, // 当前页
         nowData: [],
         isShowButton: false,
         showExportButton: false,
@@ -860,7 +862,9 @@
           is_gc: '',
           nep_type: '',
           status: '',
-          is_audit: ''
+          is_audit: '',
+          pageNumber: 1, // 当前页数
+          pageSize: 10, // 页面大小
         },
         columns: [
           {
@@ -869,7 +873,7 @@
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
-              return h('span', params.index + (this.pageCurrent - 1) * this.pageSize + 1);
+              return h('span', params.index + (this.searchForm.pageNumber - 1) * this.searchForm.pageSize + 1);
             }
           },
           {
@@ -2435,16 +2439,7 @@
         this.searchForm.is_audit = this.$route.params.is_audit;
         getAllProjects(this.searchForm).then(e => {
           this.data = e.result;
-          //分页显示所有数据总数
-          this.dataCount = this.data.length;
-          //循环展示页面刚加载时需要的数据条数
-          this.nowData = [];
-          for (let i = 0; i < this.pageSize; i++) {
-            if (this.data[i]) {
-              this.nowData.push(this.data[i]);
-            }
-          }
-          this.pageCurrent = 1;
+          this.dataCount = e.total;
           this.exportBtnDisable = !this.clickSearch;
           this.tableLoading = false;
         });
@@ -2465,20 +2460,10 @@
         });
       },
       handleResetSearch() {
-        this.searchForm = {
-          title: '',
-          subject: '',
-          department_id: [],
-          num: '',
-          type: '',
-          build_type: '',
-          money_from: '',
-          is_gc: '',
-          nep_type: '',
-          status: '',
-          is_audit: ''
-        };
-        this.pageCurrent = 1;
+        this.$refs.searchForm.resetFields();
+        this.dataCount = 0;
+        this.searchForm.pageNumber = 1;
+        this.searchForm.pageSize = 10;
         this.getProject();
       },
       addProject() {
@@ -2806,28 +2791,13 @@
         }
         this.drop = !this.drop;
       },
-      changePage(index) {
-        //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
-        let _start = (index - 1) * this.pageSize;
-        //需要显示结束数据的index
-        let _end = index * this.pageSize;
-        //截取需要显示的数据
-        this.nowData = this.data.slice(_start, _end);
-        //储存当前页
-        this.pageCurrent = index;
+      changePage(v) {
+        this.searchForm.pageNumber = v;
+        this.getProject();
       },
-      _nowPageSize(index) {
-        //实时获取当前需要显示的条数
-        this.pageSize = index;
-        this.loadingTable = true;
-        this.nowData = [];
-        for (let i = 0; i < this.pageSize; i++) {
-          if (this.data[i]) {
-            this.nowData.push(this.data[i]);
-          }
-        }
-        this.pageCurrent = 1;
-        this.loadingTable = false;
+      changePageSize(v) {
+        this.searchForm.pageSize = v;
+        this.getProject();
       },
       //月投资计划金额   大于计划金额时不能填写
       totalAmount(index_t, index) {

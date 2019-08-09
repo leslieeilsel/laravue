@@ -395,9 +395,7 @@ class ProjectController extends Controller
      */
     public function allProjects($params)
     {
-        $query = $this->projectsCache;
-
-        $query->whereIn('user_id', $this->seeIds);
+        $query = new Projects();
 
         if (isset($params['department_id'])) {
             if (gettype($params['department_id']) == 'string') {
@@ -411,19 +409,13 @@ class ProjectController extends Controller
             }
         }
         if (isset($params['title'])) {
-            $query = $query->filter(function ($item) use ($params) {
-                return false !== stripos($item['title'], $params['title']);
-            });
+            $query = $query->where('title', 'like', '%' . $params['title'] . '%');
         }
         if (isset($params['subject'])) {
-            $query = $query->filter(function ($item) use ($params) {
-                return false !== stripos($item['subject'], $params['subject']);
-            });
+            $query = $query->where('subject', 'like', '%' . $params['subject'] . '%');
         }
         if (isset($params['num'])) {
-            $query = $query->filter(function ($item) use ($params) {
-                return false !== stripos($item['num'], $params['num']);
-            });
+            $query = $query->where('num', $params['num']);
         }
         if (isset($params['type'])) {
             if ($params['type'] != -1) {
@@ -465,14 +457,97 @@ class ProjectController extends Controller
                 $query = $query->whereIn('is_audit', [1, 3]);
             }
         }
-        $projects = array_values($query->whereIn('user_id', $this->seeIds)->all());
+
+        $query->whereIn('user_id', $this->seeIds);
+
+        if (isset($params['pageNumber']) && isset($params['pageSize'])) {
+            $query
+                ->limit($params['pageSize'])
+                ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
+        }
+
+        $projects = $query->get()->toArray();
 
         return $projects;
     }
 
+    public function allProjectsCount($params)
+    {
+        $query = new Projects();
+
+        if (isset($params['department_id'])) {
+            if (gettype($params['department_id']) == 'string') {
+                $params['department_id'] = explode(',', $params['department_id']);
+            }
+            $departmentCount = count($params['department_id']) - 1;
+            if (count($params['department_id']) > 0) {
+                $user_ids = DB::table('users')->select('id')->where('department_id', $params['department_id'][$departmentCount])->get()->toArray();
+                $user_id = array_column($user_ids, 'id');
+                $query = $query->whereIn('user_id', $user_id);
+            }
+        }
+        if (isset($params['title'])) {
+            $query = $query->where('title', 'like', '%' . $params['title'] . '%');
+        }
+        if (isset($params['subject'])) {
+            $query = $query->where('subject', 'like', '%' . $params['subject'] . '%');
+        }
+        if (isset($params['num'])) {
+            $query = $query->where('num', $params['num']);
+        }
+        if (isset($params['type'])) {
+            if ($params['type'] != -1) {
+                $query = $query->where('type', $params['type']);
+            }
+        }
+        if (isset($params['build_type'])) {
+            if ($params['build_type'] != -1) {
+                $query = $query->where('build_type', $params['build_type']);
+            }
+        }
+        if (isset($params['money_from'])) {
+            if ($params['money_from'] != -1) {
+                $query = $query->where('money_from', $params['money_from']);
+            }
+        }
+        if (isset($params['is_gc'])) {
+            if ($params['is_gc'] != -1) {
+                $query = $query->where('is_gc', $params['is_gc']);
+            }
+        }
+        if (isset($params['nep_type'])) {
+            if ($params['nep_type'] != -1) {
+                $query = $query->where('nep_type', $params['nep_type']);
+            }
+        }
+        if (isset($params['status'])) {
+            if ($params['status'] != -1) {
+                $query = $query->where('status', $params['status']);
+            }
+        }
+        if (isset($params['is_audit'])) {
+            $query = $query->where('is_audit', 0);
+        } else {
+            if ($this->office === 1) {
+                $query = $query->where('is_audit', '!=', 4);
+            }
+            if ($this->office === 2) {
+                $query = $query->whereIn('is_audit', [1, 3]);
+            }
+        }
+
+        $query->whereIn('user_id', $this->seeIds);
+
+        $count = $query->count();
+
+        return $count;
+    }
+
     public function getAllProjects(Request $request)
     {
-        $params = $request->input('searchForm');
+        $params = $countParams = $request->input('searchForm');
+        unset($countParams['pageNumber'], $countParams['pageSize']);
+        $projectCount = $this->allProjectsCount($countParams);
         $projects = $this->allProjects($params);
         $type = Dict::getOptionsArrByName('工程类项目分类');
         $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
@@ -493,7 +568,7 @@ class ProjectController extends Controller
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
         }
 
-        return response()->json(['result' => $projects], 200);
+        return response()->json(['result' => $projects, 'total' => $projectCount], 200);
     }
 
     public function getEditFormData(Request $request)

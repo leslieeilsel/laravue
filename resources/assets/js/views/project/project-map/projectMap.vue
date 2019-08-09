@@ -18,9 +18,6 @@
           <Form-item label="投资主体" prop="subject">
             <Input clearable v-model="searchForm.subject" placeholder="支持模糊搜索" style="width: 200px"/>
           </Form-item>
-          <Form-item label="承建单位" prop="unit">
-            <Input clearable v-model="searchForm.unit" placeholder="支持模糊搜索" style="width: 200px"/>
-          </Form-item>
           <FormItem label="部门" prop="department_id">
             <Cascader :data="dataDep1" v-model="searchForm.department_id" placeholder="选择部门" trigger="hover"
                       style="width: 200px" :render-format="format"></Cascader>
@@ -83,13 +80,12 @@
           title: '',
           num: '',
           subject: '',
-          unit: '',
           type: '',
           build_type: '',
           money_from: '',
           is_gc: '',
           nep_type: '',
-          department_id:[],
+          department_id: [],
         },
         dataDep1: [],
         dict: {
@@ -119,7 +115,7 @@
     },
     mounted() {
       this.init();
-      
+
       loadClassDepartment().then(res => {
         this.dataDep1 = res;
       });
@@ -361,7 +357,7 @@
                 if (monthAmount == 0) {
                   Percentage = 1;
                 }
-                
+
                 // console.log(Percentage)
                 Percentage_con = '';
                 Percentage = parseFloat(Percentage).toFixed(2);
@@ -493,7 +489,7 @@
                 description = description === null ? '' : description;
                 description = description === undefined ? '' : description;
                 let sContent =
-                  "<img style='float:right;margin:4px' id='imgDemo' src='http://139.217.6.78:9000/storage/images/boy.gif' width='70' height='70' title=''/>" + 
+                  "<img style='float:right;margin:4px' id='imgDemo' src='http://139.217.6.78:9000/storage/images/boy.gif' width='70' height='70' title=''/>" +
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目名称：" + project.title + "</h5>" +
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>项目类型：" + project.type + "</h5>" +
                   "<h5 style='margin:0 0 5px 0;padding:0.2em 0'>投资状态：<span class=" + statusColor + "></span><span class='project-status'>" + project.status + "</span></h5>" +
