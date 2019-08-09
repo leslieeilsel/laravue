@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\Cache;
 
 class DepartmentController extends Controller
 {
+    public $departmentCache;
+
+    public function __construct()
+    {
+        if (!Cache::has('departmentsCache')) {
+            Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
+        }
+        $this->departmentCache = Cache::get('departmentsCache');
+    }
+
     /**
      * 获取部门
      *
@@ -49,7 +59,7 @@ class DepartmentController extends Controller
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '创建部门');
-            Cache::put('departmentsCache', Departments::all(), 10080);
+            Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
         }
 
         return response()->json(['result' => $result], 200);
@@ -76,7 +86,7 @@ class DepartmentController extends Controller
         if ($result) {
             $log = new OperationLog();
             $log->eventLog($request, '修改部门');
-            Cache::put('departmentsCache', Departments::all(), 10080);
+            Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
         }
 
         return response()->json(['result' => $result], 200);
@@ -84,21 +94,34 @@ class DepartmentController extends Controller
 
     public function getAllDepartment()
     {
-        $departments = Departments::all()->pluck('title', 'id')->toArray();
+        $departments = $this->departmentCache->pluck('title', 'id')->toArray();
 
         return response()->json(['result' => $departments], 200);
     }
 
-    public function getClassDepartment($pid = 0, $departments = [])
+    public function getClassDepartment()
     {
-        $departments = Departments::select('id', 'title', 'parent_id')->get()->toArray();
+        $departments = [];
+        foreach ($this->departmentCache as $key => $value) {
+            $departments[] = [
+                'id' => $value['id'],
+                'title' => $value['title'],
+                'parent_id' => $value['parent_id'],
+            ];
+        }
+        $data = $this->getClassDepartmentTree(0, $departments);
+
+        return $data;
+    }
+
+    public function getClassDepartmentTree($pid, $departments)
+    {
         $data = [];
         foreach ($departments as $k => $v) {
             if ($v['parent_id'] === $pid) {
-                // 匹配子记录
                 $parent_count = Departments::where('parent_id', $v['id'])->count();
                 if ($parent_count > 0) {
-                    $v['children'] = $this->getClassDepartment($v['id'], $departments); // 递归获取子记录                                // 如果子元素为空则unset()
+                    $v['children'] = $this->getClassDepartmentTree($v['id'], $departments);
                 }
                 $v['label'] = $v['title'];
                 $v['value'] = (string) $v['id'];

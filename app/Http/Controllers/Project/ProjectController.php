@@ -474,14 +474,12 @@ class ProjectController extends Controller
     {
         $params = $request->input('searchForm');
         $projects = $this->allProjects($params);
-        $t2 = microtime(true);
         $type = Dict::getOptionsArrByName('工程类项目分类');
         $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
         $status = Dict::getOptionsArrByName('项目状态');
         $money_from = Dict::getOptionsArrByName('资金来源');
         $build_type = Dict::getOptionsArrByName('建设性质');
         $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
-        $t3 = microtime(true);
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
@@ -493,10 +491,6 @@ class ProjectController extends Controller
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
-            $unit = $this->departmentCache->firstWhere('id', $row['unit']);
-            if ($unit) {
-                $projects[$k]['unit'] = $unit['title'];
-            }
         }
 
         return response()->json(['result' => $projects], 200);
