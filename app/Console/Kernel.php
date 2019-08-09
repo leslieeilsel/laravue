@@ -18,6 +18,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\buildLuwangGeoJson',
         'App\Console\Commands\buildDataVLuWangJsonData',
         'App\Console\Commands\buildLvHuaJson',
+        'App\Console\Commands\buildCache',
+        'App\Console\Commands\RefreshProjectUnit',
     ];
 
     /**
@@ -28,8 +30,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('buildProjectGeoJson --force')->everyMinute();
-        $schedule->command('buildDingProjectJson --force')->everyMinute();
+//        $schedule->command('buildProjectGeoJson --force')->everyMinute();
+//        $schedule->command('buildDingProjectJson --force')->everyMinute();
         // $schedule->command('inspire')
         //          ->hourly();
     }
