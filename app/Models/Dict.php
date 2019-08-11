@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Dict extends Model
 {
@@ -51,10 +52,14 @@ class Dict extends Model
      */
     public static function getOptionsArrByName($name)
     {
+        if (!Cache::has('dictAllCache')) {
+            Cache::put('dictAllCache', collect(Dict::with('data')->get()->toArray()), 10080);
+        }
+        $dictAllCache = Cache::get('dictAllCache');
 
-        $category = self::where('title', $name)->first()->data;
+        $category = $dictAllCache->where('title', $name)->first();
 
-        return $category ? $category->pluck('title', 'value')->toArray() : [];
+        return $category['data'] ? collect($category['data'])->pluck('title', 'value')->toArray() : [];
     }
 
 }

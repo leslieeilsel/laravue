@@ -26,7 +26,7 @@ class ProjectController extends Controller
     public $projectPlanCache;
     public $departmentCache;
 
-    public function __construct(Request $request)
+    public function __construct()
     {
         if (!Cache::has('projectsCache')) {
             Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
@@ -560,6 +560,11 @@ class ProjectController extends Controller
         $money_from = Dict::getOptionsArrByName('资金来源');
         $build_type = Dict::getOptionsArrByName('建设性质');
         $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
+        if (!Cache::has('projectScheduleCache')) {
+            Cache::put('projectScheduleCache', collect(ProjectSchedule::all()->toArray()), 10080);
+        }
+        $projectSchedule = Cache::get('projectScheduleCache');
+        $this->projectsCache = Cache::get('projectsCache');
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
@@ -570,7 +575,7 @@ class ProjectController extends Controller
             $projects[$k]['build_type'] = $build_type[$row['build_type']];
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
             $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
-            $projects[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
+            $projects[$k]['scheduleInfo'] = $projectSchedule->where('project_id', 90)->sortByDesc('id')->first();
         }
 
         return response()->json(['result' => $projects, 'total' => $projectCount], 200);
@@ -750,6 +755,7 @@ class ProjectController extends Controller
         $result = $schedule_id;
 
         if ($result) {
+            Cache::put('projectScheduleCache', collect(ProjectSchedule::all()->toArray()), 10080);
             $log = new OperationLog();
             $log->eventLog($request, '投资项目进度填报');
         }
@@ -1014,6 +1020,7 @@ class ProjectController extends Controller
         $result = ProjectSchedule::where('id', $id)->update($data);
 
         if ($result) {
+            Cache::put('projectScheduleCache', collect(ProjectSchedule::all()->toArray()), 10080);
             $log = new OperationLog();
             $log->eventLog($request, '修改项目进度信息');
         }
@@ -1058,6 +1065,12 @@ class ProjectController extends Controller
             }
         }
         $result = $result || $result >= 0;
+
+        if ($result) {
+            Cache::put('projectScheduleCache', collect(ProjectSchedule::all()->toArray()), 10080);
+            $log = new OperationLog();
+            $log->eventLog($request, '审核项目进度');
+        }
 
         return response()->json(['result' => $result], 200);
     }
@@ -1119,6 +1132,12 @@ class ProjectController extends Controller
 
         $result = $result || $result >= 0;
 
+        if ($result) {
+            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
+            $log = new OperationLog();
+            $log->eventLog($request, '审核项目');
+        }
+
         return response()->json(['result' => $result], 200);
     }
 
@@ -1135,6 +1154,12 @@ class ProjectController extends Controller
 
         $result = $result ? true : false;
 
+        if ($result) {
+            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
+            $log = new OperationLog();
+            $log->eventLog($request, '投资调整');
+        }
+
         return response()->json(['result' => $result], 200);
     }
 
@@ -1146,6 +1171,12 @@ class ProjectController extends Controller
 
         $result = $result ? true : false;
 
+        if ($result) {
+            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
+            $log = new OperationLog();
+            $log->eventLog($request, '提交项目审核');
+        }
+
         return response()->json(['result' => $result], 200);
     }
 
@@ -1156,6 +1187,12 @@ class ProjectController extends Controller
         $result = ProjectSchedule::where('id', $id)->update(['is_audit' => 0]);
 
         $result = $result ? true : false;
+
+        if ($result) {
+            Cache::put('projectScheduleCache', collect(ProjectSchedule::all()->toArray()), 10080);
+            $log = new OperationLog();
+            $log->eventLog($request, '提交项目进度审核');
+        }
 
         return response()->json(['result' => $result], 200);
     }

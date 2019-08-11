@@ -7,6 +7,7 @@ use App\Models\Dict;
 use App\Models\DictData;
 use App\Models\Project\ProjectPlan;
 use App\Models\Project\Projects;
+use App\Models\Project\ProjectSchedule;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 
@@ -47,6 +48,8 @@ class BuildCache extends Command
         Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
         $this->info('- Building ProjectPlan Cache');
         Cache::put('projectPlanCache', collect(ProjectPlan::all()->toArray()), 10080);
+        $this->info('- Building projectSchedule Cache');
+        Cache::put('projectScheduleCache', collect(ProjectSchedule::all()->toArray()), 10080);
         $this->info('- Building Department Cache');
         Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
         $this->info('- Building Dict Cache');
