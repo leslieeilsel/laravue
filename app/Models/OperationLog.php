@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class OperationLog extends Model
 {
     public $timestamps = true;
-    
+
     protected $table = 'operation_log';
 
     public function eventLog($request, $active)
@@ -25,12 +25,13 @@ class OperationLog extends Model
                 'path' => $request->path(),
                 'ip' => $request->ip(),
                 'ip_place' => '',
-                'created_at' => date('Y-m-d H:i:s')
+                'created_at' => date('Y-m-d H:i:s'),
             ];
+
             $result = self::insert($data);
         }
     }
-    
+
     /*把IP传入新浪API返回数据获取ip的真实归属地*/
     // public function getIpPlace($ip = '')
     // {

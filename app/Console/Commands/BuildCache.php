@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\Departments;
+use App\Models\Dict;
+use App\Models\DictData;
 use App\Models\Project\ProjectPlan;
 use App\Models\Project\Projects;
 use Illuminate\Console\Command;
@@ -22,7 +24,7 @@ class BuildCache extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = '创建数据缓存';
 
     /**
      * Create a new command instance.
@@ -47,5 +49,9 @@ class BuildCache extends Command
         Cache::put('projectPlanCache', collect(ProjectPlan::all()->toArray()), 10080);
         $this->info('- Building Department Cache');
         Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
+        $this->info('- Building Dict Cache');
+        Cache::put('dictCache', collect(Dict::all()->toArray()), 10080);
+        Cache::put('dictDataCache', collect(DictData::all()->toArray()), 10080);
+        Cache::put('dictAllCache', collect(Dict::with('data')->get()->toArray()), 10080);
     }
 }

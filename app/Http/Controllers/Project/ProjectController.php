@@ -21,15 +21,13 @@ use App\Models\Departments;
 
 class ProjectController extends Controller
 {
-    public $seeIds;
     public $office;
     public $projectsCache;
     public $projectPlanCache;
     public $departmentCache;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
-        $this->getSeeIds();
         if (!Cache::has('projectsCache')) {
             Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
         }
@@ -44,30 +42,35 @@ class ProjectController extends Controller
             Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
         }
         $this->departmentCache = Cache::get('departmentsCache');
+
+        $this->office = Auth::user()->office;
     }
 
     public function getSeeIds()
     {
+        $seeIds = [];
+
         if (Auth::check()) {
             $roleId = Auth::user()->group_id;
-            $this->office = Auth::user()->office;
             $userId = Auth::id();
             $dataType = Role::where('id', $roleId)->first()->data_type;
 
             if ($dataType === 0) {
                 $userIds = User::all()->toArray();
-                $this->seeIds = array_column($userIds, 'id');
+                $seeIds = array_column($userIds, 'id');
             }
             if ($dataType === 1) {
                 $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
                 $departmentIds = array_column($departmentIds, 'department_id');
                 $userIds = User::whereIn('department_id', $departmentIds)->get()->toArray();
-                $this->seeIds = array_column($userIds, 'id');
+                $seeIds = array_column($userIds, 'id');
             }
             if ($dataType === 2) {
-                $this->seeIds = [$userId];
+                $seeIds = [$userId];
             }
         }
+
+        return $seeIds;
     }
 
     /**
@@ -86,15 +89,17 @@ class ProjectController extends Controller
             $query = $query->where('is_audit', 1);
         }
 
-        $projects = $query->whereIn('user_id', $this->seeIds)->all();
+        $seeIds = $this->getSeeIds();
+        $projects = $query->whereIn('user_id', $seeIds)->all();
 
         return response()->json(['result' => $projects], 200);
     }
 
     public function getAuditedProjects()
     {
-        $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->whereIn('user_id', $this->seeIds)->pluck('project_id')->toArray();
-        $projects = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->whereIn('user_id', $this->seeIds)->get()->toArray();
+        $seeIds = $this->getSeeIds();
+        $Project_id = ProjectSchedule::where('month', '=', date('Y-m'))->whereIn('user_id', $seeIds)->pluck('project_id')->toArray();
+        $projects = Projects::whereNotIn('id', $Project_id)->where('is_audit', 1)->whereIn('user_id', $seeIds)->get()->toArray();
 
         return response()->json(['result' => $projects], 200);
     }
@@ -457,8 +462,8 @@ class ProjectController extends Controller
                 $query = $query->whereIn('is_audit', [1, 3]);
             }
         }
-
-        $query->whereIn('user_id', $this->seeIds);
+        $seeIds = $this->getSeeIds();
+        $query->whereIn('user_id', $seeIds);
 
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $query
@@ -535,8 +540,8 @@ class ProjectController extends Controller
                 $query = $query->whereIn('is_audit', [1, 3]);
             }
         }
-
-        $query->whereIn('user_id', $this->seeIds);
+        $seeIds = $this->getSeeIds();
+        $query->whereIn('user_id', $seeIds);
 
         $count = $query->count();
 
@@ -637,7 +642,8 @@ class ProjectController extends Controller
     {
         $params = $request->input('searchForm');
         $data = [];
-        $projects = Projects::whereIn('user_id', $this->seeIds)->get()->toArray();
+        $seeIds = $this->getSeeIds();
+        $projects = Projects::whereIn('user_id', $seeIds)->get()->toArray();
         $projectIds = array_column($projects, 'id');
         $projectSchedules = ProjectSchedule::whereIn('project_id', $projectIds)->get()->toArray();
         $scheduleIds = array_column($projectSchedules, 'id');
@@ -827,7 +833,8 @@ class ProjectController extends Controller
         if ($this->office === 2) {
             $query = $query->where('is_audit', 1);
         }
-        $ProjectSchedules = $query->whereIn('user_id', $this->seeIds);
+        $seeIds = $this->getSeeIds();
+        $ProjectSchedules = $query->whereIn('user_id', $seeIds);
 
         return $ProjectSchedules;
     }
@@ -1253,9 +1260,9 @@ class ProjectController extends Controller
     {
         $projectsQuery = new Projects();
         $scheduleQuery = new ProjectSchedule();
-
-        $data['projects'] = $projectsQuery->whereIn('user_id', $this->seeIds)->where('is_audit', 0)->count();
-        $data['schedule'] = $scheduleQuery->whereIn('user_id', $this->seeIds)->where('is_audit', 0)->count();
+        $seeIds = $this->getSeeIds();
+        $data['projects'] = $projectsQuery->whereIn('user_id', $seeIds)->where('is_audit', 0)->count();
+        $data['schedule'] = $scheduleQuery->whereIn('user_id', $seeIds)->where('is_audit', 0)->count();
 
         return response()->json(['result' => $data], 200);
     }

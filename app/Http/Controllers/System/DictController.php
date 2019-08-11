@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Dict;
 use App\Models\DictData;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use App\Models\OperationLog;
 
 class DictController extends Controller
 {
@@ -18,7 +20,11 @@ class DictController extends Controller
      */
     public function dicts()
     {
-        $data = Dict::all()->toArray();
+        if (!Cache::has('dictCache')) {
+            Cache::put('dictCache', collect(Dict::all()->toArray()), 10080);
+        }
+        $dictCache = Cache::get('dictCache');
+        $data = $dictCache->toArray();
 
         return response()->json(['result' => $data], 200);
     }
@@ -37,6 +43,10 @@ class DictController extends Controller
         $dict->created_user_id = Auth::id();
         $result = $dict->save();
 
+        if ($result) {
+            $this->addLog($request, '新建字典分类');
+        }
+
         return response()->json(['result' => $result], 200);
     }
 
@@ -53,6 +63,10 @@ class DictController extends Controller
         $dict = Dict::find($form['id']);
         $dict->updated_user_id = Auth::id();
         $result = $dict->update($form);
+
+        if ($result) {
+            $this->addLog($request, '修改字典分类');
+        }
 
         return response()->json(['result' => $result], 200);
     }
@@ -73,6 +87,10 @@ class DictController extends Controller
 
         $result = ($dictRes && $dictDataRes >= 0);
 
+        if ($result) {
+            $this->addLog($request, '删除字典分类和数据');
+        }
+
         return response()->json(['result' => $result], 200);
     }
 
@@ -84,9 +102,13 @@ class DictController extends Controller
      */
     public function dictDataList(Request $request)
     {
-        $dict_id = $request->get('dict_id');
+        if (!Cache::has('dictDataCache')) {
+            Cache::put('dictDataCache', collect(DictData::all()->toArray()), 10080);
+        }
+        $dictDataCache = Cache::get('dictDataCache');
 
-        $data = $dict_id ? DictData::where('dict_id', $dict_id)->orderBy('sort', 'asc')->get()->toArray() : DictData::all();
+        $dict_id = $request->get('dict_id');
+        $data = $dict_id ? array_values($dictDataCache->where('dict_id', $dict_id)->sortBy('sort')->all()) : $dictDataCache->toArray();
 
         return response()->json(['result' => $data], 200);
     }
@@ -104,6 +126,10 @@ class DictController extends Controller
         $dictData = new DictData($form);
         $dictData->created_user_id = Auth::id();
         $result = $dictData->save();
+
+        if ($result) {
+            $this->addLog($request, '新建字典数据');
+        }
 
         return response()->json(['result' => $result], 200);
     }
@@ -124,6 +150,10 @@ class DictController extends Controller
 
         $result = $result ? true : false;
 
+        if ($result) {
+            $this->addLog($request, '修改字典数据');
+        }
+
         return response()->json(['result' => $result], 200);
     }
 
@@ -142,6 +172,25 @@ class DictController extends Controller
 
         $result = $result ? true : false;
 
+        if ($result) {
+            $this->addLog($request, '删除字典数据');
+        }
+
         return response()->json(['result' => $result], 200);
+    }
+
+    /**
+     * 增加操作日志
+     *
+     * @param        $request
+     * @param string $content
+     */
+    public function addLog($request, $content = '')
+    {
+        Cache::put('dictCache', collect(Dict::all()->toArray()), 10080);
+        Cache::put('dictDataCache', collect(DictData::all()->toArray()), 10080);
+        Cache::put('dictAllCache', collect(Dict::with('data')->get()->toArray()), 10080);
+        $log = new OperationLog();
+        $log->eventLog($request, $content);
     }
 }

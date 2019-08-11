@@ -22,7 +22,7 @@ class RefreshProjectUnit extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = '刷新项目归属部门';
 
     /**
      * Create a new command instance.
