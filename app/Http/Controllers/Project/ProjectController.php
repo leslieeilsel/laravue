@@ -463,7 +463,7 @@ class ProjectController extends Controller
             }
         }
         $seeIds = $this->getSeeIds();
-        $query->whereIn('user_id', $seeIds);
+        $query = $query->whereIn('user_id', $seeIds);
 
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $query
@@ -541,7 +541,7 @@ class ProjectController extends Controller
             }
         }
         $seeIds = $this->getSeeIds();
-        $query->whereIn('user_id', $seeIds);
+        $query = $query->whereIn('user_id', $seeIds);
 
         $count = $query->count();
 
