@@ -31,22 +31,22 @@ class ProjectController extends Controller
 
     public function __construct()
     {
-        if (!Cache::has('projectsCache')) {
-            Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
-        }
-        $this->projectsCache = Cache::get('projectsCache');
-
-        if (!Cache::has('projectPlanCache')) {
-            Cache::put('projectPlanCache', collect(ProjectPlan::all()->toArray()), 10080);
-        }
-        $this->projectPlanCache = Cache::get('projectPlanCache');
-
-        if (!Cache::has('departmentsCache')) {
-            Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
-        }
-        $this->departmentCache = Cache::get('departmentsCache');
-
         if (Auth::check()) {
+            if (!Cache::has('projectsCache')) {
+                Cache::put('projectsCache', collect(Projects::all()->toArray()), 10080);
+            }
+            $this->projectsCache = Cache::get('projectsCache');
+
+            if (!Cache::has('projectPlanCache')) {
+                Cache::put('projectPlanCache', collect(ProjectPlan::all()->toArray()), 10080);
+            }
+            $this->projectPlanCache = Cache::get('projectPlanCache');
+
+            if (!Cache::has('departmentsCache')) {
+                Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
+            }
+            $this->departmentCache = Cache::get('departmentsCache');
+
             $this->user = Auth::user();
             $this->office = $this->user->office;
             $this->department_id = $this->user->department_id;
@@ -59,7 +59,7 @@ class ProjectController extends Controller
         $seeIds = [];
 
         $roleId = $this->group_id;
-        $userId = $this->user->id();
+        $userId = $this->user->id;
         $users = User::all()->toArray();
         // 数据权限类型
         $dataType = Role::where('id', $roleId)->first()->data_type;
