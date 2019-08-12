@@ -133,3 +133,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('datav/project', 'DataV\ProjectController@getDataVProject');
 //});
 
+    // 工作流
+    Route::post('avtiviti/actModel/getByCondition', 'Activiti\ActModelController@getByCondition');
+    Route::post('avtiviti/actModel/add', 'Activiti\ActModelController@add');
+    Route::get('avtiviti/actModel/deploy/{id}', 'Activiti\ActModelController@deploy');
+

@@ -46,36 +46,36 @@ class ProjectController extends Controller
         }
         $this->departmentCache = Cache::get('departmentsCache');
 
-        $this->user = Auth::user();
-        $this->office = $this->user->office;
-        $this->department_id = $this->user->department_id;
-        $this->group_id = $this->user->group_id;
+        if (Auth::check()) {
+            $this->user = Auth::user();
+            $this->office = $this->user->office;
+            $this->department_id = $this->user->department_id;
+            $this->group_id = $this->user->group_id;
+        }
     }
 
     public function getSeeIds()
     {
         $seeIds = [];
 
-        if (Auth::check()) {
-            $roleId = $this->group_id;
-            $userId = Auth::id();
-            $users = User::all()->toArray();
-            // 数据权限类型
-            $dataType = Role::where('id', $roleId)->first()->data_type;
+        $roleId = $this->group_id;
+        $userId = $this->user->id();
+        $users = User::all()->toArray();
+        // 数据权限类型
+        $dataType = Role::where('id', $roleId)->first()->data_type;
 
-            if ($dataType === 0) {
-                $userIds = $users;
-                $seeIds = array_column($userIds, 'id');
-            }
-            if ($dataType === 1) {
-                $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
-                $departmentIds = array_column($departmentIds, 'department_id');
-                $userIds = collect($users)->whereIn('department_id', $departmentIds)->all();
-                $seeIds = array_column($userIds, 'id');
-            }
-            if ($dataType === 2) {
-                $seeIds = [$userId];
-            }
+        if ($dataType === 0) {
+            $userIds = $users;
+            $seeIds = array_column($userIds, 'id');
+        }
+        if ($dataType === 1) {
+            $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
+            $departmentIds = array_column($departmentIds, 'department_id');
+            $userIds = collect($users)->whereIn('department_id', $departmentIds)->all();
+            $seeIds = array_column($userIds, 'id');
+        }
+        if ($dataType === 2) {
+            $seeIds = [$userId];
         }
 
         return $seeIds;
