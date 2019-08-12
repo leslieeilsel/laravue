@@ -4,7 +4,7 @@
       <img src="../../images/logo.png" style="width:200px" alt="沣西集团投资云平台"/>
       <p class="description">沣西集团投资云平台</p>
     </Row>
-    <Row type="flex" justify="center" class-name="row">
+    <Row type="flex" justify="center" class-name="row" @keydown.enter.native="submit('form')">
       <br>
       <Col class="loginFrom">
         <!--        <Tabs value="name1">-->
