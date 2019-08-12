@@ -2438,10 +2438,10 @@
         this.tableLoading = true;
         this.searchForm.is_audit = this.$route.params.is_audit;
         getAllProjects(this.searchForm).then(e => {
+          this.tableLoading = false;
           this.data = e.result;
           this.dataCount = e.total;
           this.exportBtnDisable = !this.clickSearch;
-          this.tableLoading = false;
         });
       },
       goToAudit(row) {

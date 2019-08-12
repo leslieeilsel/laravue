@@ -26,9 +26,14 @@ class Dict extends Model
      */
     public static function getOptionsByName($name)
     {
-        $category = self::where('title', $name)->first()->data;
+        if (!Cache::has('dictAllCache')) {
+            Cache::put('dictAllCache', collect(Dict::with('data')->get()->toArray()), 10080);
+        }
+        $dictAllCache = Cache::get('dictAllCache');
 
-        $data = $category ? $category->pluck('title', 'value')->toArray() : [];
+        $category = $dictAllCache->where('title', $name)->first();
+
+        $data = $category['data'] ? collect($category['data'])->pluck('title', 'value')->toArray() : [];
 
         if ($data) {
             $i = 0;

@@ -119,7 +119,7 @@ class DepartmentController extends Controller
         $data = [];
         foreach ($departments as $k => $v) {
             if ($v['parent_id'] === $pid) {
-                $parent_count = Departments::where('parent_id', $v['id'])->count();
+                $parent_count = $this->departmentCache->where('parent_id', $v['id'])->count();
                 if ($parent_count > 0) {
                     $v['children'] = $this->getClassDepartmentTree($v['id'], $departments);
                 }
