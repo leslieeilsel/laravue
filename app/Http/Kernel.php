@@ -39,7 +39,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
-            'isLogin'
+//            'isLogin'
         ],
     ];
 
@@ -58,6 +58,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'cors' => \App\Http\Middleware\AccessControlAllowOrigin::class,
-        'isLogin' => \App\Http\Middleware\CheckIsLogin::class,
+//        'isLogin' => \App\Http\Middleware\CheckIsLogin::class,
     ];
 }
