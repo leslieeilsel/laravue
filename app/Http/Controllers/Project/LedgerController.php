@@ -7,6 +7,7 @@ use App\Models\Project\ProjectSchedule;
 use App\Models\Project\Projects;
 use App\Models\Project\ProjectPlan;
 use App\Models\Dict;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -997,28 +998,41 @@ class LedgerController extends Controller
      */
     public function exportProject(Request $request)
     {
+        $projectSchedule = collect([]);
         $Letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO'];
         $params = $request->input();
+
         $ProjectC = new ProjectController();
         $data = $ProjectC->allProjects($params);
-        // $department_id = DB::table('users')->where('id', $data[0]['user_id'])->value('department_id');
-        // $department_title = DB::table('iba_system_department')->where('id', $department_id)->value('title');
+
+        $type = Dict::getOptionsArrByName('工程类项目分类');
+        $is_gc = Dict::getOptionsArrByName('是否为国民经济计划');
+        $status = Dict::getOptionsArrByName('项目状态');
+        $money_from = Dict::getOptionsArrByName('资金来源');
+        $build_type = Dict::getOptionsArrByName('建设性质');
+        $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
+        if (isset($params['projectSchedule']) && $params['projectSchedule'] === 'true') {
+            if (!Cache::has('projectScheduleCache')) {
+                Cache::put('projectScheduleCache', collect(ProjectSchedule::all()->toArray()), 10080);
+            }
+            $projectSchedule = Cache::get('projectScheduleCache');
+        }
+
         $countAmount = 0;
         $countPlanAmount = 0;
+
         foreach ($data as $k => $row) {
             $countAmount = $countAmount + $row['amount'];
             $data[$k]['amount'] = number_format($row['amount'], 2);
             $data[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
-            $data[$k]['type'] = Dict::getOptionsArrByName('工程类项目分类')[$row['type']];
-            $data[$k]['is_gc'] = Dict::getOptionsArrByName('是否为国民经济计划')[$row['is_gc']];
-            $data[$k]['status'] = Dict::getOptionsArrByName('项目状态')[$row['status']];
-            $data[$k]['money_from'] = Dict::getOptionsArrByName('资金来源')[$row['money_from']];
-            $data[$k]['build_type'] = Dict::getOptionsArrByName('建设性质')[$row['build_type']];
-            $data[$k]['nep_type'] = isset($row['nep_type']) ? Dict::getOptionsArrByName('国民经济计划分类')[$row['nep_type']] : '';
-            $data[$k]['projectPlan'] = $ProjectC->getPlanData($row['id'], '');
-            // $data[$k]['projectPlan'] = ProjectPlan::where('project_id', $row['id'])->where('date', (int)date('Y'))->first();
-            $data[$k]['scheduleInfo'] = ProjectSchedule::where('project_id', $row['id'])->orderBy('id', 'desc')->first();
-            $planAmount = $data[$k]['projectPlan'];
+            $data[$k]['type'] = $type[$row['type']];
+            $data[$k]['is_gc'] = $is_gc[$row['is_gc']];
+            $data[$k]['status'] = $status[$row['status']];
+            $data[$k]['money_from'] = $money_from[$row['money_from']];
+            $data[$k]['build_type'] = $build_type[$row['build_type']];
+            $data[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
+            $data[$k]['projectPlan'] = $planAmount = $ProjectC->getPlanData($row['id'], '');
+            $data[$k]['scheduleInfo'] = $projectSchedule->where('project_id', 90)->sortByDesc('id')->first();
             foreach ($planAmount as $k => $v) {
                 if ($v['date'] == date('Y')) {
                     $countPlanAmount = $countPlanAmount + $v['amount'];
@@ -1026,8 +1040,13 @@ class LedgerController extends Controller
             }
         }
 
+        if (!Cache::has('departmentsCache')) {
+            Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
+        }
+        $departmentCache = Cache::get('departmentsCache');
+        $department = $departmentCache->where('id', Auth::user()->department_id)->first();
+        $department_title = $department['title'];
 
-        $department_title = Departments::where('id', Auth::user()->department_id)->value('title');
         // 创建一个Spreadsheet对象
         $spreadsheet = new Spreadsheet();
         // 设置文档属性

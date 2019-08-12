@@ -2857,7 +2857,7 @@
         let is_gc = this.searchForm.is_gc;
         let nep_type = this.searchForm.nep_type;
         let status = this.searchForm.status;
-        window.location.href = "/api/project/exportProject?title=" + title + "&subject=" + subject + "&office=" + office + "&unit=" + unit + "&num=" + num + "&type=" + type + "&build_type=" + build_type + "&money_from=" + money_from + "&is_gc=" + is_gc + "&nep_type=" + nep_type + "&status=" + status;
+        window.location.href = "/api/project/exportProject?title=" + title + "&subject=" + subject + "&office=" + office + "&unit=" + unit + "&num=" + num + "&type=" + type + "&build_type=" + build_type + "&money_from=" + money_from + "&is_gc=" + is_gc + "&nep_type=" + nep_type + "&status=" + status + "&projectSchedule=true";
       },
       // 发起项目调整
       projectAdjustment() {
