@@ -18,34 +18,36 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Route::group(['middleware' => ['api']], function () {
-    Route::post('password/reset', 'Auth\ResetPasswordController@reset');
-    Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::get('ding/getToken', 'Project\DingController@getToken');
+Route::post('ding/userId', 'Project\DingController@userId');
+Route::get('ding/userNotify', 'Project\DingController@userNotify');
+Route::get('ding/getAuditedProjects', 'Project\DingController@getAuditedProjects');
+Route::post('ding/projectProgress', 'Project\DingController@projectProgress');
+Route::post('ding/getAllProjects', 'Project\DingController@getAllProjects');
+Route::post('ding/projectProgressList', 'Project\DingController@projectProgressList');
+Route::post('ding/getAllWarning', 'Project\DingController@getAllWarning');
+Route::post('ding/projectInfo', 'Project\DingController@projectInfo');
+Route::post('ding/projectScheduleInfo', 'Project\DingController@projectScheduleInfo');
+Route::post('ding/actCompleteMoney', 'Project\DingController@actCompleteMoney');
+Route::post('ding/projectPlanInfo', 'Project\DingController@projectPlanInfo');
+Route::post('ding/uploadPic', 'Project\DingController@uploadPic');
+Route::post('ding/auditProjectProgress', 'Project\DingController@auditProjectProgress');
+Route::post('ding/editProjectProgress', 'Project\DingController@editProjectProgress');
+Route::post('ding/allActCompleteMoney', 'Project\DingController@allActCompleteMoney');
+Route::post('ding/notifyList', 'Project\DingController@notifyList');
+Route::post('ding/dingSendNotify', 'Project\DingController@dingSendNotify');
+Route::post('ding/getProjectNoScheduleList', 'Project\DingController@getProjectNoScheduleList');
 
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('user', 'AuthController@user');
-    Route::get('ding/getToken', 'Project\DingController@getToken');
-    Route::post('ding/userId', 'Project\DingController@userId');
-    Route::get('ding/userNotify', 'Project\DingController@userNotify');
-    Route::get('ding/getAuditedProjects', 'Project\DingController@getAuditedProjects');
-    Route::post('ding/projectProgress', 'Project\DingController@projectProgress');
-    Route::post('ding/getAllProjects', 'Project\DingController@getAllProjects');
-    Route::post('ding/projectProgressList', 'Project\DingController@projectProgressList');
-    Route::post('ding/getAllWarning', 'Project\DingController@getAllWarning');
-    Route::post('ding/projectInfo', 'Project\DingController@projectInfo');
-    Route::post('ding/projectScheduleInfo', 'Project\DingController@projectScheduleInfo');
-    Route::post('ding/actCompleteMoney', 'Project\DingController@actCompleteMoney');
-    Route::post('ding/projectPlanInfo', 'Project\DingController@projectPlanInfo');
-    Route::post('ding/uploadPic', 'Project\DingController@uploadPic');
-    Route::post('ding/auditProjectProgress', 'Project\DingController@auditProjectProgress');
-    Route::post('ding/editProjectProgress', 'Project\DingController@editProjectProgress');
-    Route::post('ding/allActCompleteMoney', 'Project\DingController@allActCompleteMoney');
-    Route::post('ding/notifyList', 'Project\DingController@notifyList');
-    Route::post('ding/dingSendNotify', 'Project\DingController@dingSendNotify');
-    Route::post('ding/getProjectNoScheduleList', 'Project\DingController@getProjectNoScheduleList');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 
+Route::post('login', 'AuthController@login');
+Route::post('logout', 'AuthController@logout');
+Route::post('refresh', 'AuthController@refresh');
+Route::post('user', 'AuthController@user');
+
+
+Route::group(['middleware' => ['api']], function () {
     Route::post('user/regist', 'User\RegistController@registUser');
     Route::any('user/users', 'User\RegistController@getUsers');
     Route::post('user/resetPassword', 'User\RegistController@resetPassword');
@@ -131,10 +133,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
     Route::get('log/getOperationLogs', 'Logs\LogController@getOperationLogs');
     Route::get('datav/project', 'DataV\ProjectController@getDataVProject');
-//});
 
     // 工作流
-    Route::post('avtiviti/actModel/getByCondition', 'Activiti\ActModelController@getByCondition');
-    Route::post('avtiviti/actModel/add', 'Activiti\ActModelController@add');
-    Route::get('avtiviti/actModel/deploy/{id}', 'Activiti\ActModelController@deploy');
+//    Route::post('avtiviti/actModel/getByCondition', 'Activiti\ActModelController@getByCondition');
+//    Route::post('avtiviti/actModel/add', 'Activiti\ActModelController@add');
+//    Route::get('avtiviti/actModel/deploy/{id}', 'Activiti\ActModelController@deploy');
+//});
 
