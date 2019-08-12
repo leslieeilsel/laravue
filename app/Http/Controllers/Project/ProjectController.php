@@ -954,7 +954,7 @@ class ProjectController extends Controller
     public function getProjectDictData(Request $request)
     {
         $nameArr = $request->input('dictName');
-        $result = Projects::getDictDataByName($nameArr);
+        $result = Dict::getOptionsByNameArr($nameArr);
 
         return response()->json(['result' => $result], 200);
     }
