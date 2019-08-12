@@ -86,6 +86,8 @@
           is_gc: '',
           nep_type: '',
           department_id: [],
+          projectPlan: true,
+          projectSchedule: true
         },
         dataDep1: [],
         dict: {

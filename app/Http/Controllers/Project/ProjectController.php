@@ -21,7 +21,10 @@ use App\Models\Departments;
 
 class ProjectController extends Controller
 {
+    public $user;
     public $office;
+    public $group_id;
+    public $department_id;
     public $projectsCache;
     public $projectPlanCache;
     public $departmentCache;
@@ -43,7 +46,10 @@ class ProjectController extends Controller
         }
         $this->departmentCache = Cache::get('departmentsCache');
 
-        $this->office = Auth::user()->office;
+        $this->user = Auth::user();
+        $this->office = $this->user->office;
+        $this->department_id = $this->user->department_id;
+        $this->group_id = $this->user->group_id;
     }
 
     public function getSeeIds()
@@ -51,18 +57,20 @@ class ProjectController extends Controller
         $seeIds = [];
 
         if (Auth::check()) {
-            $roleId = Auth::user()->group_id;
+            $roleId = $this->group_id;
             $userId = Auth::id();
+            $users = User::all()->toArray();
+            // 数据权限类型
             $dataType = Role::where('id', $roleId)->first()->data_type;
 
             if ($dataType === 0) {
-                $userIds = User::all()->toArray();
+                $userIds = $users;
                 $seeIds = array_column($userIds, 'id');
             }
             if ($dataType === 1) {
                 $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
                 $departmentIds = array_column($departmentIds, 'department_id');
-                $userIds = User::whereIn('department_id', $departmentIds)->get()->toArray();
+                $userIds = collect($users)->whereIn('department_id', $departmentIds)->all();
                 $seeIds = array_column($userIds, 'id');
             }
             if ($dataType === 2) {
@@ -126,12 +134,13 @@ class ProjectController extends Controller
             } else {
                 unset($data['positions']);
             }
+
+            unset($data['unit']);
             $data['created_at'] = date('Y-m-d H:i:s');
             $data['is_audit'] = 4;
             $data['user_id'] = Auth::id();
 
             $planData = $data['projectPlan'];
-
             unset($data['projectPlan']);
 
             $id = DB::table('iba_project_projects')->insertGetId($data);
@@ -550,6 +559,7 @@ class ProjectController extends Controller
 
     public function getAllProjects(Request $request)
     {
+        $projectSchedule = collect([]);
         $params = $countParams = $request->input('searchForm');
         unset($countParams['pageNumber'], $countParams['pageSize']);
         $projectCount = $this->allProjectsCount($countParams);
@@ -560,11 +570,12 @@ class ProjectController extends Controller
         $money_from = Dict::getOptionsArrByName('资金来源');
         $build_type = Dict::getOptionsArrByName('建设性质');
         $nep_type = Dict::getOptionsArrByName('国民经济计划分类');
-        if (!Cache::has('projectScheduleCache')) {
-            Cache::put('projectScheduleCache', collect(ProjectSchedule::all()->toArray()), 10080);
+        if (isset($params['projectSchedule']) && $params['projectSchedule']) {
+            if (!Cache::has('projectScheduleCache')) {
+                Cache::put('projectScheduleCache', collect(ProjectSchedule::all()->toArray()), 10080);
+            }
+            $projectSchedule = Cache::get('projectScheduleCache');
         }
-        $projectSchedule = Cache::get('projectScheduleCache');
-        $this->projectsCache = Cache::get('projectsCache');
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
@@ -574,8 +585,14 @@ class ProjectController extends Controller
             $projects[$k]['money_from'] = $money_from[$row['money_from']];
             $projects[$k]['build_type'] = $build_type[$row['build_type']];
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
-            $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
-            $projects[$k]['scheduleInfo'] = $projectSchedule->where('project_id', 90)->sortByDesc('id')->first();
+            $department = $this->departmentCache->where('id', $this->department_id)->first();
+            $projects[$k]['unit'] = $department['title'];
+            if (isset($params['projectPlan']) && $params['projectPlan']) {
+                $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
+            }
+            if (isset($params['projectSchedule']) && $params['projectSchedule']) {
+                $projects[$k]['scheduleInfo'] = $projectSchedule->where('project_id', 90)->sortByDesc('id')->first();
+            }
         }
 
         return response()->json(['result' => $projects, 'total' => $projectCount], 200);
