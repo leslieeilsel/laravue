@@ -6,17 +6,17 @@
           <Input clearable v-model="searchForm.title" placeholder="支持模糊搜索" style="width: 200px"/>
         </FormItem>
         <FormItem label="填报时间" prop="build_at">
-<!--          <Row style="width: 110px">-->
-            <!-- <Col span="11">
-              <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
-              </DatePicker>
-            </Col>
-            <Col span="2" style="text-align: center">-</Col> -->
-<!--            <Col span="24">-->
-              <DatePicker type="month" placeholder="填报时间" format="yyyy-MM" v-model="searchForm.end_at" style="width: 200px">
-              </DatePicker>
-<!--            </Col>-->
-<!--          </Row>-->
+          <!--          <Row style="width: 110px">-->
+          <!-- <Col span="11">
+            <DatePicker type="month" placeholder="开始时间" format="yyyy-MM" v-model="searchForm.start_at">
+            </DatePicker>
+          </Col>
+          <Col span="2" style="text-align: center">-</Col> -->
+          <!--            <Col span="24">-->
+          <DatePicker type="month" placeholder="填报时间" format="yyyy-MM" v-model="searchForm.end_at" style="width: 200px">
+          </DatePicker>
+          <!--            </Col>-->
+          <!--          </Row>-->
         </FormItem>
         <span v-if="drop">
           <Form-item label="项目编号" prop="project_num">
@@ -50,7 +50,7 @@
           </FormItem>
         </span>
         <FormItem style="margin-left:-70px;" class="br">
-          <Button @click="getProjectScheduleList" type="primary" icon="ios-search">搜索</Button>
+          <Button @click="searchProject" type="primary" icon="ios-search">搜索</Button>
           <Button @click="handleResetSearch">重置</Button>
           <a class="drop-down" @click="dropDown">
             {{dropDownContent}}
@@ -69,10 +69,15 @@
         下载形象进度照片
       </Button>
     </p>
-    <Table type="selection" stripe border :columns="columns" :data="nowData" :loading="tableLoading"></Table>
+    <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Row type="flex" justify="end" class="page">
-      <Page :total="dataCount" :page-size="pageSize" @on-change="changePage" @on-page-size-change="_nowPageSize"
-            show-total show-sizer :current="pageCurrent"/>
+      <Page
+        :total="dataCount"
+        :page-size="searchForm.pageSize"
+        @on-change="changePage"
+        @on-page-size-change="changePageSize"
+        show-total
+        :current="searchForm.pageCurrent"/>
     </Row>
     <Modal
       :mask-closable="false"
@@ -638,10 +643,6 @@
   export default {
     data() {
       return {
-        pageSize: 10,   // 每页显示多少条
-        dataCount: 0,   // 总条数
-        pageCurrent: 1, // 当前页
-        nowData: [],
         isShowButton: false,
         noScheduleButton: false,
         reasonModal: false,
@@ -659,7 +660,6 @@
         upbtnDisabled: true,
         picDisable: true,
         dataDep1: [],
-        dpLoading: false,
         searchForm: {
           title: '',
           project_num: '',
@@ -669,8 +669,11 @@
           money_from: '',
           is_gc: '',
           nep_type: '',
-          is_audit: ''
+          is_audit: '',
+          pageNumber: 1, // 当前页数
+          pageSize: 10, // 页面大小
         },
+        dataCount: 0,   // 总条数
         noSchedule: false,
         seeModal: false,
         editModal: false,
@@ -704,7 +707,7 @@
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
-              return h('span', params.index + (this.pageCurrent - 1) * this.pageSize + 1);
+              return h('span', params.index + (this.searchForm.pageNumber - 1) * this.searchForm.pageSize + 1);
             }
           },
           {
@@ -1035,6 +1038,7 @@
           }
         ],
         data: [],
+        clickSearch: false,
         scheduleData: [],
         tableLoading: true,
         loading: false,
@@ -1118,7 +1122,6 @@
           ]
         },
         project_id: [],
-        imgName: '',
         visible: false,
         uploadList: [],
         imgUrl: '',
@@ -1152,7 +1155,6 @@
           nep_type: [],
           money_from: []
         },
-        visible: false,
       }
     },
     methods: {
@@ -1189,29 +1191,22 @@
         this.getProjectId();
         this.getProjectNoScheduleList();
       },
+      searchProject() {
+        this.clickSearch = true;
+        this.getProjectScheduleList();
+      },
       getProjectScheduleList() {
         this.tableLoading = true;
         this.searchForm.is_audit = this.$route.params.is_audit;
         projectProgressList(this.searchForm).then(res => {
-          this.data = res.result;         
-          //分页显示所有数据总数
-          this.dataCount = this.data.length;
-          //循环展示页面刚加载时需要的数据条数
-          this.nowData = [];
-          for (let i = 0; i < this.pageSize; i++) {
-            if (this.data[i]) {
-              this.nowData.push(this.data[i]);
-            }
-          }
-          this.pageCurrent = 1;
-          if (typeof(this.searchForm.is_gc)==='number' || typeof(this.searchForm.nep_type)==='number' || typeof(this.searchForm.money_from)==='number' || typeof(this.searchForm.department_id)==='number' || this.searchForm.title || typeof(this.searchForm.project_id)==='number'|| this.searchForm.project_num || typeof(this.searchForm.subject)==='number' || this.searchForm.end_at) {
-            this.btnDisable = false;
-          }
           this.tableLoading = false;
+          this.data = res.result;
+          this.dataCount = res.total;
+          this.btnDisable = !this.clickSearch;
         });
       },
       getProjectNoScheduleList() {
-        getProjectNoScheduleList().then(res => {  
+        getProjectNoScheduleList().then(res => {
           this.scheduleData = res.result;
         });
       },
@@ -1272,12 +1267,12 @@
             this.form.total_investors = em.amount;
             this.form.plan_img_progress = em.image_progress;
             this.form.plan_build_start_at = em.plan_start_at;
-            
+
             let month_time = new Date();
             let month_time_0 = (month_time.getMonth() + 1) > 9 ? (month_time.getMonth() + 1) : '0' + (month_time.getMonth() + 1);
 
             month_time = month_time.getFullYear() + '-' + month_time_0;
-            
+
             this.month_img = month_time + ' 月形象进度';
             this.month_act = month_time + ' 月实际完成投资(万元)';
             this.year_investors = month_time.substring(0, 4) + '年计划投资(万元)';
@@ -1457,13 +1452,11 @@
         return check;
       },
       handleResetSearch() {
-        this.searchForm = {
-          project_id: '',
-          project_num: '',
-          subject: '',
-          end_at: ''
-        };
+        this.$refs.searchForm.resetFields();
         this.getProjectScheduleList();
+        this.dataCount = 0;
+        this.searchForm.pageNumber = 1;
+        this.searchForm.pageSize = 10;
       },
       dropDown() {
         if (this.drop) {
@@ -1493,7 +1486,7 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/exportSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id+ "&is_gc=" + is_gc+ "&nep_type=" + nep_type+ "&money_from=" + money_from;
+        window.location.href = "/api/project/exportSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id + "&is_gc=" + is_gc + "&nep_type=" + nep_type + "&money_from=" + money_from;
       },//下载
       downloadPic() {
         let title = this.searchForm.title;
@@ -1512,30 +1505,15 @@
           let month_end_time_0 = (end_time_0.getMonth() + 1) > 9 ? (end_time_0.getMonth() + 1) : '0' + (end_time_0.getMonth() + 1);
           end_time = end_time_0.getFullYear() + '-' + month_end_time_0;
         }
-        window.location.href = "/api/project/downLoadSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id+ "&is_gc=" + is_gc+ "&nep_type=" + nep_type+ "&money_from=" + money_from;
+        window.location.href = "/api/project/downLoadSchedule?title=" + title + "&project_id=" + project_id + "&project_num=" + project_num + "&subject=" + subject + "&end_at=" + end_time + "&department_id=" + department_id + "&is_gc=" + is_gc + "&nep_type=" + nep_type + "&money_from=" + money_from;
       },
-      changePage(index) {
-        //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
-        let _start = (index - 1) * this.pageSize;
-        //需要显示结束数据的index
-        let _end = index * this.pageSize;
-        //截取需要显示的数据
-        this.nowData = this.data.slice(_start, _end);
-        //储存当前页
-        this.pageCurrent = index;
+      changePage(v) {
+        this.searchForm.pageNumber = v;
+        this.getProjectScheduleList();
       },
-      _nowPageSize(index) {
-        //实时获取当前需要显示的条数
-        this.pageSize = index;
-        this.loadingTable = true;
-        this.nowData = [];
-        for (let i = 0; i < this.pageSize; i++) {
-          if (this.data[i]) {
-            this.nowData.push(this.data[i]);
-          }
-        }
-        this.pageCurrent = 1;
-        this.loadingTable = false;
+      changePageSize(v) {
+        this.searchForm.pageSize = v;
+        this.getProjectScheduleList();
       },
       onSearchIsGcChange(value) {
         this.searchNepDisabled = value !== 1;

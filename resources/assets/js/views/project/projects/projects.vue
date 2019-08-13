@@ -832,7 +832,6 @@
         modal222: false,
         projectModal: false,
         dataCount: 0,   // 总条数
-        nowData: [],
         isShowButton: false,
         showExportButton: false,
         reasonModal: false,

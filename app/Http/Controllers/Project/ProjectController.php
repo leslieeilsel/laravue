@@ -796,6 +796,8 @@ class ProjectController extends Controller
     public function projectProgressM($data)
     {
         $query = new ProjectSchedule;
+
+        // 部门
         if (isset($data['department_id'])) {
             if (gettype($data['department_id']) == 'string') {
                 $data['department_id'] = explode(',', $data['department_id']);
@@ -807,38 +809,38 @@ class ProjectController extends Controller
                 $query = $query->whereIn('user_id', $user_id);
             }
         }
-        if (isset($data['title']) || isset($data['project_num']) || isset($data['subject']) || isset($data['money_from']) || isset($data['is_gc']) || isset($data['nep_type'])) {
-            $projects = Projects::select('id');
-            if (isset($data['title'])) {
-                $projects = $projects->where('title', 'like', '%' . $data['title'] . '%');
-            }
-
-            if (isset($data['project_num'])) {
-                $projects = $projects->where('num', $data['project_num']);
-            }
-            if (isset($data['subject'])) {
-                $projects = $projects->where('subject', 'like', '%' . $data['subject'] . '%');
-            }
-            if (isset($data['money_from'])) {
-                if ($data['money_from'] != -1) {
-                    $projects = $projects->where('money_from', $data['money_from']);
-                }
-            }
-            if (isset($data['is_gc'])) {
-                if ($data['is_gc'] != -1) {
-                    $projects = $projects->where('is_gc', $data['is_gc']);
-                }
-            }
-            if (isset($data['nep_type'])) {
-                if ($data['nep_type'] != -1) {
-                    $projects = $projects->where('nep_type', $data['nep_type']);
-                }
-            }
-            $projects = $projects->get()->toArray();
-            $ids = array_column($projects, 'id');
-            // $ids = array_intersect($ids, $this->seeIds);
-            $query = $query->whereIn('project_id', $ids);
+        // 项目库相关字段
+        $projects = Projects::select('id');
+        if (isset($data['title'])) {
+            $projects = $projects->where('title', 'like', '%' . $data['title'] . '%');
         }
+
+        if (isset($data['project_num'])) {
+            $projects = $projects->where('num', $data['project_num']);
+        }
+        if (isset($data['subject'])) {
+            $projects = $projects->where('subject', 'like', '%' . $data['subject'] . '%');
+        }
+        if (isset($data['money_from'])) {
+            if ($data['money_from'] != -1) {
+                $projects = $projects->where('money_from', $data['money_from']);
+            }
+        }
+        if (isset($data['is_gc'])) {
+            if ($data['is_gc'] != -1) {
+                $projects = $projects->where('is_gc', $data['is_gc']);
+            }
+        }
+        if (isset($data['nep_type'])) {
+            if ($data['nep_type'] != -1) {
+                $projects = $projects->where('nep_type', $data['nep_type']);
+            }
+        }
+
+        $projects = $projects->get()->toArray();
+        $ids = array_column($projects, 'id');
+        // $ids = array_intersect($ids, $this->seeIds);
+        $query = $query->whereIn('project_id', $ids);
         // if (isset($data['start_at']) || isset($data['end_at'])) {
         //     if (isset($data['start_at']) && isset($data['end_at'])) {
         //         $data['start_at'] = date('Y-m', strtotime($data['start_at']));
@@ -849,6 +851,8 @@ class ProjectController extends Controller
         //             $data['start_at'] = date('Y-m', strtotime($data['start_at']));
         //             $query = $query->where('month', $data['start_at']);
         //         } else
+
+        // 填报时间
         if (isset($data['end_at'])) {
             $data['end_at'] = date('Y-m', strtotime($data['end_at']));
             $query = $query->where('month', $data['end_at']);
@@ -867,20 +871,23 @@ class ProjectController extends Controller
         $seeIds = $this->getSeeIds();
         $ProjectSchedules = $query->whereIn('user_id', $seeIds);
 
+        if (isset($data['pageNumber']) && isset($data['pageSize'])) {
+            $query
+                ->limit($data['pageSize'])
+                ->offset(($data['pageNumber'] - 1) * $data['pageSize']);
+        }
+
         return $ProjectSchedules;
     }
 
     public function projectProgressList(Request $request)
     {
-        $params = $request->all();
-        $t0 = microtime(true);
+        $params = $countParams = $request->all();
+        unset($countParams['pageNumber'], $countParams['pageSize']);
         $result = $this->projectProgressM($params);
         $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
-        $t00 = microtime(true);
+        $projectProgressCount = $this->projectProgressM($countParams)->count();
         $users = User::all();
-        $t000 = microtime(true);
-        $a0 = '耗时' . round($t00 - $t0, 3) * 1000 . ' 毫秒';
-        $a00 = '耗时' . round($t000 - $t00, 3) * 1000 . ' 毫秒';
         foreach ($ProjectSchedules as $k => $row) {
             $Projects = $this->projectsCache->where('id', $row['project_id'])->first();
             $ProjectSchedules[$k]['money_from'] = $Projects['money_from'];
@@ -902,7 +909,7 @@ class ProjectController extends Controller
             $ProjectSchedules[$k]['plan_img_progress'] = $ProjectPlans['img_progress'];
         }
 
-        return response()->json(['result' => $ProjectSchedules], 200);
+        return response()->json(['result' => $ProjectSchedules, 'total' => $projectProgressCount], 200);
     }
 
     /**
