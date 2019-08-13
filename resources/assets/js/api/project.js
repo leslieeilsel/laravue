@@ -378,3 +378,15 @@ export function getProjectById(id) {
   });
 }
 
+/**
+ * 构建计划填报表单
+ * @returns {*}
+ */
+export function getPreviewPlanData(id) {
+  return request({
+    url: '/api/project/getPreviewPlanData',
+    method: 'post',
+    data: {id}
+  });
+}
+
