@@ -873,10 +873,16 @@ class ProjectController extends Controller
     public function projectProgressList(Request $request)
     {
         $params = $request->all();
+        $t0 = microtime(true);
         $result = $this->projectProgressM($params);
         $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
+        $t00 = microtime(true);
+        $users = User::all();
+        $t000 = microtime(true);
+        $a0 = '耗时' . round($t00 - $t0, 3) * 1000 . ' 毫秒';
+        $a00 = '耗时' . round($t000 - $t00, 3) * 1000 . ' 毫秒';
         foreach ($ProjectSchedules as $k => $row) {
-            $Projects = Projects::select('money_from', 'title', 'num', 'subject', 'plan_start_at', 'plan_end_at', 'amount')->where('id', $row['project_id'])->first();
+            $Projects = $this->projectsCache->where('id', $row['project_id'])->first();
             $ProjectSchedules[$k]['money_from'] = $Projects['money_from'];
             $ProjectSchedules[$k]['project_title'] = $Projects['title'];
             $ProjectSchedules[$k]['acc_complete'] = $this->allActCompleteMoney($row['project_id'], $row['month']);
@@ -886,14 +892,16 @@ class ProjectController extends Controller
             $ProjectSchedules[$k]['build_end_at'] = $Projects['plan_end_at'];
             $ProjectSchedules[$k]['total_investors'] = $Projects['amount'];
             $ProjectSchedules[$k]['plan_build_start_at'] = $Projects['plan_start_at'];
-            $users = user::where('id', $row['user_id'])->first();
-            $ProjectSchedules[$k]['tianbao_name'] = $users['name'];
-            $ProjectSchedules[$k]['department'] = Departments::where('id', $users['department_id'])->value('title');
+            $user = $users->where('id', $row['user_id'])->first()->toArray();
+            $ProjectSchedules[$k]['tianbao_name'] = $user['name'];
+            $department = $this->departmentCache->where('id', $this->department_id)->first();
+            $ProjectSchedules[$k]['department'] = $department['title'];
             $year = date('Y', strtotime($row['month']));
             $ProjectPlans = ProjectPlan::where('project_id', $row['project_id'])->where('date', $year)->first();
             $ProjectSchedules[$k]['plan_investors'] = $ProjectPlans['amount'];
             $ProjectSchedules[$k]['plan_img_progress'] = $ProjectPlans['img_progress'];
         }
+
         return response()->json(['result' => $ProjectSchedules], 200);
     }
 
@@ -1225,21 +1233,23 @@ class ProjectController extends Controller
     /**
      * 累计投资
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param $project_id
+     * @param $month
+     * @return int
      */
     public function allActCompleteMoney($project_id, $month)
     {
         $plan_date = ProjectPlan::select('date', 'amount')->where('project_id', $project_id)->where('parent_id', 0)->get()->toArray();
         $result = 0;
-        foreach ($plan_date as $k) {
-            if ($k['date'] < 2019) {
-                $result = $result + $k['amount'];
+        foreach ($plan_date as $v) {
+            if ($v['date'] < 2019) {
+                $result += $v['amount'];
             }
         }
 
         $allMonth = ProjectSchedule::where('project_id', $project_id)->where('month', '<=', $month)->sum('month_act_complete');
-        $result = $result + $allMonth;
+        $result += $allMonth;
+
         return $result;
     }
 
