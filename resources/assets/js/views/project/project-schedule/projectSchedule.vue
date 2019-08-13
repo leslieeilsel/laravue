@@ -77,7 +77,7 @@
         @on-change="changePage"
         @on-page-size-change="changePageSize"
         show-total
-        :current="searchForm.pageCurrent"/>
+        :current="searchForm.pageNumber"/>
     </Row>
     <Modal
       :mask-closable="false"
