@@ -484,7 +484,7 @@
                   <div id="editMap" style="height:300px;width:100%;"></div>
                 </Col>
                 <Col span="24">
-                  <Button type="primary" @click="editEditArea" long icon="ios-create" style="margin-top: 10px;">修改
+                  <Button type="primary" :disabled="isAdjustReadOnly" @click="editEditArea" long icon="ios-create" style="margin-top: 10px;">修改
                   </Button>
                 </Col>
               </Row>
@@ -2897,7 +2897,7 @@
       },
       //调整项目  取消
       projectAdjustmentCancel() {
-        this.$Modal.remove()
+        this.projectModal = false;
       },
       //选中
       checkboxProject(selection) {
