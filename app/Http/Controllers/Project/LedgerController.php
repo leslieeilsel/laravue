@@ -60,7 +60,9 @@ class LedgerController extends Controller
      */
     public function projectLedgerList(Request $request)
     {
-        $params = $request->input();
+        $params = $countParams = $request->input();
+        unset($countParams['pageNumber'], $countParams['pageSize']);
+
         $sql = $this->listData($params);
         $sql = $sql->where('iba_project_schedule.is_audit', 1)->whereIn('iba_project_schedule.user_id', $this->seeIds)->get()->toArray();
         foreach ($sql as $k => $row) {
@@ -72,7 +74,10 @@ class LedgerController extends Controller
             $sql[$k]['plan_investors'] = $ProjectPlanData['amount'];
             $sql[$k]['plan_img_progress'] = $ProjectPlanData['image_progress'];
         }
-        return response()->json(['result' => $sql], 200);
+
+        $count = $this->listData($countParams)->count();
+
+        return response()->json(['result' => $sql, 'total' => $count], 200);
     }
 
     public function listData($params = [])
@@ -92,6 +97,12 @@ class LedgerController extends Controller
                     $sql = $sql->where('iba_project_schedule.month', $params['end_at']);
                 }
             }
+        }
+
+        if (isset($params['pageNumber']) && isset($params['pageSize'])) {
+            $sql = $sql
+                ->limit($params['pageSize'])
+                ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
 
         if (isset($params['project_id']) || isset($params['money_from']) || isset($params['is_gc']) || isset($params['nep_type'])) {
