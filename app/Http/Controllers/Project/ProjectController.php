@@ -65,8 +65,7 @@ class ProjectController extends Controller
         $dataType = Role::where('id', $roleId)->first()->data_type;
 
         if ($dataType === 0) {
-            $userIds = $users;
-            $seeIds = array_column($userIds, 'id');
+            $seeIds = array_column($users, 'id');
         }
         if ($dataType === 1) {
             $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
@@ -614,6 +613,15 @@ class ProjectController extends Controller
         $projects['projectPlan'] = $this->getPlanData($id, 'edit');
 
         return response()->json(['result' => $projects], 200);
+    }
+
+    public function getPreviewPlanData(Request $request)
+    {
+        $id = $request->input('id');
+
+        $projectPlan = $this->getPlanData($id, 'preview');
+
+        return response()->json(['result' => $projectPlan], 200);
     }
 
     /**

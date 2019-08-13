@@ -82,6 +82,7 @@ Route::group(['middleware' => ['api']], function () {
     Route::post('project/buildPlanFields', 'Project\ProjectController@buildPlanFields');
     Route::post('project/auditProject', 'Project\ProjectController@auditProject');
     Route::post('project/getEditFormData', 'Project\ProjectController@getEditFormData');
+    Route::post('project/getPreviewPlanData', 'Project\ProjectController@getPreviewPlanData');
     Route::post('project/toAudit', 'Project\ProjectController@toAudit');
     Route::post('project/toAuditSchedule', 'Project\ProjectController@toAuditSchedule');
     Route::post('project/actCompleteMoney', 'Project\ProjectController@actCompleteMoney');

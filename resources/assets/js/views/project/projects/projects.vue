@@ -803,6 +803,7 @@
   import {
     edit,
     getEditFormData,
+    getPreviewPlanData,
     getAllProjects,
     addProject,
     getProjectDictData,
@@ -1017,36 +1018,38 @@
                     click: () => {
                       let _this = this;
                       this.showAuditButton = this.office === 1 ? params.row.is_audit === 0 : false;
-                      this.previewForm = params.row;
-                      this.formId = params.row.id;
-                      this.isReadOnly = true;
-                      this.openErrorAlert = (this.previewForm.reason !== '' && this.previewForm.is_audit === 2);
-                      this.previewModal = true;
-
-                      this.previewForm.projectPlan.forEach(function (row, index) {
-                        let total_count_amount = 0;
-                        row.month.forEach(function (e) {
-                          total_count_amount += parseFloat(_this.clearComma(e.amount));
-                        });
-                        if (isNaN(total_count_amount)) {
-                          row.total_count_amount = 0;
-                        } else {
-                          row.total_count_amount = total_count_amount.toLocaleString('zh', {
-                            style: 'decimal',
-                            minimumFractionDigits: 2,
-                            useGrouping: true
+                      ;
+                      getPreviewPlanData(params.row.id).then(res => {
+                        _this.previewModal = true;
+                        _this.previewForm = params.row;
+                        _this.formId = params.row.id;
+                        _this.isReadOnly = true;
+                        _this.openErrorAlert = (_this.previewForm.reason !== '' && _this.previewForm.is_audit === 2)
+                        _this.previewForm.projectPlan = res.result;
+                        _this.previewForm.projectPlan.forEach(function (row, index) {
+                          let total_count_amount = 0;
+                          row.month.forEach(function (e) {
+                            total_count_amount += parseFloat(_this.clearComma(e.amount));
                           });
+                          if (isNaN(total_count_amount)) {
+                            row.total_count_amount = 0;
+                          } else {
+                            row.total_count_amount = total_count_amount.toLocaleString('zh', {
+                              style: 'decimal',
+                              minimumFractionDigits: 2,
+                              useGrouping: true
+                            });
+                          }
+                        });
+                        if (_this.previewForm.center_point && _this.previewForm.positions) {
+                          _this.haveMap = true;
+                          _this.noMap = false;
+                          _this.onlyShowArea();
+                        } else {
+                          _this.haveMap = false;
+                          _this.noMap = true;
                         }
-
                       });
-                      if (this.previewForm.center_point && this.previewForm.positions) {
-                        this.haveMap = true;
-                        this.noMap = false;
-                        this.onlyShowArea();
-                      } else {
-                        this.haveMap = false;
-                        this.noMap = true;
-                      }
                     }
                   }
                 }, '查看'),
