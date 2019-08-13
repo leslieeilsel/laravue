@@ -132,7 +132,7 @@ Route::group(['middleware' => ['api']], function () {
     Route::post('role/getDepartmentTree', 'System\RoleController@getDepartmentTree');
     Route::post('role/editRoleDep', 'System\RoleController@editRoleDep');
 
-    Route::get('log/getOperationLogs', 'Logs\LogController@getOperationLogs');
+    Route::post('log/getOperationLogs', 'Logs\LogController@getOperationLogs');
     Route::get('datav/project', 'DataV\ProjectController@getDataVProject');
 
     // 工作流

@@ -1,9 +1,14 @@
 <template>
   <Card>
-    <Table border stripe :columns="columns" :data="nowData" :loading="loading"></Table>
+    <Table border stripe :columns="columns" :data="data" :loading="loading"></Table>
     <Row type="flex" justify="end" class="page">
-      <Page :total="dataCount" :page-size="pageSize" @on-change="changePage" @on-page-size-change="_nowPageSize"
-            show-total show-sizer/>
+      <Page
+        :total="dataCount"
+        :page-size="searchForm.pageSize"
+        @on-change="changePage"
+        @on-page-size-change="changePageSize"
+        show-total
+        :current="searchForm.pageNumber"/>
     </Row>
   </Card>
 </template>
@@ -13,10 +18,11 @@
   export default {
     data() {
       return {
-        pageSize: 10,   // 每页显示多少条
         dataCount: 0,   // 总条数
-        pageCurrent: 1, // 当前页
-        nowData: [],
+        searchForm: {
+          pageNumber: 1, // 当前页数
+          pageSize: 10, // 页面大小
+        },
         columns: [
           {
             title: '操作名称',
@@ -49,43 +55,23 @@
     },
     methods: {
       init() {
-        getOperationLogs().then(res => {
+        this.getLogs();
+      },
+      getLogs() {
+        this.loading = true;
+        getOperationLogs(this.searchForm).then(res => {
           this.data = res.result;
-          //分页显示所有数据总数
-          this.dataCount = this.data.length;
-          //循环展示页面刚加载时需要的数据条数
-          this.nowData = [];
-          for (let i = 0; i < this.pageSize; i++) {
-            if (this.data[i]) {
-              this.nowData.push(this.data[i]);
-            }
-          }
-          console.log(this.nowData)
+          this.dataCount = res.total;
           this.loading = false;
         });
       },
-      changePage(index) {
-        //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
-        let _start = (index - 1) * this.pageSize;
-        //需要显示结束数据的index
-        let _end = index * this.pageSize;
-        //截取需要显示的数据
-        this.nowData = this.data.slice(_start, _end);
-        //储存当前页
-        this.pageCurrent = index;
+      changePage(v) {
+        this.searchForm.pageNumber = v;
+        this.getLogs();
       },
-      _nowPageSize(index) {
-        //实时获取当前需要显示的条数
-        this.pageSize = index;
-        this.loadingTable = true;
-        this.nowData = [];
-        for (let i = 0; i < this.pageSize; i++) {
-          if (this.data[i]) {
-            this.nowData.push(this.data[i]);
-          }
-        }
-        console.log(this.nowData)
-        this.loadingTable = false;
+      changePageSize(v) {
+        this.searchForm.pageSize = v;
+        this.getLogs();
       },
     },
     mounted() {
