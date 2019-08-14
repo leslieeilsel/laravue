@@ -11,4 +11,9 @@ class ProjectSchedule extends Model
     protected $table = 'iba_project_schedule';
 
     protected $fillable = [];
+
+    public function project()
+    {
+        return $this->belongsTo('App\Models\Project\Projects');
+    }
 }

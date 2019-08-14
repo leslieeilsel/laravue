@@ -11,4 +11,9 @@ class ProjectPlan extends Model
     protected $table = 'iba_project_plan';
 
     protected $fillable = [];
+
+    public function project()
+    {
+        return $this->belongsTo('App\Models\Project\Projects');
+    }
 }

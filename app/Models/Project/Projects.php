@@ -13,6 +13,16 @@ class Projects extends Model
 
     protected $fillable = [];
 
+    public function plan()
+    {
+        return $this->hasMany('App\Models\Project\ProjectPlan', 'project_id');
+    }
+
+    public function schedule()
+    {
+        return $this->hasMany('App\Models\Project\ProjectSchedule', 'project_id');
+    }
+
     /**
      * 获取数据字典数据
      *

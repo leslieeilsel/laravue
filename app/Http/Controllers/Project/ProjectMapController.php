@@ -11,10 +11,14 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProjectMapController extends Controller
 {
+    public $date;
+    public $year;
+    public $month;
     public $user;
     public $office;
     public $group_id;
@@ -25,6 +29,12 @@ class ProjectMapController extends Controller
             $this->user = Auth::user();
             $this->office = $this->user->office;
             $this->group_id = $this->user->group_id;
+
+            $date = ProjectSchedule::select('month')->groupBy('month')->orderBy('month', 'desc')->value('month');
+            $dateArr = explode('-', $date);
+            $this->date = $date;
+            $this->year = (int) $dateArr[0];
+            $this->month = (int) $dateArr[1];
         }
     }
 
@@ -64,18 +74,13 @@ class ProjectMapController extends Controller
         $params = $request->all();
         $data = $this->getMapProjectsData($params);
 
-        $date = ProjectSchedule::select('month')->groupBy('month')->orderBy('month', 'desc')->value('month');
-        $dateArr = explode('-', $date);
-        $year = (int) $dateArr[0];
-        $month = (int) $dateArr[1];
-
         $type = Dict::getOptionsArrByName('工程类项目分类');
         $status = Dict::getOptionsArrByName('项目状态');
         foreach ($data as $k => $project) {
-            $parentPlanId = ProjectPlan::where('project_id', $project['id'])->where('date', $year)->first()->id;
-            $planMonth = ProjectPlan::where('project_id', $project['id'])->where('date', $month)->where('parent_id', $parentPlanId)->first();
+            $parentPlanId = $project->plan->where('date', $this->year)->first()->id;
+            $planMonth = $project->plan->where('date', $this->month)->where('parent_id', $parentPlanId)->first();
             $planAmount = $planMonth['amount'] ? (float) $planMonth['amount'] : 0;
-            $actMonth = ProjectSchedule::where('project_id', $project['id'])->where('month', $date)->first();
+            $actMonth = $project->schedule->where('month', $this->date)->first();
             $actAmount = $actMonth['month_act_complete'] ?  (float) $actMonth['month_act_complete'] : 0;
 
             $percent = 0;
@@ -168,7 +173,7 @@ class ProjectMapController extends Controller
         $seeIds = $this->getSeeIds();
         $query = $query->whereIn('user_id', $seeIds);
 
-        $projects = $query->get()->toArray();
+        $projects = $query->get();
 
         return $projects;
     }
