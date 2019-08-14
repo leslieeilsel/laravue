@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Project;
 
 use App\Models\Dict;
-use App\Models\Project\ProjectPlan;
 use App\Models\Project\Projects;
 use App\Models\Project\ProjectSchedule;
 use App\Models\Role;
@@ -11,7 +10,6 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProjectMapController extends Controller
@@ -81,7 +79,7 @@ class ProjectMapController extends Controller
             $planMonth = $project->plan->where('date', $this->month)->where('parent_id', $parentPlanId)->first();
             $planAmount = $planMonth['amount'] ? (float) $planMonth['amount'] : 0;
             $actMonth = $project->schedule->where('month', $this->date)->first();
-            $actAmount = $actMonth['month_act_complete'] ?  (float) $actMonth['month_act_complete'] : 0;
+            $actAmount = $actMonth['month_act_complete'] ? (float) $actMonth['month_act_complete'] : 0;
 
             $percent = 0;
             if ($actAmount != 0 && $planAmount != 0) {
@@ -173,7 +171,15 @@ class ProjectMapController extends Controller
         $seeIds = $this->getSeeIds();
         $query = $query->whereIn('user_id', $seeIds);
 
-        $projects = $query->get();
+        $projects = $query
+            ->with([
+                'plan' => function ($query) {
+                    $query->where('date', $this->month)->orWhere('date', $this->year);
+                },
+                'schedule' => function ($query) {
+                    $query->where('month', $this->date);
+                },
+            ])->get();
 
         return $projects;
     }
