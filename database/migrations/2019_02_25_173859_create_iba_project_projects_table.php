@@ -16,7 +16,7 @@ class CreateIbaProjectProjectsTable extends Migration
         Schema::create('iba_project_projects', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');                                // 项目名称
-            $table->text('num')->nullable();                      // 项目编号
+            $table->text('num')->nullable();                        // 项目编号
             $table->integer('type');                                // 项目类型
             $table->integer('status');                              // 项目状态
             $table->string('subject');                              // 投资主体
