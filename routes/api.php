@@ -67,6 +67,7 @@ Route::group(['middleware' => ['api']], function () {
     Route::get('project/loadPlan/{id}', 'Project\ProjectController@loadPlan');
     Route::post('project/getAllWarning', 'Project\ProjectController@getAllWarning');
     Route::any('project/getAllProjects', 'Project\ProjectController@getAllProjects');
+    Route::post('project/getMapProjects', 'Project\ProjectMapController@getMapProjects');
     Route::post('project/getProjectDictData', 'Project\ProjectController@getProjectDictData');
     Route::post('project/addProject', 'Project\ProjectController@add');
     Route::post('project/edit', 'Project\ProjectController@edit');

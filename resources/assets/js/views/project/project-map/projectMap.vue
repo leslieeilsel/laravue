@@ -69,7 +69,7 @@
 </template>
 <script>
   import "./projectMap.css";
-  import {getAllProjects, getProjectDictData,} from "../../../api/project";
+  import {getMapProjects, getProjectDictData,} from "../../../api/project";
   import {loadClassDepartment} from '../../../api/system';
 
   export default {
@@ -86,8 +86,7 @@
           is_gc: '',
           nep_type: '',
           department_id: [],
-          projectPlan: true,
-          projectSchedule: true
+          is_audit: ''
         },
         dataDep1: [],
         dict: {
@@ -305,7 +304,7 @@
         // });
 
         // 获取地图数据
-        getAllProjects(this.searchForm).then(e => {
+        getMapProjects(this.searchForm).then(e => {
           let _this = this;
           let date = new Date();
           let y = date.getFullYear();
@@ -321,66 +320,26 @@
             let war_color;
             let point_color;
             let warningColor;
-            let Percentage_con;
+            let Percentage_con = '';
             // console.log(project.title)
-            project.projectPlan.forEach(function (year) {
-              if (year.date === y) {
-                let monthAmount = 0;
-                year.month.forEach(function (month) {
-                  if (month.date < m) {
-                    monthAmount = month.amount;
-                    // console.log(month.date + '月：' + monthAmount)
-                    if (monthAmount !== null) {
-                      monthAmount = monthAmount.replace(/,/g, "");
-                      monthAmount = parseFloat(monthAmount);
-                      plan_amount += monthAmount;
-                    }
-                    // console.log('1-' + month.date + '月合计：' + plan_amount)
-                  }
-                });
-                // console.log("计划" + monthAmount)
-                let month_act_complete = 0;
-                if (project.scheduleInfo) {
-                  month_act_complete = parseFloat(project.scheduleInfo.month_act_complete);
-                } else {
-                  month_act_complete = 0;
-                }
-                // console.log("实际完成" + month_act_complete)
-                let Percentage = 0;
-                if (month_act_complete !== 0) {
-                  Percentage = month_act_complete / monthAmount;
-                  if (isNaN(Percentage)) {
-                    Percentage = 0;
-                  }
-                  // console.log(Percentage)
-                }
+            let Percentage = parseFloat(project.percent).toFixed(2);
 
-                // 如果计划金额为0，则默认完成比为100%
-                if (monthAmount == 0) {
-                  Percentage = 1;
-                }
+            if (Percentage < 0.7) {
+              war_color = 'redcircle';
+              point_color = '#F44336';
+              warningColor = 'error.gif';
+            } else if (Percentage < 1 && Percentage >= 0.7) {
+              war_color = 'yellowcircle';
+              point_color = '#FF9800';
+              warningColor = 'warning.png';
+            } else {
+              war_color = 'greencircle';
+              point_color = '#4CAF50';
+              warningColor = 'success.png';
+            }
 
-                // console.log(Percentage)
-                Percentage_con = '';
-                Percentage = parseFloat(Percentage).toFixed(2);
+            Percentage_con = "计划完成：" + project.planAmount + "万，已完成" + project.actAmount + "万，" + "完成率" + Percentage * 100 + "%";
 
-                if (Percentage < 0.7) {
-                  war_color = 'redcircle';
-                  point_color = '#F44336';
-                  warningColor = 'error.gif';
-                } else if (Percentage < 1 && Percentage >= 0.7) {
-                  war_color = 'yellowcircle';
-                  point_color = '#FF9800';
-                  warningColor = 'warning.png';
-                } else {
-                  war_color = 'greencircle';
-                  point_color = '#4CAF50';
-                  warningColor = 'success.png';
-                }
-
-                Percentage_con = "计划完成：" + monthAmount + "万，已完成" + month_act_complete + "万，" + "完成率" + Percentage * 100 + "%";
-              }
-            });
             // console.log("当年月计划合计：" + plan_amount)
 
             if (project.is_audit === 1 || project.is_audit === 3) {

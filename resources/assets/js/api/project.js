@@ -24,6 +24,18 @@ export function getAllProjects(searchForm) {
 }
 
 /**
+ * 获取所有部门
+ * @returns {*}
+ */
+export function getMapProjects(form) {
+  return request({
+    url: '/api/project/getMapProjects',
+    method: 'post',
+    data: {...form}
+  });
+}
+
+/**
  * 获取所有预警信息
  * @returns {*}
  */
@@ -297,6 +309,7 @@ export function getAuditedProjects() {
     method: 'get'
   });
 }
+
 /**
  * 获取项目进度未填报项目列表
  * @returns {*}
@@ -320,6 +333,7 @@ export function projectScheduleMonth(form) {
     data: {...form}
   });
 }
+
 /**
  * 通知信息，获取未审核的填报信息和项目信息
  * @returns {*}
@@ -331,6 +345,7 @@ export function getNoAudit(form) {
     data: {...form}
   });
 }
+
 /**
  * 删除项目
  * @returns {*}
@@ -342,6 +357,7 @@ export function projectDelete(form) {
     data: {...form}
   });
 }
+
 /**
  * 删除项目进度，填报
  * @returns {*}
