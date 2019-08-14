@@ -104,11 +104,16 @@
           </div>
         </Modal>
       </p>
-      <Table type="selection" border :columns="columns" :data="nowData" @on-selection-change="showSelect"
+      <Table type="selection" border :columns="columns" :data="data" @on-selection-change="showSelect"
              :loading="loadingTable"></Table>
       <Row type="flex" justify="end" class="page">
-        <Page :total="dataCount" :page-size="pageSize" @on-change="changePage" @on-page-size-change="_nowPageSize"
-              show-total show-sizer/>
+        <Page
+          :total="dataCount"
+          :page-size="searchForm.pageSize"
+          @on-change="changePage"
+          @on-page-size-change="changePageSize"
+          show-total
+          :current="searchForm.pageNumber"/>
       </Row>
     </Card>
   </div>
@@ -149,10 +154,6 @@
         pwdValidate,
         pwdCheckValidate,
         showResetButton: false,
-        pageSize: 10,   // 每页显示多少条
-        dataCount: 0,   // 总条数
-        pageCurrent: 1, // 当前页
-        nowData: [],
         passwordType: 'text',
         checkPasswordType: 'text',
         loadingTable: true,
@@ -215,6 +216,15 @@
             width: 60,
             fixed: 'left',
             align: 'center'
+          },
+          {
+            type: 'index',
+            width: 70,
+            align: 'center',
+            fixed: 'left',
+            render: (h, params) => {
+              return h('span', params.index + (this.searchForm.pageNumber - 1) * this.searchForm.pageSize + 1);
+            }
           },
           {
             title: '姓名',
@@ -313,8 +323,11 @@
           username: '',
           department_id: '',
           group_id: '',
-          department_title: ''
+          department_title: '',
+          pageNumber: 1, // 当前页数
+          pageSize: 10, // 页面大小
         },
+        dataCount: 0,   // 总条数
         modalType: 0
       }
     },
@@ -471,28 +484,14 @@
           this.checkPasswordType = 'password';
         }
       },
-      changePage(index) {
-        //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
-        let _start = (index - 1) * this.pageSize;
-        //需要显示结束数据的index
-        let _end = index * this.pageSize;
-        //截取需要显示的数据
-        this.nowData = this.data.slice(_start, _end);
-        //储存当前页
-        this.pageCurrent = index;
+      changePage(v) {
+        this.searchForm.pageNumber = v;
+        this.getUserList();
       },
-      _nowPageSize(index) {
-        //实时获取当前需要显示的条数
-        this.pageSize = index;
-        this.loadingTable = true;
-        this.nowData = [];
-        for (let i = 0; i < this.pageSize; i++) {
-          if (this.data[i]) {
-            this.nowData.push(this.data[i]);
-          }
-        }
-        this.loadingTable = false;
-      },//删除
+      changePageSize(v) {
+        this.searchForm.pageSize = v;
+        this.getUserList();
+      },
       delAll() {
         if (this.selectCount <= 0) {
           this.$Message.warning("您还未选择要删除的数据");
@@ -526,18 +525,10 @@
       getUserList() {
         this.passwordType = this.checkPasswordType = 'text';
         this.loadingTable = true;
-        getUsers(this.searchForm).then((data) => {
-          this.data = data.result;
-          //分页显示所有数据总数
-          this.dataCount = this.data.length;
-          //循环展示页面刚加载时需要的数据条数
-          this.nowData = [];
-          for (let i = 0; i < this.pageSize; i++) {
-            if (this.data[i]) {
-              this.nowData.push(this.data[i]);
-            }
-          }
+        getUsers(this.searchForm).then(res => {
           this.loadingTable = false;
+          this.data = res.result;
+          this.dataCount = res.total;
         });
       },
       getDefaultRole() {
@@ -551,13 +542,10 @@
         });
       },
       handleResetSearch() {
-        this.searchForm = {
-          name: '',
-          username: '',
-          department_id: '',
-          department_title: '',
-          group_id: ''
-        };
+        this.$refs.searchForm.resetFields();
+        this.dataCount = 0;
+        this.searchForm.pageNumber = 1;
+        this.searchForm.pageSize = 10;
         this.getUserList();
       },
       dropDown() {

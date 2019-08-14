@@ -24,23 +24,10 @@ class RegistController extends Controller
      */
     public function getUsers(Request $request)
     {
-        $params = $request->input();
-        $query = DB::table('users')
-            ->select('id', 'name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id', 'office', 'phone');
+        $params = $countParams = $request->input();
+        unset($countParams['pageNumber'], $countParams['pageSize']);
+        $data = $this->getUsersByParams($params)->get()->toArray();
 
-        if ($params['department_id']) {
-            $query = $query->where('department_id', $params['department_id']);
-        }
-        if ($params['username']) {
-            $query = $query->where('username', 'like', '%' . $params['username'] . '%');
-        }
-        if ($params['name']) {
-            $query = $query->where('name', 'like', '%' . $params['name'] . '%');
-        }
-        if ($params['group_id']&&$params['group_id']!=-1) {
-            $query = $query->where('group_id', $params['group_id']);
-        }
-        $data = $query->get()->toArray();
         $office = Dict::getOptionsArrByName('职位');
         foreach ($data as $k => $row) {
             $data[$k]['department_title'] = isset($row['department_id'])
@@ -54,7 +41,35 @@ class RegistController extends Controller
             $data[$k]['office_name'] = isset($row['office']) ? $office[$row['office']] : '无';
         }
 
-        return response()->json(['result' => $data], 200);
+        $count = $this->getUsersByParams($countParams)->count();
+
+        return response()->json(['result' => $data, 'total' => $count], 200);
+    }
+
+    public function getUsersByParams($params)
+    {
+        $query = DB::table('users')
+            ->select('id', 'name', 'username', 'email', 'created_at', 'department_id', 'last_login', 'group_id', 'office', 'phone');
+
+        if ($params['department_id']) {
+            $query = $query->where('department_id', $params['department_id']);
+        }
+        if ($params['username']) {
+            $query = $query->where('username', 'like', '%' . $params['username'] . '%');
+        }
+        if ($params['name']) {
+            $query = $query->where('name', 'like', '%' . $params['name'] . '%');
+        }
+        if ($params['group_id'] && $params['group_id'] != -1) {
+            $query = $query->where('group_id', $params['group_id']);
+        }
+        if (isset($params['pageNumber']) && isset($params['pageSize'])) {
+            $query
+                ->limit($params['pageSize'])
+                ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
+        }
+
+        return $query;
     }
 
     /**
