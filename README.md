@@ -54,12 +54,15 @@ npm run prod
 ```
 
 #### 登录
-```bash
-用户名：admin
-密码：admin
-```
+
+- [ ] 使用完全前后台分离模式
+- [ ] 前台基于ant-design-pro-vue重构
+- [ ] 后台基于Laravel 5.8重构
+- [ ] GraphQL实践
 
 #### 更多截图
 
 https://github.com/leslieeilsel/Laravue/tree/master/storage/screenshot
 
+
+#### TODO
