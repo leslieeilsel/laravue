@@ -590,7 +590,7 @@ class ProjectController extends Controller
                 $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             }
             if (isset($params['projectSchedule']) && $params['projectSchedule']) {
-                $projects[$k]['scheduleInfo'] = $projectSchedule->where('project_id', 90)->sortByDesc('id')->first();
+                $projects[$k]['scheduleInfo'] = $projectSchedule->where('project_id', $row['id'])->sortByDesc('id')->first();
             }
         }
 
