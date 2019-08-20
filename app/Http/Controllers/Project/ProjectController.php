@@ -575,6 +575,7 @@ class ProjectController extends Controller
             }
             $projectSchedule = Cache::get('projectScheduleCache');
         }
+        $users = User::all();
         foreach ($projects as $k => $row) {
             $projects[$k]['amount'] = number_format($row['amount'], 2);
             $projects[$k]['land_amount'] = isset($row['land_amount']) ? number_format($row['land_amount'], 2) : '';
@@ -584,8 +585,11 @@ class ProjectController extends Controller
             $projects[$k]['money_from'] = $money_from[$row['money_from']];
             $projects[$k]['build_type'] = $build_type[$row['build_type']];
             $projects[$k]['nep_type'] = isset($row['nep_type']) ? $nep_type[$row['nep_type']] : '';
-            $department = $this->departmentCache->where('id', $this->department_id)->first();
+
+            $user = $users->where('id', $row['user_id'])->first()->toArray();
+            $department = $this->departmentCache->where('id', $user['department_id'])->first();
             $projects[$k]['unit'] = $department['title'];
+
             if (isset($params['projectPlan']) && $params['projectPlan']) {
                 $projects[$k]['projectPlan'] = $this->getPlanData($row['id'], 'preview');
             }
@@ -897,7 +901,7 @@ class ProjectController extends Controller
         $params = $countParams = $request->all();
         unset($countParams['pageNumber'], $countParams['pageSize']);
         $result = $this->projectProgressM($params);
-        $ProjectSchedules = $result->orderBy('is_audit', 'desc')->get()->toArray();
+        $ProjectSchedules = $result->orderBy('is_audit', 'desc')->orderBy('month', 'desc')->get()->toArray();
         $projectProgressCount = $this->projectProgressM($countParams)->count();
         $users = User::all();
         foreach ($ProjectSchedules as $k => $row) {
@@ -913,7 +917,7 @@ class ProjectController extends Controller
             $ProjectSchedules[$k]['plan_build_start_at'] = $Projects['plan_start_at'];
             $user = $users->where('id', $row['user_id'])->first()->toArray();
             $ProjectSchedules[$k]['tianbao_name'] = $user['name'];
-            $department = $this->departmentCache->where('id', $this->department_id)->first();
+            $department = $this->departmentCache->where('id', $user['department_id'])->first();
             $ProjectSchedules[$k]['department'] = $department['title'];
             $year = date('Y', strtotime($row['month']));
             $ProjectPlans = ProjectPlan::where('project_id', $row['project_id'])->where('date', $year)->first();
