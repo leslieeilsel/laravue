@@ -430,6 +430,7 @@ class LedgerController extends Controller
                 $projectSch = ProjectSchedule::where('project_id', $row['id'])->where('month', $end_at)->where('is_audit', 1)->orderBy('id', 'desc')->get()->toArray();
                 if (count($projectSch) <= 0) {
                     $projectSch = ProjectSchedule::where('project_id', $row['id'])->where('is_audit', 1)->orderBy('id', 'desc')->get()->toArray();
+                    $projectSch[0]['month_act_complete']=0;
                 }
                 if (count($projectSch) > 0) {
                     $data[$k] = $projectSch[0];
