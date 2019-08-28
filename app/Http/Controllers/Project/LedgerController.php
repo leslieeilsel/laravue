@@ -519,12 +519,12 @@ class LedgerController extends Controller
         $num = 5;
         $total_investors = 0;
         $plan_investors = 0;
+        $money_from = Dict::getOptionsArrByName('资金来源');
         foreach ($data as $i => $it) {
             $amount = $it['amount'];
             $plan_data = ProjectPlan::where('project_id', $it['project_id'])->where('date', date('Y'))->first();
             $total_investors = $total_investors + $amount;
             $plan_investors = $plan_investors + $plan_data['amount'];
-            $money_from = Dict::getOptionsByName('资金来源');
             $spreadsheet->getActiveSheet()->setCellValue('A' . $num, $i + 1);
             $spreadsheet->getActiveSheet()->setCellValue('B' . $num, $it['project_title']);
             $spreadsheet->getActiveSheet()->setCellValue('C' . $num, $it['subject']);
@@ -557,7 +557,7 @@ class LedgerController extends Controller
             $spreadsheet->getActiveSheet()->setCellValue('L' . $num, $it['problem']);
             $spreadsheet->getActiveSheet()->setCellValue('M' . $num, $it['plan_build_start_at']);
             $spreadsheet->getActiveSheet()->setCellValue('N' . $num, $it['exp_preforma']);
-            $spreadsheet->getActiveSheet()->setCellValue('O' . $num, $money_from[$it['money_from']]['title']);
+            $spreadsheet->getActiveSheet()->setCellValue('O' . $num, $money_from[$it['money_from']]);
             $spreadsheet->getActiveSheet()->setCellValue('P' . $num, $it['project_title']);
             $spreadsheet->getActiveSheet()->setCellValue('Q' . $num, $it['marker']);
             $num++;
