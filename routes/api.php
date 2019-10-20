@@ -36,12 +36,12 @@ Route::get('department/getAllDepartment', 'System\DepartmentController@getAllDep
 Route::post('department/addDepartment', 'System\DepartmentController@add');
 Route::post('department/editDepartment', 'System\DepartmentController@edit');
 
-Route::get('project/getByParentId/{id}', 'Project\ProjectController@getByParentId');
-Route::get('project/getAllWarning', 'Project\ProjectController@getAllWarning');
-Route::get('project/getAllDepartment', 'Project\ProjectController@getAllDepartment');
-Route::post('project/addDepartment', 'Project\ProjectController@add');
-Route::post('project/editDepartment', 'Project\ProjectController@edit');
-Route::post('project/deleteProject', 'Project\ProjectController@delete');
+Route::post('value/valueIntegralList', 'Integral\IntegralController@valueIntegralList');
+Route::post('value/salesDataList', 'Integral\IntegralController@salesDataList');
+Route::post('value/areaMeritsAimList', 'Integral\IntegralController@areaMeritsAimList');
+Route::post('value/salesDataAdd', 'Integral\IntegralController@salesDataAdd');
+Route::post('value/areaMeritsAimAdd', 'Integral\IntegralController@areaMeritsAimAdd');
+Route::post('value/dictData', 'Integral\IntegralController@dictData');
 
 Route::get('dict/dicts', 'System\DictController@dicts');
 Route::post('dict/addDict', 'System\DictController@addDict');
