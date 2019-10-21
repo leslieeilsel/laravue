@@ -24,7 +24,7 @@
               <span>忘记密码</span>
             </router-link>
           </FormItem>
-          <div ref="vaptcha" class="bottom" style="width: 368px;height: 40px">
+          <!-- <div ref="vaptcha" class="bottom" style="width: 368px;height: 40px">
             <div class="vaptcha-init-main">
               <div class="vaptcha-init-loading">
                 <a href="https://www.vaptcha.com/" target="_blank">
@@ -33,7 +33,7 @@
                 <span class="vaptcha-text">Vaptcha启动中...</span>
               </div>
             </div>
-          </div>
+          </div> -->
           <FormItem class="bottom">
             <Button type="primary" @click="submit('form')" :disabled="disabled" id="loginButton"
                     size="large" long :loading="loading">登录
@@ -80,14 +80,14 @@
     name: "index",
     data() {
       return {
-        disabled: true,
+        disabled: false,
         loading: false,
         form: {
           email: '',
           password: '',
           remember: false
         },
-        vaptchaObj: {},
+        // vaptchaObj: {},
         ruleInline: {
           email: [
             {required: true, message: '请填写用户名', trigger: 'blur'},
@@ -99,30 +99,30 @@
       }
     },
     methods: {
-      loadV2Script() {
-        if (typeof window.vaptcha === 'function') { //如果已经加载就直接放回
-          return Promise.resolve()
-        } else {
-          return new Promise(resolve => {
-            let script = document.createElement('script');
-            script.src = 'https://cdn.vaptcha.com/v2.js';
-            script.async = true;
-            script.onload = script.onreadystatechange = function () {
-              if (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
-                resolve();
-                script.onload = script.onreadystatechange = null
-              }
-            };
-            document.getElementsByTagName("head")[0].appendChild(script)
-          })
-        }
-      },
+      // loadV2Script() {
+      //   if (typeof window.vaptcha === 'function') { //如果已经加载就直接放回
+      //     return Promise.resolve()
+      //   } else {
+      //     return new Promise(resolve => {
+      //       let script = document.createElement('script');
+      //       script.src = 'https://cdn.vaptcha.com/v2.js';
+      //       script.async = true;
+      //       script.onload = script.onreadystatechange = function () {
+      //         if (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
+      //           resolve();
+      //           script.onload = script.onreadystatechange = null
+      //         }
+      //       };
+      //       document.getElementsByTagName("head")[0].appendChild(script)
+      //     })
+      //   }
+      // },
       submit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.loading = true;
             this.$store.dispatch('login', this.form).then((res) => {
-              this.vaptchaObj.reset(); //重置验证码
+              // this.vaptchaObj.reset(); //重置验证码
               this.loading = false;
               this.$router.push({name: 'home'})
             });
@@ -131,22 +131,22 @@
       }
     },
     mounted() {
-      let config = extend({
-        vid: '5bffa64bfc650eb8507698ed',
-        container: this.$refs.vaptcha,
-        style: this.vpStyle
-      }, this.$props);
-      this.loadV2Script().then(() => {
-        window.vaptcha(config).then(obj => {
-          this.$emit('input', obj);
-          let _this = this;
-          _this.vaptchaObj = obj;
-          obj.listen('pass', function () {
-            _this.disabled = false;
-          });
-          obj.render()
-        })
-      })
+      // let config = extend({
+      //   vid: '5bffa64bfc650eb8507698ed',
+      //   container: this.$refs.vaptcha,
+      //   style: this.vpStyle
+      // }, this.$props);
+      // this.loadV2Script().then(() => {
+      //   window.vaptcha(config).then(obj => {
+      //     this.$emit('input', obj);
+      //     let _this = this;
+      //     _this.vaptchaObj = obj;
+      //     obj.listen('pass', function () {
+      //       _this.disabled = false;
+      //     });
+      //     obj.render()
+      //   })
+      // })
     }
   }
 </script>
