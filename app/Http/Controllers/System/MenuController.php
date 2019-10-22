@@ -127,7 +127,7 @@ class MenuController
 
     public function buildRouter($menuIds)
     {
-        $menus = Menu::whereIn('id', $menuIds)->where('enabled', 1)->get()->toArray();
+        $menus = Menu::whereIn('id', $menuIds)->where('enabled', 1)->orderBy('sort')->get()->toArray();
         $data = [];
         foreach ($menus as $k => $v) {
             if ($v['parent_id'] === 0) {
