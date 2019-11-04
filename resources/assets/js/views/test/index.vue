@@ -1,6 +1,6 @@
 <template>
   <div>
-    <test-video-player style="width: 100%;height: 100%;" :options="videoOptions"></test-video-player>
+    <test-video-player style="width: 50%;height: 50%;" :options="videoOptions"></test-video-player>
   </div>
 </template>
 
@@ -35,8 +35,8 @@
           // poster: "./fx1.png", //你的封面地址
           // width: document.documentElement.clientWidth,
           // height: 100,
-          width:200,
-          height:200,
+          // width:200,
+          // height:200,
         }
       };
     }
@@ -49,5 +49,9 @@
 }
 .video-js.vjs-playing .vjs-tech {
     pointer-events: auto;
+}
+.video-js .vjs-big-play-button{
+    top: 50%;
+    left: 50%;
 }
 </style>
