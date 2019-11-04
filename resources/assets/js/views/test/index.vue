@@ -28,15 +28,15 @@
           sources: [
             {
               src:
-                "rtmp://125.76.229.16:1936/live/pag/125.76.229.16/7302/025055/0/MAIN/TCP",
+                "rtmp://125.76.229.16:1936/live/pag/125.76.229.16/7302/022723/0/MAIN/TCP",
               type: "rtmp/mp4"
             }
           ],
           // poster: "./fx1.png", //你的封面地址
           // width: document.documentElement.clientWidth,
           // height: 300,
-          width:'200px',
-          height:'100px',
+          // width:'200px',
+          // height:'100px',
         }
       };
     }
