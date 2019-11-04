@@ -1,6 +1,6 @@
 <template>
   <div>
-    <test-video-player style="width: 50%;height: 50%;" :options="videoOptions"></test-video-player>
+    <test-video-player style="width: 95%;height: 95%;" :options="videoOptions"></test-video-player>
   </div>
 </template>
 
@@ -33,25 +33,16 @@
             }
           ],
           // poster: "./fx1.png", //你的封面地址
-          // width: document.documentElement.clientWidth,
-          // height: 100,
-          // width:200,
-          // height:200,
+          controlBar: {
+            timeDivider: true,
+            durationDisplay: true,
+            remainingTimeDisplay: false,
+            fullscreenToggle: true  //全屏按钮
+          }
         }
       };
     }
   };
   </script>
-<style lang="stylus" scoped>
-.vjs-paused .vjs-big-play-button,
-.vjs-paused.vjs-has-started .vjs-big-play-button {
-    display: block;
-}
-.video-js.vjs-playing .vjs-tech {
-    pointer-events: auto;
-}
-.video-js .vjs-big-play-button{
-    top: 50%;
-    left: 50%;
-}
+<style scoped>
 </style>
