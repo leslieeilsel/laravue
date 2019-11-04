@@ -13,6 +13,13 @@ import 'iview/dist/styles/iview.css'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+import VideoPlayer from 'vue-video-player'
+// require('videojs-flash')
+// import 'videojs-flash'
+Vue.use(VideoPlayer)
+ 
 Vue.use(iView);
 Vue.use(Antd);
 const app = new Vue({
