@@ -128,6 +128,11 @@ class IntegralController extends Controller
         $data=$data->where('is_new_user',1)->orWhereIn('project_type',[4,5,6])->get()->toArray();
         $count = DB::table('integral')->count();
         $project_type_v = Dict::getOptionsArrByName('产品类型(价值)');
+        $project_type_vs=[];
+        $p=4;
+        foreach($project_type_v as $k=>$v){
+            $project_type_vs[$k+$p]=$v;
+        }
         $project_type_d = Dict::getOptionsArrByName('产品类型(发展)');
         $business_type = Dict::getOptionsArrByName('业务类型');
         $is_new_user = Dict::getOptionsArrByName('是否新用户');
