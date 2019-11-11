@@ -1,7 +1,7 @@
 <template>
   <Card>
     <p class="btnGroup">
-      <Button type="primary" @click="modal = true" icon="md-add">片区目标填报</Button>
+      <Button type="primary" @click="modal = true" icon="md-add">活动执行填报</Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Row type="flex" justify="end" class="page">
@@ -20,48 +20,57 @@
       @on-cancel="cancel"
       :styles="{top: '20px'}"
       width="850"
-      title="销售填报">
+      title="活动执行填报">
       <Form ref="form" :model="form" :label-width="160">
         <Row>
           <Col span="12">
-            <FormItem label="目标责任部门" prop="duty_department">
-              <Input v-model="form.duty_department" placeholder="" ></Input>
+            <FormItem label="活动名称" prop="name">
+              <Input v-model="form.name" placeholder=""></Input>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="目标责任人" prop="duty_user">
-              <Input v-model="form.duty_user" placeholder="" ></Input>
+            <FormItem label="活动位置" prop="position">
+              <Input v-model="form.position" placeholder=""></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
-            <FormItem label="目标时间" prop="target_time">
+            <FormItem label="区域" prop="area">
+              <Input v-model="form.area" placeholder=""></Input>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="负责人" prop="applicant">
+              <Input v-model="form.applicant" placeholder=""></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <FormItem label="活动时间" prop="date_time">
               <DatePicker type="date" placeholder="请选择"
-                          v-model="form.target_time"></DatePicker>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="业务类型" prop="business_type">
-              <Select v-model="form.business_type" filterable>
-                <Option v-for="item in dict.business_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
+                          v-model="form.date_time"></DatePicker>
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col span="12">
-            <FormItem label="产品类型" prop="product_type">
-              <Select v-model="form.product_type" filterable>
-                <Option v-for="item in dict.product_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="销售目标" prop="target">
-              <Input v-model="form.target" type="textarea" :rows="3" placeholder="请输入..."></Input>
-            </FormItem>
-          </Col>
+          <FormItem label="图片" prop="pic">
+            <Upload
+              ref="upload"
+              :disabled="upbtnPicDisabled"
+              name="pic"
+              :on-success="handleSuccessPic"
+              multiple
+              :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
+              :max-size="600"
+              :on-format-error="handleFormatError"
+              :on-exceeded-size="handleMaxSize"
+              action="/api/value/uploadPic">
+              <Button icon="ios-cloud-upload-outline">上传</Button>
+              <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
+            </Upload>
+          </FormItem>
         </Row>
       </Form>
       <div slot="footer">
@@ -79,11 +88,10 @@
 </template>
 <script>
   import {
-    areaMeritsAimAdd,
-    areaMeritsAimList,
-    dictData
+    activityImplementAdd,
+    activityImplement
   } from '../../../api/value';
-  import './areaMeritsAim.css'
+  import './activityImplement.css'
 
   export default {
     data() {
@@ -100,78 +108,71 @@
             }
           },
           {
-            title: '目标责任部门',
-            key: 'duty_department',
-            width: 200,
+            title: '活动名称',
+            key: 'name',
+            width: 100,
             // fixed: 'left',
             align: "center"
           },
           {
-            title: '目标责任人',
-            key: 'duty_user',
+            title: '活动位置',
+            key: 'position',
             // fixed: 'left',
             width: 220,
           },
           {
-            title: '目标时间',
-            key: 'target_time',
-            width: 240,
+            title: '区域',
+            key: 'area',
+            width: 100,
             align: 'left'
           },
           {
-            title: '业务类型',
-            key: 'business_type',
+            title: '负责人',
+            key: 'applicant',
             width: 100,
             align: "center"
           },
           {
-            title: '产品类型',
-            key: 'product_type',
+            title: '活动时间',
+            key: 'date_time',
             width: 200,
             align: "left"
           },
           {
-            title: '销售目标',
-            key: 'target',
-            width: 100,
-            align: "right"
+            title: '图片',
+            key: 'pic',
+            width: 200,
+            align: "left"
           }
         ],
         data: [],
         tableLoading: true,
         loading: false,
-        modal: false,
         searchForm: {
           pageNumber: 1, // 当前页数
           pageSize: 10, // 页面大小
         },
         submitLoading: false,
+        upbtnPicDisabled:false,
+        loading:true,
+        modal: false,
         form: {
-          duty_department: '',
-          duty_user: '',
-          target_time: '',
-          product_type: '',
-          target: '',
-          business_type: '',
-        },
-        dictName: {
-          product_type: '产品类型',
-          business_type: '业务类型',
-        },
-        dict: {
-          product_type: [],
-          business_type: []
+          name: '',
+          position: '',
+          area: '',
+          applicant: '',
+          date_time: '',
+          pic: '',
         }
       }
     },
     methods: {
       init() {
-        this.getAreaMeritsAimList();
-        this.getDictData();
+        this.getActivityImplement();
       },
-      getAreaMeritsAimList() {
+      getActivityImplement() {
         this.tableLoading = true;
-        areaMeritsAimList(this.searchForm).then(res => {
+        activityImplement(this.searchForm).then(res => {
           this.tableLoading = false;
           this.data = res.result;
           this.dataCount = res.total;
@@ -181,11 +182,11 @@
       },
       changePage(v) {
         this.searchForm.pageNumber = v;
-        this.getAreaMeritsAimList();
+        this.getSalesDataList();
       },
       changePageSize(v) {
         this.searchForm.pageSize = v;
-        this.getAreaMeritsAimList();
+        this.getSalesDataList();
       },
       handleReset(name) {
         this.$refs[name].resetFields();
@@ -195,14 +196,14 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.submitLoading = true;
-            areaMeritsAimAdd(this.form).then(res => {
+            activityImplementAdd(this.form).then(res => {
               this.submitLoading = false;
               if (res.result) {
-                this.$Message.success("片区目标填报成功");
+                this.$Message.success("活动执行填报成功");
                 this.modal = false;
                 this.init();
               } else {
-                this.$Message.error('片区目标填报失败!');
+                this.$Message.error('活动执行填报失败!');
               }
             });
           }
@@ -215,12 +216,23 @@
       handleClearFiles() {
         this.$refs.upload.clearFiles();
       },
-      getDictData() {
-        dictData(this.dictName).then(res => {
-          console.log(res);
-          if (res.result) {
-            this.dict = res.result;
-          }
+      handleSuccessPic(res, file) {
+        if (this.form.pic) {
+          this.form.pic = this.form.pic + ',' + res.result;
+        } else {
+          this.form.pic = res.result;
+        }
+      },
+      handleFormatError(file) {
+        this.$Notice.warning({
+          title: '文件格式不正确',
+          desc: '文件格式不正确，请选择JPG或PNG'
+        });
+      },
+      handleMaxSize(file) {
+        this.$Notice.warning({
+          title: '超出文件大小限制',
+          desc: '文件太大，不能超过600KB'
         });
       }
     },

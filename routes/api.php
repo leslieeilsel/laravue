@@ -42,6 +42,15 @@ Route::post('value/areaMeritsAimList', 'Integral\IntegralController@areaMeritsAi
 Route::post('value/salesDataAdd', 'Integral\IntegralController@salesDataAdd');
 Route::post('value/areaMeritsAimAdd', 'Integral\IntegralController@areaMeritsAimAdd');
 Route::post('value/dictData', 'Integral\IntegralController@dictData');
+Route::post('value/importIntegral', 'Integral\IntegralController@importIntegral');
+Route::post('value/importValueIntegral', 'Integral\IntegralController@importValueIntegral');
+Route::post('value/activityPlan', 'Integral\IntegralController@activityPlan');
+Route::post('value/activityPlanAdd', 'Integral\IntegralController@activityPlanAdd');
+Route::post('value/activityImplement', 'Integral\IntegralController@activityImplement');
+Route::post('value/activityImplementAdd', 'Integral\IntegralController@activityImplementAdd');
+Route::post('value/departmentList', 'Integral\IntegralController@departmentList');
+Route::post('value/departmentInfo', 'Integral\IntegralController@departmentInfo');
+Route::post('value/videoPatrolAdd', 'Integral\IntegralController@videoPatrolAdd');
 
 Route::get('dict/dicts', 'System\DictController@dicts');
 Route::post('dict/addDict', 'System\DictController@addDict');

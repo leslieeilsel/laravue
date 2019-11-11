@@ -1,7 +1,7 @@
 <template>
   <Card>
     <p class="btnGroup">
-      <Button type="primary" @click="modal = true" icon="md-add">片区目标填报</Button>
+      <Button type="primary" @click="modal = true" icon="md-add">服务信息填报</Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Row type="flex" justify="end" class="page">
@@ -20,48 +20,66 @@
       @on-cancel="cancel"
       :styles="{top: '20px'}"
       width="850"
-      title="销售填报">
+      title="服务信息填报">
       <Form ref="form" :model="form" :label-width="160">
         <Row>
           <Col span="12">
-            <FormItem label="目标责任部门" prop="duty_department">
-              <Input v-model="form.duty_department" placeholder="" ></Input>
+            <FormItem label="用户名" prop="ename">
+              <Input v-model="form.ename" placeholder=""></Input>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="目标责任人" prop="duty_user">
-              <Input v-model="form.duty_user" placeholder="" ></Input>
+            <FormItem label="工号" prop="job_num">
+              <Input v-model="form.mobile" placeholder=""></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="12">
-            <FormItem label="目标时间" prop="target_time">
-              <DatePicker type="date" placeholder="请选择"
-                          v-model="form.target_time"></DatePicker>
+            <FormItem label="设备号" prop="device_num">
+              <Input v-model="form.device_num" placeholder=""></Input>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="业务类型" prop="business_type">
-              <Select v-model="form.business_type" filterable>
-                <Option v-for="item in dict.business_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
+            <FormItem label="区域" prop="area">
+              <Input v-model="form.area" placeholder=""></Input>
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col span="12">
-            <FormItem label="产品类型" prop="product_type">
-              <Select v-model="form.product_type" filterable>
-                <Option v-for="item in dict.product_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="销售目标" prop="target">
-              <Input v-model="form.target" type="textarea" :rows="3" placeholder="请输入..."></Input>
-            </FormItem>
-          </Col>
+          <FormItem label="图片" prop="pic">
+            <Upload
+              ref="upload"
+              :disabled="upbtnPicDisabled"
+              name="pic"
+              :on-success="handleSuccessPic"
+              multiple
+              :data="upData"
+              :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
+              :max-size="600"
+              :on-format-error="handleFormatError"
+              :on-exceeded-size="handleMaxSize"
+              action="/api/value/uploadPic">
+              <Button icon="ios-cloud-upload-outline">上传</Button>
+              <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
+            </Upload>
+          </FormItem>
+        </Row>
+        <Row>
+          <FormItem label="视频" prop="video">
+            <Upload
+              ref="upload"
+              :disabled="upbtnVideoDisabled"
+              name="video"
+              :on-success="handleSuccessVideo"
+              multiple
+              :data="upData"
+              :format="['mp4']"
+              :on-format-error="handleFormatError"
+              action="/api/value/uploadVideo">
+              <Button icon="ios-cloud-upload-outline">上传</Button>
+            </Upload>
+          </FormItem>
         </Row>
       </Form>
       <div slot="footer">
@@ -79,11 +97,10 @@
 </template>
 <script>
   import {
-    areaMeritsAimAdd,
-    areaMeritsAimList,
-    dictData
+    salesDataAdd,
+    salesDataList,dictData
   } from '../../../api/value';
-  import './areaMeritsAim.css'
+  import './superviseService.css'
 
   export default {
     data() {
@@ -100,39 +117,39 @@
             }
           },
           {
-            title: '目标责任部门',
-            key: 'duty_department',
-            width: 200,
+            title: '用户名',
+            key: 'ename',
+            width: 100,
             // fixed: 'left',
             align: "center"
           },
           {
-            title: '目标责任人',
-            key: 'duty_user',
+            title: '工号',
+            key: 'job_num',
             // fixed: 'left',
             width: 220,
           },
           {
-            title: '目标时间',
-            key: 'target_time',
-            width: 240,
+            title: '设备号',
+            key: 'device_num',
+            width: 100,
             align: 'left'
           },
           {
-            title: '业务类型',
-            key: 'business_type',
+            title: '区域',
+            key: 'area',
             width: 100,
             align: "center"
           },
           {
-            title: '产品类型',
-            key: 'product_type',
+            title: '图片',
+            key: 'pic',
             width: 200,
             align: "left"
           },
           {
-            title: '销售目标',
-            key: 'target',
+            title: '视频',
+            key: 'video',
             width: 100,
             align: "right"
           }
@@ -140,38 +157,47 @@
         data: [],
         tableLoading: true,
         loading: false,
-        modal: false,
         searchForm: {
           pageNumber: 1, // 当前页数
           pageSize: 10, // 页面大小
         },
         submitLoading: false,
+        loading:true,
+        modal: false,
         form: {
-          duty_department: '',
-          duty_user: '',
-          target_time: '',
-          product_type: '',
-          target: '',
-          business_type: '',
+          ename: '',
+          job_num: '',
+          device_num: '',
+          area: '',
+          integral: '',
+          area: '',
+          pic: '',
+          video: ''
         },
         dictName: {
           product_type: '产品类型',
           business_type: '业务类型',
+          meal: '套餐',
+          is_new_user: '是否新用户'
         },
         dict: {
           product_type: [],
-          business_type: []
-        }
+          business_type: [],
+          meal: [],
+          is_new_user: []
+        },
+        upbtnPicDisabled: false,
+        upbtnVideoDisabled: false,
       }
     },
     methods: {
       init() {
-        this.getAreaMeritsAimList();
+        this.getSalesDataList();
         this.getDictData();
       },
-      getAreaMeritsAimList() {
+      getSalesDataList() {
         this.tableLoading = true;
-        areaMeritsAimList(this.searchForm).then(res => {
+        salesDataList(this.searchForm).then(res => {
           this.tableLoading = false;
           this.data = res.result;
           this.dataCount = res.total;
@@ -181,11 +207,11 @@
       },
       changePage(v) {
         this.searchForm.pageNumber = v;
-        this.getAreaMeritsAimList();
+        this.getSalesDataList();
       },
       changePageSize(v) {
         this.searchForm.pageSize = v;
-        this.getAreaMeritsAimList();
+        this.getSalesDataList();
       },
       handleReset(name) {
         this.$refs[name].resetFields();
@@ -195,14 +221,14 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.submitLoading = true;
-            areaMeritsAimAdd(this.form).then(res => {
+            salesDataAdd(this.form).then(res => {
               this.submitLoading = false;
               if (res.result) {
-                this.$Message.success("片区目标填报成功");
+                this.$Message.success("服务信息填报成功");
                 this.modal = false;
                 this.init();
               } else {
-                this.$Message.error('片区目标填报失败!');
+                this.$Message.error('服务信息填报失败!');
               }
             });
           }
@@ -221,6 +247,32 @@
           if (res.result) {
             this.dict = res.result;
           }
+        });
+      },
+      handleSuccessPic(res, file) {
+        if (this.form.pic) {
+          this.form.pic = this.form.pic + ',' + res.result;
+        } else {
+          this.form.pic = res.result;
+        }
+      },
+      handleSuccessVideo(res, file) {
+        if (this.form.video) {
+          this.form.video = this.form.video + ',' + res.result;
+        } else {
+          this.form.video = res.result;
+        }
+      },
+      handleFormatError(file) {
+        this.$Notice.warning({
+          title: '文件格式不正确',
+          desc: '文件格式不正确，请选择JPG或PNG'
+        });
+      },
+      handleMaxSize(file) {
+        this.$Notice.warning({
+          title: '超出文件大小限制',
+          desc: '文件太大，不能超过600KB'
         });
       }
     },

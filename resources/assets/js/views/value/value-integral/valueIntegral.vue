@@ -1,5 +1,19 @@
 <template>
   <Card>
+    <p class="btnGroup">
+      <Upload 
+          style="display: inline-block;"
+          ref="upload"
+          name="import_file"
+          :on-success="handleSuccess"
+          multiple
+          :format="['xls', 'xlsx']"
+          :on-format-error="handleFormatError"
+          action="/api/value/importValueIntegral">
+          <Button type="primary" icon="ios-cloud-upload-outline">导入积分</Button>
+      </Upload>
+      <!-- <Button type="primary" @click="importIntegral" icon="md-add">导入积分</Button> -->
+    </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Row type="flex" justify="end" class="page">
       <Page
@@ -14,7 +28,7 @@
 </template>
 <script>
   import {
-    valueIntegralList
+    valueIntegralList,dictData
   } from '../../../api/value';
   import './valueIntegral.css'
 
@@ -33,120 +47,61 @@
             }
           },
           {
-            title: '省级',
-            key: 'province',
-            width: 100,
-            // fixed: 'left',
-            align: "center"
-          },
-          {
-            title: '本地网',
-            key: 'local_wifi',
+            title: '用户号码',
+            key: 'user_mobile',
             // fixed: 'left',
             width: 220,
           },
           {
-            title: '三级网格',
-            key: 'three_wifi',
+            title: '是否新用户',
+            key: 'is_new_user',
             width: 100,
             align: 'left'
           },
           {
-            title: 'OBU',
-            key: 'obu',
+            title: '产品类型',
+            key: 'project_type',
             width: 100,
             align: "center"
           },
           {
-            title: '六级网格',
-            key: 'six_wifi',
+            title: '终端类型',
+            key: 'terminal_type',
             width: 200,
             align: "left"
           },
           {
-            title: '用户发展-单移动',
-            key: 'u_single_move',
-            width: 100,
+            title: '业务类型',
+            key: 'business_type',
+            width: 200,
+            align: "left"
+          },
+          {
+            title: '套餐',
+            key: 'set_meal',
+            width: 300,
             align: "right"
           },
           {
-            title: '用户发展-单宽带',
-            key: 'u_single_wifi',
+            title: '积分',
+            key: 'int_num',
             width: 350
           },
           {
-            title: '用户发展-融合',
-            key: 'u_fuse',
+            title: '区域',
+            key: 'area',
             width: 180,
             align: "right"
           },
           {
-            title: '用户发展-政企类产品',
-            key: 'u_gover_products',
+            title: '填报人',
+            key: 'applicant',
             width: 350
           },
           {
-            title: '存量经营-价值提升',
-            key: 's_value',
+            title: '日期',
+            key: 'date_time',
             width: 180
-          },
-          {
-            title: '存量经营-续费续约',
-            key: 's_contract',
-            width: 200,
-            align: "left"
-          },
-          {
-            title: '存量经营-一般保有',
-            key: 's_preservat',
-            width: 100,
-            align: "right"
-          },
-          {
-            title: '收入贡献-单移动',
-            key: 'i_single_move',
-            width: 350
-          },
-          {
-            title: '收入贡献-单宽带',
-            key: 'i_single_wifi',
-            width: 180,
-            align: "right"
-          },
-          {
-            title: '收入贡献-融合',
-            key: 'i_fuse',
-            width: 350
-          },
-          {
-            title: '收入贡献-政企类产品',
-            key: 'i_gover',
-            width: 350
-          },
-          {
-            title: '服务积分-推广服务',
-            key: 'se_exten',
-            width: 350
-          },
-          {
-            title: '服务积分-新装服务',
-            key: 'se_new',
-            width: 350
-          },
-          {
-            title: '服务积分-变更服务',
-            key: 'se_change',
-            width: 350
-          },
-          {
-            title: '服务积分-畅享迁转',
-            key: 'se_migrat',
-            width: 350
-          },
-          {
-            title: '服务积分-缴费服务',
-            key: 'se_bill',
-            width: 350
           }
         ],
         data: [],
@@ -155,7 +110,9 @@
         searchForm: {
           pageNumber: 1, // 当前页数
           pageSize: 10, // 页面大小
-        }
+        },
+        submitLoading: false,
+        modal: false
       }
     },
     methods: {
@@ -179,6 +136,23 @@
       changePageSize(v) {
         this.searchForm.pageSize = v;
         this.getValueIntegralList();
+      },
+      handleClearFiles() {
+        this.$refs.upload.clearFiles();
+      },
+      handleSuccess(res, file) {
+        this.$Message.success("导入数据成功");
+        console.log(res);
+        
+      },
+      handleFormatError(file) {
+        this.$Notice.warning({
+          title: '文件格式不正确',
+          desc: '文件格式不正确，请选择xls或xlsx'
+        });
+      },
+      importIntegral(){
+
       }
     },
     mounted() {
