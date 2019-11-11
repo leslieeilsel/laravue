@@ -64,6 +64,11 @@ class IntegralController extends Controller
         $data=$data->where('is_new_user',0)->orWhereIn('project_type',[7,8,9])->get()->toArray();
         $count = DB::table('integral')->count();
         $project_type_v = Dict::getOptionsArrByName('产品类型(价值)');
+        $project_type_vs=[];
+        $p=4;
+        foreach($project_type_v as $k=>$v){
+            $project_type_vs[$k+$p]=$v;
+        }
         $project_type_d = Dict::getOptionsArrByName('产品类型(发展)');
         $business_type = Dict::getOptionsArrByName('业务类型');
         $is_new_user = Dict::getOptionsArrByName('是否新用户');
@@ -80,7 +85,7 @@ class IntegralController extends Controller
         foreach ($data as $k => $row) {
             $data[$k]['is_new_user'] = $is_new_user[$row['is_new_user']];
             if($row['is_new_user']===0){
-                $data[$k]['project_type']=$project_type_v[$row['project_type']];
+                $data[$k]['project_type']=$project_type_vs[$row['project_type']];
             }else{
                 $data[$k]['project_type']=$project_type_d[$row['project_type']];
             }
@@ -149,7 +154,7 @@ class IntegralController extends Controller
         foreach ($data as $k => $row) {
             $data[$k]['is_new_user'] = $is_new_user[$row['is_new_user']];
             if($row['is_new_user']===0){
-                $data[$k]['project_type']=$project_type_v[$row['project_type']];
+                $data[$k]['project_type']=$project_type_vs[$row['project_type']];
             }else{
                 $data[$k]['project_type']=$project_type_d[$row['project_type']];
             }
