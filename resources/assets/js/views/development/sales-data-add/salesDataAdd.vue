@@ -101,10 +101,10 @@
               </Select>
             </FormItem>
           </Col>
-          <Col span="1">&nbsp;</col>
+          <Col span="1">&nbsp;</Col>
           <Col span="3">
             <Button @click="del_set_meal(index)" type="primary" icon="md-remove"></Button>
-          </col>
+          </Col>
         </Row>
       </Form>
       <div slot="footer" class="footer_float">
