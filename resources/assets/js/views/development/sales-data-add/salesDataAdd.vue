@@ -147,8 +147,8 @@
           meal_info:''
         },
         dictName: {
-          project_type_v: '产品类型(价值)',
-          project_type_d: '产品类型(发展)',
+          project_type_v: '产品类型-价值',
+          project_type_d: '产品类型-发展',
           business_type: '业务类型',
           terminal_type:'终端类型',
           meal_type: '套餐',
