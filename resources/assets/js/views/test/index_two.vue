@@ -9,7 +9,7 @@
   import TestVideoPlayer from "../my-components/test-video-player";
   
   export default {
-    name: "dfgdfgdfg",
+    name: "sdd",
     components: {
         TestVideoPlayer
     },
@@ -27,8 +27,7 @@
           controls: true,
           sources: [
             {
-              src:
-                "rtmp://125.76.229.16:1936/live/pag/125.76.229.16/7302/022723/0/MAIN/TCP",
+              src:"rtmp://125.76.229.16:1936/live/pag/125.76.229.16/7302/022721/0/MAIN/TCP",
               type: "rtmp/mp4"
             }
           ],
