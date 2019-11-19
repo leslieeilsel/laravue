@@ -67,26 +67,6 @@
         </Row>
         <Row>
           <Col span="12">
-            <FormItem label="区域" prop="area">
-              <Input type="text" :rows="3" v-model="form.area" placeholder="请输入..."/>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="填报人" prop="applicant">
-              <Input v-model="form.applicant" type="text" :rows="3" placeholder="请输入..."></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="12">
-            <FormItem label="日期" prop="date_time">
-              <DatePicker type="date" placeholder="请选择"
-                          v-model="form.date_time"></DatePicker>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="12">
             <FormItem label="套餐类型" prop="meal_type">
               <Select v-model="form.meal_type" filterable  @on-change="changeMealType">
                 <Option v-for="item in dict.meal_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
@@ -171,7 +151,7 @@
             title: '是否新用户',
             key: 'is_new_user',
             width: 100,
-            align: 'left'
+            align: 'center'
           },
           {
             title: '产品类型',
@@ -183,40 +163,43 @@
             title: '终端类型',
             key: 'terminal_type',
             width: 200,
-            align: "left"
+            align: "center"
           },
           {
             title: '业务类型',
             key: 'business_type',
             width: 200,
-            align: "left"
+            align: "center"
           },
           {
             title: '套餐',
             key: 'set_meal',
             width: 300,
-            align: "right"
+            align: "center"
           },
           {
             title: '积分',
             key: 'int_num',
-            width: 350
+            width: 180,
+            align: "center"
           },
           {
             title: '区域',
             key: 'area',
             width: 180,
-            align: "right"
+            align: "center"
           },
           {
             title: '填报人',
             key: 'applicant',
-            width: 350
+            width: 180,
+            align: "center"
           },
           {
             title: '日期',
             key: 'date_time',
-            width: 180
+            width: 180,
+            align: "center"
           }
         ],
         data: [],
@@ -234,17 +217,14 @@
           is_new_user: '',
           business_type: '',
           int_num: '',
-          area: '',
-          applicant: '',
           project_type: '',
           meal: '',
-          date_time: '',
           meal_info:''
         },
         formValidate: {
           // 表单验证规则
           user_mobile: [
-            {required: true, message: "填报月份不能为空"}
+            {required: true, message: "用户号码不能为空"}
           ]
         },
         dictName: {
@@ -288,8 +268,8 @@
     },
     methods: {
       init() {
-        this.getSalesDataList();
         this.getDictData();
+        this.getSalesDataList();
       },
       getSalesDataList() {
         this.tableLoading = true;
@@ -314,8 +294,6 @@
       },
       handleSuccess(res, file) {
         this.$Message.success("导入数据成功");
-        console.log(res);
-        
       },
       handleFormatError(file) {
         this.$Notice.warning({
@@ -351,6 +329,7 @@
               if (res.result) {
                 this.$Message.success("销售数据填报成功");
                 this.modal = false;
+                this.getSalesDataList();
                 this.cancel();
                 this.lists=[];
               } else {

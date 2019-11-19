@@ -22,33 +22,53 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class IntegralController extends Controller
 {
-    public $seeIds;
+    public $user;
     public $office;
-    public $cache;
-    public function getSeeIds($userId)
-    {
-        if ($userId) {
-            $userInfo = User::where('ding_user_id',$userId)->first();
-            if($userInfo){
-                $roleId = $userInfo['group_id'];
-                $this->office = $userInfo['office'];
-                $dataType = Role::where('id', $roleId)->first()->data_type;
+    public $group_id;
+    public $department_id;
+    public $projectsCache;
+    public $projectPlanCache;
+    public $departmentCache;
 
-                if ($dataType === 0) {
-                    $userIds = User::all()->toArray();
-                    $this->seeIds = array_column($userIds, 'id');
-                }
-                if ($dataType === 1) {
-                    $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
-                    $departmentIds = array_column($departmentIds, 'department_id');
-                    $userIds = User::whereIn('department_id', $departmentIds)->get()->toArray();
-                    $this->seeIds = array_column($userIds, 'id');
-                }
-                if ($dataType === 2) { 
-                    $this->seeIds = [$userInfo['id']];
-                }
+    public function __construct()
+    {
+        if (Auth::check()) {
+            if (!Cache::has('departmentsCache')) {
+                Cache::put('departmentsCache', collect(Departments::all()->toArray()), 10080);
             }
+            $this->departmentCache = Cache::get('departmentsCache');
+
+            $this->user = Auth::user();
+            $this->office = $this->user->office;
+            $this->department_id = $this->user->department_id;
+            $this->group_id = $this->user->group_id;
         }
+    }
+
+    public function getSeeIds()
+    {
+        $seeIds = [];
+
+        $roleId = $this->group_id;
+        $userId = $this->user->id;
+        $users = User::all()->toArray();
+        // 数据权限类型
+        $dataType = Role::where('id', $roleId)->first()->data_type;
+
+        if ($dataType === 0) {
+            $seeIds = array_column($users, 'id');
+        }
+        if ($dataType === 1) {
+            $departmentIds = DB::table('iba_role_department')->where('role_id', $roleId)->get()->toArray();
+            $departmentIds = array_column($departmentIds, 'department_id');
+            $userIds = collect($users)->whereIn('department_id', $departmentIds)->all();
+            $seeIds = array_column($userIds, 'id');
+        }
+        if ($dataType === 2) {
+            $seeIds = [$userId];
+        }
+
+        return $seeIds;
     }
     //获取价值积分列表
     public function valueIntegralList(Request $request)
@@ -176,6 +196,11 @@ class IntegralController extends Controller
         $params['set_meal']=json_encode($params['meal_info']);
         unset($params['meal'],$params['meal_info'],$params['meal_type'],$params['integral']);
         $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
+        $users=$this->user->id;
+        $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
+        $params['area'] = $area;
+        $params['applicant'] = $users;
+        $params['date_time'] = date('Y-m-d');
         $id = DB::table('integral')->insertGetId($params);
 
         $result = $id ? true : false;
