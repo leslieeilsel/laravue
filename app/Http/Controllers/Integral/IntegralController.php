@@ -274,7 +274,7 @@ class IntegralController extends Controller
     }
     
     /**
-     * 获取项目库表单中的数据字典数据
+     * 获取项目库表单中的数据字典数据多个
      *
      * @param Request $request
      * @return array
@@ -283,7 +283,6 @@ class IntegralController extends Controller
     {
         $nameArr = $request->input('dictName');
         $result = Dict::getOptionsByNameArr($nameArr);
-
         return response()->json(['result' => $result], 200);
     }
     /**

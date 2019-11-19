@@ -39,7 +39,7 @@
           <Col span="12">
             <FormItem label="产品类型" prop="project_type">
               <Select v-model="form.project_type" filterable>
-                <Option v-for="item in dict.project_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+                <Option v-for="item in project_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -225,6 +225,21 @@
           // 表单验证规则
           user_mobile: [
             {required: true, message: "用户号码不能为空"}
+          ],
+          is_new_user: [
+            {required: true, message: "请选择是否新用户"}
+          ],
+          project_type: [
+            {required: true, message: "请选择产品类型"}
+          ],
+          terminal_type: [
+            {required: true, message: "请选择终端类型"}
+          ],
+          business_type: [
+            {required: true, message: "请选择业务类型"}
+          ],
+          int_num: [
+            {required: true, message: "请填写积分"}
           ]
         },
         dictName: {
@@ -246,7 +261,6 @@
         dict: {
           project_type_v:[],
           project_type_d:[],
-          project_type: [],
           business_type: [],
           terminal_type:[],
           meal_type: [],
@@ -260,10 +274,10 @@
           up_meal_1: [],
           up_meal_2: [],
           up_meal_3: [],
-          is_new_user: []
-          
+          is_new_user: [] 
         },
-        lists:[]
+        lists:[],
+        project_type: [],
       }
     },
     methods: {
@@ -383,12 +397,23 @@
         this.lists.splice(index,1);
       },
       changeUpNewUser(){
+        let project_type=[];
         if(this.form.is_new_user===0){
-          this.dict.project_type=this.dict.project_type_v;
+          for (let i in this.dict.project_type_v) {
+            if(i<6){
+              project_type.push(this.dict.project_type_v[i])
+            }
+          }
+          // .forEach(function(e){
+          //   project_type.push(e);
+          // })
         }else if(this.form.is_new_user===1){
-          this.dict.project_type=this.dict.project_type_d;
+          this.dict.project_type_d.forEach(function(e){
+            project_type.push(e);
+          })  
         }
-        console.log(this.dict.project_type);
+        this.project_type=project_type;
+        console.log(this.project_type);
       }
     },
     mounted() {
