@@ -50,16 +50,16 @@
           </Col>
         </Row>
         <Row>
-          <Col span="12">
+          <!-- <Col span="12">
             <FormItem label="产品类型" prop="product_type">
               <Select v-model="form.product_type" filterable>
                 <Option v-for="item in dict.product_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
-          </Col>
+          </Col> -->
           <Col span="12">
             <FormItem label="销售目标" prop="target">
-              <Input v-model="form.target" type="textarea" :rows="3" placeholder="请输入..."></Input>
+              <Input type="number" v-model="form.target"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -109,32 +109,26 @@
           {
             title: '目标责任人',
             key: 'duty_user',
-            // fixed: 'left',
+            fixed: 'center',
             width: 220,
           },
           {
             title: '目标时间',
             key: 'target_time',
             width: 240,
-            align: 'left'
+            align: 'center'
           },
           {
             title: '业务类型',
             key: 'business_type',
-            width: 100,
-            align: "center"
-          },
-          {
-            title: '产品类型',
-            key: 'product_type',
             width: 200,
-            align: "left"
+            align: "center"
           },
           {
             title: '销售目标',
             key: 'target',
-            width: 100,
-            align: "right"
+            width: 200,
+            align: "center"
           }
         ],
         data: [],
@@ -150,16 +144,16 @@
           duty_department: '',
           duty_user: '',
           target_time: '',
-          product_type: '',
+          // product_type: '',
           target: '',
           business_type: '',
         },
         dictName: {
-          product_type: '产品类型',
+          // product_type: '产品类型',
           business_type: '业务类型',
         },
         dict: {
-          product_type: [],
+          // product_type: [],
           business_type: []
         }
       }

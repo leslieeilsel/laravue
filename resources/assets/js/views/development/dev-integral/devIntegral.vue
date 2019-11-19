@@ -9,7 +9,7 @@
           multiple
           :format="['xls', 'xlsx']"
           :on-format-error="handleFormatError"
-          action="/api/value/importValueIntegral">
+          action="/api/value/importIntegral">
           <Button type="primary" icon="ios-cloud-upload-outline">导入积分</Button>
       </Upload>
       <!-- <Button type="primary" @click="importIntegral" icon="md-add">导入积分</Button> -->
@@ -28,9 +28,9 @@
 </template>
 <script>
   import {
-    valueIntegralList,dictData
+    devIntegralList,dictData
   } from '../../../api/value';
-  import './valueIntegral.css'
+  import './devIntegral.css'
 
   export default {
     data() {
@@ -83,19 +83,24 @@
             align: "right"
           },
           {
-            title: '价值提升',
-            key: 'stock_v_up',
+            title: '单移动',
+            key: 'u_single_move',
             width: 350
           },
           {
-            title: '续费续约  ',
-            key: 'stock_contract',
+            title: '单宽带',
+            key: 'u_single_wifi',
+            width: 350
+          },
+          {
+            title: '融合  ',
+            key: 'u_fuse',
             width: 180,
             align: "right"
           },
           {
-            title: '一般保有',
-            key: 'stock_tenure',
+            title: '政企类产品',
+            key: 'u_gover_products',
             width: 350
           },
           {
@@ -117,11 +122,11 @@
     },
     methods: {
       init() {
-        this.getValueIntegralList();
+        this.getDevIntegralList();
       },
-      getValueIntegralList() {
+      getDevIntegralList() {
         this.tableLoading = true;
-        valueIntegralList(this.searchForm).then(res => {
+        devIntegralList(this.searchForm).then(res => {
           this.tableLoading = false;
           this.data = res.result;
           this.dataCount = res.total;
@@ -131,11 +136,11 @@
       },
       changePage(v) {
         this.searchForm.pageNumber = v;
-        this.getValueIntegralList();
+        this.getDevIntegralList();
       },
       changePageSize(v) {
         this.searchForm.pageSize = v;
-        this.getValueIntegralList();
+        this.getDevIntegralList();
       },
       handleClearFiles() {
         this.$refs.upload.clearFiles();

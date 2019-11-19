@@ -11,6 +11,17 @@ export function valueIntegralList(form) {
   });
 }
 /**
+ * 发展积分列表
+ * @returns {*}
+ */
+export function devIntegralList(form) {
+  return request({
+    url: '/api/value/devIntegralList',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
  * 销售数据列表
  * @returns {*}
  */

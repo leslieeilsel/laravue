@@ -55,67 +55,30 @@ class IntegralController extends Controller
     {  
         $params =  $request->input();
 
-        $data = DB::table('integral');
+        $data = DB::table('import_value_integral');
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $data
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
-        $data=$data->where('is_new_user',0)->orWhereIn('project_type',[7,8,9])->get()->toArray();
-        $count = DB::table('integral')->count();
-        $project_type_v = Dict::getOptionsArrByName('产品类型价值');
-        $project_type_vs=[];
-        $p=4;
-        foreach($project_type_v as $k=>$v){
-            $project_type_vs[$k+$p]=$v;
-        }
-        $project_type_d = Dict::getOptionsArrByName('产品类型发展');
-        $business_type = Dict::getOptionsArrByName('业务类型');
-        $is_new_user = Dict::getOptionsArrByName('是否新用户');
-        $terminal_type = Dict::getOptionsArrByName('终端类型');
-        $set_meal = Dict::getOptionsArrByName('套餐');
-        $set_meal_0 = Dict::getOptionsArrByName('融合套餐');
-        $set_meal_1 = Dict::getOptionsArrByName('单卡套餐');
-        $set_meal_2 = Dict::getOptionsArrByName('智慧企业套餐');
-        $set_up_meal = Dict::getOptionsArrByName('升级套餐');
-        $set_up_meal_0 = Dict::getOptionsArrByName('智慧家庭升级包');
-        $set_up_meal_1 = Dict::getOptionsArrByName('5G升级包');
-        $set_up_meal_2 = Dict::getOptionsArrByName('加第二路宽带');
-        $set_up_meal_3 = Dict::getOptionsArrByName('加卡');
-        foreach ($data as $k => $row) {
-            $data[$k]['is_new_user'] = $is_new_user[$row['is_new_user']];
-            if($row['is_new_user']===0){
-                $data[$k]['project_type']=$project_type_vs[$row['project_type']];
-            }else{
-                $data[$k]['project_type']=$project_type_d[$row['project_type']];
-            }
-            $data[$k]['business_type'] = $business_type[$row['business_type']];
-            $data[$k]['terminal_type'] = $terminal_type[$row['terminal_type']];
+        $data=$data->orderBy('date_time','desc')->get()->toArray();
+        $count = DB::table('import_value_integral')->count();
 
-            $set_meal_arr=json_decode($row['set_meal'],true);
-            $set_meal_info='';
-            if($set_meal_arr['meal']['meal_type']===0){
-                $meal_type=$set_meal_0[$set_meal_arr['meal']['meal']];
-            }elseif($set_meal_arr['meal']['meal_type']===1){
-                $meal_type=$set_meal_1[$set_meal_arr['meal']['meal']];
-            }elseif($set_meal_arr['meal']['meal_type']===2){
-                $meal_type=$set_meal_2[$set_meal_arr['meal']['meal']];
-            }
-            $set_meal_info='套餐：'.$meal_type;
-            foreach($set_meal_arr['up_meal'] as $v){
-                if($v['meal_type']===0){
-                    $up_meal_type=$set_up_meal_0[$v['meal']];
-                }elseif($v['meal_type']===1){
-                    $up_meal_type=$set_up_meal_1[$v['meal']];
-                }elseif($v['meal_type']===2){
-                    $up_meal_type=$set_up_meal_2[$v['meal']];
-                }elseif($v['meal_type']===3){
-                    $up_meal_type=$set_up_meal_3[$v['meal']];
-                }
-                $set_meal_info=$set_meal_info.'、'.$up_meal_type;
-            }
-            $data[$k]['set_meal'] = $set_meal_info;
+        return response()->json(['result' => $data, 'total' => $count], 200);
+    }
+    //获取发展积分列表
+    public function devIntegralList(Request $request)
+    {  
+        $params =  $request->input();
+
+        $data = DB::table('import_development_integral');
+        if (isset($params['pageNumber']) && isset($params['pageSize'])) {
+            $data = $data
+                ->limit($params['pageSize'])
+                ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
+        $data=$data->orderBy('date_time','desc')->get()->toArray();
+        $count = DB::table('import_development_integral')->count();
 
         return response()->json(['result' => $data, 'total' => $count], 200);
     }
@@ -130,14 +93,9 @@ class IntegralController extends Controller
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
-        $data=$data->where('is_new_user',1)->orWhereIn('project_type',[4,5,6])->get()->toArray();
+        $data=$data->get()->toArray();
         $count = DB::table('integral')->count();
         $project_type_v = Dict::getOptionsArrByName('产品类型价值');
-        $project_type_vs=[];
-        $p=4;
-        foreach($project_type_v as $k=>$v){
-            $project_type_vs[$k+$p]=$v;
-        }
         $project_type_d = Dict::getOptionsArrByName('产品类型发展');
         $business_type = Dict::getOptionsArrByName('业务类型');
         $is_new_user = Dict::getOptionsArrByName('是否新用户');
@@ -154,7 +112,7 @@ class IntegralController extends Controller
         foreach ($data as $k => $row) {
             $data[$k]['is_new_user'] = $is_new_user[$row['is_new_user']];
             if($row['is_new_user']===0){
-                $data[$k]['project_type']=$project_type_vs[$row['project_type']];
+                $data[$k]['project_type']=$project_type_v[$row['project_type']];
             }else{
                 $data[$k]['project_type']=$project_type_d[$row['project_type']];
             }
@@ -201,11 +159,12 @@ class IntegralController extends Controller
         }
         $data=$data->get()->toArray();
         $count = DB::table('area_target')->count();
-        $product_type = Dict::getOptionsArrByName('产品类型');
+        // $product_type = Dict::getOptionsArrByName('产品类型');
         $business_type = Dict::getOptionsArrByName('业务类型');
         foreach ($data as $k => $row) {
-            $data[$k]['product_type'] = $product_type[$row['product_type']];
+            // $data[$k]['product_type'] = $product_type[$row['product_type']];
             $data[$k]['business_type'] = $business_type[$row['business_type']];
+            $data[$k]['target_time'] = date('Y-m-d',strtotime($row['target_time']));
         }
 
         return response()->json(['result' => $data, 'total' => $count], 200);
@@ -214,7 +173,6 @@ class IntegralController extends Controller
     public function salesDataAdd(Request $request)
     {
         $params =  $request->input();
-        // $params['set_meal']="'".json_encode($params['meal_info'])."'";
         $params['set_meal']=json_encode($params['meal_info']);
         unset($params['meal'],$params['meal_info'],$params['meal_type'],$params['integral']);
         $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
@@ -342,6 +300,7 @@ class IntegralController extends Controller
         $highestColumn = $worksheet->getHighestColumn(); // 总列数
         $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
         $data = [];
+        $ids='id: ';
         for ($row = 3; $row <= $highestRow; $row++) { // 从第几行开始读取
             $data[]=$row;
             $row_data = [];
@@ -357,8 +316,17 @@ class IntegralController extends Controller
                     'u_fuse'=>$row_data[10],'u_gover_products'=>$row_data[11],
                     'date_time'=>date("Y-m-d",strtotime("-2 day"))
                     ]);
+            if($row==3 || $row==$highestRow){
+                $ids.=$id.'-';
+            }
             $data[] = $row_data; //获取
         }
+        $users=Auth::user();
+        DB::table('import_log')
+                ->insertGetId([
+                    'title'=>'导入发展积分','table_name'=>'import_value_integral',
+                    'desc'=>substr($ids,0,strlen($ids)-1),'user_id'=>$users['id']
+                    ]);
         return response()->json(['result' => true], 200);
     }
     //导入价值积分
@@ -380,6 +348,7 @@ class IntegralController extends Controller
         $highestColumn = $worksheet->getHighestColumn(); // 总列数
         $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
         $data = [];
+        $ids='id: ';
         for ($row = 3; $row <= $highestRow; $row++) { // 从第几行开始读取
             $data[]=$row;
             $row_data = [];
@@ -394,8 +363,17 @@ class IntegralController extends Controller
                     'stock_v_up'=>$row_data[7],'stock_contract'=>$row_data[8],
                     'stock_tenure'=>$row_data[9],'date_time'=>date("Y-m-d",strtotime("-2 day"))
                     ]);
+            if($row==3 || $row==$highestRow){
+                $ids.=$id.'-';
+            }
             $data[] = $row_data; //获取
         }
+        $users=Auth::user();
+        DB::table('import_log')
+                ->insertGetId([
+                    'title'=>'导入价值积分','table_name'=>'import_value_integral',
+                    'desc'=>substr($ids,0,strlen($ids)-1),'user_id'=>$users['id']
+                    ]);
         return response()->json(['result' => true], 200);
     }
     //获取组织架构

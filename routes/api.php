@@ -37,6 +37,7 @@ Route::post('department/addDepartment', 'System\DepartmentController@add');
 Route::post('department/editDepartment', 'System\DepartmentController@edit');
 
 Route::post('value/valueIntegralList', 'Integral\IntegralController@valueIntegralList');
+Route::post('value/devIntegralList', 'Integral\IntegralController@devIntegralList');
 Route::post('value/salesDataList', 'Integral\IntegralController@salesDataList');
 Route::post('value/areaMeritsAimList', 'Integral\IntegralController@areaMeritsAimList');
 Route::post('value/salesDataAdd', 'Integral\IntegralController@salesDataAdd');
