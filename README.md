@@ -57,7 +57,7 @@ npm run prod
 
 - [ ] 使用完全前后台分离模式
 - [ ] 前台基于ant-design-pro-vue重构
-- [ ] 后台基于Laravel 5.8重构
+- [ ] 后台基于Laravel 6重构
 - [ ] GraphQL实践
 
 #### 更多截图
