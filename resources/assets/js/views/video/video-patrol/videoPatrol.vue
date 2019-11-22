@@ -1,25 +1,45 @@
 <template>
-  <div class="search">
-    <Card>
+  <div style="height:100%;" class="search">
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
+          <FormItem label="是否有积分" prop="in">
+              <i-switch size="large" v-model="searchForm.is_integral" :true-value="true" :false-value="false">
+                <span slot="open">无积分</span>
+                <span slot="close">有积分</span>
+              </i-switch>
+          </FormItem>
+        </FormItem>
+        <FormItem style="margin-left:-70px;" class="br">
+          <Button @click="searchDepartment" type="primary" icon="ios-search">搜索</Button>
+        </FormItem>
+      </Form>
+    </Row>
+    <Card style="height:100%;">
       <Row>
-        <Col span="6">
+        <Col span="4" style="border-right:1px solid #e8eaec;">
+          <div>
+            <h3>选择部门</h3>
+          </div>
           <Alert show-icon>
             当前选择编辑：
             <span class="select-title">{{editTitle}}</span>
             <a class="select-clear" v-if="departmentForm.id" @click="cancelEdit">取消选择</a>
           </Alert>
-          <div class="tree-bar">
+          <div class="tree-bar" style="max-height:700px">
             <Tree
               ref="tree"
               :data="data"
-              @on-check-change="changeSelect"
               @on-select-change="selectTree"
+              expand="false"
             ></Tree>
           </div>
           <Spin size="large" fix v-if="loading"></Spin>
         </Col>
-        <Col span="9">
-          <Form ref="departmentForm" :model="departmentForm" :label-width="100" :rules="departmentFormValidate">
+        <Col span="6" style="border-right:1px solid #e8eaec;">
+          <div style="margin-left:40px">
+            <h3>门店详情</h3>
+          </div>
+          <Form style="margin:0 20px" ref="departmentForm" :model="departmentForm" :label-width="100" :rules="departmentFormValidate">
             <FormItem label="渠道名称" prop="title">
               <Input v-model="departmentForm.title" placeholder="" readonly/>
             </FormItem>
@@ -35,8 +55,12 @@
             <FormItem label="详细地址" prop="addr">
               <Input v-model="departmentForm.addr" placeholder="" readonly/>
             </FormItem>
+            <Divider />
+          <div style="margin-left:40px">
+            <h3>营业情况</h3>
+          </div>
             <FormItem label="门店状态" prop="shop_state">
-              <i-switch size="large" v-model="departmentForm.shop_state" :true-value="1" :false-value="0">
+              <i-switch size="large" v-model="departmentForm.shop_state" :true-value="true" :false-value="false">
                 <span slot="open">正常营业</span>
                 <span slot="close">未营业</span>
               </i-switch>
@@ -57,12 +81,12 @@
             </Form-item>
           </Form>
         </Col>
-        <Col span="2">
-         <div>&nbsp;</div>
-        </Col>
-        <Col span="7">
-          <div>
-            <test-video-player class="vjs-custom-skin" style="width: 95%;height: 95%;" :options="videoOptions"></test-video-player>
+        <Col span="12">
+          <div style="text-align:center">
+            <div style="text-align:left;margin-left:40px">
+              <h3>监控视频</h3>
+            </div>
+            <test-video-player ret="TestVideoPlayer" @play="onPlayerPlay($event)" class="vjs-custom-skin" style="width: 95%;height: 95%;display:inline-block" :options="videoOptions"></test-video-player>
           </div>
         </Col>
       </Row>
@@ -78,7 +102,7 @@
   import TestVideoPlayer from "../../my-components/test-video-player";
   export default {
     components: {
-        TestVideoPlayer
+      TestVideoPlayer
     },
     data() {
       return {
@@ -111,9 +135,10 @@
         departmentFormAdd: {},
         beforeValue: '',
         data: [],
-        departmentFormValidate: {
-          
+        searchForm:{
+          is_integral:''
         },
+        departmentFormValidate: {},
         videoOptions: {
           playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
           autoplay: false, //如果true,浏览器准备好时开始回放。
@@ -126,8 +151,7 @@
           controls: true,
           sources: [
             {
-              src:
-                "rtmp://125.76.229.16:1936/live/pag/125.76.229.16/7302/022723/0/MAIN/TCP",
+              src:"rtmp://125.76.229.16:1936/live/pag/125.76.229.16/7302/022721/0/MAIN/TCP",
               type: "rtmp/mp4"
             }
           ],
@@ -147,13 +171,18 @@
         this.getDepartmentList();
       },
       getDepartmentList() {
+        console.log(this.searchForm);
         this.loading = true;
-        departmentList().then(res => {
+        departmentList(this.searchForm).then(res => {
           this.loading = false;
           if (res.result) {
             this.data = res.result;
           }
         });
+      },
+      searchDepartment() {
+        this.clickSearch = true;
+        this.getDepartmentList();
       },
       getDepartmentInfo(id){
         departmentInfo({id:id}).then(res => {
@@ -166,10 +195,6 @@
           this.departmentForm.area=data.five_name;
           this.departmentForm.addr=data.description;
         });
-      },
-      changeSelect(v) {
-        this.selectCount = v.length;
-        this.selectList = v;
       },
       handleReset() {
         this.$refs.departmentForm.resetFields();
@@ -188,9 +213,27 @@
           this.beforeValue = this.departmentForm.component;
           this.departmentFormComponent = this.departmentForm.link_type !== 0;
           this.editTitle = department.title;
-          this.getDepartmentInfo(v[0].id);
-          this.videoOptions.sources.src='rtmp://125.76.229.15:1936/live/pag/125.76.229.15/7302/026123/0/MAIN/TCP';
-          // TestVideoPlayer('TestVideoPlayer')
+          departmentInfo({id:v[0].id}).then(res => {
+            let data=res.result;
+            this.departmentForm.id=data.id;
+            this.departmentForm.department_id=data.department_id;
+            this.departmentForm.title=data.channel_name;
+            this.departmentForm.name=data.applicant;
+            this.departmentForm.mobile=data.mobile;
+            this.departmentForm.area=data.five_name;
+            this.departmentForm.addr=data.description;
+            this.videoOptions.sources.src=data.url;
+            console.log(data.url);
+            
+          });
+          // let myPlayer=TestVideoPlayer();
+          // myPlayer.src([
+          //   {type: "application/x-mpegURL", src: "rtmp://125.76.229.15:1936/live/pag/125.76.229.15/7302/026123/0/MAIN/TCP"}
+          // ])
+          // this.$refs.videoPlayer.videoPlayer();
+          // this.play();
+          
+          this.$refs.TestVideoPlayer.dd();
         } else {
           this.cancelEdit();
         }

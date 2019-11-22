@@ -22,12 +22,67 @@ export function devIntegralList(form) {
   });
 }
 /**
+ * 销售数据(单个)
+ * @returns {*}
+ */
+export function salesData(form) {
+  return request({
+    url: '/api/value/salesData',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
  * 销售数据列表
  * @returns {*}
  */
 export function salesDataList(form) {
   return request({
     url: '/api/value/salesDataList',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 销售数据删除
+ * @returns {*}
+ */
+export function salesDataDel(form) {
+  return request({
+    url: '/api/value/salesDataDel',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 营业情况列表
+ * @returns {*}
+ */
+export function videoPatrolList(form) {
+  return request({
+    url: '/api/value/videoPatrolList',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 营业情况删除
+ * @returns {*}
+ */
+export function videoPatrolDel(form) {
+  return request({
+    url: '/api/value/videoPatrolDel',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 营业情况修改
+ * @returns {*}
+ */
+export function videoPatrolEdit(form) {
+  return request({
+    url: '/api/value/videoPatrolEdit',
     method: 'post',
     data: { ...form }
   });
@@ -54,6 +109,18 @@ export function salesDataAdd(form) {
     data: { ...form }
   });
 }
+/**
+ * 销售数据修改
+ * @returns {*}
+ */
+export function salesDataEdit(form) {
+  return request({
+    url: '/api/value/salesDataEdit',
+    method: 'post',
+    data: { ...form }
+  });
+}
+
 /**
  * 片区积分填报
  * @returns {*}

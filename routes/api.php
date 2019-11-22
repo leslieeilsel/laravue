@@ -41,6 +41,12 @@ Route::post('value/devIntegralList', 'Integral\IntegralController@devIntegralLis
 Route::post('value/salesDataList', 'Integral\IntegralController@salesDataList');
 Route::post('value/areaMeritsAimList', 'Integral\IntegralController@areaMeritsAimList');
 Route::post('value/salesDataAdd', 'Integral\IntegralController@salesDataAdd');
+Route::post('value/salesDataEdit', 'Integral\IntegralController@salesDataEdit');
+Route::post('value/salesDataDel', 'Integral\IntegralController@salesDataDel');
+Route::post('value/videoPatrolList', 'Integral\IntegralController@videoPatrolList');
+Route::post('value/videoPatrolEdit', 'Integral\IntegralController@videoPatrolEdit');
+Route::post('value/videoPatrolDel', 'Integral\IntegralController@videoPatrolDel');
+Route::post('value/salesData', 'Integral\IntegralController@salesData');
 Route::post('value/areaMeritsAimAdd', 'Integral\IntegralController@areaMeritsAimAdd');
 Route::post('value/dictData', 'Integral\IntegralController@dictData');
 Route::post('value/importIntegral', 'Integral\IntegralController@importIntegral');

@@ -118,12 +118,117 @@
       </div>
       <div class="clear"></div>
     </Modal>
+    <Modal
+      :mask-closable="false"
+      v-model="editModal"
+      @on-cancel="cancel"
+      :styles="{top: '20px'}"
+      width="850"
+      title="修改销售数据">
+      <Form ref="editForm" :model="editForm" :label-width="90" :rules="editFormValidate">
+        <Row>
+          <Col span="12">
+            <FormItem label="用户号码" prop="user_mobile">
+              <Input v-model="editForm.user_mobile" placeholder=""></Input>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="是否新用户" prop="is_new_user" >
+              <Select v-model="editForm.is_new_user" filterable @on-change="changeUpNewUser">
+                <Option v-for="item in dict.is_new_user" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <FormItem label="产品类型" prop="project_type">
+              <Select v-model="editForm.project_type" filterable>
+                <Option v-for="item in project_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="终端类型" prop="terminal_type">
+              <Select v-model="editForm.terminal_type" filterable>
+                <Option v-for="item in dict.terminal_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <FormItem label="业务类型" prop="business_type">
+              <Select v-model="editForm.business_type" filterable>
+                <Option v-for="item in dict.business_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="积分" prop="int_num">
+              <Input type="text" :rows="3" v-model="editForm.int_num" placeholder="请输入..."/>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <FormItem label="套餐类型" prop="meal_type">
+              <Select v-model="editForm.meal_type" filterable  @on-change="changeMealType">
+                <Option v-for="item in dict.meal_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="套餐" prop="meal">
+              <Select v-model="editForm.meal" filterable>
+                <Option v-for="item in dict.meal" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="2">&nbsp;</col>
+            <Button @click="add_set_meal" type="primary" icon="md-add"></Button>
+        </Row>
+        <Row v-for="(v, index) in lists" :key="index">
+          <Col span="10">
+            <FormItem label="升级套餐类型" :prop="'up_meal_type_'+index">
+              <Select v-model="v.up_meal_type" filterable  @on-change="changeUpMealType">
+                <Option v-for="item in dict.up_meal_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem label="升级套餐" :prop="'up_meal'+index">
+              <Select v-model="v.up_meal" filterable>
+                <Option v-for="item in v.option_v" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="1">&nbsp;</Col>
+          <Col span="3">
+            <Button @click="del_set_meal(index)" type="primary" icon="md-remove"></Button>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer" class="footer_float">
+        <Button @click="handleReset('editForm')" :loading="loading">重置</Button>
+        <Button
+          @click="editSubmit('editForm')"
+          :loading="submitLoading"
+          type="primary"
+          style="margin-left:8px"
+        >保存
+        </Button>
+      </div>
+      <div class="clear"></div>
+    </Modal>
   </Card>
 </template>
 <script>
   import {
     salesDataAdd,
-    salesDataList,dictData
+    salesDataList,dictData,salesDataEdit,salesData,salesDataDel 
   } from '../../../api/value';
   import './salesData.css'
 
@@ -200,18 +305,126 @@
             key: 'date_time',
             width: 180,
             align: "center"
+          },
+          {
+            title: '操作',
+            key: 'action',
+            width: 180,
+            fixed: 'right',
+            align: 'center',
+            render: (h, params) => {
+              let editButton;
+              let delButton;
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small',
+                    disabled: editButton,
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      salesData({'id':params.row.id}).then(res => {
+                        let data=res.result[0];
+                        this.editForm=data;
+                        let project_type=[];
+                        if(this.editForm.is_new_user===0){
+                          for (let i in this.dict.project_type_v) {
+                            if(i<6){
+                              project_type.push(this.dict.project_type_v[i])
+                            }
+                          }
+                        }else if(this.editForm.is_new_user===1){
+                          this.dict.project_type_d.forEach(function(e){
+                            project_type.push(e);
+                          })  
+                        }
+                        this.project_type=project_type;
+                        this.editForm.project_type=parseInt(data.project_type);
+                        this.editForm.business_type=parseInt(data.business_type);
+                        this.editForm.terminal_type=parseInt(data.terminal_type);
+                        this.editForm.int_num=data.int_num;
+                        
+                        let set_meal=JSON.parse(data.set_meal);
+                        this.editForm.meal_type = set_meal.meal.meal_type;
+                        if(this.editForm.meal_type===0){
+                          this.dict.meal=this.dict.meal_0;
+                        }else if(this.editForm.meal_type===1){
+                          this.dict.meal=this.dict.meal_1;
+                        }else if(this.editForm.meal_type===2){
+                          this.dict.meal=this.dict.meal_2;
+                        }
+                        this.editForm.meal = set_meal.meal.meal;
+                        this.lists=[]; 
+                        let up_meal = set_meal.up_meal;
+                        for(let i=0;i<up_meal.length;i++){
+                          // debugger;
+                          this.lists.push({'up_meal_type':up_meal[i].meal_type,'up_meal':'','option_v':[]})
+                          if(up_meal[i].meal_type===0){
+                            this.lists[i].option_v=this.dict.up_meal_0;
+                          }else if(up_meal[i].meal_type===1){
+                            this.lists[i].option_v=this.dict.up_meal_1;
+                          }else if(up_meal[i].meal_type===2){
+                            this.lists[i].option_v=this.dict.up_meal_2;
+                          }else if(up_meal[i].meal_type===3){
+                            this.lists[i].option_v=this.dict.up_meal_3;
+                          }
+                          this.lists[i].up_meal=up_meal[i].meal;
+                        }
+                      })
+                      this.editModal = true;
+                    }
+                  }
+                }, '编辑'),
+                h('Button', {
+                  props: {
+                    type: 'error',
+                    size: 'small',
+                    disabled: delButton,
+                    // loading: _this.editFormLoading
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$Modal.confirm({
+                        title: "确认删除",
+                        loading: true,
+                        content: "您确认要删除这个数据？",
+                        onOk: () => {
+                          salesDataDel({id: params.row.id}).then(res => {
+                            if (res.result === true) {
+                              this.$Message.success("删除成功");
+                              this.init();
+                            } else {
+                              this.$Message.error("删除失败");
+                            }
+                            this.$Modal.remove();
+                          });
+                        }
+                      });
+                    }
+                  }
+                }, '删除')
+              ])
+            }
           }
         ],
         data: [],
         tableLoading: true,
         loading: false,
+        editButton:false,
         searchForm: {
           pageNumber: 1, // 当前页数
           pageSize: 10, // 页面大小
         },
         submitLoading: false,
         modal: false,
-        submitLoading: false,
+        editModal: false,
         form: {
           user_mobile: '',
           is_new_user: '',
@@ -227,19 +440,49 @@
             {required: true, message: "用户号码不能为空"}
           ],
           is_new_user: [
-            {required: true, message: "请选择是否新用户"}
+            {required: true, message: "请选择是否新用户", trigger: 'change', type: 'number'}
           ],
           project_type: [
-            {required: true, message: "请选择产品类型"}
+            {required: true, message: "请选择产品类型", trigger: 'change', type: 'number'}
           ],
           terminal_type: [
-            {required: true, message: "请选择终端类型"}
+            {required: true, message: "请选择终端类型", trigger: 'change', type: 'number'}
           ],
           business_type: [
-            {required: true, message: "请选择业务类型"}
+            {required: true, message: "请选择业务类型", trigger: 'change', type: 'number'}
           ],
           int_num: [
-            {required: true, message: "请填写积分"}
+            {required: true, message: "请填写积分", trigger: 'change', type: 'number'}
+          ]
+        },
+        editForm: {
+          user_mobile: '',
+          is_new_user: '',
+          business_type: '',
+          int_num: '',
+          project_type: '',
+          meal: '',
+          meal_info:''
+        },
+        editFormValidate: {
+          // 表单验证规则
+          user_mobile: [
+            {required: true, message: "用户号码不能为空"}
+          ],
+          is_new_user: [
+            {required: true, message: "请选择是否新用户", trigger: 'change', type: 'number'}
+          ],
+          project_type: [
+            {required: true, message: "请选择产品类型", trigger: 'change', type: 'number'}
+          ],
+          terminal_type: [
+            {required: true, message: "请选择终端类型", trigger: 'change', type: 'number'}
+          ],
+          business_type: [
+            {required: true, message: "请选择业务类型", trigger: 'change', type: 'number'}
+          ],
+          int_num: [
+            {required: true, message: "请填写积分", trigger: 'change', type: 'number'}
           ]
         },
         dictName: {
@@ -353,6 +596,33 @@
           }
         })
       },
+      editSubmit(name) {
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            this.submitLoading = true;
+            let up_meal=[];
+            this.lists.forEach(function (e) {
+              up_meal.push({meal:e.up_meal,meal_type:e.up_meal_type});
+            });
+            this.editForm.meal_info={
+                                  meal:{meal:this.editForm.meal,meal_type:this.editForm.meal_type},
+                                  up_meal:up_meal
+                                }            
+            salesDataEdit(this.editForm).then(res => {
+              this.submitLoading = false;
+              if (res.result) {
+                this.$Message.success("销售数据修改成功");
+                this.editModal = false;
+                this.getSalesDataList();
+                this.cancel();
+                this.lists=[];
+              } else {
+                this.$Message.error('销售数据修改失败!');
+              }
+            });
+          }
+        })
+      },
       cancel() {
         this.$refs.form.resetFields();
       },
@@ -404,16 +674,12 @@
               project_type.push(this.dict.project_type_v[i])
             }
           }
-          // .forEach(function(e){
-          //   project_type.push(e);
-          // })
         }else if(this.form.is_new_user===1){
           this.dict.project_type_d.forEach(function(e){
             project_type.push(e);
           })  
         }
         this.project_type=project_type;
-        console.log(this.project_type);
       }
     },
     mounted() {

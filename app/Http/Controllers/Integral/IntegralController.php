@@ -102,6 +102,16 @@ class IntegralController extends Controller
 
         return response()->json(['result' => $data, 'total' => $count], 200);
     }
+    //获取销售数据
+    public function salesData(Request $request)
+    {   
+        $params =  $request->input();
+
+        $data = DB::table('integral');
+        $data=$data->where('id',$params['id'])->get()->toArray();
+
+        return response()->json(['result' => $data], 200);
+    }
     //销售数据列表
     public function salesDataList(Request $request)
     {   
@@ -201,12 +211,39 @@ class IntegralController extends Controller
         $params['area'] = $area;
         $params['applicant'] = $users;
         $params['date_time'] = date('Y-m-d');
+        $params['created_at']=date('Y-m-d H:i:s');
         $id = DB::table('integral')->insertGetId($params);
 
         $result = $id ? true : false;
 
         return response()->json(['result' => $result], 200);
     }
+    //销售数据修改
+    public function salesDataEdit(Request $request)
+    {
+        $params =  $request->input();
+        $id=$params['id'];
+        $params['set_meal']=json_encode($params['meal_info']);
+        unset($params['meal'],$params['set_meal'],$params['meal_info'],$params['meal_type'],$params['id']);
+        $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
+        $params['updated_at']=date('Y-m-d H:i:s');
+        $id = DB::table('integral')->where('id',$id)->update($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //销售数据删除
+    public function salesDataDel(Request $request)
+    {
+        $params =  $request->input();
+        $id = DB::table('integral')->where('id',$params['id'])->delete();
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    
     //活动计划列表
     public function activityPlan(Request $request)
     {   
@@ -402,15 +439,22 @@ class IntegralController extends Controller
     }
     //获取组织架构
     public function departmentList(Request $request){
-        return response()->json(['result' => $this->getDepartmentList()], 200);
+        $params = $request->all();
+        if(isset($params['is_integral'])){
+            $applicants = DB::table('integral')->where('date_time',date('Y-m-d'))->pluck('applicant')->toArray();
+            $applicants=array_unique($applicants);
+        }else{
+            $applicants=[];  
+        }
+        return response()->json(['result' => $this->getDepartmentList($applicants)], 200);
     }
     
-    public function getDepartmentList()
+    public function getDepartmentList($applicants)
     {
-        $departments = Departments::all()->toArray();
+        $departments = Departments::where('id','>',1)->whereNotIn('id',$applicants)->get()->toArray();
         $data = [];
         foreach ($departments as $k => $v) {
-            if ($v['parent_id'] === 0) {
+            if ($v['parent_id'] === 1) {
                 $v['children'] = $this->getChild($v['id'], $departments);
                 $v['key'] = $v['id'];
                 $v['expand'] = true;
@@ -444,6 +488,23 @@ class IntegralController extends Controller
         $params =  $request->input();
 
         $result = DB::table('department_info')->where('department_id',$params['id'])->first();
+        $result['url']=DB::table('video_url')->where('department_name',$result['channel_name'])->value('url');
+        return response()->json(['result' => $result], 200);
+    }
+    //巡店列表
+    public function videoPatrolList(Request $request)
+    {   
+        $params =  $request->input();
+        $result = DB::table('video_patrol')->orderBy('id','desc')->get()->toArray();
+        foreach($result as $k=>$v){
+            $depart=DB::table('department_info')->where('id',$v['department_info_id'])->first();
+            $result[$k]['title']=$depart['channel_name'];
+            $result[$k]['name']=$depart['applicant'];
+            $result[$k]['area']=$depart['five_name'];
+            $result[$k]['mobile']=$depart['mobile'];
+            $result[$k]['addr']=$depart['channel_name'];
+            $result[$k]['shop_state']=$v['shop_state']==0?'未营业':'正在营业';
+        }
 
         return response()->json(['result' => $result], 200);
     }
@@ -461,12 +522,42 @@ class IntegralController extends Controller
         $params['applicant']=$params['create_by'];
         $params['department_info_id']=$params['id'];
         $params['date_time']=date('Y-m-d');
+        $params['shop_state']=$params['shop_state']==false?0:1;
         unset($params['title'],$params['sort'],$params['status'],$params['parent_id'],$params['description'],
         $params['create_by'],$params['update_by'],$params['created_at'],$params['updated_at'],
         $params['key'],$params['expand'],$params['nodeKey'],$params['selected'],$params['name'],
-        $params['mobile'],$params['area'],$params['addr'],$params['id']);
+        $params['mobile'],$params['area'],$params['addr'],$params['id'],$params['state']);
         $c=$params;
         $id = DB::table('video_patrol')->insertGetId($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //巡店的填报修改
+    public function videoPatrolEdit(Request $request)
+    {   
+        $params =  $request->input();
+        if(!isset($params['shop_state'])){
+            $params['shop_state']=0;
+        }
+        if(!isset($params['desc'])){
+            $params['desc']='';
+        }
+        $params['updated_at']=date('Y-m-d H:i:s');
+        $id=$params['id'];
+        unset($params['title'],$params['name'],$params['mobile'],$params['area'],$params['addr'],$params['id']);
+        $id = DB::table('video_patrol')->where('id',$id)->update($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //巡店的填报删除
+    public function videoPatrolDel(Request $request)
+    {   
+        $params =  $request->input();
+        $id = DB::table('video_patrol')->where('id',$params['id'])->delete();
 
         $result = $id ? true : false;
 
