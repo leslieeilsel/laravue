@@ -152,7 +152,7 @@
           controls: true,
           sources: [
             {
-              src:"rtmp://125.76.229.16:1936/live/pag/125.76.229.16/7302/022721/0/MAIN/TCP",
+              src:"",
               type: "rtmp/mp4"
             }
           ],
