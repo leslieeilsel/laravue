@@ -1,20 +1,20 @@
 <template>
   <div style="height:100%;" class="search">
-    <Row>
-      <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
-          <FormItem label="是否有积分" prop="in">
-              <i-switch size="large" v-model="searchForm.is_integral" :true-value="true" :false-value="false">
-                <span slot="open">无积分</span>
-                <span slot="close">有积分</span>
-              </i-switch>
+    <Card style="height:95%;">
+      <Row>
+        <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
+            <FormItem label="是否有积分" prop="in">
+                <i-switch size="large" v-model="searchForm.is_integral" :true-value="true" :false-value="false">
+                  <span slot="open">无积分</span>
+                  <span slot="close">有积分</span>
+                </i-switch>
+            </FormItem>
           </FormItem>
-        </FormItem>
-        <FormItem style="margin-left:-70px;" class="br">
-          <Button @click="searchDepartment" type="primary" icon="ios-search">搜索</Button>
-        </FormItem>
-      </Form>
-    </Row>
-    <Card style="height:100%;">
+          <FormItem style="margin-left:-70px;" class="br">
+            <Button @click="searchDepartment" type="primary" icon="ios-search">搜索</Button>
+          </FormItem>
+        </Form>
+      </Row>
       <Row>
         <Col span="4" style="border-right:1px solid #e8eaec;">
           <div>
@@ -25,7 +25,7 @@
             <span class="select-title">{{editTitle}}</span>
             <a class="select-clear" v-if="departmentForm.id" @click="cancelEdit">取消选择</a>
           </Alert>
-          <div class="tree-bar" style="max-height:700px">
+          <div class="tree-bar" style="max-height:600px">
             <Tree
               ref="tree"
               :data="data"
