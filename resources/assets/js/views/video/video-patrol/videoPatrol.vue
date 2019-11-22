@@ -86,7 +86,7 @@
             <div style="text-align:left;margin-left:40px">
               <h3>监控视频</h3>
             </div>
-            <test-video-player ret="TestVideoPlayer" @play="onPlayerPlay($event)" class="vjs-custom-skin" style="width: 95%;height: 95%;display:inline-block" :options="videoOptions"></test-video-player>
+            <test-video-player v-if="load" ret="TestVideoPlayer" @play="onPlayerPlay($event)" class="vjs-custom-skin" style="width: 95%;height: 95%;display:inline-block" :options="videoOptions"></test-video-player>
           </div>
         </Col>
       </Row>
@@ -106,6 +106,7 @@
     },
     data() {
       return {
+        load : true,
         loading: false,
         button1: '北京',
         editTitle: '',
@@ -224,7 +225,11 @@
             this.departmentForm.addr=data.description;
             this.videoOptions.sources.src=data.url;
             console.log(data.url);
-            
+            this.load = false;
+            this.videoOptions.sources[0].src =data.url;
+            this.$nextTick(() => {
+              this.load = true;
+            });
           });
           // let myPlayer=TestVideoPlayer();
           // myPlayer.src([
@@ -233,7 +238,6 @@
           // this.$refs.videoPlayer.videoPlayer();
           // this.play();
           
-          this.$refs.TestVideoPlayer.dd();
         } else {
           this.cancelEdit();
         }
