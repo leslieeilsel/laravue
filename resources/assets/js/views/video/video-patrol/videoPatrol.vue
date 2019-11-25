@@ -3,20 +3,27 @@
     <Card style="height:95%;">
       <Row>
         <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
-            <FormItem label="是否有积分" prop="in">
-                <i-switch size="large" v-model="searchForm.is_integral" :true-value="true" :false-value="false">
+            <FormItem label="是否无积分" prop="is_integral">
+              <i-switch size="large" v-model="searchForm.is_integral" :true-value="true" :false-value="false"  @on-change="getDepartmentList">
                   <span slot="open">无积分</span>
                   <span slot="close">有积分</span>
-                </i-switch>
+              </i-switch>
+                <!-- <i-switch v-model="searchForm.is_integral" :true-value="true" :false-value="false" @on-change="getDepartmentList">
+                  <span slot="open">无积分</span>
+                  <span slot="close">有积分</span>
+                </i-switch> -->
+            </FormItem>
+            <FormItem label="部门" prop="department_name">
+              <Cascader v-model="department_name" :data="department_data" filterable style="width:450px"></Cascader>
             </FormItem>
           </FormItem>
           <FormItem style="margin-left:-70px;" class="br">
-            <Button @click="searchDepartment" type="primary" icon="ios-search">搜索</Button>
+            <Button @click="getDepartmentInfo" type="primary" icon="ios-search">查看详情</Button>
           </FormItem>
         </Form>
       </Row>
       <Row>
-        <Col span="4" style="border-right:1px solid #e8eaec;">
+        <!-- <Col span="4" style="border-right:1px solid #e8eaec;">
           <div>
             <h3>选择部门</h3>
           </div>
@@ -25,7 +32,7 @@
             <span class="select-title">{{editTitle}}</span>
             <a class="select-clear" v-if="departmentForm.id" @click="cancelEdit">取消选择</a>
           </Alert>
-          <div class="tree-bar" style="max-height:600px">
+          <div class="tree-bar">
             <Tree
               ref="tree"
               :data="data"
@@ -34,7 +41,7 @@
             ></Tree>
           </div>
           <Spin size="large" fix v-if="loading"></Spin>
-        </Col>
+        </Col> -->
         <Col span="6" style="border-right:1px solid #e8eaec;">
           <div style="margin-left:40px">
             <h3>门店详情</h3>
@@ -60,7 +67,7 @@
             <h3>营业情况</h3>
           </div>
             <FormItem label="门店状态" prop="shop_state">
-              <i-switch size="large" v-model="departmentForm.shop_state" :true-value="true" :false-value="false">
+              <i-switch size="large" v-model="departmentForm.shop_state" :true-value="1" :false-value="0">
                 <span slot="open">正常营业</span>
                 <span slot="close">未营业</span>
               </i-switch>
@@ -81,7 +88,7 @@
             </Form-item>
           </Form>
         </Col>
-        <Col span="12">
+        <Col span="18">
           <div style="text-align:center">
             <div style="text-align:left;margin-left:40px">
               <h3>监控视频</h3>
@@ -137,7 +144,7 @@
         beforeValue: '',
         data: [],
         searchForm:{
-          is_integral:''
+          is_integral:false
         },
         departmentFormValidate: {},
         videoOptions: {
@@ -164,7 +171,9 @@
             remainingTimeDisplay: false,
             fullscreenToggle: true  //全屏按钮
           }
-        }
+        },
+        department_data:[],
+        department_name:[]
       }
     },
     methods: {
@@ -172,12 +181,12 @@
         this.getDepartmentList();
       },
       getDepartmentList() {
-        console.log(this.searchForm);
         this.loading = true;
         departmentList(this.searchForm).then(res => {
           this.loading = false;
           if (res.result) {
             this.data = res.result;
+            this.department_data=res.result
           }
         });
       },
@@ -185,8 +194,8 @@
         this.clickSearch = true;
         this.getDepartmentList();
       },
-      getDepartmentInfo(id){
-        departmentInfo({id:id}).then(res => {
+      getDepartmentInfo(){
+        departmentInfo({id:this.department_name[3]}).then(res => {
           let data=res.result;
           this.departmentForm.id=data.id;
           this.departmentForm.department_id=data.department_id;

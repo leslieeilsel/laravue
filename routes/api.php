@@ -40,6 +40,9 @@ Route::post('value/valueIntegralList', 'Integral\IntegralController@valueIntegra
 Route::post('value/devIntegralList', 'Integral\IntegralController@devIntegralList');
 Route::post('value/salesDataList', 'Integral\IntegralController@salesDataList');
 Route::post('value/areaMeritsAimList', 'Integral\IntegralController@areaMeritsAimList');
+Route::post('value/areaMeritsAimAdd', 'Integral\IntegralController@areaMeritsAimAdd');
+Route::post('value/areaMeritsAimEdit', 'Integral\IntegralController@areaMeritsAimEdit');
+Route::post('value/areaMeritsAimDel', 'Integral\IntegralController@areaMeritsAimDel');
 Route::post('value/salesDataAdd', 'Integral\IntegralController@salesDataAdd');
 Route::post('value/salesDataEdit', 'Integral\IntegralController@salesDataEdit');
 Route::post('value/salesDataDel', 'Integral\IntegralController@salesDataDel');
@@ -47,17 +50,24 @@ Route::post('value/videoPatrolList', 'Integral\IntegralController@videoPatrolLis
 Route::post('value/videoPatrolEdit', 'Integral\IntegralController@videoPatrolEdit');
 Route::post('value/videoPatrolDel', 'Integral\IntegralController@videoPatrolDel');
 Route::post('value/salesData', 'Integral\IntegralController@salesData');
-Route::post('value/areaMeritsAimAdd', 'Integral\IntegralController@areaMeritsAimAdd');
 Route::post('value/dictData', 'Integral\IntegralController@dictData');
 Route::post('value/importIntegral', 'Integral\IntegralController@importIntegral');
 Route::post('value/importValueIntegral', 'Integral\IntegralController@importValueIntegral');
 Route::post('value/activityPlan', 'Integral\IntegralController@activityPlan');
 Route::post('value/activityPlanAdd', 'Integral\IntegralController@activityPlanAdd');
+Route::post('value/activityPlanEdit', 'Integral\IntegralController@activityPlanEdit');
+Route::post('value/activityPlanDel', 'Integral\IntegralController@activityPlanDel');
 Route::post('value/activityImplement', 'Integral\IntegralController@activityImplement');
 Route::post('value/activityImplementAdd', 'Integral\IntegralController@activityImplementAdd');
+Route::post('value/activityImplementEdit', 'Integral\IntegralController@activityImplementEdit');
+Route::post('value/activityImplementDel', 'Integral\IntegralController@activityImplementDel');
 Route::post('value/departmentList', 'Integral\IntegralController@departmentList');
 Route::post('value/departmentInfo', 'Integral\IntegralController@departmentInfo');
 Route::post('value/videoPatrolAdd', 'Integral\IntegralController@videoPatrolAdd');
+Route::post('value/areaDepartmentList', 'Integral\IntegralController@areaDepartmentList');
+Route::post('value/areaShop', 'Integral\IntegralController@areaShop');
+Route::post('value/uploadPic', 'Integral\IntegralController@uploadPic');
+
 
 Route::get('dict/dicts', 'System\DictController@dicts');
 Route::post('dict/addDict', 'System\DictController@addDict');

@@ -23,34 +23,52 @@
       title="活动执行填报">
       <Form ref="form" :model="form" :label-width="160">
         <Row>
+          <Col span="24">
+            <Divider>活动计划信息</Divider>
+          </Col>
+        </Row>
+        <Row>
           <Col span="12">
-            <FormItem label="活动名称" prop="name">
-              <Input v-model="form.name" placeholder=""></Input>
+            <FormItem label="活动名称" prop="activity_plan_id">
+              <Select v-model="form.activity_plan_id" style="width:200px" @on-change="changePlanName">
+                  <Option v-for="item in data" :value="item.id" :key="item.id" >{{ item.title }}</Option>
+              </Select>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="活动位置" prop="position">
+            <FormItem label="区域" prop="area">
+              <Input v-model="form.area" placeholder="" readonly></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <FormItem label="活动计划开始时间" prop="plan_start_time">
+              <DatePicker type="date" placeholder="请选择"
+                          v-model="form.plan_start_time" readonly></DatePicker>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="活动计划结束时间" prop="plan_end_time">
+              <DatePicker type="date" placeholder="请选择"
+                          v-model="form.plan_end_time" readonly></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="24">
+            <Divider>活动执行信息</Divider>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <FormItem label="活动定位" prop="position">
               <Input v-model="form.position" placeholder=""></Input>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
           <Col span="12">
-            <FormItem label="区域" prop="area">
-              <Input v-model="form.area" placeholder=""></Input>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="负责人" prop="applicant">
-              <Input v-model="form.applicant" placeholder=""></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="12">
-            <FormItem label="活动时间" prop="date_time">
-              <DatePicker type="date" placeholder="请选择"
-                          v-model="form.date_time"></DatePicker>
+            <FormItem label="活动复盘" prop="remark">
+              <Input v-model="form.remark" type="textarea" :rows="3" placeholder=""></Input>
             </FormItem>
           </Col>
         </Row>
@@ -61,14 +79,14 @@
               :disabled="upbtnPicDisabled"
               name="pic"
               :on-success="handleSuccessPic"
+              :data="form"
               multiple
-              :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
-              :max-size="600"
+              :format="['jpg', 'jpeg', 'png']"
               :on-format-error="handleFormatError"
               :on-exceeded-size="handleMaxSize"
               action="/api/value/uploadPic">
               <Button icon="ios-cloud-upload-outline">上传</Button>
-              <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
+              <!-- <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div> -->
             </Upload>
           </FormItem>
         </Row>
@@ -89,15 +107,144 @@
 <script>
   import {
     activityImplementAdd,
-    activityImplement
+    activityImplement,
+    activityPlan,
+    areaDepartmentList,
+    getAreaShop 
   } from '../../../api/value';
   import './activityImplement.css'
-
+  import activityImplementList from '@/views/activity/activity-implement/activityImplementList.vue'
   export default {
     data() {
       return {
         dataCount: 0,   // 总条数
         columns: [
+          {
+            type: 'index2',
+            width: 50,
+            align: 'center',
+            fixed: 'left',
+            render: (h, params) => {
+              return h('span', params.index + (this.searchForm.pageNumber - 1) * this.searchForm.pageSize + 1);
+            }
+          },
+          {
+            title: '活动名称',
+            key: 'title',
+            width: 200,
+            // fixed: 'left',
+            align: "center"
+          },
+          {
+            title: '区域',
+            key: 'area',
+            width: 200,
+            align: "left"
+          },
+          {
+            title: '活动开始时间',
+            key: 'plan_start_time',
+            width: 200,
+            align: "left"
+          },
+          {
+            title: '活动结束时间',
+            key: 'plan_end_time',
+            width: 200,
+            align: "left"
+          },
+          {
+            title: '活动地点',
+            key: 'position',
+            // fixed: 'left',
+            width: 220,
+          },
+          {
+            title: '负责人',
+            key: 'applicant',
+            width: 100,
+            align: 'left'
+          },
+          {
+            title: '活动文字描述',
+            key: 'remark',
+            width: 300,
+            align: "left"
+          },
+          {
+            title: '活动状态',
+            key: 'tags',
+            width: 180,
+            render: (h, params) => {
+              let button_rbg = '';
+              let activity_title = '';
+
+              let plan_end_time = params.row.plan_end_time;
+              let plan_start_time = params.row.plan_start_time;
+              
+              let day = new Date();
+              day.setTime(day.getTime());
+              let s2 = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();
+              if(s2>plan_end_time){
+                button_rbg = 'warning';
+                activity_title = '活动已经结束';
+              }else if(s2<plan_start_time){
+                button_rbg = 'error';
+                activity_title = '活动还没开始';
+              }else if(s2<=plan_end_time&&s2>=plan_start_time){
+                button_rbg = 'success';
+                activity_title = '活动进行中';
+              } 
+              return h("div", [
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: button_rbg,
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                  },
+                  activity_title
+                )
+              ]);
+            }
+          },
+          {
+            title: '操作',
+            key: 'tags',
+            width: 180,
+            render: (h, params) => {
+              let editButton;
+              let delButton;
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small',
+                    disabled: editButton,
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      console.log(params);
+                      this.$router.push({ 
+                          path: '/activity-implement-list',
+                          name:'activityImplementList',
+                          component:  activityImplementList,
+                          params:{id:params.row.id}})
+                    }
+                  }
+                }, '查看执行列表')
+              ])
+            }
+          }
+        ],
+        aI_columns: [
           {
             type: 'index2',
             width: 50,
@@ -153,9 +300,10 @@
           pageSize: 10, // 页面大小
         },
         submitLoading: false,
-        upbtnPicDisabled:false,
+        upbtnPicDisabled:true,
         loading:true,
         modal: false,
+        areaShop:[],
         form: {
           name: '',
           position: '',
@@ -163,16 +311,27 @@
           applicant: '',
           date_time: '',
           pic: '',
+          title:''
         }
       }
     },
     methods: {
       init() {
-        this.getActivityImplement();
+        this.getActivityPlan();
+        this.getDepartmentList();
       },
-      getActivityImplement() {
+      getDepartmentList() {
+        this.loading = true;
+        areaDepartmentList().then(res => {
+          this.loading = false;
+          if (res.result) {
+            this.department_data=res.result
+          }
+        });
+      },
+      getActivityPlan() {
         this.tableLoading = true;
-        activityImplement(this.searchForm).then(res => {
+        activityPlan(this.searchForm).then(res => {
           this.tableLoading = false;
           this.data = res.result;
           this.dataCount = res.total;
@@ -234,6 +393,26 @@
           title: '超出文件大小限制',
           desc: '文件太大，不能超过600KB'
         });
+      },
+      changePlanName(e){
+        let _this = this;
+        this.upbtnPicDisabled=false;
+        this.data.forEach(function(v){
+          if(v.id==e){
+            let area_id=JSON.parse(v.area_id);
+            _this.form.title=v.title;
+            _this.form.area=v.area;
+            _this.form.plan_start_time=v.plan_start_time;
+            _this.form.plan_end_time=v.plan_end_time;
+          }
+        })
+      },
+      handleSuccess(res, file) {
+        if (this.form.pic) {
+          this.form.pic = this.form.pic + ',' + res.result;
+        } else {
+          this.form.pic = res.result;
+        }
       }
     },
     mounted() {

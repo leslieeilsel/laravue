@@ -17,7 +17,7 @@
       :mask-closable="false"
       v-model="modal"
       @on-cancel="cancel"
-      :styles="{top: '20px'}"
+      :styles="{top: '150px'}"
       width="850"
       title="添加销售数据">
       <Form ref="form" :model="form" :label-width="90" :rules="formValidate">
@@ -82,8 +82,9 @@
           </Col>
         </Row>
         <Row>
-          <Col span="2">&nbsp;</col>
-            <Button @click="add_set_meal" type="primary" icon="md-add"></Button>
+          <Col span="24">
+            <Divider>添加升级包</Divider>
+          </Col>
         </Row>
         <Row v-for="(v, index) in lists" :key="index">
           <Col span="10">
@@ -102,8 +103,12 @@
           </Col>
           <Col span="1">&nbsp;</Col>
           <Col span="3">
-            <Button @click="del_set_meal(index)" type="primary" icon="md-remove"></Button>
+            <Button @click="del_set_meal(index)" type="text" style="color:red">删除</Button>
           </Col>
+        </Row>
+        <Row>
+          <Col span="2">&nbsp;</col>
+            <Button @click="add_set_meal" type="dashed" icon="md-add">添加升级包</Button>
         </Row>
       </Form>
       <div slot="footer" class="footer_float">
@@ -122,7 +127,7 @@
       :mask-closable="false"
       v-model="editModal"
       @on-cancel="cancel"
-      :styles="{top: '20px'}"
+      :styles="{top: '150px'}"
       width="850"
       title="修改销售数据">
       <Form ref="editForm" :model="editForm" :label-width="90" :rules="editFormValidate">
@@ -187,8 +192,9 @@
           </Col>
         </Row>
         <Row>
-          <Col span="2">&nbsp;</col>
-            <Button @click="add_set_meal" type="primary" icon="md-add"></Button>
+          <Col span="24">
+            <Divider>添加升级包</Divider>
+          </Col>
         </Row>
         <Row v-for="(v, index) in lists" :key="index">
           <Col span="10">
@@ -207,8 +213,12 @@
           </Col>
           <Col span="1">&nbsp;</Col>
           <Col span="3">
-            <Button @click="del_set_meal(index)" type="primary" icon="md-remove"></Button>
+            <Button @click="del_set_meal(index)" type="text" style="color:red">删除</Button>
           </Col>
+        </Row>
+        <Row>
+          <Col span="2">&nbsp;</col>
+            <Button @click="add_set_meal" type="dashed" icon="md-add">添加升级包</Button>
         </Row>
       </Form>
       <div slot="footer" class="footer_float">

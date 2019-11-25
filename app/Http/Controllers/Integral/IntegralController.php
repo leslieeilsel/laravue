@@ -172,29 +172,8 @@ class IntegralController extends Controller
                 $set_meal_info=$set_meal_info.'、'.$up_meal_type;
             }
             $data[$k]['set_meal'] = $set_meal_info;
-        }
-
-        return response()->json(['result' => $data, 'total' => $count], 200);
-    }
-    //片区积分目标列表
-    public function areaMeritsAimList(Request $request)
-    {   
-        $params =  $request->input();
-
-        $data = DB::table('area_target');
-        if (isset($params['pageNumber']) && isset($params['pageSize'])) {
-            $data = $data
-                ->limit($params['pageSize'])
-                ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
-        }
-        $data=$data->get()->toArray();
-        $count = DB::table('area_target')->count();
-        // $product_type = Dict::getOptionsArrByName('产品类型');
-        $business_type = Dict::getOptionsArrByName('业务类型');
-        foreach ($data as $k => $row) {
-            // $data[$k]['product_type'] = $product_type[$row['product_type']];
-            $data[$k]['business_type'] = $business_type[$row['business_type']];
-            $data[$k]['target_time'] = date('Y-m-d',strtotime($row['target_time']));
+            $applicant = DB::table('users')->where('id',$row['applicant'])->value('name');
+            $data[$k]['applicant'] = $applicant;
         }
 
         return response()->json(['result' => $data, 'total' => $count], 200);
@@ -256,6 +235,13 @@ class IntegralController extends Controller
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
         $data=$data->get()->toArray();
+        foreach ($data as $k => $row) {
+            $applicant = DB::table('users')->where('id',$row['applicant'])->value('name');
+            $data[$k]['applicant'] = $applicant;
+            $department = DB::table('iba_system_department')->whereIn('id',json_decode($row['area'],true))->pluck('title')->toArray();
+            $data[$k]['area']=implode("/",$department);
+            $data[$k]['area_id']=$row['area'];
+        }
         $count = DB::table('activity_plan')->count();
 
         return response()->json(['result' => $data, 'total' => $count], 200);
@@ -264,8 +250,40 @@ class IntegralController extends Controller
     public function activityPlanAdd(Request $request)
     {   
         $params =  $request->input();
-        $params['plan_time'] = date('Y-m-d', strtotime($params['plan_time']));
+        $params['plan_start_time'] = date('Y-m-d', strtotime($params['plan_start_time']));
+        $params['plan_end_time'] = date('Y-m-d', strtotime($params['plan_end_time']));
+        $params['created_at']=date('Y-m-d H:i:s');
+        $params['area'] = json_encode($params['area']);
+        $users=$this->user->id;
+        // $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
+        $params['applicant'] = $users;
         $id = DB::table('activity_plan')->insertGetId($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //活动计划修改
+    public function activityPlanEdit(Request $request)
+    {
+        $params =  $request->input();
+        $id=$params['id'];
+        $params['plan_start_time'] = date('Y-m-d', strtotime($params['plan_start_time']));
+        $params['plan_end_time'] = date('Y-m-d', strtotime($params['plan_end_time']));
+        $params['updated_at']=date('Y-m-d H:i:s');
+        $params['area'] = json_encode($params['area']);
+        unset($params['id'],$params['area_id']);
+        $id = DB::table('activity_plan')->where('id',$id)->update($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //活动计划删除
+    public function activityPlanDel(Request $request)
+    {
+        $params =  $request->input();
+        $id = DB::table('activity_plan')->where('id',$params['id'])->delete();
 
         $result = $id ? true : false;
 
@@ -283,6 +301,16 @@ class IntegralController extends Controller
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
         $data=$data->get()->toArray();
+        foreach ($data as $k => $row) {
+            $activity_plan = DB::table('activity_plan')->where('id',$row['activity_plan_id'])->select('title','area','plan_start_time','plan_end_time')->first();
+            $data[$k]['plan_start_time']=$activity_plan['plan_start_time'];
+            $data[$k]['plan_end_time']=$activity_plan['plan_end_time'];
+            $data[$k]['title']=$activity_plan['title'];
+            $users=$this->user->name;
+            $data[$k]['applicant'] = $users;
+            $department = DB::table('iba_system_department')->whereIn('id',json_decode($activity_plan['area'],true))->pluck('title')->toArray();
+            $data[$k]['area']=implode("/",$department);
+        }
         $count = DB::table('activity')->count();
 
         return response()->json(['result' => $data, 'total' => $count], 200);
@@ -291,19 +319,107 @@ class IntegralController extends Controller
     public function activityImplementAdd(Request $request)
     {   
         $params =  $request->input();
-        $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
+        $params['date_time'] = date('Y-m-d');
+        $params['created_at']=date('Y-m-d H:i:s');
+        $users=$this->user->id;
+        $params['applicant'] = $users;
+        unset($params['area'],$params['title'],$params['plan_start_time'],$params['plan_end_time'],$params['name']);
         $id = DB::table('activity')->insertGetId($params);
 
         $result = $id ? true : false;
 
         return response()->json(['result' => $result], 200);
     }
+    //活动执行修改
+    public function activityImplementEdit(Request $request)
+    {   
+        $params =  $request->input();
+        $id=$params['id'];
+        $params['updated_at']=date('Y-m-d H:i:s');
+        unset($params['id'],$params['plan_start_time'],$params['plan_end_time'],$params['area']);
+        $id = DB::table('activity')->where('id',$id)->update($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //活动执行删除
+    public function activityImplementDel(Request $request)
+    {   
+        $params =  $request->input();
+        $id = DB::table('activity')->where('id',$params['id'])->delete();
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //片区积分目标列表
+    public function areaMeritsAimList(Request $request)
+    {   
+        $params =  $request->input();
+
+        $data = DB::table('area_target');
+        if (isset($params['pageNumber']) && isset($params['pageSize'])) {
+            $data = $data
+                ->limit($params['pageSize'])
+                ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
+        }
+        $data=$data->get()->toArray();
+        $count = DB::table('area_target')->count();
+        // $product_type = Dict::getOptionsArrByName('产品类型');
+        $business_type = Dict::getOptionsArrByName('业务类型');
+        foreach ($data as $k => $row) {
+            // $data[$k]['product_type'] = $product_type[$row['product_type']];
+            $data[$k]['business_type'] = $business_type[$row['business_type']];
+            $data[$k]['business_type_id'] = $row['business_type'];
+            $data[$k]['target_start_time'] = date('Y-m-d',strtotime($row['target_start_time']));
+            $data[$k]['target_end_time'] = date('Y-m-d',strtotime($row['target_end_time']));
+            $department = DB::table('iba_system_department')->whereIn('id',json_decode($row['duty_department'],true))->pluck('title')->toArray();
+            $data[$k]['duty_department']=implode("/",$department);
+            $data[$k]['duty_department_id']=$row['duty_department'];
+        }
+
+        return response()->json(['result' => $data, 'total' => $count], 200);
+    }
     //片区积分目标填报
     public function areaMeritsAimAdd(Request $request)
     {   
         $params =  $request->input();
-
+        $params['duty_department']=json_encode($params['duty_department']);
+        $params['target_start_time'] = date('Y-m-d', strtotime($params['target_start_time']));
+        $params['target_end_time'] = date('Y-m-d', strtotime($params['target_end_time']));
+        $params['created_at']=date('Y-m-d H:i:s');
         $id = DB::table('area_target')->insertGetId($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //片区积分目标修改
+    public function areaMeritsAimEdit(Request $request)
+    {
+        $params =  $request->input();
+        $id=$params['id'];
+        $params['duty_department']=json_encode($params['duty_department']);
+        $params['target_start_time'] = date('Y-m-d', strtotime($params['target_start_time']));
+        $params['target_end_time'] = date('Y-m-d', strtotime($params['target_end_time']));
+        $params['updated_at']=date('Y-m-d H:i:s');
+        unset($params['id'],$params['duty_department_id']);
+        $id = DB::table('area_target')->where('id',$id)->update($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //片区积分目标删除
+    public function areaMeritsAimDel(Request $request)
+    {
+        $params =  $request->input();
+        $id = DB::table('area_target')->where('id',$params['id'])->delete();
 
         $result = $id ? true : false;
 
@@ -323,6 +439,17 @@ class IntegralController extends Controller
         return response()->json(['result' => $result], 200);
     }
     /**
+     * 获取项目库表单中的数据字典数据多个
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function areaShop(Request $request){
+        $params = $request->all();
+        $result=DB::table('iba_system_department')->where('parent_id',$params['id'])->select('id','title')->get()->toArray();
+        return response()->json(['result' => $result], 200);
+    }
+    /**
      * 上传
      *
      * @param Request $request
@@ -331,10 +458,9 @@ class IntegralController extends Controller
     public function uploadPic(Request $request)
     {
         $params = $request->all();
-        $project_title = DB::table('supervise_service')->where('id', $params['id'])->value('title');
         $suffix = $params['pic']->getClientOriginalExtension();
         $path = Storage::putFileAs(
-            'public/value/project-schedule/' . $project_title . '/' . $params['month'],
+            'public/value/activity/' . $params['title'],
             $request->file('pic'),
             rand(1000000, time()) . '.' . $suffix
         );
@@ -437,10 +563,10 @@ class IntegralController extends Controller
                     ]);
         return response()->json(['result' => true], 200);
     }
-    //获取组织架构
+    //首页获取组织架构
     public function departmentList(Request $request){
         $params = $request->all();
-        if(isset($params['is_integral'])){
+        if($params['is_integral']==true){
             $applicants = DB::table('integral')->where('date_time',date('Y-m-d'))->pluck('applicant')->toArray();
             $applicants=array_unique($applicants);
         }else{
@@ -453,30 +579,85 @@ class IntegralController extends Controller
     {
         $departments = Departments::where('id','>',1)->whereNotIn('id',$applicants)->get()->toArray();
         $data = [];
+        $d=[];
         foreach ($departments as $k => $v) {
             if ($v['parent_id'] === 1) {
-                $v['children'] = $this->getChild($v['id'], $departments);
-                $v['key'] = $v['id'];
-                $v['expand'] = true;
-                $data[] = $v;
+                // $v['children'] = $this->getChild($v['id'], $departments);
+                // $v['key'] = $v['id'];
+                // $v['expand'] = true;
+                // $data[] = $v;
+                $d['value'] = $v['id'];
+                $d['label'] = $v['title'];
+                $d['children'] = $this->getChild($v['id'], $departments);
+                $data[] = $d;
+                
             }
         }
 
-        return $data;
+        return $data; 
     }
     public function getChild($pid, $departments)
     {
         $tree = [];
+        $t=[];
         foreach ($departments as $k => $v) {
             if ($v['parent_id'] === $pid) {
+                $t['value']=$v['id'];
+                $t['label']=$v['title'];
                 // 匹配子记录
                 $v['children'] = $this->getChild($v['id'], $departments); // 递归获取子记录
                 if ($v['children'] == null) {
                     unset($v['children']);                          // 如果子元素为空则unset()
+                }else{
+                    $t['children']=$v['children'];
                 }
-                $v['key'] = $v['id'];
-                $v['expand'] = true;
-                $tree[] = $v;
+                // $v['key'] = $v['id'];
+                // $v['expand'] = true;
+                // $tree[] = $v;
+                $tree[]=$t;
+            }
+        }
+
+        return $tree;
+    }
+    //获取组织架构   片区
+    public function areaDepartmentList(Request $request){
+        return response()->json(['result' => $this->getAreaDepartmentList()], 200);
+    }
+    
+    public function getAreaDepartmentList()
+    {
+        $departments = Departments::where('id','>',1)->where('id','<',367)->get()->toArray();
+        $data = [];
+        $d=[];
+        foreach ($departments as $k => $v) {
+            if ($v['parent_id'] === 1) {
+                $d['value'] = $v['id'];
+                $d['label'] = $v['title'];
+                $d['children'] = $this->getAreaChild($v['id'], $departments);
+                $data[] = $d;
+                
+            }
+        }
+
+        return $data; 
+    }
+    public function getAreaChild($pid, $departments)
+    {
+        $tree = [];
+        $t=[];
+        foreach ($departments as $k => $v) {
+            if ($v['parent_id'] === $pid) {
+                $t['value']=$v['id'];
+                $t['label']=$v['title'];
+                // 匹配子记录
+                $v['children'] = $this->getAreaChild($v['id'], $departments); // 递归获取子记录
+                if ($v['children'] == null) {
+                    unset($v['children']);                          // 如果子元素为空则unset()
+                }else{
+                    $t['children']=$v['children'];
+                }
+                $tree[]=$t;
             }
         }
 
@@ -490,7 +671,7 @@ class IntegralController extends Controller
         $result = DB::table('department_info')->where('department_id',$params['id'])->first();
         $result['url']=DB::table('video_url')->where('department_name',$result['channel_name'])->value('url');
         return response()->json(['result' => $result], 200);
-    }
+    } 
     //巡店列表
     public function videoPatrolList(Request $request)
     {   
@@ -522,7 +703,6 @@ class IntegralController extends Controller
         $params['applicant']=$params['create_by'];
         $params['department_info_id']=$params['id'];
         $params['date_time']=date('Y-m-d');
-        $params['shop_state']=$params['shop_state']==false?0:1;
         unset($params['title'],$params['sort'],$params['status'],$params['parent_id'],$params['description'],
         $params['create_by'],$params['update_by'],$params['created_at'],$params['updated_at'],
         $params['key'],$params['expand'],$params['nodeKey'],$params['selected'],$params['name'],

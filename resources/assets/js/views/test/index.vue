@@ -1,6 +1,7 @@
 <template>
   <div>
-    <test-video-player style="width: 95%;height: 95%;" :options="videoOptions"></test-video-player>
+    <test-video-player v-if="load" style="width: 95%;height: 95%;" :options="videoOptions"></test-video-player>
+    <div @click="sss">2222</div>
   </div>
 </template>
 
@@ -15,6 +16,7 @@
     },
     data() {
       return {
+        load : true,
         videoOptions: {
           // playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
           autoplay: true, //如果true,浏览器准备好时开始回放。
@@ -41,6 +43,16 @@
           }
         }
       };
+    },
+    methods: {
+      sss(){
+          this.load = false;
+  //         this.videoOptions.sources[0].src = "rtmp://125.76.229.15:1936/live/pag/125.76.229.15/7302/026162/0/MAIN/TCP";
+          this.videoOptions.sources[0].src = 'rtmp://live.byman.cn/live/ifengxi';
+          this.$nextTick(() => {
+            this.load = true;
+          });
+      }
     }
   };
   </script>
