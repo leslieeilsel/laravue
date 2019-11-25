@@ -204,6 +204,13 @@
           this.departmentForm.mobile=data.mobile;
           this.departmentForm.area=data.five_name;
           this.departmentForm.addr=data.description;
+            this.videoOptions.sources.src=data.url;
+            console.log(data.url);
+            this.load = false;
+            this.videoOptions.sources[0].src =data.url;
+            this.$nextTick(() => {
+              this.load = true;
+            });
         });
       },
       handleReset() {
