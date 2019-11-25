@@ -334,11 +334,11 @@
       },
       changePage(v) {
         this.searchForm.pageNumber = v;
-        this.getSalesDataList();
+        this.getActivityPlan();
       },
       changePageSize(v) {
         this.searchForm.pageSize = v;
-        this.getSalesDataList();
+        this.getActivityPlan();
       },
       handleReset(name) {
         this.$refs[name].resetFields();

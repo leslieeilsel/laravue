@@ -743,5 +743,77 @@ class IntegralController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+    /**
+     * 上传视频
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function uploadVideo(Request $request)
+    {
+        $params = $request->all();
+        $suffix = $params['video']->getClientOriginalExtension();
+        $path = Storage::putFileAs(
+            'public/value/supervise/',
+            $request->file('video'),
+            rand(1000000, time()) . '.' . $suffix   
+        );
+        $path = 'storage/' . substr($path, 7);
+
+        return response()->json(['result' => $path], 200);
+    }
+    //服务列表
+    public function superviseServiceList(Request $request)
+    {   
+        $params =  $request->input();
+        $result = DB::table('supervise_service')->orderBy('id','desc')->get()->toArray();
+        foreach($result as $k=>$v){
+            $users=DB::table('users')->where('id',$v['user_id'])->first();
+            $result[$k]['area']=DB::table('iba_system_department')->where('id',$v['department_id'])->value('title');
+            $result[$k]['ename']=$users['name'];
+            $result[$k]['job_num']=$users['username'];
+        }
+
+        return response()->json(['result' => $result], 200);
+    }
+    //服务填报
+    public function superviseServiceAdd(Request $request)
+    {   
+        $params =  $request->input();
+        
+        $params['user_id'] = $this->user->id;
+        $params['department_id'] = $this->user->department_id;
+        $params['date_time']=date('Y-m-d');
+        $params['created_at']=date('Y-m-d H:i:s');
+        $id = DB::table('supervise_service')->insertGetId($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //服务修改 打分
+    public function superviseServiceEdit(Request $request)
+    {   
+        $params =  $request->input();
+        $id=$params['id'];
+        unset($params['area'],$params['date_time'],$params['ename'],$params['job_num'],$params['phone'],$params['position'],$params['id']);
+        $params['service_grade']=json_encode($params['service_grade']);
+        $params['updated_at']=date('Y-m-d H:i:s');
+        $id = DB::table('supervise_service')->where('id',$id)->update($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    //服务删除
+    public function superviseServiceDel(Request $request)
+    {   
+        $params =  $request->input();
+        $id = DB::table('supervise_service')->where('id',$params['id'])->delete();
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
 }
                      

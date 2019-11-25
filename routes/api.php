@@ -49,6 +49,10 @@ Route::post('value/salesDataDel', 'Integral\IntegralController@salesDataDel');
 Route::post('value/videoPatrolList', 'Integral\IntegralController@videoPatrolList');
 Route::post('value/videoPatrolEdit', 'Integral\IntegralController@videoPatrolEdit');
 Route::post('value/videoPatrolDel', 'Integral\IntegralController@videoPatrolDel');
+Route::post('value/superviseServiceList', 'Integral\IntegralController@superviseServiceList');
+Route::post('value/superviseServiceAdd', 'Integral\IntegralController@superviseServiceAdd');
+Route::post('value/superviseServiceEdit', 'Integral\IntegralController@superviseServiceEdit');
+Route::post('value/superviseServiceDel', 'Integral\IntegralController@superviseServiceDel');
 Route::post('value/salesData', 'Integral\IntegralController@salesData');
 Route::post('value/dictData', 'Integral\IntegralController@dictData');
 Route::post('value/importIntegral', 'Integral\IntegralController@importIntegral');
@@ -67,6 +71,7 @@ Route::post('value/videoPatrolAdd', 'Integral\IntegralController@videoPatrolAdd'
 Route::post('value/areaDepartmentList', 'Integral\IntegralController@areaDepartmentList');
 Route::post('value/areaShop', 'Integral\IntegralController@areaShop');
 Route::post('value/uploadPic', 'Integral\IntegralController@uploadPic');
+Route::post('value/uploadVideo', 'Integral\IntegralController@uploadVideo');
 
 
 Route::get('dict/dicts', 'System\DictController@dicts');

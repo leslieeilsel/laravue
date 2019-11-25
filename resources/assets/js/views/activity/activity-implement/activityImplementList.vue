@@ -88,6 +88,7 @@
             <Upload
               ref="upload"
               name="pic"
+              :show-upload-list="false"
               :default-file-list="editDefaultList"
               :on-success="editHandleSuccess"
               :format="['jpg', 'jpeg', 'png']"
@@ -216,8 +217,8 @@
                         })
                       }
                       this.editDefaultList = edit_img_pic;
+
                       this.editModal = true;
-                      $('.ivu-upload-list').remove();
                     }
                   }
                 }, '编辑'),
@@ -309,11 +310,11 @@
       },
       changePage(v) {
         this.searchForm.pageNumber = v;
-        this.getSalesDataList();
+        this.getActivityImplement();
       },
       changePageSize(v) {
         this.searchForm.pageSize = v;
-        this.getSalesDataList();
+        this.getActivityImplement();
       },
       handleReset(name) {
         this.$refs[name].resetFields();

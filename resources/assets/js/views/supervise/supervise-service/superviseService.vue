@@ -24,46 +24,15 @@
       <Form ref="form" :model="form" :label-width="160">
         <Row>
           <Col span="12">
-            <FormItem label="用户名" prop="ename">
-              <Input v-model="form.ename" placeholder=""></Input>
+            <FormItem label="电话" prop="phone">
+              <Input v-model="form.phone" placeholder="" ></Input>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="工号" prop="job_num">
-              <Input v-model="form.mobile" placeholder=""></Input>
+            <FormItem label="位置" prop="position">
+              <Input v-model="form.position" placeholder=""></Input>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
-          <Col span="12">
-            <FormItem label="设备号" prop="device_num">
-              <Input v-model="form.device_num" placeholder=""></Input>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="区域" prop="area">
-              <Input v-model="form.area" placeholder=""></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <FormItem label="图片" prop="pic">
-            <Upload
-              ref="upload"
-              :disabled="upbtnPicDisabled"
-              name="pic"
-              :on-success="handleSuccessPic"
-              multiple
-              :data="upData"
-              :format="['jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf']"
-              :max-size="600"
-              :on-format-error="handleFormatError"
-              :on-exceeded-size="handleMaxSize"
-              action="/api/value/uploadPic">
-              <Button icon="ios-cloud-upload-outline">上传</Button>
-              <div style="color:#ea856b">文件大小不能超过600KB,请确保上传完毕之后再提交保存</div>
-            </Upload>
-          </FormItem>
         </Row>
         <Row>
           <FormItem label="视频" prop="video">
@@ -73,7 +42,6 @@
               name="video"
               :on-success="handleSuccessVideo"
               multiple
-              :data="upData"
               :format="['mp4']"
               :on-format-error="handleFormatError"
               action="/api/value/uploadVideo">
@@ -93,16 +61,93 @@
         </Button>
       </div>
     </Modal>
+    <!-- model -->
+    <Modal
+      :mask-closable="false"
+      v-model="editModal"
+      @on-cancel="cancel"
+      :styles="{top: '20px'}"
+      width="80%"
+      title="修改活动计划">
+        <Row>
+          <Col span="8" style="border-right:1px solid #e8eaec;padding-right: 10px;">
+            <Divider>客户服务</Divider>
+            <Form ref="editForm" :model="editForm" :label-width="100" :rules="editFormValidate">
+              <FormItem label="用户电话" prop="phone">
+                <Input v-model="editForm.phone" placeholder="" readonly/>
+              </FormItem>
+              <FormItem label="位置" prop="position">
+                <Input v-model="editForm.position" placeholder="" readonly/>
+              </FormItem>
+              <FormItem label="时间" prop="date_time">
+                <Input v-model="editForm.date_time" placeholder="" readonly/>
+              </FormItem>
+              <FormItem label="服务人员区域" prop="area">
+                <Input v-model="editForm.area" placeholder="" readonly/>
+              </FormItem>
+              <FormItem label="服务人员工号" prop="job_num">
+                <Input v-model="editForm.job_num" placeholder="" readonly/>
+              </FormItem>
+              <FormItem label="服务人员姓名" prop="ename">
+                <Input v-model="editForm.ename" placeholder="" readonly/>
+              </FormItem>
+              <Divider>服务打分</Divider>
+              <FormItem label="服务打分" prop="service_grade">
+                <CheckboxGroup v-model="editForm.service_grade">
+                    <Checkbox v-for="item in dict.supervise_service" :label="item.value" :key="item.value">
+                        <span>{{ item.title }}</span>
+                    </Checkbox>
+                </CheckboxGroup>
+              </FormItem>
+              <Form-item>
+                <Button
+                  style="margin-right:5px"
+                  @click="editSubmit('editForm')"
+                  :loading="submitLoading"
+                  type="primary"
+                  icon="ios-create-outline"
+                >保存
+                </Button>
+                <Button @click="handleReset">重置</Button>
+              </Form-item>
+            </Form>
+          </Col>
+          <Col span="16">
+            <Divider>监控视频</Divider>
+            <div style="text-align:center">
+              <test-video-player v-if="load" ret="TestVideoPlayer" @play="onPlayerPlay($event)" class="vjs-custom-skin" style="width: 95%;height: 95%;display:inline-block" :options="videoOptions"></test-video-player>
+            </div>
+          </Col>
+        </Row>
+      <!-- <div slot="footer">
+        <Button @click="handleReset('editForm')" :loading="loading">重置</Button>
+        <Button
+          @click="submitF('editForm')"
+          :loading="submitLoading"
+          type="primary"
+          style="margin-left:8px"
+        >保存
+        </Button>
+      </div> -->
+    </Modal>
   </Card>
 </template>
 <script>
   import {
-    salesDataAdd,
-    salesDataList,dictData
+    superviseServiceList,
+    superviseServiceAdd,
+    superviseServiceEdit,
+    superviseServiceDel,
+    dictData
   } from '../../../api/value';
   import './superviseService.css'
+  import TestVideoPlayer from "../../my-components/test-video-player";
+  import 'videojs-flash';
 
   export default {
+    components: {
+      TestVideoPlayer
+    },
     data() {
       return {
         dataCount: 0,   // 总条数
@@ -117,87 +162,188 @@
             }
           },
           {
-            title: '用户名',
-            key: 'ename',
-            width: 100,
+            title: '电话',
+            key: 'phone',
+            width: 200,
             // fixed: 'left',
             align: "center"
           },
           {
-            title: '工号',
-            key: 'job_num',
+            title: '位置',
+            key: 'position',
             // fixed: 'left',
             width: 220,
           },
           {
-            title: '设备号',
-            key: 'device_num',
-            width: 100,
+            title: '时间',
+            key: 'date_time',
+            width: 220,
             align: 'left'
           },
           {
-            title: '区域',
-            key: 'area',
-            width: 100,
+            title: '服务人员姓名',
+            key: 'ename',
+            width: 200,
             align: "center"
           },
           {
-            title: '图片',
-            key: 'pic',
+            title: '服务人员工号',
+            key: 'job_num',
             width: 200,
             align: "left"
           },
           {
-            title: '视频',
-            key: 'video',
-            width: 100,
-            align: "right"
+            title: '服务人员区域',
+            key: 'area',
+            width: 200,
+            align: "center"
+          },
+          {
+            title: '服务打分',
+            key: 'service_grade',
+            width: 300,
+            align: "left"
+          },
+          {
+            title: '操作',
+            key: 'action',
+            width: 280,
+            fixed: 'right',
+            align: 'center',
+            render: (h, params) => {
+              let editButton;
+              let delButton;
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small',
+                    disabled: editButton,
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {                      
+                      this.editForm.id=params.row.id;
+                      this.editForm.area=params.row.area;
+                      this.editForm.date_time=params.row.date_time;
+                      this.editForm.ename=params.row.ename;
+                      this.editForm.job_num=params.row.job_num;
+                      this.editForm.phone=params.row.phone;
+                      this.editForm.position=params.row.position;
+                      
+                      console.log(params.row.video);
+                      this.load = false;
+                      this.videoOptions.sources[0].src =params.row.video;
+                      this.$nextTick(() => {
+                        this.load = true;
+                      });
+                      this.editModal = true;
+                      // $('.ivu-upload-list').remove();
+                    }
+                  }
+                }, '编辑'),
+                h('Button', {
+                  props: {
+                    type: 'error',
+                    size: 'small',
+                    disabled: delButton,
+                    // loading: _this.editFormLoading
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$Modal.confirm({
+                        title: "确认删除",
+                        loading: true,
+                        content: "您确认要删除这个数据？",
+                        onOk: () => {
+                          superviseServiceDel({id: params.row.id}).then(res => {
+                            if (res.result === true) {
+                              this.$Message.success("删除成功");
+                              this.init();
+                            } else {
+                              this.$Message.error("删除失败");
+                            }
+                            this.$Modal.remove();
+                          });
+                        }
+                      });
+                    }
+                  }
+                }, '删除')
+              ])
+            }
           }
         ],
         data: [],
         tableLoading: true,
-        loading: false,
         searchForm: {
           pageNumber: 1, // 当前页数
           pageSize: 10, // 页面大小
         },
-        submitLoading: false,
-        loading:true,
-        modal: false,
-        form: {
-          ename: '',
-          job_num: '',
-          device_num: '',
-          area: '',
-          integral: '',
-          area: '',
-          pic: '',
-          video: ''
-        },
         dictName: {
-          product_type: '产品类型',
-          business_type: '业务类型',
-          meal: '套餐',
-          is_new_user: '是否新用户'
+          supervise_service: '服务打分',
         },
         dict: {
-          product_type: [],
-          business_type: [],
-          meal: [],
-          is_new_user: []
+          supervise_service:[],
         },
-        upbtnPicDisabled: false,
+        submitLoading: false,
+        loading:false,
+        modal: false,
+        editModal:false,
+        form: {
+          phone: '',
+          position: '',
+          video: ''
+        },
+        editForm:{
+          id:0,
+          service_grade:[]
+        },
+        editFormValidate: {
+          // 表单验证规则
+        },
         upbtnVideoDisabled: false,
+        load : true,
+        videoOptions: {
+          playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
+          autoplay: true, //如果true,浏览器准备好时开始回放。
+          muted: false, // 默认情况下将会消除任何音频。
+          loop: true, // 导致视频一结束就重新开始。
+          preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+          language: 'zh-CN',
+          aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+          fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+          controls: true,
+          sources: [
+            {
+              src:"",
+              type: "video/mp4"
+            }
+          ],
+          notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+          // poster: "./fx1.png", //你的封面地址
+          controlBar: {
+            timeDivider: true,
+            durationDisplay: true,
+            remainingTimeDisplay: false,
+            fullscreenToggle: true  //全屏按钮
+          }
+        }
       }
     },
     methods: {
       init() {
-        this.getSalesDataList();
         this.getDictData();
+        this.getSuperviseServiceList();
       },
-      getSalesDataList() {
+      getSuperviseServiceList() {
         this.tableLoading = true;
-        salesDataList(this.searchForm).then(res => {
+        superviseServiceList(this.searchForm).then(res => {
           this.tableLoading = false;
           this.data = res.result;
           this.dataCount = res.total;
@@ -207,21 +353,27 @@
       },
       changePage(v) {
         this.searchForm.pageNumber = v;
-        this.getSalesDataList();
+        this.getSuperviseServiceList();
       },
       changePageSize(v) {
         this.searchForm.pageSize = v;
-        this.getSalesDataList();
+        this.getSuperviseServiceList();
+      },
+      getDictData() {
+        dictData(this.dictName).then(res => {
+          if (res.result) {
+            this.dict = res.result;            
+          }
+        });
       },
       handleReset(name) {
         this.$refs[name].resetFields();
-        this.$refs.upload.clearFiles();
       },
       submitF(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.submitLoading = true;
-            salesDataAdd(this.form).then(res => {
+            superviseServiceAdd(this.form).then(res => {
               this.submitLoading = false;
               if (res.result) {
                 this.$Message.success("服务信息填报成功");
@@ -234,20 +386,30 @@
           }
         })
       },
+      editSubmit(name) {
+            console.log(name);
+        this.$refs[name].validate((valid) => {
+          if (valid) {
+            console.log(this.editForm);
+            
+            this.submitLoading = true;          
+            superviseServiceEdit(this.editForm).then(res => {
+              this.submitLoading = false;
+              if (res.result) {
+                this.$Message.success("销售数据修改成功");
+                this.editModal = false;
+                this.getSuperviseServiceList();
+                this.cancel();
+                this.lists=[];
+              } else {
+                this.$Message.error('销售数据修改失败!');
+              }
+            });
+          }
+        })
+      },
       cancel() {
         this.$refs.form.resetFields();
-        this.handleClearFiles();
-      },
-      handleClearFiles() {
-        this.$refs.upload.clearFiles();
-      },
-      getDictData() {
-        dictData(this.dictName).then(res => {
-          console.log(res);
-          if (res.result) {
-            this.dict = res.result;
-          }
-        });
       },
       handleSuccessPic(res, file) {
         if (this.form.pic) {
@@ -257,22 +419,16 @@
         }
       },
       handleSuccessVideo(res, file) {
-        if (this.form.video) {
-          this.form.video = this.form.video + ',' + res.result;
-        } else {
+        // if (this.form.video) {
+        //   this.form.video = this.form.video + ',' + res.result;
+        // } else {
           this.form.video = res.result;
-        }
+        // }
       },
       handleFormatError(file) {
         this.$Notice.warning({
           title: '文件格式不正确',
           desc: '文件格式不正确，请选择JPG或PNG'
-        });
-      },
-      handleMaxSize(file) {
-        this.$Notice.warning({
-          title: '超出文件大小限制',
-          desc: '文件太大，不能超过600KB'
         });
       }
     },
