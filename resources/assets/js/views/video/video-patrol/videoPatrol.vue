@@ -3,19 +3,18 @@
     <Card style="height:95%;">
       <Row>
         <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
-            <FormItem label="是否无积分" prop="is_integral">
-              <i-switch size="large" v-model="searchForm.is_integral" :true-value="true" :false-value="false"  @on-change="getDepartmentList">
-                  <span slot="open">无积分</span>
-                  <span slot="close">有积分</span>
-              </i-switch>
-                <!-- <i-switch v-model="searchForm.is_integral" :true-value="true" :false-value="false" @on-change="getDepartmentList">
-                  <span slot="open">无积分</span>
-                  <span slot="close">有积分</span>
-                </i-switch> -->
-            </FormItem>
-            <FormItem label="部门" prop="department_name">
-              <Cascader v-model="department_name" :data="department_data" filterable style="width:450px"></Cascader>
-            </FormItem>
+          <FormItem label="是否无积分" prop="is_integral">
+            <i-switch size="large" v-model="searchForm.is_integral" :true-value="true" :false-value="false"  @on-change="getDepartmentList">
+                <span slot="open">无积分</span>
+                <span slot="close">有积分</span>
+            </i-switch>
+              <!-- <i-switch v-model="searchForm.is_integral" :true-value="true" :false-value="false" @on-change="getDepartmentList">
+                <span slot="open">无积分</span>
+                <span slot="close">有积分</span>
+              </i-switch> -->
+          </FormItem>
+          <FormItem label="部门" prop="department_name">
+            <Cascader v-model="department_name" :data="department_data" filterable style="width:450px"></Cascader>
           </FormItem>
           <FormItem style="margin-left:-70px;" class="br">
             <Button @click="getDepartmentInfo" type="primary" icon="ios-search">查看详情</Button>
