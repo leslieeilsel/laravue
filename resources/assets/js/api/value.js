@@ -143,6 +143,50 @@ export function areaMeritsAimDel(form) {
   });
 }
 /**
+ * 片区积分列表
+ * @returns {*}
+ */
+export function superviseServiceList(form) {
+  return request({
+    url: '/api/value/superviseServiceList',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 片区积分填报
+ * @returns {*}
+ */
+export function superviseServiceAdd(form) {
+  return request({
+    url: '/api/value/superviseServiceAdd',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 片区积分修改
+ * @returns {*}
+ */
+export function superviseServiceEdit(form) {
+  return request({
+    url: '/api/value/superviseServiceEdit',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 片区积分删除
+ * @returns {*}
+ */
+export function superviseServiceDel(form) {
+  return request({
+    url: '/api/value/superviseServiceDel',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
  * 销售数据填报
  * @returns {*}
  */
