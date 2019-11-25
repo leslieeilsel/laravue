@@ -88,12 +88,56 @@ export function videoPatrolEdit(form) {
   });
 }
 /**
+ * 获取片区下的店铺
+ * @returns {*}
+ */
+export function getAreaShop(form) {
+  return request({
+    url: '/api/value/areaShop',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
  * 片区积分列表
  * @returns {*}
  */
 export function areaMeritsAimList(form) {
   return request({
     url: '/api/value/areaMeritsAimList',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 片区积分填报
+ * @returns {*}
+ */
+export function areaMeritsAimAdd(form) {
+  return request({
+    url: '/api/value/areaMeritsAimAdd',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 片区积分修改
+ * @returns {*}
+ */
+export function areaMeritsAimEdit(form) {
+  return request({
+    url: '/api/value/areaMeritsAimEdit',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 片区积分删除
+ * @returns {*}
+ */
+export function areaMeritsAimDel(form) {
+  return request({
+    url: '/api/value/areaMeritsAimDel',
     method: 'post',
     data: { ...form }
   });
@@ -122,17 +166,6 @@ export function salesDataEdit(form) {
 }
 
 /**
- * 片区积分填报
- * @returns {*}
- */
-export function areaMeritsAimAdd(form) {
-  return request({
-    url: '/api/value/areaMeritsAimAdd',
-    method: 'post',
-    data: { ...form }
-  });
-}
-/**
  * 活动计划
  * @returns {*}
  */
@@ -150,6 +183,28 @@ export function activityPlan(form) {
 export function activityPlanAdd(form) {
   return request({
     url: '/api/value/activityPlanAdd',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 活动计划修改
+ * @returns {*}
+ */
+export function activityPlanEdit(form) {
+  return request({
+    url: '/api/value/activityPlanEdit',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 活动计划删除
+ * @returns {*}
+ */
+export function activityPlanDel(form) {
+  return request({
+    url: '/api/value/activityPlanDel',
     method: 'post',
     data: { ...form }
   });
@@ -177,6 +232,28 @@ export function activityImplementAdd(form) {
   });
 }
 /**
+ * 活动执行修改
+ * @returns {*}
+ */
+export function activityImplementEdit(form) {
+  return request({
+    url: '/api/value/activityImplementEdit',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 活动执行删除
+ * @returns {*}
+ */
+export function activityImplementDel(form) {
+  return request({
+    url: '/api/value/activityImplementDel',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
  * 获取项目库数据字典字段
  * @returns {*}
  */
@@ -194,6 +271,17 @@ export function dictData(dictName) {
 export function departmentList(form) {
   return request({
     url: '/api/value/departmentList',
+    method: 'post',
+    data: {...form}
+  });
+}
+/**
+ * 获取片区组织架构字段
+ * @returns {*}
+ */
+export function areaDepartmentList(form) {
+  return request({
+    url: '/api/value/areaDepartmentList',
     method: 'post',
     data: {...form}
   });
