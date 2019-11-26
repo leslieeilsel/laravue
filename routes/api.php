@@ -25,6 +25,9 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('user', 'AuthController@user');
+    Route::get('ding/getToken', 'Integral\DingController@getToken');
+    Route::post('ding/userId', 'Integral\DingController@userId');
+    Route::post('ding/salesDataList', 'Integral\DingController@salesDataList');
 });
 
 Route::post('user/regist', 'User\RegistController@registUser');
@@ -72,6 +75,8 @@ Route::post('value/areaDepartmentList', 'Integral\IntegralController@areaDepartm
 Route::post('value/areaShop', 'Integral\IntegralController@areaShop');
 Route::post('value/uploadPic', 'Integral\IntegralController@uploadPic');
 Route::post('value/uploadVideo', 'Integral\IntegralController@uploadVideo');
+
+
 
 
 Route::get('dict/dicts', 'System\DictController@dicts');
