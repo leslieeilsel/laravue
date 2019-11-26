@@ -47,6 +47,21 @@ class DingController extends Controller
             }
         }
     }
+    // curl
+    public function postCurl($url,$data,$type) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        if($type=='post'){
+            curl_setopt($ch, CURLOPT_POST, TRUE);
+            //设置post数据
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        }
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $json =  curl_exec($ch);
+        curl_close($ch);
+        return $json;
+    }
     //获取钉钉token
     public function getToken(){
         $appKey=env("Ding_App_Key");
