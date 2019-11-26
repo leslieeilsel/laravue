@@ -262,7 +262,8 @@
         loading: false,
         searchForm: {
           pageNumber: 1, // 当前页数
-          pageSize: 10, // 页面大小
+          pageSize: 10, // 页面大小,
+          plan_id:0
         },
         submitLoading: false,
         upbtnPicDisabled:true,
@@ -299,6 +300,7 @@
         });
       },//获取执行列表
       getActivityImplement() {
+        this.searchForm.plan_id=this.$route.params.plan_id;
         this.tableLoading = true;
         activityImplement(this.searchForm).then(res => {
           this.tableLoading = false;

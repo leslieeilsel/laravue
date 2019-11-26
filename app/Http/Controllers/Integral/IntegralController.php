@@ -295,6 +295,9 @@ class IntegralController extends Controller
         $params =  $request->input();
 
         $data = DB::table('activity');
+        if(isset($params['plan_id'])){
+            $data = $data->where('activity_plan_id',$params['plan_id']);
+        }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $data
                 ->limit($params['pageSize'])

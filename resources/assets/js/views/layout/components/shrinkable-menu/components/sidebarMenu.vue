@@ -19,13 +19,13 @@
           <span v-if="item.meta && item.meta.title">{{ item.meta.title }}</span>
         </template>
         <template v-for="child in item.children">
-          <MenuItem v-if="!child.children" :name="child.name" :key="'menuitem' + child.name">
+          <MenuItem v-if="!child.children && child.name!='activity-implement-list'" :name="child.name" :key="'menuitem' + child.name">
             <Icon v-if="child.meta && child.meta.icon" :type="child.meta.icon" :size="iconSize"
                   :key="'icon' + child.name"></Icon>
             <span v-if="child.meta && child.meta.title" :key="'title' + child.name">{{ child.meta.title }}</span>
           </MenuItem>
           <!-- submenu 有子页面 -->
-          <Submenu v-else :name="child.name" :key="child.name">
+          <!-- <Submenu v-else :name="child.name" :key="child.name">
             <template slot="title">
                 <Icon v-if="child.meta && child.meta.icon" :type="child.meta.icon" :size="iconSize"></Icon>
                 <span v-if="child.meta && child.meta.title">{{ child.meta.title }}</span>
@@ -37,7 +37,7 @@
                 <span v-if="child3.meta && child3.meta.title" :key="'title' + child3.name">{{ child3.meta.title }}</span>
               </MenuItem>
             </template>
-          </Submenu>
+          </Submenu> -->
         </template>
       </Submenu>
     </template>

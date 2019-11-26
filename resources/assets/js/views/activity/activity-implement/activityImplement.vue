@@ -231,12 +231,12 @@
                   },
                   on: {
                     click: () => {
-                      console.log(params);
+                      console.log(params.row.id);
+                      
                       this.$router.push({ 
-                          path: '/activity-implement-list',
-                          name:'activityImplementList',
-                          component:  activityImplementList,
-                          params:{id:params.row.id}})
+                          name:'activity-implement-list',
+                          params:{plan_id:params.row.id}
+                      })
                     }
                   }
                 }, '查看执行列表')
