@@ -1,0 +1,413 @@
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : 3307
+ Source Server Type    : MySQL
+ Source Server Version : 50717
+ Source Host           : localhost:3307
+ Source Schema         : tip
+
+ Target Server Type    : MySQL
+ Target Server Version : 50717
+ File Encoding         : 65001
+
+ Date: 26/11/2019 19:56:07
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for menus
+-- ----------------------------
+DROP TABLE IF EXISTS `menus`;
+CREATE TABLE `menus`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `component` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `parent_id` int(10) UNSIGNED NULL DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `link_type` int(11) NULL DEFAULT 0,
+  `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `icon` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT '',
+  `target` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '_self',
+  `enabled` int(11) NOT NULL DEFAULT 1,
+  `sort` int(11) NULL DEFAULT NULL,
+  `created_user_id` int(11) NULL DEFAULT NULL,
+  `updated_user_id` int(11) NULL DEFAULT NULL,
+  `created_at` timestamp(0) NULL DEFAULT NULL,
+  `updated_at` timestamp(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 44 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of menus
+-- ----------------------------
+INSERT INTO `menus` VALUES (1, '基础', NULL, NULL, 0, '首页', '/', 0, NULL, 'md-home', '_self', 1, 1, 1, NULL, '2018-12-27 11:50:13', '0000-00-00 00:00:00');
+INSERT INTO `menus` VALUES (2, '首页', 'home', 'views/sys/monitor/monitor', 1, '首页', '/home', 1, 'https://datav.aliyuncs.com/share/cae4ff9c43400079f20c1dc175f3f760', 'md-home', '_self', 1, 1, 1, 1, '2018-12-27 14:10:27', '2019-10-21 14:17:59');
+INSERT INTO `menus` VALUES (3, '系统管理', 'sys-manage', NULL, 0, '系统管理', '/sys-manage', 0, NULL, 'md-briefcase', '_self', 1, 99, 1, 1, '2019-01-03 14:36:56', '2019-10-19 12:06:35');
+INSERT INTO `menus` VALUES (4, '用户管理', 'users', 'views/user/users', 3, '用户管理', 'users', 0, NULL, NULL, '_self', 1, 1, 1, NULL, '2019-01-25 11:08:19', '0000-00-00 00:00:00');
+INSERT INTO `menus` VALUES (5, '角色权限管理', 'role-manage', 'views/user/role-manage', 3, '角色权限管理', 'role-manage', 0, NULL, NULL, '_self', 1, 2, 1, NULL, '2018-12-27 16:13:30', '0000-00-00 00:00:00');
+INSERT INTO `menus` VALUES (6, '部门管理', 'department-manage', 'views/sys/department-manage/departmentManage', 3, '部门管理', 'department-manage/departmentManage', 0, NULL, NULL, '_self', 1, 3, 1, NULL, '2019-01-03 14:44:20', '0000-00-00 00:00:00');
+INSERT INTO `menus` VALUES (7, '菜单管理', 'menuManage', 'views/sys/menu-manage/menuManage', 3, '重构菜单', 'menu-manage/menuManage', 0, NULL, NULL, '_self', 1, 4, 1, 1, '2019-01-23 14:45:44', '2019-11-09 22:59:09');
+INSERT INTO `menus` VALUES (8, '事件日志', 'eventlogs', 'views/sys/monitor/monitor', 3, '日志显示了程序中的潜在错误, 比如异常和调试信息。', 'eventlogs', 1, 'http://localhost:3114/logs', NULL, '_self', 1, 5, 1, 1, '2019-01-09 16:37:32', '2019-01-27 16:02:31');
+INSERT INTO `menus` VALUES (9, '操作日志', 'operationlogs', 'views/sys/operationlogs', 3, '记录系统功能操作日志', 'operationlogs', 0, NULL, NULL, '_self', 1, 6, 1, NULL, '2019-01-10 02:46:52', '0000-00-00 00:00:00');
+INSERT INTO `menus` VALUES (10, '系统设置', 'sys-setting', NULL, 0, '系统设置', '/sys-setting', 0, NULL, 'md-settings', '_self', 0, 100, 1, 1, '2019-01-25 11:03:28', '2019-10-22 09:51:15');
+INSERT INTO `menus` VALUES (11, '数据字典管理', 'dict', 'views/sys/dict-manage/dictManage', 3, '数据字典管理', 'dict-manage/dictManage', 0, NULL, NULL, '_self', 1, 1, 1, NULL, '2019-01-25 11:06:21', '0000-00-00 00:00:00');
+INSERT INTO `menus` VALUES (12, '个人中心', 'profile', 'views/sys/profile/profile', 3, '个人中心', '/sys/profile', 0, NULL, NULL, '_self', 1, 2, 1, NULL, '2019-01-18 14:54:09', '0000-00-00 00:00:00');
+INSERT INTO `menus` VALUES (13, '云监督', 'cloud_supervision', NULL, 0, NULL, '/cloud_supervision', 0, NULL, 'ios-cloud-circle', '_self', 1, 2, 1, 1, '2019-10-19 12:04:02', '2019-10-19 12:06:18');
+INSERT INTO `menus` VALUES (14, '视频巡店', 'video_shop', 'views/video/video-patrol/videoPatrol', 13, NULL, '/video_shop', 0, NULL, NULL, '_self', 1, 1, 1, 1, '2019-10-19 12:08:11', '2019-11-09 22:59:38');
+INSERT INTO `menus` VALUES (15, '服务监督', 'service_supervision', 'views/supervise/supervise-service/superviseService', 13, NULL, '/service_supervision', 0, NULL, NULL, '_self', 1, 2, 1, 1, '2019-10-19 12:08:52', '2019-11-24 18:16:04');
+INSERT INTO `menus` VALUES (16, '巡店分析', 'patrol_analysis', 'views/test/index', 13, NULL, '/patrol_analysis', 0, NULL, NULL, '_self', 1, 3, 1, 1, '2019-10-19 12:09:29', '2019-10-28 17:07:23');
+INSERT INTO `menus` VALUES (17, '服务督查分析', 'service_inspection_analysis', 'views/test/index', 13, NULL, '/service_inspection_analysis', 0, NULL, NULL, '_self', 1, 4, 1, 1, '2019-10-19 12:10:15', '2019-10-28 17:07:19');
+INSERT INTO `menus` VALUES (18, '活动管理', 'activity_management', NULL, 0, NULL, '/activity_management', 0, NULL, 'ios-people', '_self', 1, 3, NULL, NULL, '2019-10-19 12:12:57', '2019-10-19 12:13:08');
+INSERT INTO `menus` VALUES (19, '活动绩效分析', 'activity_performance_analysis', NULL, 18, NULL, '/activity_performance_analysis', 0, NULL, NULL, '_self', 1, 3, NULL, 1, '2019-10-19 12:14:36', '2019-11-05 18:25:33');
+INSERT INTO `menus` VALUES (20, '活动执行管理', 'activity_execution_management', 'views/activity/activity-implement/activityImplement', 18, NULL, '/activity_execution_management', 0, NULL, NULL, '_self', 1, 2, NULL, 1, '2019-10-19 12:53:21', '2019-11-01 15:39:09');
+INSERT INTO `menus` VALUES (21, '活动分析', 'activity_analysis', 'views/test/index', 18, NULL, '/activity_analysis', 0, NULL, NULL, '_self', 1, 4, NULL, 1, '2019-10-19 14:23:13', '2019-11-05 18:25:39');
+INSERT INTO `menus` VALUES (22, '发展积分', 'development_score', NULL, 0, NULL, '/development_score', 0, NULL, 'ios-podium', '_self', 1, 5, NULL, NULL, '2019-10-19 15:00:14', '2019-10-19 15:00:14');
+INSERT INTO `menus` VALUES (23, '价值积分', 'value_integral', NULL, 0, NULL, '/value_integral', 0, NULL, 'ios-pricetag', '_self', 1, 6, NULL, NULL, '2019-10-19 15:02:00', '2019-10-19 15:02:00');
+INSERT INTO `menus` VALUES (24, '绩效目标', 'design_BSC', 'views/development/area-merits-aim/areaMeritsAim', 22, NULL, '/design_BSC', 0, NULL, NULL, '_self', 1, 1, NULL, 1, '2019-10-19 15:03:11', '2019-10-20 16:50:59');
+INSERT INTO `menus` VALUES (25, '销售数据管理', 'sales_data_management', 'views/development/sales-data/salesData', 22, NULL, '/sales_data_management', 0, NULL, NULL, '_self', 1, 3, NULL, NULL, '2019-10-19 15:04:17', '2019-11-18 15:24:45');
+INSERT INTO `menus` VALUES (26, '发展积分分析', 'development integral analysis', 'views/test/index', 22, NULL, '/development_integral_analysis', 0, NULL, NULL, '_self', 1, 4, NULL, 1, '2019-10-19 15:05:08', '2019-11-07 15:54:24');
+INSERT INTO `menus` VALUES (27, '橙分期分析', 'orange_stage_analysis', 'views/test/index', 22, NULL, '/orange_stage_analysis', 0, NULL, NULL, '_self', 1, 5, NULL, 1, '2019-10-19 15:05:52', '2019-11-07 15:54:32');
+INSERT INTO `menus` VALUES (28, '智能宽带分析', 'wifi_analysis', 'views/test/index', 22, NULL, '/wifi_analysis', 0, NULL, NULL, '_self', 1, 6, NULL, 1, '2019-10-19 15:06:42', '2019-11-07 15:54:37');
+INSERT INTO `menus` VALUES (29, '终端销售分析', 'terminal_sales_analysis', 'views/test/index', 22, NULL, '/terminal_sales_analysis', 0, NULL, NULL, '_self', 1, 7, NULL, 1, '2019-10-19 15:07:29', '2019-11-07 15:54:42');
+INSERT INTO `menus` VALUES (30, '价值积分导入', 'value_points_import', 'views/value/value-integral/valueIntegral', 23, NULL, '/value_points_import', 0, NULL, NULL, '_self', 1, 1, NULL, 1, '2019-10-19 15:08:24', '2019-10-19 17:47:52');
+INSERT INTO `menus` VALUES (31, '价值积分分析', 'value_integral_analysis', 'views/test/index', 23, NULL, '/value_integral_analysis', 0, NULL, NULL, '_self', 1, 2, NULL, 1, '2019-10-19 15:09:06', '2019-10-28 17:06:32');
+INSERT INTO `menus` VALUES (32, '片区绩效目标', 'area_merits_aim', 'views/development/area-merits-aim/areaMeritsAim', 24, NULL, '/area_merits_aim', 0, NULL, NULL, '_self', 0, 1, NULL, 1, '2019-10-19 15:10:04', '2019-10-20 16:51:09');
+INSERT INTO `menus` VALUES (33, '门店绩效目标', 'shop_merite_aim', NULL, 24, NULL, '/shop_merite_aim', 0, NULL, NULL, '_self', 0, 2, NULL, 1, '2019-10-19 15:11:09', '2019-10-20 16:51:13');
+INSERT INTO `menus` VALUES (38, '活动计划', 'huodongjihua', 'views/activity/activity-plan/activityPlan', 18, NULL, '/activity-plan', 0, NULL, NULL, '_self', 1, 1, 1, 1, '2019-11-05 18:24:49', '2019-11-05 18:25:24');
+INSERT INTO `menus` VALUES (39, '发展积分导入', 'fazhanjifen', 'views/development/dev-integral/devIntegral', 22, NULL, '/sales_data_list', 0, NULL, NULL, '_self', 1, 2, NULL, 1, '2019-11-07 11:20:50', '2019-11-18 11:53:02');
+INSERT INTO `menus` VALUES (41, '营业情况', 'yingyqingkuang', 'views/video/video-patrol-list/videoPatrolList', 13, NULL, '/video_patrol', 0, NULL, NULL, '_self', 1, 5, 1, 1, '2019-11-21 18:40:15', '2019-11-21 18:40:43');
+INSERT INTO `menus` VALUES (43, '活动执行列表', 'activity-implement-list', 'views/activity/activity-implement/activityImplementList', 18, NULL, '/activity-implement-list', 0, NULL, '', '_self', 1, 5, 1, NULL, '2019-11-26 19:21:58', '2019-11-26 19:21:58');
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `avatar` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `desc` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `department_id` int(11) NULL DEFAULT NULL,
+  `group_id` int(11) NULL DEFAULT NULL,
+  `ding_user_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `remember_token` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+  `last_login` timestamp(0) NULL DEFAULT NULL,
+  `created_at` timestamp(0) NULL DEFAULT NULL,
+  `updated_at` timestamp(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 302 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+INSERT INTO `users` VALUES (1, 'admin', 'Admin', '15594990729', 'admin@admin.com', NULL, '$2y$10$q7IuhSqsnGL5g3CNQEypleEuDMZrJyQImZqwSlLEORMoGHBp9u9.u', '超级管理员', 1, 4, NULL, NULL, '2019-11-26 19:29:50', '2018-11-25 00:06:23', '2019-11-26 19:29:50');
+INSERT INTO `users` VALUES (2, 'user01', 'user01', '12345678900', 'user01@admin.com', NULL, '$2y$10$rtuz3jfr81IKP8Mmm/pLBOvYq270GD2ReG9FOJPzcL14DySDD7SrS', 'user01', 2, 5, NULL, NULL, '2019-01-26 11:47:04', '2019-01-09 15:11:02', '2019-01-26 11:47:04');
+INSERT INTO `users` VALUES (3, 'user02', 'user02', '12345678900', 'user02@user02.com', NULL, '$2y$10$5uRNH/DJLS9.gOYwpTp1ROmgcwl8HejJrdhhBQka/WyHxmE28jC6S', 'user02', 3, 5, NULL, NULL, NULL, '2019-01-10 02:44:13', NULL);
+INSERT INTO `users` VALUES (4, 'user03', 'user03', '12345678901', 'user03@user03.com', NULL, '$2y$10$9MoQkbhMrQfjKYhVm5ltSekQqHwb/2kuthB3tPPYvAHpymFhrgQ7u', 'user03', 3, NULL, NULL, NULL, NULL, '2019-01-22 21:46:38', NULL);
+INSERT INTO `users` VALUES (5, 'user04', 'user04', '12345678901', 'user04@user04.com', NULL, '$2y$10$Tem47zuM67AXxn8Aq/WUmuiE8p5/TGdXbMz2iCPT/JECRI/OURCmO', 'user04', 4, 3, NULL, NULL, NULL, '2019-01-22 21:51:53', NULL);
+INSERT INTO `users` VALUES (7, 'bh0026', '关成', '15319813303', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 138, 6, NULL, NULL, '2019-11-05 16:57:19', NULL, '2019-11-05 16:57:19');
+INSERT INTO `users` VALUES (8, 'bh0018', '王清亮', '13310957780', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 139, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (9, 'bh0013', '张浩', '15319806811', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 144, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (10, 'bh0022', '李长普', '15319696775', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 151, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (11, 'bh0019', '李长胜', '15399363968', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 152, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (12, 'bh0020', '柯凯', '18009157878', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 148, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (13, 'bh0027', '王猛', '17719693007', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 148, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (14, 'bh0015', '张吉应', '15332662898', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 149, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (15, 'bh0016', '柯尊伟', '18091510191', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 140, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (16, 'bh0001', '张军', '17391307800', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 141, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (17, 'bh0008', '汪光涛', '17791172036', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 146, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (18, 'bh0009', '程宝', '13359158377', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 147, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (19, 'bh0012', '李福佩', '15332697806', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 147, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (20, 'bh0017', '彭浩', '15319807830', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 142, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (21, 'bh0011', '刘英地', '13359155456', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 143, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (22, 'bh0003', '闻世洋', '18991557708', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 153, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (23, 'cj0010', '张启平', '18992500003', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 159, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (24, 'cj0011', '郑太虎', '15332669877', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 160, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (25, 'cj0006', '徐建康', '15332667139', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 163, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (26, 'cj0036', '汪守峰', '13379358765', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 164, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (27, 'cj0002', '徐海京', '15332667110', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (28, 'cj0019', '王业信', '15319850009', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 173, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (29, 'cj0021', '张奇', '18109159388', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 173, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (30, 'cj0031', '余杰', '15332669875', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 174, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (31, 'cj0016', '王明刚', '15332669856', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 25, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (32, 'cj0005', '周斌斌', '19991541288', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 155, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (33, 'cj0009', '李雨富', '18992595955', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (34, 'cj0017', '朱微波', '15332669798', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 30, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (35, 'cj0052', '张道安', '13389155321', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 30, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (36, 'cj0051', '汪姗姗', '18992560222', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 166, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (37, 'cj0020', '汪梦奇', '18091557654', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 167, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (38, 'cj0014', '张斌', '15399363599', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 161, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (39, 'cj0008', '陈忠存', '15332669862', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 162, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (40, 'cj0012', '马永生', '18091530508', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 162, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (41, 'cj0035', '刘来乾', '15332669871', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 169, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (42, 'cj0007', '陈显鹏', '15319810288', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 170, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (43, 'cj0023', '胡家军', '15332669886', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 171, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (44, 'cj0025', '陈俊平', '15332669890', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 156, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (45, 'cj0028', '李慷', '18991529220', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 157, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (46, 'zd0250', '陈洪刚', '15336276883', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 177, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (47, 'zd0072', '罗金来', '15332669759', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 177, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (48, 'zd0086', '成龙', '15319843337', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 177, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (49, 'zd0048', '赖兵', '15332666852', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 178, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (50, 'zd0073', '王文学', '15389152181', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 178, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (51, 'zd0069', '胡伟', '17709157800', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 179, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (52, 'zd0090', '郑将猛', '15332667894', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 182, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (53, 'zd0224', '刘迎', '17772968345', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 182, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (54, 'zd0066', '李杰', '15332663631', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 182, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (55, 'zd0045', '周定乐', '18992561188', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 180, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (56, 'zd0089', '马睿', '18991557975', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 180, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (57, 'zd0058', '杨存海', '17709151700', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 180, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (58, 'zd0087', '彭仕明', '13319159127', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 181, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (59, 'zd0084', '程良高', '17392408833', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 181, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (60, 'zd0030', '王帅', '13379156126', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 194, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (61, 'zd0051', '刘益安', '17709158810', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 195, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (62, 'zd0064', '余磊', '18009159871', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 195, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (63, 'zd0054', '梁安', '17709153485', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 196, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (64, 'zd0055', '冯康', '18009153215', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 191, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (65, 'zd0034', '李顺', '19916130199', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 191, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (66, 'zd0057', '王超', '15332660737', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 192, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (67, 'zd0120', '范锦华', '15353262137', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 193, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (68, 'zd0033', '景山', '18992517776', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 188, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (69, 'zd0059', '邓国庆', '15332669732', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 188, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (70, 'zd0042', '邓世军', '17709156591', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 188, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (71, 'zd0014', '杨辉', '13359150066', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 189, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (72, 'zd0070', '刘欢', '15336267769', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 189, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (73, 'zd0044', '邹宁', '19991544414', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 189, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (74, 'zd0043', '胡安帮', '13379152021', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 189, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (75, 'zd0035', '陈小姣', '15353353332', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 190, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (76, 'zd0060', '来友安', '15332666069', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 190, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (77, 'zd0056', '赵西飞', '13379590926', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (78, 'zd0041', '陈建青', '18991552377', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (79, 'zd0085', '汪明磊', '15332665600', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 38, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (80, 'zd0065', '张光祥', '17772989382', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 186, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (81, 'zd0031', '林永昌', '17729523936', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 183, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (82, 'zd0036', '罗金库', '15332669758', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 183, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (83, 'zd0067', '郭海斌', '15399360031', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 184, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (84, 'zd0039', '唐磊', '15332669539', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 185, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (85, 'zd0032', '田旭雷', '17382531982', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 185, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (86, 'zd0040', '汪勇卫', '15332662223', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 185, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (87, 'hy0040', '张元军 ', '15336292827', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 203, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (88, 'hy0029', '石业平', '17709150093', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 204, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (89, 'hy0033', '郭木金', '15309158191', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 204, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (90, 'hy0011', '王文鹏', '15332688986', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 205, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (91, 'hy0008', '成家军', '13324631978', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 211, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (92, 'hy0019', '董鑫', '17709158768', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 211, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (93, 'hy0015', '纪慧', '18109157799', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 212, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (94, 'hy0043', '李力', '17791170860', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 213, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (95, 'hy0013', '陈联贵', '15332668365', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 200, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (96, 'hy0034', '邓树胜', '15336281197', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 201, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (97, 'zd0211', '郭光巍', '18992582174', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 55, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (98, 'hy0022', '刘光平', '15332668382', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 55, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (99, 'hy0024', '龚厚超', '15319846738', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 215, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (100, 'hy0023', '卜贤良', '13319156166', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 216, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (101, 'hy0039', '余荣桥', '15319838812', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 214, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (102, 'hy0003', '郝恒强', '15332666572', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 214, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (103, 'hy0005', '梅俊安', '18991519222', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 206, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (104, 'hy0014', '熊庆宝', '15336271768', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 207, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (105, 'hy0020', '刘亚斌', '15332668377', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 50, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (106, 'hy0037', '朱海', '18992566665', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 208, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (107, 'hy0009', '李成兵', '15332668368', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 208, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (108, 'hy0010', '张宝华', '15332668367', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 209, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (109, 'hy0012', '张小山', '19991512300', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 209, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (110, 'hy0042', '赖科', '13399255198', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 202, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (111, 'hk0004', '郭友学', '15332667211', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (112, 'hk0013', '陈栋慈', '15332667292', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 225, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (113, 'hk0014', '李昌禧', '15389506959', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 225, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (114, 'hk0015', '邝吉成', '17709155223', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 225, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (115, 'hk0016', '章生卫', '15332648180', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 225, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (116, 'hk0017', '曾超', '18909152223', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 225, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (117, 'hk0030', '胡林', '18992508373', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 229, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (118, 'hk0027', '宋文军', '18049152416', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 230, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (119, 'hk0019', '唐建平', '18109157489', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 218, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (120, 'hk0036', '黄保安', '15332667251', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 221, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (121, 'hk0040', '毛成齐', '15332667285', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 221, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (122, 'hk0042', '李金旺', '15399158199', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 221, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (123, 'hk0046', '汤岩松', '15332676886', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 222, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (124, 'hk0044', '仇明元', '18991515171', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 222, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (125, 'hk0045', '成善银', '18992533939', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 222, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (126, 'hk0006', '李文峰', '15332667252', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 223, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (127, 'hk0041', '王武斌', '18109152550', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 223, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (128, 'hk0043', '陈齐', '15336297588', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 223, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (129, 'hk0037', '李林', '15332667286', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 224, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (130, 'hk0038', '杜青', '17391394413', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 226, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (131, 'hk0020', '朱保康', '15332667289', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 227, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (132, 'hk0029', '朱涛', '15332667231', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 227, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (133, 'hk0023', '朱多宝', '13325353489', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 219, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (134, 'hk0025', '杨家根', '13389153898', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 219, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (135, 'hk0024', '魏青春', '18109157028', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 220, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (136, 'zd0046', '曹钰', '17729245777', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 238, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (137, 'zd0080', '来友康', '15332669757', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 238, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (138, 'zd0081', '韦祖立', '15332669765', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 236, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (139, 'zd0082', '王继业', '17709156190', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 236, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (140, 'zd0079', '王西京', '15332669736', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 237, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (141, 'zd0074', '李正伟', '17772935700', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 231, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (142, 'zd0078', '冯晶晶', '15336268827', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 231, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (143, 'zd0075', '付培山', '15332660165', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 231, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (144, 'zd0077', '王维军', '15332669725', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 232, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (145, 'zd0061', '陈晨', '17772971806', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 233, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (146, 'zd0216', '杨志', '15332662922', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 234, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (147, 'zd0113', '沈涛', '17772937885', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 235, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (148, 'zd0068', '梁满安', '13309154442', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 235, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (149, 'zd0111', '汪国建', '15332666685', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 235, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (150, 'lg0014', '祝振林', '15332667977', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 242, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (151, 'lg0010', '李波', '18049158852', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 243, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (152, 'lg0009', '宋美文', '15332667976', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 244, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (153, 'lg0005', '刘华攀', '13379591822', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 248, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (154, 'lg0007', '郑久松', '15332667955', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 253, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (155, 'lg0008', '范晓峰', '15309158706', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 250, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (156, 'lg0006', '胡勇', '15332667965', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 251, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (157, 'lg0017', '喻良华', '13379590535', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 252, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (158, 'lg0021', '熊鹰', '15332667961', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 254, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (159, 'lg0023', '汪光军', '17719693261', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 255, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (160, 'lg0019', '刘志彪', '15332692296', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 257, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (161, 'lg0018', '王兴波', '15332667936', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 257, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (162, 'lg0020', '朱福定', '15353271791', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 257, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (163, 'lg0013', '李德坤', '15332667975', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 247, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (164, 'lg0004', '徐家国', '15309152750', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 241, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (165, 'lg0027', '徐远洪', '15332688893', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 241, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (166, 'lg0016', '刘应林', '15353938700', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 240, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (167, 'lg0001', '祝勇', '15332667956', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 246, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (168, 'lg0026', '邱龙健', '17789247711', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 246, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (169, 'ns0009', '袁功群', '15332667705', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 259, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (170, 'ns0007', '方世宏', '18091574859', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 259, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (171, 'ns0008', '邹耀鞍', '15353920600', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 260, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (172, 'ns0010', '王朝华', '18992553618', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 260, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (173, 'ns0012', '王科学', '13399156359', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 263, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (174, 'ns0015', '王长斌', '15319823780', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 264, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (175, 'ns0013', '陈进龙', '17789231818', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 264, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (176, 'ns0023', '邹德福', '18091513829', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 261, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (177, 'ns0024', '刘正平', '15336291008', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 261, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (178, 'ns0014', '邓锡章', '15332667759', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 261, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (179, 'ns0019', '吴应奇', '15332644196', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 265, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (180, 'ns0016', '冯荣贵', '18146856822', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 265, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (181, 'ns0018', '徐多才', '15353934842', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 265, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (182, 'ns0020', '储召发', '15319699380', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 265, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (183, 'pl0017', '郑华平', '15332667881', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 271, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (184, 'pl0018', '鄢胜海', '15319841301', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 272, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (185, 'pl0016', '邹金兵', '13379159230', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 272, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (186, 'pl0010', '李兰斌', '15332667853', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 268, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (187, 'pl0011', '马涛', '15332667893', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 276, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (188, 'pl0013', '张顺华', '17709157897', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 276, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (189, 'pl0015', '沈吉权', '18091577270', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 277, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (190, 'pl0006', '王强', '15336262612', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 278, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (191, 'pl0003', '王新', '18091537959', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 278, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (192, 'pl0028', '王志武', '15332667880', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 273, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (193, 'pl0030', '冉仁辉', '15319855679', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 274, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (194, 'pl0021', '杨安宝', '17791170877', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 269, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (195, 'pl0022', '柯美平', '15332667866', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 269, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (196, 'pl0029', '陈武', '15319848898', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 279, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (197, 'pl0025', '周泽军', '18992520388', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 94, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (198, 'pl0020', '林斗平', '18091562346', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 280, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (199, 'pl0032', '尤坤虎', '15399376398', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 282, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (200, 'pl0024', '赖祖鹏', '15332667868', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 267, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (201, 'sq0005', '张辉', '15353272264', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 291, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (202, 'sq0022', '何英勇', '18992523733', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 292, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (203, 'sq0023', '熊林', '15332665998', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 293, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (204, 'sq0003', '岳中海', '15332681553', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 295, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (205, 'sq0007', '王道根', '18909152133', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 296, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (206, 'sq0004', '张勇', '18992546977', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 297, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (207, 'sq0024', '黄小龙', '15319868456', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 298, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (208, 'sq0009', '王仕敏', '13310958908', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 302, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (209, 'sq0008', '刘杰', '15332667657', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 284, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (210, 'sq0011', '余顺刚', '15332667681', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 285, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (211, 'sq0010', '段昌明', '15332667680', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 286, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (212, 'sq0016', '谭俊', '18992567558', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 290, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (213, 'sq0019', '蒋元峰', '15332667679', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 299, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (214, 'sq0012', '邹方全', '15332667677', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 299, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (215, 'sq0013', '罗昌利', '18109157753', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 300, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (216, 'sq0002', '方贤铖', '17729150057', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 301, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (217, 'sq0014', '任大海', '15332667687', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 301, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (218, 'sq0017', '周纯华', '15332667686', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 287, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (219, 'sq0015', '吴金平', '13310955557', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 288, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (220, 'sq0006', '王卓', '15353932600', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (221, 'akxy0007', '石勇', '15332668060', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 314, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (222, 'akxy0015', '李大峰', '13399159979', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 315, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (223, 'akxy0009', '魏斌', '18991532000', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 319, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (224, 'akxy0013', '樊智慧', '15332668136', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 324, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (225, 'akxy0012', '鲁须', '17772997345', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 325, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (226, 'akxy0011', '李立', '13399157365', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 325, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (227, 'akxy0014', '李松', '15399369322', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 306, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (228, 'akxy0058', '李康', '17719693966', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 309, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (229, 'akxy0008', '何小明', '15332668071', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 310, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (230, 'akxy0040', '王自林', '19991508067', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 305, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (231, 'akxy0044', '王旭', '19916113708', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 332, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (232, 'akxy0043', '朱小峰', '15332668176', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 330, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (233, 'akxy0046', '陈波', '15332668112', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 331, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (234, 'akxy0027', '朱玉峰', '18146852281', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 312, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (235, 'akxy0034', '段应新', '18992538988', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 312, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (236, 'akxy0032', '梁伟', '18191596766', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 313, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (237, 'akxy0035', '李晨', '15389518080', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 313, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (238, 'akxy0037', '崔世文', '17772973271', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 307, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (239, 'akxy0038', '吴胜远', '19945564362', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 303, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (240, 'akxy0041', '丰顺旭', '15389516899', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 304, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (241, 'akxy0036', '张齐', '15332668090', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 304, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (242, 'akxy0022', '李道辉', '15332668075', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 323, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (243, 'akxy0033', '宋飞', '17349444606', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 323, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (244, 'akxy0024', '陈进宝', '18992562520', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 323, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (245, 'akxy0023', '董波', '13309158116', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 326, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (246, 'akxy0025', '李从乾', '15332668126', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 326, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (247, 'akxy0028', '敖红玲', '18992581666', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 320, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (248, 'akxy0029', '刘明波', '15332686536', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 320, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (249, 'akxy0026', '李方力', '15332667739', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 322, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (250, 'akxy0030', '胡元生', '13379455378', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 322, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (251, 'akxy0031', '郑宗波', '19945562678', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 322, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (252, 'akxy0048', '薛猛', '13379452188', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 321, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (253, 'akxy0050', '龙垂峰', '13399159123', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 316, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (254, 'akxy0068', '程贤行', '15384552225', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 318, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (255, 'akxy0047', '刘家府', '15332662280', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 318, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (256, 'akxy0049', '王朝', '17391302228', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 317, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (257, 'akxy0042', '宋宗锋', '15332668103', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 308, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (258, 'akxy0019', '张兆平', '15353268452', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 328, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (259, 'akxy0021', '张纯斌', '18992537688', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 328, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (260, 'akxy0017', '刘启良', '15332668121', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 327, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (261, 'akxy0020', '赵行庆', '15332668120', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 327, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (262, 'akxy0016', '李从菊', '15332668117', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 329, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (263, 'zp0016', '谢东坡', '15353921099', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 339, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (264, 'zp0008', '张龙', '17719695123', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 340, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (265, 'zp0002', '徐坤堃', '18091563545', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 334, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (266, 'zp0004', '谢小明', '15332667529', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (267, 'zp0005', '高辉', '18009153715', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (268, 'zp0011', '谭松', '17791174966', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 335, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (269, 'zp0010', '刘定新', '15332667526', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 338, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (270, 'zp0006', '杨文', '18991558068', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 337, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (271, 'zd0097', '赵飞', '15332669590', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (272, 'zd0201', '曹劲', '15353926333', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (273, 'zd0050', '马祥刚', '17729150987', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (274, 'zd0062', '赵贝蓓', '13309152323', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (275, 'zd0071', '马祥波', '15332669761', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (276, 'zd0017', '陈辉平', '18991511880', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (277, 'zd0037', '范芳斌', '18991510192', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, NULL, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (278, 'zy0018', '纪小俊', '18992559778', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 347, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (279, 'zy0021', '文优义', '13379412344', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 348, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (280, 'zy0025', '王紫培', '15353934949', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 345, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (281, 'zy0031', '乌星国', '15353251776', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 363, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (282, 'zy0016', '刘涛', '15332668276', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 364, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (283, 'zy0019', '余自成', '17772959692', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 131, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (284, 'zy0015', '杨涛', '15332660906', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 350, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (285, 'zy0017', '曾庆刚', '15332657009', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 351, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (286, 'zy0020', '高贵国', '15332661416', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 353, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (287, 'zy0022', '孙甫双', '15319850503', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 365, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (288, 'zy0023', '吴佼轩', '18091540334', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 366, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (289, 'zy0033', '黄学松', '17382527772', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 356, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (290, 'zy0029', '田宗明', '18992588777', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 357, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (291, 'zy0027', '朱荟', '15332692738', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 359, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (292, 'zy0030', '邹童超', '13379152299', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 360, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (293, 'zy0026', '王吕安', '13389153209', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 361, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (294, 'zy0028', '曾凡洪', '13399250651', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 361, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (295, 'zy0013', '王枣园', '18992557591', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 342, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (296, 'zy0009', '彭慈山', '17729527900', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 343, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (297, 'zy0037', '王瑞', '15332655885', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 344, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (298, 'zy0036', '王举举', '17772959080', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 344, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (299, 'zy0012', '张作鹏', '18992526686', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 354, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (300, 'zy0010', '李超', '15319693866', NULL, NULL, '$2y$10$18MWI94JyFQ8fCLDwmqBG.Cpo1xG5axTJnVbZhJFwa3BZuJcJVcHa', NULL, 355, 6, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` VALUES (301, '', NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+SET FOREIGN_KEY_CHECKS = 1;
