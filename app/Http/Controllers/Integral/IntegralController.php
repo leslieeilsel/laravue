@@ -756,7 +756,7 @@ class IntegralController extends Controller
         $params = $request->all();
         $suffix = $params['video']->getClientOriginalExtension();
         $path = Storage::putFileAs(
-            'public/value/supervise/',
+            'public/value/supervise',
             $request->file('video'),
             rand(1000000, time()) . '.' . $suffix   
         );

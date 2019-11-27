@@ -42,7 +42,7 @@
               name="video"
               :on-success="handleSuccessVideo"
               multiple
-              :format="['mp4']"
+              :format="['mp4','mov']"
               :on-format-error="handleFormatError"
               action="/api/value/uploadVideo">
               <Button icon="ios-cloud-upload-outline">上传</Button>
@@ -428,7 +428,7 @@
       handleFormatError(file) {
         this.$Notice.warning({
           title: '文件格式不正确',
-          desc: '文件格式不正确，请选择JPG或PNG'
+          desc: '文件格式不正确，请选择mp4或mov'
         });
       }
     },
