@@ -773,6 +773,10 @@ class IntegralController extends Controller
         $service = Dict::getOptionsArrByName('服务打分');
         foreach($result as $k=>$v){
             $result[$k]['service_grade_id']=$v['service_grade'];
+            $users=DB::table('users')->where('id',$v['user_id'])->first();
+            $result[$k]['area']=DB::table('iba_system_department')->where('id',$v['department_id'])->value('title');
+            $result[$k]['ename']=$users['name'];
+            $result[$k]['job_num']=$users['username'];
             $grade='';
             if($v['service_grade']){
                 $service_grade=json_decode($v['service_grade'],true);
@@ -780,10 +784,6 @@ class IntegralController extends Controller
                     $grade = $grade .','. $service[$v];
                 }
             }
-            $users=DB::table('users')->where('id',$v['user_id'])->first();
-            $result[$k]['area']=DB::table('iba_system_department')->where('id',$v['department_id'])->value('title');
-            $result[$k]['ename']=$users['name'];
-            $result[$k]['job_num']=$users['username'];
             $result[$k]['service_grade']=substr($grade,1);
         }
 
