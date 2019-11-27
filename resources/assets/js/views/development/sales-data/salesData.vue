@@ -171,7 +171,7 @@
           </Col>
           <Col span="12">
             <FormItem label="积分" prop="int_num">
-              <Input type="text" :rows="3" v-model="editForm.int_num" placeholder="请输入..."/>
+              <Input v-model="editForm.int_num" placeholder="请输入..."/>
             </FormItem>
           </Col>
         </Row>
@@ -462,7 +462,7 @@
             {required: true, message: "请选择业务类型", trigger: 'change', type: 'number'}
           ],
           int_num: [
-            {required: true, message: "请填写积分", trigger: 'change', type: 'number'}
+            {required: true, message: "请填写积分"}
           ]
         },
         editForm: {
@@ -489,7 +489,7 @@
             {required: true, message: "请选择业务类型", trigger: 'change', type: 'number'}
           ],
           int_num: [
-            {required: true, message: "请填写积分", trigger: 'change'}
+            {required: true, message: "请填写积分"}
           ]
         },
         dictName: {
