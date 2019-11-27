@@ -224,7 +224,7 @@
                     marginRight: '5px'
                   },
                   on: {
-                    click: () => {                      
+                    click: () => {        
                       this.editForm.id=params.row.id;
                       this.editForm.area=params.row.area;
                       this.editForm.date_time=params.row.date_time;
@@ -232,8 +232,8 @@
                       this.editForm.job_num=params.row.job_num;
                       this.editForm.phone=params.row.phone;
                       this.editForm.position=params.row.position;
-                      
-                      console.log(params.row.video);
+                      this.editForm.service_grade=JSON.parse(params.row.service_grade_id);
+                      console.log(params.row);
                       this.load = false;
                       this.videoOptions.sources[0].src =params.row.video;
                       this.$nextTick(() => {

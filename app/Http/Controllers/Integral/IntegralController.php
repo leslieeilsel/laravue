@@ -770,11 +770,21 @@ class IntegralController extends Controller
     {   
         $params =  $request->input();
         $result = DB::table('supervise_service')->orderBy('id','desc')->get()->toArray();
+        $service = Dict::getOptionsArrByName('服务打分');
         foreach($result as $k=>$v){
+            $result[$k]['service_grade_id']=$v['service_grade'];
+            $grade='';
+            if($v['service_grade']){
+                $service_grade=json_decode($v['service_grade'],true);
+                foreach($service_grade as $v){
+                    $grade = $grade .','. $service[$v];
+                }
+            }
             $users=DB::table('users')->where('id',$v['user_id'])->first();
             $result[$k]['area']=DB::table('iba_system_department')->where('id',$v['department_id'])->value('title');
             $result[$k]['ename']=$users['name'];
             $result[$k]['job_num']=$users['username'];
+            $result[$k]['service_grade']=substr($grade,1);
         }
 
         return response()->json(['result' => $result], 200);
