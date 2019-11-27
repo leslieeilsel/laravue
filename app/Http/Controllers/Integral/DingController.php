@@ -101,6 +101,20 @@ class DingController extends Controller
         }
         return response()->json(['result' => $arr,'ids'=>$ids?$ids:false], 200);;
     }
+    /**
+     * 获取项目库表单中的数据字典数据多个
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function dictData(Request $request)
+    {
+        $a=1;
+        $c=1;
+        $nameArr = $request->input('dictName');
+        $result = Dict::getOptionsByNameArr($nameArr);
+        return response()->json(['result' => $result], 200);
+    }
     //销售数据列表
     public function salesDataList(Request $request)
     {   
@@ -167,18 +181,22 @@ class DingController extends Controller
 
         return response()->json(['result' => $data, 'total' => $count], 200);
     }
-    /**
-     * 获取项目库表单中的数据字典数据多个
-     *
-     * @param Request $request
-     * @return array
-     */
-    public function dictData(Request $request)
+    //销售数据填报
+    public function salesDataAdd(Request $request)
     {
-        $a=1;
-        $c=1;
-        $nameArr = $request->input('dictName');
-        $result = Dict::getOptionsByNameArr($nameArr);
+        $params =  $request->input();
+        $params['set_meal']=json_encode($params['meal_info']);
+        unset($params['meal'],$params['meal_info'],$params['meal_type'],$params['integral']);
+        $users=$this->user->id;
+        $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
+        $params['area'] = $area;
+        $params['applicant'] = $users;
+        $params['date_time'] = date('Y-m-d');
+        $params['created_at']=date('Y-m-d H:i:s');
+        $id = DB::table('integral')->insertGetId($params);
+
+        $result = $id ? true : false;
+
         return response()->json(['result' => $result], 200);
     }
 }
