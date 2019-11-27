@@ -243,7 +243,7 @@
                       // $('.ivu-upload-list').remove();
                     }
                   }
-                }, '编辑'),
+                }, '考核'),
                 h('Button', {
                   props: {
                     type: 'error',
@@ -396,13 +396,13 @@
             superviseServiceEdit(this.editForm).then(res => {
               this.submitLoading = false;
               if (res.result) {
-                this.$Message.success("销售数据修改成功");
+                this.$Message.success("服务信息修改成功");
                 this.editModal = false;
                 this.getSuperviseServiceList();
                 this.cancel();
                 this.lists=[];
               } else {
-                this.$Message.error('销售数据修改失败!');
+                this.$Message.error('服务信息修改失败!');
               }
             });
           }
