@@ -175,6 +175,8 @@ class DingController extends Controller
      */
     public function dictData(Request $request)
     {
+        $a=1;
+        $c=1;
         $nameArr = $request->input('dictName');
         $result = Dict::getOptionsByNameArr($nameArr);
         return response()->json(['result' => $result], 200);
