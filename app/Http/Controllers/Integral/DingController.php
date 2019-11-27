@@ -167,5 +167,17 @@ class DingController extends Controller
 
         return response()->json(['result' => $data, 'total' => $count], 200);
     }
+    /**
+     * 获取项目库表单中的数据字典数据多个
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function dictData(Request $request)
+    {
+        $nameArr = $request->input('dictName');
+        $result = Dict::getOptionsByNameArr($nameArr);
+        return response()->json(['result' => $result], 200);
+    }
 }
                      

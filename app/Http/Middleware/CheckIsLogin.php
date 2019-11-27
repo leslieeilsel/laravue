@@ -22,7 +22,8 @@ class CheckIsLogin
             'api/ding/getToken',
             'api/ding/userId',
             'api/ding/userNotify',
-            'api/ding/salesData'
+            'api/ding/salesData',
+            'api/ding/dictData'
         ];
         $uri = $request->route()->uri();
         if (!in_array($uri, $whiteList)) {

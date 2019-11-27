@@ -28,6 +28,7 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::get('ding/getToken', 'Integral\DingController@getToken');
     Route::post('ding/userId', 'Integral\DingController@userId');
     Route::post('ding/salesDataList', 'Integral\DingController@salesDataList');
+    Route::post('ding/dictData', 'Integral\IntegralController@dictData');
 });
 
 Route::post('user/regist', 'User\RegistController@registUser');
