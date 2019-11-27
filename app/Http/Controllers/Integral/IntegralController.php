@@ -184,7 +184,6 @@ class IntegralController extends Controller
         $params =  $request->input();
         $params['set_meal']=json_encode($params['meal_info']);
         unset($params['meal'],$params['meal_info'],$params['meal_type'],$params['integral']);
-        $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
         $users=$this->user->id;
         $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
         $params['area'] = $area;
