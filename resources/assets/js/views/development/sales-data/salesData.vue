@@ -485,14 +485,11 @@
           project_type: [
             {required: true, message: "请选择产品类型", trigger: 'change', type: 'number'}
           ],
-          terminal_type: [
-            {required: true, message: "请选择终端类型", trigger: 'change', type: 'number'}
-          ],
           business_type: [
             {required: true, message: "请选择业务类型", trigger: 'change', type: 'number'}
           ],
           int_num: [
-            {required: true, message: "请填写积分", trigger: 'change', type: 'number'}
+            {required: true, message: "请填写积分", trigger: 'change'}
           ]
         },
         dictName: {
