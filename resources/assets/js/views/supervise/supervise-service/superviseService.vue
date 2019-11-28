@@ -1,7 +1,7 @@
 <template>
   <Card>
     <p class="btnGroup">
-      <Button type="primary" @click="modal = true" icon="md-add">服务信息填报</Button>
+      <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">服务信息填报</Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Row type="flex" justify="end" class="page">
@@ -101,6 +101,12 @@
                     </Checkbox>
                 </CheckboxGroup> -->
               </FormItem>
+              <!-- <FormItem label="合计: ">
+                {{service_grade}}
+              </FormItem> -->
+              <div style="width:65%;">
+                <h2 style="text-align: center;">合计 :  <font style="color:red">{{service_grade}}</font> 分</h2>
+              </div>
               <Form-item>
                 <Button
                   style="margin-right:5px"
@@ -212,8 +218,10 @@
             fixed: 'right',
             align: 'center',
             render: (h, params) => {
-              let editButton;
-              let delButton;
+              let editButton=true;
+              let delButton=true;
+              this.users.group_id===8?editButton=false:editButton=true;
+              this.users.group_id===6?delButton=false:delButton=true;
               return h('div', [
                 h('Button', {
                   props: {
@@ -225,7 +233,9 @@
                     marginRight: '5px'
                   },
                   on: {
-                    click: () => {        
+                    click: () => {     
+                      console.log(params.row);
+                      this.service_grade=params.row.service_grade;
                       this.editForm.id=params.row.id;
                       this.editForm.area=params.row.area;
                       this.editForm.date_time=params.row.date_time;
@@ -299,7 +309,7 @@
           {
             title: '项目',
             key: 'title',
-            width: 150,
+            width: 100,
             // fixed: 'left',
             align: "center"
           },
@@ -307,10 +317,11 @@
             title: '分值',
             key: 'service_grade',
             // fixed: 'left',
-            width: 150,
+            width: 100,
           }
         ],
         data: [],
+        isShowButton: false,
         tableLoading: true,
         searchForm: {
           pageNumber: 1, // 当前页数
@@ -340,7 +351,9 @@
         },
         switchVideoData:[],
         videoForm:{switchVideo:0},
+        service_grade:0,
         upbtnVideoDisabled: false,
+        users:{},
         load : true,
         videoOptions: {
           playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
@@ -366,11 +379,14 @@
             remainingTimeDisplay: false,
             fullscreenToggle: true  //全屏按钮
           },
+
         }
       }
     },
     methods: {
       init() {
+        this.users=this.$store.getters.user;
+        this.isShowButton=this.users.group_id===6
         this.getDictData();
         this.getSuperviseServiceList();
       },
@@ -426,7 +442,12 @@
             superviseServiceEdit(this.editForm).then(res => {
               this.submitLoading = false;
               if (res.result) {
-                this.$Message.success("服务信息修改成功");
+                this.$Message.success("服务信息修改成功");   
+                this.load = false;
+                this.videoOptions.sources[0].src = '';
+                this.$nextTick(() => {
+                  this.load = true;
+                });
                 this.editModal = false;
                 this.getSuperviseServiceList();
                 this.cancel();
@@ -457,9 +478,7 @@
       changeSelect(data){
         this.editForm.service_grade=data;
       },
-      chanageVideo(id){
-        console.log(id);
-        
+      chanageVideo(id){        
         this.load = false;
         this.videoOptions.sources[0].src =this.switchVideoData[id];
         this.$nextTick(() => {

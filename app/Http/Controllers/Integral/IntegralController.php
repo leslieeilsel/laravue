@@ -680,7 +680,6 @@ class IntegralController extends Controller
     public function departmentInfo(Request $request)
     {   
         $params =  $request->input();
-
         $result = DB::table('department_info')->where('department_id',$params['id'])->first();
         $result['url']=DB::table('video_url')->where('department_name',$result['channel_name'])->value('url');
         return response()->json(['result' => $result], 200);

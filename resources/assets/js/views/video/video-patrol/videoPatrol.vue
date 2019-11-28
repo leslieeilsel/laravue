@@ -162,7 +162,7 @@
               type: "rtmp/mp4"
             }
           ],
-          notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+          notSupportedMessage: '当前无视频监控', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
           // poster: "./fx1.png", //你的封面地址
           controlBar: {
             timeDivider: true,
@@ -206,6 +206,9 @@
             this.videoOptions.sources.src=data.url;
             console.log(data.url);
             this.load = false;
+            if(!data.url){
+              this.videoOptions.notSupportedMessage="当前店铺没有视频监控";
+            }
             this.videoOptions.sources[0].src =data.url;
             this.$nextTick(() => {
               this.load = true;
