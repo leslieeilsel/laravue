@@ -60,6 +60,7 @@ Route::post('value/superviseServiceEdit', 'Integral\IntegralController@supervise
 Route::post('value/superviseServiceDel', 'Integral\IntegralController@superviseServiceDel');
 Route::post('value/salesData', 'Integral\IntegralController@salesData');
 Route::post('value/dictData', 'Integral\IntegralController@dictData');
+Route::post('value/dictDataSupervise', 'Integral\IntegralController@dictDataSupervise');
 Route::post('value/importIntegral', 'Integral\IntegralController@importIntegral');
 Route::post('value/importValueIntegral', 'Integral\IntegralController@importValueIntegral');
 Route::post('value/activityPlan', 'Integral\IntegralController@activityPlan');
