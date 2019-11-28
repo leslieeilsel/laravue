@@ -429,7 +429,7 @@ class IntegralController extends Controller
     }
     
     /**
-     * 获取项目库表单中的数据字典数据多个
+     * 获取数据字典数据多个
      *
      * @param Request $request
      * @return array
@@ -438,6 +438,17 @@ class IntegralController extends Controller
     {
         $nameArr = $request->input('dictName');
         $result = Dict::getOptionsByNameArr($nameArr);
+        return response()->json(['result' => $result], 200);
+    }
+    /**
+     * 获取服务数据字典数据
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function dictDataSupervise(Request $request)
+    {
+        $result = DB::table('supervise_service_dict_data')->select('service_grade','title','id')->get()->toArray();
         return response()->json(['result' => $result], 200);
     }
     /**
@@ -769,21 +780,20 @@ class IntegralController extends Controller
     {   
         $params =  $request->input();
         $result = DB::table('supervise_service')->orderBy('id','desc')->get()->toArray();
-        $service = Dict::getOptionsArrByName('服务打分');
         foreach($result as $k=>$v){
             $result[$k]['service_grade_id']=$v['service_grade'];
             $users=DB::table('users')->where('id',$v['user_id'])->first();
             $result[$k]['area']=DB::table('iba_system_department')->where('id',$v['department_id'])->value('title');
             $result[$k]['ename']=$users['name'];
             $result[$k]['job_num']=$users['username'];
-            $grade='';
+            $grade=0;
             if($v['service_grade']){
                 $service_grade=json_decode($v['service_grade'],true);
                 foreach($service_grade as $v){
-                    $grade = $grade .','. $service[$v];
+                    $grade = $grade+$v['service_grade'];
                 }
             }
-            $result[$k]['service_grade']=substr($grade,1);
+            $result[$k]['service_grade']=$grade;
         }
 
         return response()->json(['result' => $result], 200);

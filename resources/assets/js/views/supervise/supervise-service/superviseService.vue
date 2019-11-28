@@ -68,6 +68,7 @@
       @on-cancel="cancel"
       :styles="{top: '20px'}"
       width="80%"
+      footer-hide='true'
       title="修改活动计划">
         <Row>
           <Col span="8" style="border-right:1px solid #e8eaec;padding-right: 10px;">
@@ -93,11 +94,12 @@
               </FormItem>
               <Divider>服务打分</Divider>
               <FormItem label="服务打分" prop="service_grade">
-                <CheckboxGroup v-model="editForm.service_grade">
+                  <Table ref="table" type="selection" max-height="500" width='360' stripe border :columns="columns_s" :data="dict.supervise_service" @on-selection-change="changeSelect"></Table>
+                <!-- <CheckboxGroup v-model="editForm.service_grade">
                     <Checkbox v-for="item in dict.supervise_service" :label="item.value" :key="item.value">
                         <span>{{ item.title }}</span>
                     </Checkbox>
-                </CheckboxGroup>
+                </CheckboxGroup> -->
               </FormItem>
               <Form-item>
                 <Button
@@ -138,7 +140,7 @@
     superviseServiceAdd,
     superviseServiceEdit,
     superviseServiceDel,
-    dictData
+    dictDataSupervise
   } from '../../../api/value';
   import './superviseService.css'
   import TestVideoPlayer from "../../my-components/test-video-player";
@@ -232,13 +234,21 @@
                       this.editForm.job_num=params.row.job_num;
                       this.editForm.phone=params.row.phone;
                       this.editForm.position=params.row.position;
-                      this.editForm.service_grade=JSON.parse(params.row.service_grade_id);
-                      console.log(params.row);
+                      // this.editForm.service_grade=JSON.parse(params.row.service_grade_id);
                       this.load = false;
                       this.videoOptions.sources[0].src =params.row.video;
                       this.$nextTick(() => {
                         this.load = true;
                       });
+                      this.$refs.table.$refs.tbody.data.forEach(v => {
+                          this.$refs.table.$refs.tbody.objData[v._index]._isChecked = false;
+                        });
+                      if(params.row.service_grade>0){
+                        let service_grade_id=eval("("+params.row.service_grade_id+")");
+                        service_grade_id.forEach(v => {
+                          this.$refs.table.$refs.tbody.objData[v.id-1]._isChecked = true;
+                        });
+                      }
                       this.editModal = true;
                       // $('.ivu-upload-list').remove();
                     }
@@ -277,6 +287,26 @@
                 }, '删除')
               ])
             }
+          }
+        ],
+        columns_s: [
+          {
+              type: 'selection',
+              width: 60,
+              align: 'center'
+          },
+          {
+            title: '项目',
+            key: 'title',
+            width: 150,
+            // fixed: 'left',
+            align: "center"
+          },
+          {
+            title: '分值',
+            key: 'service_grade',
+            // fixed: 'left',
+            width: 150,
           }
         ],
         data: [],
@@ -360,9 +390,9 @@
         this.getSuperviseServiceList();
       },
       getDictData() {
-        dictData(this.dictName).then(res => {
+        dictDataSupervise().then(res => {
           if (res.result) {
-            this.dict = res.result;            
+            this.dict.supervise_service = res.result;            
           }
         });
       },
@@ -387,11 +417,8 @@
         })
       },
       editSubmit(name) {
-            console.log(name);
         this.$refs[name].validate((valid) => {
           if (valid) {
-            console.log(this.editForm);
-            
             this.submitLoading = true;          
             superviseServiceEdit(this.editForm).then(res => {
               this.submitLoading = false;
@@ -411,25 +438,21 @@
       cancel() {
         this.$refs.form.resetFields();
       },
-      handleSuccessPic(res, file) {
-        if (this.form.pic) {
-          this.form.pic = this.form.pic + ',' + res.result;
-        } else {
-          this.form.pic = res.result;
-        }
-      },
       handleSuccessVideo(res, file) {
-        // if (this.form.video) {
-        //   this.form.video = this.form.video + ',' + res.result;
-        // } else {
+        if (this.form.video) {
+          this.form.video = this.form.video + ',' + res.result;
+        } else {
           this.form.video = res.result;
-        // }
+        }
       },
       handleFormatError(file) {
         this.$Notice.warning({
           title: '文件格式不正确',
           desc: '文件格式不正确，请选择mp4或mov'
         });
+      },
+      changeSelect(data){
+        this.editForm.service_grade=data;
       }
     },
     mounted() {
