@@ -68,7 +68,7 @@
       @on-cancel="cancel"
       :styles="{top: '20px'}"
       width="80%"
-      footer-hide='true'
+      :footer-hide='true'
       title="修改活动计划">
         <Row>
           <Col span="8" style="border-right:1px solid #e8eaec;padding-right: 10px;">
@@ -94,7 +94,7 @@
               </FormItem>
               <Divider>服务打分</Divider>
               <FormItem label="服务打分" prop="service_grade">
-                  <Table ref="table" type="selection" max-height="500" width='360' stripe border :columns="columns_s" :data="dict.supervise_service" @on-selection-change="changeSelect"></Table>
+                  <Table ref="table" type="selection" max-height="500" width='80%' stripe border :columns="columns_s" :data="dict.supervise_service" @on-selection-change="changeSelect"></Table>
                 <!-- <CheckboxGroup v-model="editForm.service_grade">
                     <Checkbox v-for="item in dict.supervise_service" :label="item.value" :key="item.value">
                         <span>{{ item.title }}</span>
@@ -116,21 +116,20 @@
           </Col>
           <Col span="16">
             <Divider>监控视频</Divider>
+            <div>
+              <Form ref="videoForm" :model="videoForm" :label-width="100">
+                <FormItem label="选择切换视频" prop="switchVideo" style="width: 50%;">
+                  <Select v-model="videoForm.switchVideo" filterable  @on-change="chanageVideo">
+                    <Option v-for="(item,index) in switchVideoData" :value="index" :key="index">视频  {{ index+1 }}</Option>
+                  </Select>
+                </FormItem>
+              </Form>
+            </div>
             <div style="text-align:center">
               <test-video-player v-if="load" ret="TestVideoPlayer" @play="onPlayerPlay($event)" class="vjs-custom-skin" style="width: 95%;height: 95%;display:inline-block" :options="videoOptions"></test-video-player>
             </div>
           </Col>
         </Row>
-      <!-- <div slot="footer">
-        <Button @click="handleReset('editForm')" :loading="loading">重置</Button>
-        <Button
-          @click="submitF('editForm')"
-          :loading="submitLoading"
-          type="primary"
-          style="margin-left:8px"
-        >保存
-        </Button>
-      </div> -->
     </Modal>
   </Card>
 </template>
@@ -234,9 +233,11 @@
                       this.editForm.job_num=params.row.job_num;
                       this.editForm.phone=params.row.phone;
                       this.editForm.position=params.row.position;
-                      // this.editForm.service_grade=JSON.parse(params.row.service_grade_id);
+                      let videoArr=params.row.video.split(",");
+                      this.switchVideoData=videoArr;
+                      // switchVideo
                       this.load = false;
-                      this.videoOptions.sources[0].src =params.row.video;
+                      this.videoOptions.sources[0].src =videoArr[0];
                       this.$nextTick(() => {
                         this.load = true;
                       });
@@ -337,6 +338,8 @@
         editFormValidate: {
           // 表单验证规则
         },
+        switchVideoData:[],
+        videoForm:{switchVideo:0},
         upbtnVideoDisabled: false,
         load : true,
         videoOptions: {
@@ -362,7 +365,7 @@
             durationDisplay: true,
             remainingTimeDisplay: false,
             fullscreenToggle: true  //全屏按钮
-          }
+          },
         }
       }
     },
@@ -453,6 +456,15 @@
       },
       changeSelect(data){
         this.editForm.service_grade=data;
+      },
+      chanageVideo(id){
+        console.log(id);
+        
+        this.load = false;
+        this.videoOptions.sources[0].src =this.switchVideoData[id];
+        this.$nextTick(() => {
+          this.load = true;
+        });
       }
     },
     mounted() {

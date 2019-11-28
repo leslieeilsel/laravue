@@ -779,7 +779,13 @@ class IntegralController extends Controller
     public function superviseServiceList(Request $request)
     {   
         $params =  $request->input();
-        $result = DB::table('supervise_service')->orderBy('id','desc')->get()->toArray();
+        $user=$this->user;
+        $group_id=$user->group_id;
+        $result = DB::table('supervise_service');
+        if($group_id===6){
+            $result->where('user_id',$user->id);
+        }
+        $result=$result->orderBy('id','desc')->get()->toArray();
         foreach($result as $k=>$v){
             $result[$k]['service_grade_id']=$v['service_grade'];
             $users=DB::table('users')->where('id',$v['user_id'])->first();
