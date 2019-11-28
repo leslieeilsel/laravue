@@ -309,6 +309,18 @@ export function dictData(dictName) {
   });
 }
 /**
+ * 获取项目库服务打分数据字典字段
+ * @returns {*}
+ */
+export function dictDataSupervise(form) {
+  return request({
+    url: '/api/value/dictDataSupervise',
+    method: 'post',
+    data: {...form}
+  });
+}
+
+/**
  * 获取组织架构字段
  * @returns {*}
  */
