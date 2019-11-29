@@ -220,8 +220,8 @@
             render: (h, params) => {
               let editButton=true;
               let delButton=true;
-              this.users.group_id===8?editButton=false:editButton=true;
-              this.users.group_id===6?delButton=false:delButton=true;
+              (this.users.group_id===8||this.users.group_id===4)?editButton=false:editButton=true;
+              (this.users.group_id===6||this.users.group_id===4)?delButton=false:delButton=true;
               return h('div', [
                 h('Button', {
                   props: {
@@ -386,7 +386,7 @@
     methods: {
       init() {
         this.users=this.$store.getters.user;
-        this.isShowButton=this.users.group_id===6
+        this.isShowButton=(this.users.group_id===6||this.users.group_id===4)
         this.getDictData();
         this.getSuperviseServiceList();
       },
