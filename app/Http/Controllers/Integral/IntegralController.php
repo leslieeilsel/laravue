@@ -118,6 +118,11 @@ class IntegralController extends Controller
         $params =  $request->input();
 
         $data = DB::table('integral');
+        $user=$this->user;
+        $group_id=$user->group_id;
+        if($group_id===7){
+            $data->where('applicant',$user->id);
+        }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $data
                 ->limit($params['pageSize'])
@@ -594,7 +599,7 @@ class IntegralController extends Controller
     
     public function getDepartmentList($applicants)
     {
-        $departments = Departments::where('id','>',1)->whereNotIn('id',$applicants)->get()->toArray();
+        $departments = Departments::where('id','>',1)->whereNotIn('id',$applicants)->where('status',1)->get()->toArray();
         $data = [];
         $d=[];
         foreach ($departments as $k => $v) {
