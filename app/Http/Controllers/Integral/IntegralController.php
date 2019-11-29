@@ -523,7 +523,7 @@ class IntegralController extends Controller
                     'area'=>$row_data[4],'six_wifi'=>$row_data[5],
                     'u_single_move'=>$row_data[8],'u_single_wifi'=>$row_data[9],
                     'u_fuse'=>$row_data[10],'u_gover_products'=>$row_data[11],
-                    'date_time'=>date("Y-m-d",strtotime("-2 day"))
+                    'date_time'=>$row_data[12]
                     ]);
             if($row==3 || $row==$highestRow){
                 $ids.=$id.'-';
@@ -570,7 +570,7 @@ class IntegralController extends Controller
                     'three_wifi'=>$row_data[2],'obu'=>$row_data[3],
                     'area'=>$row_data[4],'six_wifi'=>$row_data[5],
                     'stock_v_up'=>$row_data[7],'stock_contract'=>$row_data[8],
-                    'stock_tenure'=>$row_data[9],'date_time'=>date("Y-m-d",strtotime("-2 day"))
+                    'stock_tenure'=>$row_data[9],'date_time'=>$row_data[10]
                     ]);
             if($row==3 || $row==$highestRow){
                 $ids.=$id.'-';

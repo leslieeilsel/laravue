@@ -40,13 +40,19 @@
               ref="upload"
               :disabled="upbtnVideoDisabled"
               name="video"
+              :show-upload-list="false"
+              :before-upload="beforeUpload"
               :on-success="handleSuccessVideo"
+              :on-error="handleErrorVideo"
               multiple
               :format="['mp4','mov']"
               :on-format-error="handleFormatError"
               action="/api/value/uploadVideo">
-              <Button icon="ios-cloud-upload-outline">上传</Button>
+              <Button  type="primary" icon="ios-cloud-upload-outline" :loading="uploadLoading">上传</Button>
             </Upload>
+            <div v-for="(item,index) in defaultList">
+              {{item}}
+            </div>
           </FormItem>
         </Row>
       </Form>
@@ -337,6 +343,7 @@
         },
         submitLoading: false,
         loading:false,
+        uploadLoading:false,
         modal: false,
         editModal:false,
         form: {
@@ -356,6 +363,7 @@
         service_grade:0,
         upbtnVideoDisabled: false,
         users:{},
+        defaultList:[],
         load : true,
         videoOptions: {
           playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
@@ -463,13 +471,28 @@
       },
       cancel() {
         this.$refs.form.resetFields();
+        this.$refs.upload.clearFiles();
+        this.defaultList=[];
       },
-      handleSuccessVideo(res, file) {
+      beforeUpload(){
+        this.uploadLoading=true;
+        this.upbtnVideoDisabled=true;
+        return true;
+      },
+      handleSuccessVideo(res, file) {        
+        this.defaultList.push(res.result)
         if (this.form.video) {
           this.form.video = this.form.video + ',' + res.result;
         } else {
           this.form.video = res.result;
         }
+        this.upbtnVideoDisabled=false;
+        this.uploadLoading=false;
+      },handleErrorVideo(){
+        this.$Notice.error({
+          title: '文件上传失败',
+          desc: '文件上传失败'
+        });
       },
       handleFormatError(file) {
         this.$Notice.warning({
