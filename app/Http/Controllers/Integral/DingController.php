@@ -113,19 +113,87 @@ class DingController extends Controller
         $result = Dict::getOptionsByNameArr($nameArr);
         return response()->json(['result' => $result], 200);
     }
+    //获取销售详情
+    public function salesData(Request $request)
+    {   
+        $params =  $request->input();
+
+        $data = DB::table('integral');
+        $data=$data->where('id',$params['id'])->first();
+
+        $project_type_v = Dict::getOptionsArrByName('产品类型价值');
+        $project_type_d = Dict::getOptionsArrByName('产品类型发展');
+        $business_type = Dict::getOptionsArrByName('业务类型');
+        $is_new_user = Dict::getOptionsArrByName('是否新用户');
+        $terminal_type = Dict::getOptionsArrByName('终端类型');
+        $set_meal = Dict::getOptionsArrByName('套餐');
+        $set_meal_0 = Dict::getOptionsArrByName('融合套餐');
+        $set_meal_1 = Dict::getOptionsArrByName('单卡套餐');
+        $set_meal_2 = Dict::getOptionsArrByName('智慧企业套餐');
+        $set_up_meal = Dict::getOptionsArrByName('升级套餐');
+        $set_up_meal_0 = Dict::getOptionsArrByName('智慧家庭升级包');
+        $set_up_meal_1 = Dict::getOptionsArrByName('5G升级包');
+        $set_up_meal_2 = Dict::getOptionsArrByName('加第二路宽带');
+        $set_up_meal_3 = Dict::getOptionsArrByName('加卡');
+        $data['is_new_user'] = $is_new_user[$data['is_new_user']];
+        if($data['is_new_user']===0){
+            $data['project_type']=$project_type_v[$data['project_type']];
+        }else{
+            $data['project_type']=$project_type_d[$data['project_type']];
+        }
+        $data['business_type'] = $business_type[$data['business_type']];
+        $data['terminal_type'] = $terminal_type[$data['terminal_type']];
+
+        $set_meal_arr=json_decode($data['set_meal'],true);
+        $set_meal_info='';
+        if(isset($set_meal_arr['meal']['meal_type'])&&isset($set_meal_arr['meal']['meal'])){
+            if($set_meal_arr['meal']['meal_type']===0){
+                $meal_type=$set_meal_0[$set_meal_arr['meal']['meal']];
+            }elseif($set_meal_arr['meal']['meal_type']===1){
+                $meal_type=$set_meal_1[$set_meal_arr['meal']['meal']];
+            }elseif($set_meal_arr['meal']['meal_type']===2){
+                $meal_type=$set_meal_2[$set_meal_arr['meal']['meal']];
+            }
+            $set_meal_info='套餐：'.$meal_type;
+        }
+        if($set_meal_arr['up_meal']){
+            foreach($set_meal_arr['up_meal'] as $v){
+                if($v['meal_type']===0){
+                    $up_meal_type=$set_up_meal_0[$v['meal']];
+                }elseif($v['meal_type']===1){
+                    $up_meal_type=$set_up_meal_1[$v['meal']];
+                }elseif($v['meal_type']===2){
+                    $up_meal_type=$set_up_meal_2[$v['meal']];
+                }elseif($v['meal_type']===3){
+                    $up_meal_type=$set_up_meal_3[$v['meal']];
+                }
+                $set_meal_info=$set_meal_info.'、'.$up_meal_type;
+            }
+        }
+        $data['set_meal'] = $set_meal_info;
+        $applicant = DB::table('users')->where('id',$data['applicant'])->value('name');
+        $data['applicant'] = $applicant;
+        return response()->json(['result' => $data], 200);
+    }
     //销售数据列表
     public function salesDataList(Request $request)
     {   
         $params =  $request->input();
 
-        $data = DB::table('integral');
+        $result = DB::table('integral');
+        if(isset($params['date_time'])){
+            $result->where('date_time',$params['date_time']);
+        }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
-            $data = $data
+            $data = $result
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
+        }else{
+            $data=$result;
         }
         $data=$data->get()->toArray();
-        $count = DB::table('integral')->count();
+        $count = $result->count();
+        $total_integral=0;
         $project_type_v = Dict::getOptionsArrByName('产品类型价值');
         $project_type_d = Dict::getOptionsArrByName('产品类型发展');
         $business_type = Dict::getOptionsArrByName('业务类型');
@@ -179,9 +247,10 @@ class DingController extends Controller
             $data[$k]['set_meal'] = $set_meal_info;
             $applicant = DB::table('users')->where('id',$row['applicant'])->value('name');
             $data[$k]['applicant'] = $applicant;
+            $total_integral=$total_integral+$row['int_num'];
         }
 
-        return response()->json(['result' => $data, 'total' => $count], 200);
+        return response()->json(['result' => $data, 'total' => $count,'total_integral'=>$total_integral], 200);
     }
     //销售数据填报
     public function salesDataAdd(Request $request)
