@@ -151,25 +151,29 @@ class IntegralController extends Controller
 
             $set_meal_arr=json_decode($row['set_meal'],true);
             $set_meal_info='';
-            if($set_meal_arr['meal']['meal_type']===0){
-                $meal_type=$set_meal_0[$set_meal_arr['meal']['meal']];
-            }elseif($set_meal_arr['meal']['meal_type']===1){
-                $meal_type=$set_meal_1[$set_meal_arr['meal']['meal']];
-            }elseif($set_meal_arr['meal']['meal_type']===2){
-                $meal_type=$set_meal_2[$set_meal_arr['meal']['meal']];
-            }
-            $set_meal_info='套餐：'.$meal_type;
-            foreach($set_meal_arr['up_meal'] as $v){
-                if($v['meal_type']===0){
-                    $up_meal_type=$set_up_meal_0[$v['meal']];
-                }elseif($v['meal_type']===1){
-                    $up_meal_type=$set_up_meal_1[$v['meal']];
-                }elseif($v['meal_type']===2){
-                    $up_meal_type=$set_up_meal_2[$v['meal']];
-                }elseif($v['meal_type']===3){
-                    $up_meal_type=$set_up_meal_3[$v['meal']];
+            if(isset($set_meal_arr['meal']['meal_type'])&&isset($set_meal_arr['meal']['meal'])){
+                if($set_meal_arr['meal']['meal_type']===0){
+                    $meal_type=$set_meal_0[$set_meal_arr['meal']['meal']];
+                }elseif($set_meal_arr['meal']['meal_type']===1){
+                    $meal_type=$set_meal_1[$set_meal_arr['meal']['meal']];
+                }elseif($set_meal_arr['meal']['meal_type']===2){
+                    $meal_type=$set_meal_2[$set_meal_arr['meal']['meal']];
                 }
-                $set_meal_info=$set_meal_info.'、'.$up_meal_type;
+                $set_meal_info='套餐：'.$meal_type;
+            }
+            if($set_meal_arr['up_meal']){
+                foreach($set_meal_arr['up_meal'] as $v){
+                    if($v['meal_type']===0){
+                        $up_meal_type=$set_up_meal_0[$v['meal']];
+                    }elseif($v['meal_type']===1){
+                        $up_meal_type=$set_up_meal_1[$v['meal']];
+                    }elseif($v['meal_type']===2){
+                        $up_meal_type=$set_up_meal_2[$v['meal']];
+                    }elseif($v['meal_type']===3){
+                        $up_meal_type=$set_up_meal_3[$v['meal']];
+                    }
+                    $set_meal_info=$set_meal_info.'、'.$up_meal_type;
+                }
             }
             $data[$k]['set_meal'] = $set_meal_info;
             $applicant = DB::table('users')->where('id',$row['applicant'])->value('name');
