@@ -257,7 +257,6 @@ class DingController extends Controller
     {
         $params =  $request->input();
         $params['set_meal']=json_encode($params['meal_info']);
-        unset($params['meal'],$params['meal_info'],$params['meal_type'],$params['integral']);
         $users=$this->user->id;
         $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
         $params['area'] = $area;
@@ -268,6 +267,17 @@ class DingController extends Controller
 
         $result = $id ? true : false;
 
+        return response()->json(['result' => $result], 200);
+    }
+    
+    //个人资料
+    public function userInfo(Request $request)
+    {
+        $params =  $request->input();
+        $result=[];
+        $result['name']='汪光军';
+        $result['department']='岚皋县翼泽手机销售店';
+        $result['mobile']='17719693261';
         return response()->json(['result' => $result], 200);
     }
 }
