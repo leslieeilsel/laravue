@@ -243,17 +243,19 @@
                       this.editForm.job_num=params.row.job_num;
                       this.editForm.phone=params.row.phone;
                       this.editForm.position=params.row.position;
+                      if(params.row.video){
                       let videoArr=params.row.video.split(",");
-                      this.switchVideoData=videoArr;
-                      // switchVideo
-                      this.load = false;
-                      this.videoOptions.sources[0].src =videoArr[0];
-                      this.$nextTick(() => {
-                        this.load = true;
-                      });
-                      this.$refs.table.$refs.tbody.data.forEach(v => {
+                        this.switchVideoData=videoArr;
+                        // switchVideo
+                        this.load = false;
+                        this.videoOptions.sources[0].src =videoArr[0];
+                        this.$nextTick(() => {
+                          this.load = true;
+                        });
+                        this.$refs.table.$refs.tbody.data.forEach(v => {
                           this.$refs.table.$refs.tbody.objData[v._index]._isChecked = false;
                         });
+                      }
                       if(params.row.service_grade>0){
                         let service_grade_id=eval("("+params.row.service_grade_id+")");
                         service_grade_id.forEach(v => {
@@ -371,7 +373,7 @@
               type: "video/mp4"
             }
           ],
-          notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+          notSupportedMessage: '您还没有上传视频', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
           // poster: "./fx1.png", //你的封面地址
           controlBar: {
             timeDivider: true,

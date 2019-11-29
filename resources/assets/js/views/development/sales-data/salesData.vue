@@ -1,7 +1,7 @@
 <template>
   <Card>
     <p class="btnGroup">
-      <Button type="primary" @click="modal = true" icon="md-add">填报</Button>
+      <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">填报</Button>
     </p>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Row type="flex" justify="end" class="page">
@@ -323,8 +323,10 @@
             fixed: 'right',
             align: 'center',
             render: (h, params) => {
-              let editButton;
-              let delButton;
+              let editButton=true;
+              let delButton=true;
+              (this.users.group_id===7||this.users.group_id===4)?editButton=false:editButton=true;
+              (this.users.group_id===7||this.users.group_id===4)?delButton=false:delButton=true;
               return h('div', [
                 h('Button', {
                   props: {
@@ -428,6 +430,7 @@
         tableLoading: true,
         loading: false,
         editButton:false,
+        users:{},
         searchForm: {
           pageNumber: 1, // 当前页数
           pageSize: 10, // 页面大小
@@ -435,6 +438,7 @@
         submitLoading: false,
         modal: false,
         editModal: false,
+        isShowButton: false,
         form: {
           user_mobile: '',
           is_new_user: '',
@@ -529,6 +533,8 @@
     },
     methods: {
       init() {
+        this.users=this.$store.getters.user;
+        this.isShowButton=(this.users.group_id===7||this.users.group_id===4)
         this.getDictData();
         this.getSalesDataList();
       },
