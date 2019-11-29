@@ -477,6 +477,11 @@
       },
       changeSelect(data){
         this.editForm.service_grade=data;
+        let grade=0;
+        data.forEach(v=>{
+          grade=parseInt(grade)+parseInt(v.service_grade);
+        })
+        this.service_grade=grade;
       },
       chanageVideo(id){        
         this.load = false;

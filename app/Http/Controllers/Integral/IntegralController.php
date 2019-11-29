@@ -206,7 +206,7 @@ class IntegralController extends Controller
         $params =  $request->input();
         $id=$params['id'];
         $params['set_meal']=json_encode($params['meal_info']);
-        unset($params['meal'],$params['set_meal'],$params['meal_info'],$params['meal_type'],$params['id']);
+        unset($params['meal'],$params['meal_info'],$params['meal_type'],$params['id']);
         $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
         $params['updated_at']=date('Y-m-d H:i:s');
         $id = DB::table('integral')->where('id',$id)->update($params);

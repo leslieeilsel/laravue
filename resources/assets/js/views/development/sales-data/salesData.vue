@@ -249,7 +249,7 @@
         columns: [
           {
             type: 'index2',
-            width: 50,
+            width: 80,
             align: 'center',
             fixed: 'left',
             render: (h, params) => {
