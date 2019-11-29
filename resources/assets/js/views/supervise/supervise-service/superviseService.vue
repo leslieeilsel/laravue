@@ -437,6 +437,8 @@
               if (res.result) {
                 this.$Message.success("服务信息填报成功");
                 this.modal = false;
+                this.uploadLoading=false;
+                this.defaultList=[];
                 this.init();
               } else {
                 this.$Message.error('服务信息填报失败!');
@@ -472,6 +474,7 @@
       cancel() {
         this.$refs.form.resetFields();
         this.$refs.upload.clearFiles();
+        this.uploadLoading=false;
         this.defaultList=[];
       },
       beforeUpload(){
