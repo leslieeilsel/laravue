@@ -328,8 +328,8 @@
           this.tableLoading = false;
           this.data = res.result;
           this.dataCount = res.total;
-          this.searchForm.pageNumber = 1;
-          this.searchForm.pageSize = 10;
+          // this.searchForm.pageNumber = 1;
+          // this.searchForm.pageSize = 10;
         })
       },
       changePage(v) {
