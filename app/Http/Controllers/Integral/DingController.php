@@ -135,12 +135,12 @@ class DingController extends Controller
         $set_up_meal_1 = Dict::getOptionsArrByName('5G升级包');
         $set_up_meal_2 = Dict::getOptionsArrByName('加第二路宽带');
         $set_up_meal_3 = Dict::getOptionsArrByName('加卡');
-        $data['is_new_user'] = $is_new_user[$data['is_new_user']];
         if($data['is_new_user']===0){
             $data['project_type']=$project_type_v[$data['project_type']];
         }else{
             $data['project_type']=$project_type_d[$data['project_type']];
         }
+        $data['is_new_user'] = $is_new_user[$data['is_new_user']];
         $data['business_type'] = $business_type[$data['business_type']];
         $data['terminal_type'] = $terminal_type[$data['terminal_type']];
 
