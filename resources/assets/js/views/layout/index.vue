@@ -18,7 +18,7 @@
       <div class="main-header">
         <div class="header-middle-con">
           <div class="main-breadcrumb">
-            安康电信指挥运营平台
+            安康电信慧眼平台
           </div>
         </div>
         <div class="header-avator-con">

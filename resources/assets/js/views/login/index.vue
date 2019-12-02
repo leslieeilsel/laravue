@@ -1,6 +1,6 @@
 <template>
   <div id="background" class="content">
-    <p class="user-layout-title">安康电信指挥运营平台</p>
+    <p class="user-layout-title">安康电信慧眼平台</p>
     <Row type="flex" justify="center" class-name="row">
       <br>
       <Col class="loginFrom">
