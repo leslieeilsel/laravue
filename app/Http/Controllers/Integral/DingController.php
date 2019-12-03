@@ -259,6 +259,7 @@ class DingController extends Controller
         if(isset($params['meal_info'])){
             $params['set_meal']=json_encode($params['meal_info']);
         }
+        unset($params['meal_info']);
         // $users=$this->user->id;
         $users=1;
         // $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
