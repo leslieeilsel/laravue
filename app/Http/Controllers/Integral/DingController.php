@@ -259,8 +259,8 @@ class DingController extends Controller
         $params['set_meal']=json_encode($params['meal_info']);
         // $users=$this->user->id;
         $users=1;
-        $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
-        $params['area'] = $area;
+        // $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
+        $params['area'] = '安康市';
         $params['applicant'] = $users;
         $params['date_time'] = date('Y-m-d');
         $params['created_at']=date('Y-m-d H:i:s');
