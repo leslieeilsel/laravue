@@ -256,7 +256,9 @@ class DingController extends Controller
     public function salesDataAdd(Request $request)
     {
         $params =  $request->input();
-        $params['set_meal']=json_encode($params['meal_info']);
+        if($params['meal_info']){
+            $params['set_meal']=json_encode($params['meal_info']);
+        }
         // $users=$this->user->id;
         $users=1;
         // $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
