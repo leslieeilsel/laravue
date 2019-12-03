@@ -147,13 +147,20 @@ class IntegralController extends Controller
         foreach ($data as $k => $row) {
             $data[$k]['is_new_user'] = $is_new_user[$row['is_new_user']];
             if($row['is_new_user']===0){
-                $data[$k]['project_type']=$project_type_v[$row['project_type']];
+                if($row['project_type']>3){
+                    $data[$k]['project_type']=$project_type_v[$row['project_type']];
+                }
             }else{
-                $data[$k]['project_type']=$project_type_d[$row['project_type']];
+                if($row['project_type']<4){
+                    $data[$k]['project_type']=$project_type_d[$row['project_type']];
+                }
             }
-            $data[$k]['business_type'] = $business_type[$row['business_type']];
-            $data[$k]['terminal_type'] = $terminal_type[$row['terminal_type']];
-
+            if(isset($row['business_type'])){
+                $data[$k]['business_type'] = $business_type[$row['business_type']];
+            }
+            if(isset($row['terminal_type'])){
+                $data[$k]['terminal_type'] = $terminal_type[$row['terminal_type']];
+            }
             $set_meal_arr=json_decode($row['set_meal'],true);
             $set_meal_info='';
             if(isset($set_meal_arr['meal']['meal_type'])&&isset($set_meal_arr['meal']['meal'])){
@@ -166,7 +173,7 @@ class IntegralController extends Controller
                 }
                 $set_meal_info='套餐：'.$meal_type;
             }
-            if($set_meal_arr['up_meal']){
+            if(isset($set_meal_arr['up_meal'])){
                 foreach($set_meal_arr['up_meal'] as $v){
                     if($v['meal_type']===0){
                         $up_meal_type=$set_up_meal_0[$v['meal']];

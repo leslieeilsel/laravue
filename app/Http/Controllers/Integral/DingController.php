@@ -237,7 +237,7 @@ class DingController extends Controller
                 }
                 $set_meal_info='套餐：'.$meal_type;
             }
-            if($set_meal_arr['up_meal']){
+            if(isset($set_meal_arr['up_meal'])){
                 foreach($set_meal_arr['up_meal'] as $v){
                     if($v['meal_type']===0){
                         $up_meal_type=$set_up_meal_0[$v['meal']];
