@@ -153,7 +153,7 @@ class DingController extends Controller
                 $meal_type=$set_meal_1[$set_meal_arr['meal']['meal']];
             }elseif($set_meal_arr['meal']['meal_type']===2){
                 $meal_type=$set_meal_2[$set_meal_arr['meal']['meal']];
-            }
+            } 
             $set_meal_info='套餐：'.$meal_type;
         }
         if($set_meal_arr['up_meal']){
@@ -257,7 +257,8 @@ class DingController extends Controller
     {
         $params =  $request->input();
         $params['set_meal']=json_encode($params['meal_info']);
-        $users=$this->user->id;
+        // $users=$this->user->id;
+        $users=1;
         $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
         $params['area'] = $area;
         $params['applicant'] = $users;
@@ -278,6 +279,36 @@ class DingController extends Controller
         $result['name']='汪光军';
         $result['department']='岚皋县翼泽手机销售店';
         $result['mobile']='17719693261';
+        return response()->json(['result' => $result], 200);
+    }
+    //统计
+    public function importIntegral(Request $request)
+    {
+        //
+        $params =  $request->input();
+        $development_total=0;
+        $value_total=0;
+        $development=DB::table('import_development_integral')
+                            ->selectRaw('sum(u_single_move) as u_single_move_total,sum(u_single_wifi) as u_single_wifi_total,sum(u_fuse) as u_fuse_total,sum(u_gover_products) as u_gover_products_total,date_time')
+                            ->groupBy('date_time')
+                            ->orderBy('id','desc')
+                            ->get()->toArray();
+        $value=DB::table('import_value_integral')
+                            ->selectRaw('sum(stock_v_up) as stock_v_up_total,sum(stock_contract) as stock_contract_total,sum(stock_tenure) as stock_tenure_total,date_time')
+                            ->groupBy('date_time')
+                            ->orderBy('id','desc')
+                            ->get()->toArray();
+        foreach($development as $k=>$v){
+            $development[$k]['development_date_total']=$v['u_single_move_total'] + $v['u_single_wifi_total'] + $v['u_fuse_total'] + $v['u_gover_products_total'];
+            $development_total = $development_total + $v['u_single_move_total'] + $v['u_single_wifi_total'] + $v['u_fuse_total'] + $v['u_gover_products_total'];
+            unset($development[$k]['u_single_move_total'],$development[$k]['u_single_wifi_total'],$development[$k]['u_fuse_total'],$development[$k]['u_gover_products_total']);
+        }
+        foreach($value as $i=>$v){
+            $value[$i]['value_date_total']=$v['stock_v_up_total'] + $v['stock_contract_total'] + $v['stock_tenure_total'];
+            $value_total = $value_total + $v['stock_v_up_total'] + $v['stock_contract_total'] + $v['stock_tenure_total'];
+            unset($value[$i]['stock_v_up_total'],$value[$i]['stock_contract_total'],$value[$i]['stock_tenure_total']);
+        }
+        $result=['development'=>$development,'value'=>$value,'development_total'=>$development_total,'value_total'=>$value_total];
         return response()->json(['result' => $result], 200);
     }
 }
