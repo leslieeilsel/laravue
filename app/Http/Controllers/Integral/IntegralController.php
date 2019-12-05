@@ -256,6 +256,14 @@ class IntegralController extends Controller
             $department = DB::table('iba_system_department')->whereIn('id',json_decode($row['area'],true))->pluck('title')->toArray();
             $data[$k]['area']=implode("/",$department);
             $data[$k]['area_id']=$row['area'];
+            if($row['state']==0&&$row['plan_end_time']<date('Y-m-d')){
+                $activity = DB::table('activity')->where('activity_plan_id',$row['id'])->value('id');
+                if($activity){
+                    $id = DB::table('activity_plan')->where('id',$row['id'])->update(['state'=>1]);
+                }else{
+                    $id = DB::table('activity_plan')->where('id',$row['id'])->update(['state'=>2]);
+                }
+            }
         }
         $count = DB::table('activity_plan')->count();
 
@@ -391,22 +399,35 @@ class IntegralController extends Controller
         // $product_type = Dict::getOptionsArrByName('产品类型');
         $business_type = Dict::getOptionsArrByName('业务类型');
         foreach ($data as $k => $row) {
+            $business_target_info='';
+            if(isset($row['business_target'])&&$row['business_target']){
+                $business_target=json_decode($row['business_target'],true);
+                foreach($business_target as $bk=>$bv){
+                    $business_target_info.='、业务类型：'.$business_type[$bv['business_type']].',目标：'.$bv['target'];
+                }
+                $business_target_info=mb_substr($business_target_info,1);
+            }else{
+                $business_target=[];
+            }
             // $data[$k]['product_type'] = $product_type[$row['product_type']];
-            $data[$k]['business_type'] = $business_type[$row['business_type']];
-            $data[$k]['business_type_id'] = $row['business_type'];
+            // $data[$k]['business_type'] = $business_type[$row['business_type']];
+            // $data[$k]['business_type_id'] = $row['business_type'];
+            
+            $data[$k]['business_target'] = $business_target_info;
+            $data[$k]['business_target_id'] = $row['business_target'];
             $data[$k]['target_start_time'] = date('Y-m-d',strtotime($row['target_start_time']));
             $data[$k]['target_end_time'] = date('Y-m-d',strtotime($row['target_end_time']));
             $department = DB::table('iba_system_department')->whereIn('id',json_decode($row['duty_department'],true))->pluck('title')->toArray();
             $data[$k]['duty_department']=implode("/",$department);
             $data[$k]['duty_department_id']=$row['duty_department'];
         }
-
         return response()->json(['result' => $data, 'total' => $count], 200);
     }
     //片区积分目标填报
     public function areaMeritsAimAdd(Request $request)
     {   
         $params =  $request->input();
+        $params['business_target']=json_encode($params['business_target']);
         $params['duty_department']=json_encode($params['duty_department']);
         $params['target_start_time'] = date('Y-m-d', strtotime($params['target_start_time']));
         $params['target_end_time'] = date('Y-m-d', strtotime($params['target_end_time']));
@@ -422,6 +443,7 @@ class IntegralController extends Controller
     {
         $params =  $request->input();
         $id=$params['id'];
+        $params['business_target']=json_encode($params['business_target']);
         $params['duty_department']=json_encode($params['duty_department']);
         $params['target_start_time'] = date('Y-m-d', strtotime($params['target_start_time']));
         $params['target_end_time'] = date('Y-m-d', strtotime($params['target_end_time']));
@@ -803,10 +825,17 @@ class IntegralController extends Controller
         $result=$result->orderBy('id','desc')->get()->toArray();
         foreach($result as $k=>$v){
             $result[$k]['service_grade_id']=$v['service_grade'];
-            $users=DB::table('users')->where('id',$v['user_id'])->first();
-            $result[$k]['area']=DB::table('iba_system_department')->where('id',$v['department_id'])->value('title');
-            $result[$k]['ename']=$users['name'];
-            $result[$k]['job_num']=$users['username'];
+            if($v['user_id']){
+                $users=DB::table('users')->where('id',$v['user_id'])->first();
+            }else{
+                $result[$k]['ename']='';
+                $result[$k]['job_num']='';
+            }
+            if($v['department_id']){
+                $result[$k]['area']=DB::table('iba_system_department')->where('id',$v['department_id'])->value('title');
+            }else{
+                $result[$k]['area']='';
+            }
             $grade=0;
             if($v['service_grade']){
                 $service_grade=json_decode($v['service_grade'],true);
