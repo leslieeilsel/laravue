@@ -827,9 +827,11 @@ class IntegralController extends Controller
             $result[$k]['service_grade_id']=$v['service_grade'];
             if($v['user_id']){
                 $users=DB::table('users')->where('id',$v['user_id'])->first();
+                $result[$k]['ename']=$users['name'];
+                $result[$k]['job_num']=$users['username'];
             }else{
                 $result[$k]['ename']='';
-                $result[$k]['job_num']='';
+                $result[$k]['job_num']='';                
             }
             if($v['department_id']){
                 $result[$k]['area']=DB::table('iba_system_department')->where('id',$v['department_id'])->value('title');
