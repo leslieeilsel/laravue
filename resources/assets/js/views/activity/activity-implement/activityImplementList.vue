@@ -273,10 +273,17 @@
         areaShop:[],
         editForm: {
           activity_plan_id:0,
-          pic:''
+          pic:'',
+          remark:''
         },
         editFormValidate: {
           // 表单验证规则
+          remark: [
+            {required: true, message: "请填写活动复盘"}
+          ],
+          pic: [
+            {required: true, message: "请上传图片"}
+          ]
         },
         editDefaultList: [],
         visible: false,
@@ -287,6 +294,8 @@
     },
     methods: {
       init() {
+        console.log(2222);
+        
         this.getActivityImplement();
         this.getDepartmentList();
       },
@@ -301,6 +310,8 @@
       },//获取执行列表
       getActivityImplement() {
         this.searchForm.plan_id=this.$route.params.plan_id;
+        console.log(222);
+        
         this.tableLoading = true;
         activityImplement(this.searchForm).then(res => {
           this.tableLoading = false;
@@ -323,8 +334,6 @@
         this.$refs.upload.clearFiles();
       },
       submitF(name) {
-        console.log(this.editForm);
-        
         this.$refs[name].validate((valid) => {
           if (valid) {
             this.submitLoading = true;
@@ -416,9 +425,11 @@
           this.editForm.pic = '';
         }
       }
+    },activated(){
+      this.init();
     },
     mounted() {
-      this.init();
+      // this.init();
     }
   }
 </script>

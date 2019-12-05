@@ -48,14 +48,6 @@
             </FormItem>
           </Col>
         </Row>
-        <Row>
-          <Col span="12">
-            <FormItem label="业务类型" prop="business_type">
-              <Select v-model="form.business_type" filterable>
-                <Option v-for="item in dict.business_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
           <!-- <Col span="12">
             <FormItem label="产品类型" prop="product_type">
               <Select v-model="form.product_type" filterable>
@@ -63,11 +55,27 @@
               </Select>
             </FormItem>
           </Col> -->
-          <Col span="12">
-            <FormItem label="销售目标" prop="target">
-              <Input type="number" v-model="form.target"></Input>
+        <Row v-for="(v, index) in lists" :key="index">
+          <Col span="10">
+            <FormItem label="业务类型" :prop="'business_type_'+index">
+              <Select v-model="v.business_type" filterable>
+                <Option v-for="item in dict.business_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
+              </Select>
             </FormItem>
           </Col>
+          <Col span="10">
+            <FormItem label="销售目标" :prop="'target_'+index">
+              <Input type="number" v-model="v.target"></Input>
+            </FormItem>
+          </Col>
+          <Col span="1">&nbsp;</Col>
+          <Col span="3">
+            <Button @click="del_set_meal(index)" type="text" style="color:red">删除</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="2">&nbsp;</col>
+            <Button @click="add_set_meal" type="dashed" icon="md-add">添加业务类型</Button>
         </Row>
       </Form>
       <div slot="footer">
@@ -115,10 +123,10 @@
             </FormItem>
           </Col>
         </Row>
-        <Row>
-          <Col span="12">
-            <FormItem label="业务类型" prop="business_type">
-              <Select v-model="editForm.business_type" filterable>
+        <Row v-for="(v, index) in lists" :key="index">
+          <Col span="10">
+            <FormItem label="业务类型" :prop="'business_type_'+index">
+              <Select v-model="v.business_type" filterable>
                 <Option v-for="item in dict.business_type" :value="item.value" :key="item.value">{{ item.title }}</Option>
               </Select>
             </FormItem>
@@ -130,11 +138,19 @@
               </Select>
             </FormItem>
           </Col> -->
-          <Col span="12">
-            <FormItem label="销售目标" prop="target">
-              <Input type="number" v-model="editForm.target"></Input>
+          <Col span="10">
+            <FormItem label="销售目标" :prop="'target_'+index">
+              <Input type="number" v-model="v.target"></Input>
             </FormItem>
           </Col>
+          <Col span="1">&nbsp;</Col>
+          <Col span="3">
+            <Button @click="del_set_meal(index)" type="text" style="color:red">删除</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="2">&nbsp;</col>
+            <Button @click="add_set_meal" type="dashed" icon="md-add">添加业务类型</Button>
         </Row>
       </Form>
       <div slot="footer" class="footer_float">
@@ -180,7 +196,7 @@
           {
             title: '目标责任部门',
             key: 'duty_department',
-            width: 200,
+            width: 300,
             // fixed: 'left',
             align: "center"
           },
@@ -191,34 +207,28 @@
             width: 220,
           },
           {
+            title: '业务目标',
+            key: 'business_target',
+            width: 320,
+            align: "center"
+          },
+          {
             title: '目标开始时间',
             key: 'target_start_time',
-            width: 240,
+            width: 150,
             align: 'center'
           },
           {
             title: '目标结束时间',
             key: 'target_start_time',
-            width: 240,
+            width: 150,
             align: 'center'
           },
           {
             title: '目标时间',
             key: 'target_start_time',
-            width: 240,
+            width: 150,
             align: 'center'
-          },
-          {
-            title: '业务类型',
-            key: 'business_type',
-            width: 200,
-            align: "center"
-          },
-          {
-            title: '销售目标',
-            key: 'target',
-            width: 200,
-            align: "center"
           },
           {
             title: '操作',
@@ -247,8 +257,12 @@
                       this.editForm.duty_user=params.row.duty_user;
                       this.editForm.target_end_time=params.row.target_end_time;
                       this.editForm.target_start_time=params.row.target_start_time;
-                      this.editForm.target=params.row.target;
-                      this.editForm.business_type=parseInt(params.row.business_type_id);
+
+                      let business_target_id=JSON.parse(params.row.business_target_id);
+                      this.lists=[]; 
+                      for(let i=0;i<business_target_id.length;i++){
+                        this.lists.push({'business_type':business_target_id[i].business_type,'target':business_target_id[i].target})
+                      }
                       this.editModal = true;
                     }
                   }
@@ -303,16 +317,14 @@
           duty_user: '',
           target_start_time: '',
           target_end_time: '',
-          target: '',
-          business_type: '',
+          business_target: '',
         },
         editForm: {
           duty_department: [],
           duty_user: '',
           target_start_time: '',
           target_end_time: '',
-          target: '',
-          business_type: '',
+          business_target: '',
         },
         editFormValidate: {
         },
@@ -325,6 +337,7 @@
           business_type: []
         },
         department_data:[],
+        lists:[]
       }
     },
     methods: {
@@ -366,12 +379,18 @@
       submitF(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
+            let business_target=[];
+            this.lists.forEach(function (e) {
+              business_target.push({business_type:e.business_type,target:e.target});
+            });
+            this.form.business_target=business_target;
             this.submitLoading = true;
             areaMeritsAimAdd(this.form).then(res => {
               this.submitLoading = false;
               if (res.result) {
                 this.$Message.success("片区目标填报成功");
                 this.modal = false;
+                this.lists=[];
                 this.init();
               } else {
                 this.$Message.error('片区目标填报失败!');
@@ -394,6 +413,11 @@
       editSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
+            let business_target=[];
+            this.lists.forEach(function (e) {
+              business_target.push({business_type:e.business_type,target:e.target});
+            });
+            this.editForm.business_target=business_target;
             this.submitLoading = true;
             areaMeritsAimEdit(this.editForm).then(res => {
               this.submitLoading = false;
@@ -407,6 +431,16 @@
             });
           }
         })
+      },
+      add_set_meal(){
+        let len=0;
+        if(this.lists.length>0){
+          len=parseInt(this.lists.length)+1
+        }        
+        this.lists.push({'business_type':'','target':''});
+      },
+      del_set_meal(index){
+        this.lists.splice(index,1);
       }
     },
     mounted() {

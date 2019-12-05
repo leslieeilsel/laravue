@@ -21,7 +21,7 @@
       :styles="{top: '20px'}"
       width="850"
       title="活动执行填报">
-      <Form ref="form" :model="form" :label-width="160">
+      <Form ref="form" :model="form" :label-width="160" :rules="formValidate">
         <Row>
           <Col span="24">
             <Divider>活动计划信息</Divider>
@@ -176,6 +176,8 @@
             key: 'tags',
             width: 180,
             render: (h, params) => {
+              console.log(params.row);
+              
               let button_rbg = '';
               let activity_title = '';
 
@@ -185,15 +187,15 @@
               let day = new Date();
               day.setTime(day.getTime());
               let s2 = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();
-              if(s2>plan_end_time){
+              if(params.row.state===0){
                 button_rbg = 'warning';
-                activity_title = '活动已经结束';
-              }else if(s2<plan_start_time){
-                button_rbg = 'error';
-                activity_title = '活动还没开始';
-              }else if(s2<=plan_end_time&&s2>=plan_start_time){
+                activity_title = '未开始';
+              }else if(params.row.state===1){
                 button_rbg = 'success';
-                activity_title = '活动进行中';
+                activity_title = '已完成';
+              }else if(params.row.state===2){
+                button_rbg = 'error';
+                activity_title = '已结束';
               } 
               return h("div", [
                 h(
@@ -231,8 +233,6 @@
                   },
                   on: {
                     click: () => {
-                      console.log(params.row.id);
-                      
                       this.$router.push({ 
                           name:'activity-implement-list',
                           params:{plan_id:params.row.id}
@@ -311,7 +311,17 @@
           applicant: '',
           date_time: '',
           pic: '',
-          title:''
+          title:'',
+          remark:''
+        },
+        formValidate: {
+          // 表单验证规则
+          remark: [
+            {required: true, message: "请填写活动复盘"}
+          ],
+          pic: [
+            {required: true, message: "请上传图片"}
+          ]
         }
       }
     },

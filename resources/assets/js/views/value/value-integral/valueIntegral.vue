@@ -49,59 +49,52 @@
           {
             title: '省',
             key: 'province',
-            // fixed: 'left',
-            width: 220,
+            width: 80,
           },
           {
             title: '本地网',
             key: 'local_wifi',
-            width: 100,
-            align: 'left'
+            width: 100
           },
           {
             title: '三级网络',
             key: 'three_wifi',
-            width: 100,
-            align: "center"
+            width: 100
           },
           {
             title: 'OBU',
             key: 'obu',
-            width: 200,
-            align: "left"
+            width: 200
           },
           {
             title: '片区',
             key: 'area',
-            width: 200,
-            align: "left"
+            width: 240
           },
           {
             title: '六级网络',
             key: 'six_wifi',
-            width: 300,
-            align: "right"
+            width: 200
           },
           {
             title: '价值提升',
             key: 'stock_v_up',
-            width: 350
+            width: 100
           },
           {
             title: '续费续约  ',
             key: 'stock_contract',
-            width: 180,
-            align: "right"
+            width: 100
           },
           {
             title: '一般保有',
             key: 'stock_tenure',
-            width: 350
+            width: 100
           },
           {
             title: '日期',
             key: 'date_time',
-            width: 180
+            width: 120
           }
         ],
         data: [],

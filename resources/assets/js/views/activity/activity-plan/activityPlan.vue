@@ -157,13 +157,11 @@
             title: '活动名称',
             key: 'title',
             width: 200,
-            // fixed: 'left',
             align: "center"
           },
           {
             title: '活动地点',
             key: 'position',
-            // fixed: 'left',
             width: 220,
           },
           {

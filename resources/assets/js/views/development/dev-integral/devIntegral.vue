@@ -49,64 +49,57 @@
           {
             title: '省',
             key: 'province',
-            // fixed: 'left',
-            width: 220,
+            width: 80,
           },
           {
             title: '本地网',
             key: 'local_wifi',
-            width: 100,
-            align: 'left'
+            width: 100
           },
           {
             title: '三级网络',
             key: 'three_wifi',
-            width: 100,
-            align: "center"
+            width: 100
           },
           {
             title: 'OBU',
             key: 'obu',
-            width: 200,
-            align: "left"
+            width: 200
           },
           {
             title: '片区',
             key: 'area',
-            width: 200,
-            align: "left"
+            width: 200
           },
           {
             title: '六级网络',
             key: 'six_wifi',
-            width: 300,
-            align: "right"
+            width: 240
           },
           {
             title: '单移动',
             key: 'u_single_move',
-            width: 350
+            width: 100
           },
           {
             title: '单宽带',
             key: 'u_single_wifi',
-            width: 350
+            width: 100
           },
           {
             title: '融合  ',
             key: 'u_fuse',
-            width: 180,
-            align: "right"
+            width: 100
           },
           {
             title: '政企类产品',
             key: 'u_gover_products',
-            width: 350
+            width: 100
           },
           {
             title: '日期',
             key: 'date_time',
-            width: 180
+            width: 120
           }
         ],
         data: [],
