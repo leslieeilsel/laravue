@@ -44,6 +44,10 @@ Route::get('department/getAllDepartment', 'System\DepartmentController@getAllDep
 Route::post('department/addDepartment', 'System\DepartmentController@add');
 Route::post('department/editDepartment', 'System\DepartmentController@edit');
 
+Route::post('value/valueIntegralLogs', 'Integral\IntegralController@valueIntegralLogs');
+Route::post('value/valueIntegralLogsDel', 'Integral\IntegralController@valueIntegralLogsDel');
+Route::post('value/devIntegralLogs', 'Integral\IntegralController@devIntegralLogs');
+Route::post('value/devIntegralLogsDel', 'Integral\IntegralController@devIntegralLogsDel');
 Route::post('value/valueIntegralList', 'Integral\IntegralController@valueIntegralList');
 Route::post('value/devIntegralList', 'Integral\IntegralController@devIntegralList');
 Route::post('value/salesDataList', 'Integral\IntegralController@salesDataList');

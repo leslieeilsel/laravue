@@ -364,6 +364,49 @@ export function videoPatrolAdd(form) {
     data: {...form}
   });
 }
-
+/**
+ * 价值积分导入日志
+ * @returns {*}
+ */
+export function valueIntegralLogs(form) {
+  return request({
+    url: '/api/value/valueIntegralLogs',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 价值积分导入日志 删除
+ * @returns {*}
+ */
+export function valueIntegralLogsDel(form) {
+  return request({
+    url: '/api/value/valueIntegralLogsDel',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 发展积分导入日志
+ * @returns {*}
+ */
+export function devIntegralLogs(form) {
+  return request({
+    url: '/api/value/devIntegralLogs',
+    method: 'post',
+    data: { ...form }
+  });
+}
+/**
+ * 发展积分导入日志 删除
+ * @returns {*}
+ */
+export function devIntegralLogsDel(form) {
+  return request({
+    url: '/api/value/devIntegralLogsDel',
+    method: 'post',
+    data: { ...form }
+  });
+}
 
 

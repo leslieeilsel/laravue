@@ -543,7 +543,13 @@ class IntegralController extends Controller
             $data[]=$row;
             $row_data = [];
             for ($column = 1; $column <= $highestColumnIndex; $column++) {
-                $row_data[] = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                $value=$worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                if($column==13){
+                    $value = intval(($value - 25569) * 3600 * 24);     //转换成1970年以来的秒数 
+                    $row_data[] = gmdate('Y-m-d',$value);  
+                }else{
+                    $row_data[] = $value;
+                }
             }
             $id = DB::table('import_development_integral')
                 ->insertGetId([
@@ -562,8 +568,9 @@ class IntegralController extends Controller
         $users=Auth::user();
         DB::table('import_log')
                 ->insertGetId([
-                    'title'=>'导入发展积分','table_name'=>'import_value_integral',
-                    'desc'=>substr($ids,0,strlen($ids)-1),'user_id'=>$users['id']
+                    'title'=>'导入发展积分','table_name'=>'import_development_integral',
+                    'desc'=>substr($ids,0,strlen($ids)-1),'user_id'=>$users['id'],
+                    'created_at'=>date('Y-m-d H:i:s')
                     ]);
         return response()->json(['result' => true], 200);
     }
@@ -591,7 +598,13 @@ class IntegralController extends Controller
             $data[]=$row;
             $row_data = [];
             for ($column = 1; $column <= $highestColumnIndex; $column++) {
-                $row_data[] = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                $value=$worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                if($column==11){
+                    $value = intval(($value - 25569) * 3600 * 24);     //转换成1970年以来的秒数 
+                    $row_data[] = gmdate('Y-m-d',$value);  
+                }else{
+                    $row_data[] = $value;
+                }
             }
             $id = DB::table('import_value_integral')
                 ->insertGetId([
@@ -610,7 +623,8 @@ class IntegralController extends Controller
         DB::table('import_log')
                 ->insertGetId([
                     'title'=>'导入价值积分','table_name'=>'import_value_integral',
-                    'desc'=>substr($ids,0,strlen($ids)-1),'user_id'=>$users['id']
+                    'desc'=>substr($ids,0,strlen($ids)-1),'user_id'=>$users['id'],
+                    'created_at'=>date('Y-m-d H:i:s')
                     ]);
         return response()->json(['result' => true], 200);
     }
@@ -885,6 +899,44 @@ class IntegralController extends Controller
         $params =  $request->input();
         $id = DB::table('supervise_service')->where('id',$params['id'])->delete();
 
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    // 价值积分导入日志
+    public function valueIntegralLogs(Request $request){
+        $params =  $request->input();
+        
+        $result = DB::table('import_log')->where('table_name','import_value_integral')->get()->toArray();
+
+        return response()->json(['result' => $result], 200);
+    }
+    public function valueIntegralLogsDel(Request $request){
+        $params =  $request->input();
+        $data = DB::table('import_log')->where('id',$params['id'])->first();
+        $desc=explode(': ',$data['desc']);
+        $desc=explode('-',$desc[1]);
+        $id = DB::table('import_log')->where('id',$params['id'])->delete();
+        $v_id = DB::table('import_value_integral')->where('id','>=',$desc[0])->where('id','<=',$desc[1])->delete();
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
+    // 发展积分导入日志
+    public function devIntegralLogs(Request $request){
+        $params =  $request->input();
+        
+        $result = DB::table('import_log')->where('table_name','import_development_integral')->get()->toArray();
+
+        return response()->json(['result' => $result], 200);
+    }
+    public function devIntegralLogsDel(Request $request){
+        $params =  $request->input();
+        $data = DB::table('import_log')->where('id',$params['id'])->first();
+        $desc=explode(': ',$data['desc']);
+        $desc=explode('-',$desc[1]);
+        $id = DB::table('import_log')->where('id',$params['id'])->delete();
+        $d_id = DB::table('import_development_integral')->where('id','>=',$desc[0])->where('id','<=',$desc[1])->delete();
         $result = $id ? true : false;
 
         return response()->json(['result' => $result], 200);

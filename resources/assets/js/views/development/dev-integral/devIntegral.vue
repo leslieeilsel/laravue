@@ -139,8 +139,8 @@
         this.$refs.upload.clearFiles();
       },
       handleSuccess(res, file) {
+        this.getDevIntegralList();
         this.$Message.success("导入数据成功");
-        console.log(res);
         
       },
       handleFormatError(file) {
