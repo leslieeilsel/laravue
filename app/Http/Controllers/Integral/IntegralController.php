@@ -566,11 +566,15 @@ class IntegralController extends Controller
             $data[] = $row_data; //获取
         }
         $users=Auth::user();
+        
+        $date=$worksheet->getCellByColumnAndRow(13, 3)->getValue();
+        $date = intval(($date - 25569) * 3600 * 24);     //转换成1970年以来的秒数 
+        $time = gmdate('Y-m-d',$date);  
         DB::table('import_log')
                 ->insertGetId([
                     'title'=>'导入发展积分','table_name'=>'import_development_integral',
                     'desc'=>substr($ids,0,strlen($ids)-1),'user_id'=>$users['id'],
-                    'created_at'=>date('Y-m-d H:i:s')
+                    'date_time'=>$time,'created_at'=>date('Y-m-d H:i:s')
                     ]);
         return response()->json(['result' => true], 200);
     }
@@ -620,11 +624,14 @@ class IntegralController extends Controller
             $data[] = $row_data; //获取
         }
         $users=Auth::user();
+        $date=$worksheet->getCellByColumnAndRow(11, 3)->getValue();
+        $date = intval(($date - 25569) * 3600 * 24);     //转换成1970年以来的秒数 
+        $time = gmdate('Y-m-d',$date);  
         DB::table('import_log')
                 ->insertGetId([
                     'title'=>'导入价值积分','table_name'=>'import_value_integral',
                     'desc'=>substr($ids,0,strlen($ids)-1),'user_id'=>$users['id'],
-                    'created_at'=>date('Y-m-d H:i:s')
+                    'date_time'=>$time,'created_at'=>date('Y-m-d H:i:s')
                     ]);
         return response()->json(['result' => true], 200);
     }
