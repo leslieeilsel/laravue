@@ -40,7 +40,7 @@
               ref="upload"
               :disabled="upbtnVideoDisabled"
               name="video"
-              :show-upload-list="false"
+              :show-upload-list="true"
               :before-upload="beforeUpload"
               :on-success="handleSuccessVideo"
               :on-error="handleErrorVideo"
@@ -48,11 +48,12 @@
               :format="['mp4','mov']"
               :on-format-error="handleFormatError"
               action="/api/value/uploadVideo">
-              <Button  type="primary" icon="ios-cloud-upload-outline" :loading="uploadLoading">上传</Button>
+              <Button  type="primary" icon="ios-cloud-upload-outline">上传</Button>
             </Upload>
-            <div v-for="(item,index) in defaultList">
+            <!--  :loading="uploadLoading"
+              <div v-for="(item,index) in defaultList">
               {{item}}
-            </div>
+            </div> -->
           </FormItem>
         </Row>
       </Form>
