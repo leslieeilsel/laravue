@@ -11,7 +11,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\ProjectEarlyWarning;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Dict;
 use Illuminate\Support\Facades\Auth;
@@ -81,7 +80,7 @@ class IntegralController extends Controller
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
-        $data=$data->orderBy('date_time','desc')->get()->toArray();
+        $data=$data->orderBy('id','desc')->orderBy('date_time','desc')->get()->toArray();
         $count = DB::table('import_value_integral')->count();
 
         return response()->json(['result' => $data, 'total' => $count], 200);
@@ -97,7 +96,7 @@ class IntegralController extends Controller
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
-        $data=$data->orderBy('date_time','desc')->get()->toArray();
+        $data=$data->orderBy('id','desc')->orderBy('date_time','desc')->get()->toArray();
         $count = DB::table('import_development_integral')->count();
 
         return response()->json(['result' => $data, 'total' => $count], 200);
@@ -128,7 +127,7 @@ class IntegralController extends Controller
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
-        $data=$data->get()->toArray();
+        $data=$data->orderBy('id','desc')->get()->toArray();
         $count = DB::table('integral')->count();
         $project_type_v = Dict::getOptionsArrByName('产品类型价值');
         $project_type_d = Dict::getOptionsArrByName('产品类型发展');
@@ -249,7 +248,7 @@ class IntegralController extends Controller
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
-        $data=$data->get()->toArray();
+        $data=$data->orderBy('id','desc')->get()->toArray();
         foreach ($data as $k => $row) {
             $applicant = DB::table('users')->where('id',$row['applicant'])->value('name');
             $data[$k]['applicant'] = $applicant;
@@ -326,7 +325,7 @@ class IntegralController extends Controller
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
-        $data=$data->get()->toArray();
+        $data=$data->orderBy('id','desc')->get()->toArray();
         foreach ($data as $k => $row) {
             $activity_plan = DB::table('activity_plan')->where('id',$row['activity_plan_id'])->select('title','area','plan_start_time','plan_end_time')->first();
             $data[$k]['plan_start_time']=$activity_plan['plan_start_time'];
@@ -394,7 +393,7 @@ class IntegralController extends Controller
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
-        $data=$data->get()->toArray();
+        $data=$data->orderBy('id','desc')->get()->toArray();
         $count = DB::table('area_target')->count();
         // $product_type = Dict::getOptionsArrByName('产品类型');
         $business_type = Dict::getOptionsArrByName('业务类型');
@@ -543,22 +542,22 @@ class IntegralController extends Controller
             $data[]=$row;
             $row_data = [];
             for ($column = 1; $column <= $highestColumnIndex; $column++) {
-                $value=$worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                if($column==13){
-                    $value = intval(($value - 25569) * 3600 * 24);     //转换成1970年以来的秒数 
-                    $row_data[] = gmdate('Y-m-d',$value);  
-                }else{
-                    $row_data[] = $value;
-                }
+                $row_data[] = $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                // if($column==12){
+                //     $value = intval(($value - 25569) * 3600 * 24);     //转换成1970年以来的秒数 
+                //     $row_data[] = gmdate('Y-m-d',$value);  
+                // }else{
+                //     $row_data[] = $value;
+                // }
             }
             $id = DB::table('import_development_integral')
                 ->insertGetId([
                     'province'=>$row_data[0],'local_wifi'=>$row_data[1],
                     'three_wifi'=>$row_data[2],'obu'=>$row_data[3],
                     'area'=>$row_data[4],'six_wifi'=>$row_data[5],
-                    'u_single_move'=>$row_data[8],'u_single_wifi'=>$row_data[9],
-                    'u_fuse'=>$row_data[10],'u_gover_products'=>$row_data[11],
-                    'date_time'=>$row_data[12]
+                    'u_single_move'=>$row_data[7],'u_single_wifi'=>$row_data[8],
+                    'u_fuse'=>$row_data[9],'u_gover_products'=>$row_data[10],
+                    'date_time'=>$row_data[11]
                     ]);
             if($row==3 || $row==$highestRow){
                 $ids.=$id.'-';
@@ -567,14 +566,14 @@ class IntegralController extends Controller
         }
         $users=Auth::user();
         
-        $date=$worksheet->getCellByColumnAndRow(13, 3)->getValue();
-        $date = intval(($date - 25569) * 3600 * 24);     //转换成1970年以来的秒数 
-        $time = gmdate('Y-m-d',$date);  
+        $date=$worksheet->getCellByColumnAndRow(12, 3)->getValue();
+        // $date = intval(($date - 25569) * 3600 * 24);     //转换成1970年以来的秒数 
+        // $time = gmdate('Y-m-d',$date);  
         DB::table('import_log')
                 ->insertGetId([
                     'title'=>'导入发展积分','table_name'=>'import_development_integral',
                     'desc'=>substr($ids,0,strlen($ids)-1),'user_id'=>$users['id'],
-                    'date_time'=>$time,'created_at'=>date('Y-m-d H:i:s')
+                    'date_time'=>$date,'created_at'=>date('Y-m-d H:i:s')
                     ]);
         return response()->json(['result' => true], 200);
     }

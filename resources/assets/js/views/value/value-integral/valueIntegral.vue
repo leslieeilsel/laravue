@@ -57,7 +57,7 @@
             width: 100
           },
           {
-            title: '三级网络',
+            title: '三级网格',
             key: 'three_wifi',
             width: 100
           },
@@ -72,7 +72,7 @@
             width: 240
           },
           {
-            title: '六级网络',
+            title: '六级网格',
             key: 'six_wifi',
             width: 200
           },

@@ -50,7 +50,7 @@
           {
             title: '日期',
             key: 'created_at',
-            width: 120
+            width: 220
           },
           {
             title: '操作',
