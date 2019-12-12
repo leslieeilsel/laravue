@@ -192,16 +192,18 @@ class IntegralController extends Controller
             }
             if(isset($set_meal_arr['up_meal'])){
                 foreach($set_meal_arr['up_meal'] as $v){
-                    if($v['meal_type']===0){
-                        $up_meal_type=$set_up_meal_0[$v['meal']];
-                    }elseif($v['meal_type']===1){
-                        $up_meal_type=$set_up_meal_1[$v['meal']];
-                    }elseif($v['meal_type']===2){
-                        $up_meal_type=$set_up_meal_2[$v['meal']];
-                    }elseif($v['meal_type']===3){
-                        $up_meal_type=$set_up_meal_3[$v['meal']];
+                    if($v['meal']){
+                        if($v['meal_type']===0){
+                            $up_meal_type=$set_up_meal_0[$v['meal']];
+                        }elseif($v['meal_type']===1){
+                            $up_meal_type=$set_up_meal_1[$v['meal']];
+                        }elseif($v['meal_type']===2){
+                            $up_meal_type=$set_up_meal_2[$v['meal']];
+                        }elseif($v['meal_type']===3){
+                            $up_meal_type=$set_up_meal_3[$v['meal']];
+                        }
+                        $set_meal_info=$set_meal_info.'、'.$up_meal_type;
                     }
-                    $set_meal_info=$set_meal_info.'、'.$up_meal_type;
                 }
             }
             $data[$k]['set_meal'] = $set_meal_info;
