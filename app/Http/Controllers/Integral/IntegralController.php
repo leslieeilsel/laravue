@@ -75,13 +75,19 @@ class IntegralController extends Controller
         $params =  $request->input();
 
         $data = DB::table('import_value_integral');
+        $count = DB::table('import_value_integral');
+        if(isset($params['date_time'])){
+            $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
+            $data = $data->where('date_time',$params['date_time']);
+            $count = $count->where('date_time',$params['date_time']);
+        }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $data
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
         $data=$data->orderBy('id','desc')->orderBy('date_time','desc')->get()->toArray();
-        $count = DB::table('import_value_integral')->count();
+        $count = $count->count();
 
         return response()->json(['result' => $data, 'total' => $count], 200);
     }
@@ -91,13 +97,19 @@ class IntegralController extends Controller
         $params =  $request->input();
 
         $data = DB::table('import_development_integral');
+        $count = DB::table('import_development_integral');
+        if(isset($params['date_time'])){
+            $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
+            $data = $data->where('date_time',$params['date_time']);
+            $count = $count->where('date_time',$params['date_time']);
+        }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $data
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
         $data=$data->orderBy('id','desc')->orderBy('date_time','desc')->get()->toArray();
-        $count = DB::table('import_development_integral')->count();
+        $count = $count->count();
 
         return response()->json(['result' => $data, 'total' => $count], 200);
     }
@@ -117,10 +129,16 @@ class IntegralController extends Controller
         $params =  $request->input();
 
         $data = DB::table('integral');
+        $count = DB::table('integral');
         $user=$this->user;
         $group_id=$user->group_id;
         if($group_id===7){
             $data->where('applicant',$user->id);
+        }
+        if(isset($params['date_time'])){
+            $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
+            $data = $data->where('date_time','=',$params['date_time']);
+            $count = $count->where('date_time','=',$params['date_time']);
         }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $data
@@ -128,7 +146,7 @@ class IntegralController extends Controller
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
         $data=$data->orderBy('id','desc')->get()->toArray();
-        $count = DB::table('integral')->count();
+        $count = $count->count();
         $project_type_v = Dict::getOptionsArrByName('产品类型价值');
         $project_type_d = Dict::getOptionsArrByName('产品类型发展');
         $business_type = Dict::getOptionsArrByName('业务类型');
@@ -243,6 +261,21 @@ class IntegralController extends Controller
         $params =  $request->input();
 
         $data = DB::table('activity_plan');
+        $count = DB::table('activity_plan');
+        if(isset($params['plan_start_time'])){
+            $params['plan_start_time'] = date('Y-m-d', strtotime($params['plan_start_time']));
+            $data = $data->where('plan_start_time','>',$params['plan_start_time']);
+            $count = $count->where('plan_start_time','>',$params['plan_start_time']);
+        }
+        if(isset($params['plan_end_time'])){
+            $params['plan_end_time'] = date('Y-m-d', strtotime($params['plan_end_time']));
+            $data = $data->where('plan_end_time','<',$params['plan_end_time']);
+            $count = $count->where('plan_end_time','<',$params['plan_end_time']);
+        }
+        if(isset($params['area'])){
+            $data = $data->where('area','=',json_encode($params['area']));
+            $count = $count->where('area','=',json_encode($params['area']));
+        }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $data
                 ->limit($params['pageSize'])
@@ -264,7 +297,7 @@ class IntegralController extends Controller
                 }
             }
         }
-        $count = DB::table('activity_plan')->count();
+        $count = $count->count();
 
         return response()->json(['result' => $data, 'total' => $count], 200);
     }
@@ -388,13 +421,30 @@ class IntegralController extends Controller
         $params =  $request->input();
 
         $data = DB::table('area_target');
+        $count = DB::table('area_target');
+        if(isset($params['target_start_time'])){
+            $params['target_start_time'] = date('Y-m-d', strtotime($params['target_start_time']));
+            $data = $data->where('target_start_time','>',$params['target_start_time']);
+            $count = $count->where('target_start_time','>',$params['target_start_time']);
+        }
+        if(isset($params['target_end_time'])){
+            $params['target_end_time'] = date('Y-m-d', strtotime($params['target_end_time']));
+            $data = $data->where('target_end_time','<',$params['target_end_time']);
+            $count = $count->where('target_end_time','<',$params['target_end_time']);
+        }
+        if(isset($params['duty_department'])){
+            if(count($params['duty_department'])>0){
+                $data = $data->where('duty_department','=',json_encode($params['duty_department']));
+                $count = $count->where('duty_department','=',json_encode($params['duty_department']));
+            }
+        }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $data
                 ->limit($params['pageSize'])
                 ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
         }
         $data=$data->orderBy('id','desc')->get()->toArray();
-        $count = DB::table('area_target')->count();
+        $count = $count->count();
         // $product_type = Dict::getOptionsArrByName('产品类型');
         $business_type = Dict::getOptionsArrByName('业务类型');
         foreach ($data as $k => $row) {
@@ -637,9 +687,13 @@ class IntegralController extends Controller
     //首页获取组织架构
     public function departmentList(Request $request){
         $params = $request->all();
-        if($params['is_integral']==true){
-            $applicants = DB::table('integral')->where('date_time',date('Y-m-d'))->pluck('applicant')->toArray();
-            $applicants=array_unique($applicants);
+        if(isset($params['is_integral'])){
+            if($params['is_integral']==true){
+                $applicants = DB::table('integral')->where('date_time',date('Y-m-d'))->pluck('applicant')->toArray();
+                $applicants=array_unique($applicants);
+            }else{
+                $applicants=[];  
+            }
         }else{
             $applicants=[];  
         }
@@ -746,7 +800,19 @@ class IntegralController extends Controller
     public function videoPatrolList(Request $request)
     {   
         $params =  $request->input();
-        $result = DB::table('video_patrol')->orderBy('id','desc')->get()->toArray();
+        $data = DB::table('video_patrol');
+        $count = DB::table('video_patrol');
+        if(isset($params['date_time'])){
+            $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
+            $data=$data->where('date_time',$params['date_time']);
+            $count=$count->where('date_time',$params['date_time']);
+        }
+        // if(isset($params['department_name'])){
+        //     // $params['department_name'] = ;
+        //     // $data=$data->where('department_id',$params['department_name'][4]);
+        //     // $count=$count->where('department_id',$params['department_name'][4]);
+        // }
+        $result = $data->orderBy('id','desc')->get()->toArray();
         foreach($result as $k=>$v){
             $depart=DB::table('department_info')->where('id',$v['department_info_id'])->first();
             $result[$k]['title']=$depart['channel_name'];
@@ -757,7 +823,8 @@ class IntegralController extends Controller
             $result[$k]['shop_state']=$v['shop_state']==0?'未营业':'正在营业';
         }
 
-        return response()->json(['result' => $result], 200);
+        $count = $count->count();
+        return response()->json(['result' => $result,'total' => $count], 200);
     }
     //巡店的填报
     public function videoPatrolAdd(Request $request)
@@ -839,8 +906,14 @@ class IntegralController extends Controller
         $user=$this->user;
         $group_id=$user->group_id;
         $result = DB::table('supervise_service');
+        $count = DB::table('supervise_service');
         if($group_id===6){
             $result->where('user_id',$user->id);
+        }
+        if(isset($params['date_time'])){
+            $params['date_time'] = date('Y-m-d', strtotime($params['date_time']));
+            $result=$result->where('date_time',$params['date_time']);
+            $count=$count->where('date_time',$params['date_time']);
         }
         $result=$result->orderBy('id','desc')->get()->toArray();
         foreach($result as $k=>$v){
@@ -867,7 +940,7 @@ class IntegralController extends Controller
             }
             $result[$k]['service_grade']=$grade;
         }
-
+        $count=$count->count();
         return response()->json(['result' => $result], 200);
     }
     //服务填报

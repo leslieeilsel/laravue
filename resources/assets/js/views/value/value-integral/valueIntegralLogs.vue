@@ -1,5 +1,19 @@
 <template>
   <Card>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
+        <FormItem label="积分日期" prop="date_time">
+            <DatePicker type="date" placeholder="积分日期" v-model="searchForm.date_time" style="width: 200px">
+            </DatePicker>
+        </FormItem>
+        <!-- <FormItem label="部门" prop="department_name">
+          <Cascader v-model="searchForm.department_name" :data="department_data" filterable style="width:450px"></Cascader>
+        </FormItem> -->
+        <FormItem style="margin-left:-70px;" class="br">
+          <Button @click="getVideoPatrolList" type="primary" icon="ios-search">检索</Button>
+        </FormItem>
+      </Form>
+    </Row>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Row type="flex" justify="end" class="page">
       <Page

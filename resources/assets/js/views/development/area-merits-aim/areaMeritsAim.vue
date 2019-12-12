@@ -1,5 +1,23 @@
 <template>
   <Card>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
+        <FormItem label="目标开始时间" prop="date_time">
+            <DatePicker type="date" placeholder="开始时间" v-model="searchForm.target_start_time">
+            </DatePicker>
+        </FormItem>
+        <FormItem label="目标结束时间" prop="date_time">
+            <DatePicker type="date" placeholder="结束时间" v-model="searchForm.target_end_time">
+            </DatePicker>
+        </FormItem>
+        <FormItem label="区域" prop="duty_department">
+          <Cascader v-model="searchForm.duty_department" :data="department_data" filterable ></Cascader>
+        </FormItem>
+        <FormItem style="margin-left:-70px;" class="br">
+          <Button @click="getAreaMeritsAimList" type="primary" icon="ios-search">检索</Button>
+        </FormItem>
+      </Form>
+    </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add">片区目标填报</Button>
     </p>
@@ -224,12 +242,12 @@
             width: 150,
             align: 'center'
           },
-          {
-            title: '目标时间',
-            key: 'target_start_time',
-            width: 150,
-            align: 'center'
-          },
+          // {
+          //   title: '目标时间',
+          //   key: 'target_start_time',
+          //   width: 150,
+          //   align: 'center'
+          // },
           {
             title: '操作',
             key: 'action',

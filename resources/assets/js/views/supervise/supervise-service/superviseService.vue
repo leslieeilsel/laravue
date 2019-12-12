@@ -1,5 +1,16 @@
 <template>
   <Card>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
+        <FormItem label="服务时间" prop="date_time">
+            <DatePicker type="date" placeholder="服务时间" v-model="searchForm.date_time" style="width: 200px">
+            </DatePicker>
+        </FormItem>
+        <FormItem style="margin-left:-70px;" class="br">
+          <Button @click="getSuperviseServiceList" type="primary" icon="ios-search">检索</Button>
+        </FormItem>
+      </Form>
+    </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add" v-if="isShowButton">服务信息填报</Button>
     </p>
@@ -407,8 +418,6 @@
           this.tableLoading = false;
           this.data = res.result;
           this.dataCount = res.total;
-          // this.searchForm.pageNumber = 1;
-          // this.searchForm.pageSize = 10;
         })
       },
       changePage(v) {

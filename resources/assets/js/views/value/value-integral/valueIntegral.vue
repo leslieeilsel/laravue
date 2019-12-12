@@ -1,5 +1,16 @@
 <template>
   <Card>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
+        <FormItem label="积分日期" prop="date_time">
+            <DatePicker type="date" placeholder="积分日期" v-model="searchForm.date_time" style="width: 200px">
+            </DatePicker>
+        </FormItem>
+        <FormItem style="margin-left:-70px;" class="br">
+          <Button @click="getValueIntegralList" type="primary" icon="ios-search">检索</Button>
+        </FormItem>
+      </Form>
+    </Row>
     <p class="btnGroup">
       <Upload 
           style="display: inline-block;"

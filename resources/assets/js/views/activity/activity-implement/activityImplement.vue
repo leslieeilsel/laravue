@@ -1,5 +1,23 @@
 <template>
   <Card>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
+        <FormItem label="服务开始时间" prop="date_time">
+            <DatePicker type="date" placeholder="开始时间" v-model="searchForm.plan_start_time">
+            </DatePicker>
+        </FormItem>
+        <FormItem label="服务结束时间" prop="date_time">
+            <DatePicker type="date" placeholder="结束时间" v-model="searchForm.plan_end_time">
+            </DatePicker>
+        </FormItem>
+        <FormItem label="区域" prop="area">
+          <Cascader v-model="searchForm.area" :data="department_data" filterable ></Cascader>
+        </FormItem>
+        <FormItem style="margin-left:-70px;" class="br">
+          <Button @click="getActivityPlan" type="primary" icon="ios-search">检索</Button>
+        </FormItem>
+      </Form>
+    </Row>
     <p class="btnGroup">
       <Button type="primary" @click="modal = true" icon="md-add">活动执行填报</Button>
     </p>

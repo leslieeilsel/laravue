@@ -1,5 +1,19 @@
 <template>
   <Card>
+    <Row>
+      <Form ref="searchForm" :model="searchForm" inline :label-width="100" class="search-form">
+        <FormItem label="积分日期" prop="date_time">
+            <DatePicker type="date" placeholder="积分日期" v-model="searchForm.date_time" style="width: 200px">
+            </DatePicker>
+        </FormItem>
+        <!-- <FormItem label="部门" prop="department_name">
+          <Cascader v-model="searchForm.department_name" :data="department_data" filterable style="width:450px"></Cascader>
+        </FormItem> -->
+        <FormItem style="margin-left:-70px;" class="br">
+          <Button @click="getVideoPatrolList" type="primary" icon="ios-search">检索</Button>
+        </FormItem>
+      </Form>
+    </Row>
     <Table type="selection" stripe border :columns="columns" :data="data" :loading="tableLoading"></Table>
     <Row type="flex" justify="end" class="page">
       <Page
@@ -74,6 +88,7 @@
 </template>
 <script>
   import {
+    departmentList,
     videoPatrolList,dictData,videoPatrolEdit,videoPatrolDel 
   } from '../../../api/value';
   import './videoPatrolList.css'
@@ -244,11 +259,13 @@
         },
         lists:[],
         project_type: [],
+        department_data:[]
       }
     },
     methods: {
       init() {
         this.getVideoPatrolList();
+        // this.getDepartmentList();
       },
       getVideoPatrolList() {
         this.tableLoading = true;
@@ -256,9 +273,16 @@
           this.tableLoading = false;
           this.data = res.result;
           this.dataCount = res.total;
-          // this.searchForm.pageNumber = 1;
-          // this.searchForm.pageSize = 10;
         })
+      },
+      getDepartmentList() {
+        this.loading = true;
+        departmentList(this.searchForm).then(res => {
+          this.loading = false;
+          if (res.result) {
+            this.department_data=res.result
+          }
+        });
       },
       changePage(v) {
         this.searchForm.pageNumber = v;
