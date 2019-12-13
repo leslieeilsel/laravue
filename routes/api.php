@@ -25,6 +25,16 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('user', 'AuthController@user');
+
+
+    Route::post('index/login', 'Index\IndexController@login');
+    Route::post('index/dictData', 'Index\IndexController@dictData');
+    Route::post('index/regist', 'Index\IndexController@regist');
+    Route::post('index/registUpdate', 'Index\IndexController@registUpdate');
+    Route::post('index/application', 'Index\IndexController@application');
+    Route::post('index/applicationList', 'Index\IndexController@applicationList');
+    Route::post('index/applicationUpdate', 'Index\IndexController@applicationUpdate');
+
 });
 
 Route::post('user/regist', 'User\RegistController@registUser');
@@ -35,13 +45,6 @@ Route::get('department/getByParentId/{id}', 'System\DepartmentController@getByPa
 Route::get('department/getAllDepartment', 'System\DepartmentController@getAllDepartment');
 Route::post('department/addDepartment', 'System\DepartmentController@add');
 Route::post('department/editDepartment', 'System\DepartmentController@edit');
-
-Route::get('project/getByParentId/{id}', 'Project\ProjectController@getByParentId');
-Route::get('project/getAllWarning', 'Project\ProjectController@getAllWarning');
-Route::get('project/getAllDepartment', 'Project\ProjectController@getAllDepartment');
-Route::post('project/addDepartment', 'Project\ProjectController@add');
-Route::post('project/editDepartment', 'Project\ProjectController@edit');
-Route::post('project/deleteProject', 'Project\ProjectController@delete');
 
 Route::get('dict/dicts', 'System\DictController@dicts');
 Route::post('dict/addDict', 'System\DictController@addDict');
