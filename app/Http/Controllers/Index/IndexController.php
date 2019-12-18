@@ -201,5 +201,18 @@ class IndexController extends Controller
 
         return response()->json($result, 200);
     }
+    
+    //检索
+    public function searchTitle(Request $request)
+    {
+        $params = $request->input();
+        if(isset($params['title'])){
+            $result = DB::table('search_title')->where('title', 'like','%'.$params['title'].'%')->get()->toArray();
+        }else{
+            $result = DB::table('search_title')->get()->toArray();
+        }
+
+        return response()->json($result, 200);
+    }
 }
                      

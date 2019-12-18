@@ -34,6 +34,7 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('index/application', 'Index\IndexController@application');
     Route::post('index/applicationList', 'Index\IndexController@applicationList');
     Route::post('index/applicationUpdate', 'Index\IndexController@applicationUpdate');
+    Route::post('index/searchTitle', 'Index\IndexController@searchTitle');
 
 });
 

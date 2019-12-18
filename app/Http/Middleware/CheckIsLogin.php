@@ -26,6 +26,7 @@ class CheckIsLogin
             'api/index/application',
             'api/index/applicationList',
             'api/index/applicationUpdate',
+            'api/index/searchTitle'
         ];
         $uri = $request->route()->uri();
         if (!in_array($uri, $whiteList)) {
