@@ -246,7 +246,7 @@ class IndexController extends Controller
         if(isset($params['email'])){
             $id = DB::table('users')->where('email',$params['email'])->value('id');
             if($id){
-                $verify_code=rand(999999);
+                $verify_code=rand(0,999999);
                 Mail::raw('你好，您的验证码是'.$verify_code, function ($message) {
                     $to = '1178273431@qq.com';
                     $message ->to($to)->subject('硬科技忘记密码验证');
