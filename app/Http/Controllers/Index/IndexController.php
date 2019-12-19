@@ -94,6 +94,26 @@ class IndexController extends Controller
         }
         return response()->json($result, 200);
     }
+    //用户信息
+    public function userInfo(Request $request)
+    {
+        $params = $request->input();
+        if(isset($params['username'])){
+            $user_data=DB::table('users')->where('username',$params['username'])->first();
+            if($user_data){
+                $result['code']=200;
+                $result['message']='成功';
+                $result['result']=$user_data;             
+            }else{
+                $result['code']=300;
+                $result['message']='用户不存在，没有相关信息';
+            }
+        }else{
+            $result['code']=300;
+            $result['message']='获取不到当前用户，请刷新页面重新获取';
+        }
+        return response()->json($result, 200);
+    }
     //修改资料
     public function registUpdate(Request $request)
     {
