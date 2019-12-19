@@ -48,12 +48,12 @@ class IndexController extends Controller
             $user_data=DB::table('users')->where('username',$params['username'])->first();
             $result=[];
             if ($user_data && isset($params['password'])) {
-                if(password_verify(bcrypt($params['password']),$user_data['password'])){
-                    $result['code']=300;
-                    $result['message']='用户名或密码不正确';
-                }else{
+                if(password_verify($params['password'],$user_data['password'])){
                     $result['code']=200;
                     $result['message']='登陆成功';
+                }else{
+                    $result['code']=300;
+                    $result['message']='用户名或密码不正确';
                 }
             }else{
                 $result['code']=300;
