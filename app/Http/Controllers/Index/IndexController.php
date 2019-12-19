@@ -259,6 +259,9 @@ class IndexController extends Controller
                     $result['code']=300;
                     $result['message']='发送邮件失败，请重试！';
                 } 
+            }else{
+                $result['code']=300;
+                $result['message']='没有当前用户';
             }
         }else{
             $result['code']=300;
