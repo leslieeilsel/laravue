@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Dict;
-use mail;
+use Illuminate\Support\Facades\Mail;
 
 class IndexController extends Controller
 {
