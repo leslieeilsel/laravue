@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Dict;
+use mail;
 
 class IndexController extends Controller
 {
@@ -100,6 +101,10 @@ class IndexController extends Controller
         $params = $request->input();
         if(isset($params['username'])){
             $user_data=DB::table('users')->where('username',$params['username'])->first();
+            $user_attr = Dict::getOptionsArrByName('用户属性');
+            if($user_data['user_attr']>=0){
+                $user_data['user_attr']=$user_attr[$user_data['user_attr']];
+            }
             if($user_data){
                 $result['code']=200;
                 $result['message']='成功';
@@ -230,6 +235,54 @@ class IndexController extends Controller
             $result = DB::table('search_title')->where('title', 'like','%'.$params['title'].'%')->get()->toArray();
         }else{
             $result = DB::table('search_title')->get()->toArray();
+        }
+
+        return response()->json($result, 200);
+    }
+    //修改密码发送邮件
+    public function updatePwdMail(Request $request)
+    {
+        $params = $request->input();
+        if(isset($params['email'])){
+            $id = DB::table('users')->where('email',$params['email'])->value('id');
+            if($id){
+                $verify_code=rand(999999);
+                Mail::raw('你好，您的验证码是'.$verify_code, function ($message) {
+                    $to = '1178273431@qq.com';
+                    $message ->to($to)->subject('硬科技忘记密码验证');
+                });
+                if(count(Mail::failures()) < 1){
+                    $result['code']=200;
+                    $result['message']='发送邮件成功，请查收！';
+                    $result['verify_code']=$verify_code;
+                }else{
+                    $result['code']=300;
+                    $result['message']='发送邮件失败，请重试！';
+                } 
+            }
+        }else{
+            $result['code']=300;
+            $result['message']='你的邮箱未获取，请重新提交';
+        }
+
+        return response()->json($result, 200);
+    }
+    //修改密码发送邮件
+    public function updatePwd(Request $request)
+    {
+        $params = $request->input();
+        if(isset($params['email'])&&isset($params['password'])){
+            $id = DB::table('users')->where('email',$params['email'])->update(['password'=>bcrypt($params['password'])]);
+            if($id){
+                $result['code']=200;
+                $result['message']='密码修改成功';
+            }else{
+                $result['code']=300;
+                $result['message']='密码修改失败！';
+            } 
+        }else{
+            $result['code']=300;
+            $result['message']='请填写邮箱或密码';
         }
 
         return response()->json($result, 200);

@@ -36,6 +36,8 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('index/applicationUpdate', 'Index\IndexController@applicationUpdate');
     Route::post('index/searchTitle', 'Index\IndexController@searchTitle');
     Route::post('index/userInfo', 'Index\IndexController@userInfo');
+    Route::post('index/updatePwdMail', 'Index\IndexController@updatePwdMail');
+    Route::post('index/updatePwd', 'Index\IndexController@updatePwd');
 
 });
 
