@@ -460,14 +460,14 @@
           <Col span="12">
             <FormItem label="计划开始时间" prop="plan_start_at">
               <DatePicker type="month" placeholder="开始时间" format="yyyy年MM月"
-                          v-model="editForm.plan_start_at" :disabled="isAdjustReadOnly"></DatePicker>
+                          v-model="editForm.plan_start_at" :disabled="isDateAdjustReadOnly"></DatePicker>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="计划结束时间" prop="plan_end_at">
               <DatePicker type="month" placeholder="结束时间" format="yyyy年MM月"
                           v-model="editForm.plan_end_at" @on-change="buildEditYearPlan"
-                          :disabled="isAdjustReadOnly"></DatePicker>
+                          :disabled="isDateAdjustReadOnly"></DatePicker>
             </FormItem>
           </Col>
         </Row>
@@ -841,6 +841,7 @@
         dropDownIcon: "ios-arrow-down",
         isReadOnly: false,
         isAdjustReadOnly: false,
+        isDateAdjustReadOnly:true,
         btnDisable: true,
         exportBtnDisable: true,
         projectBtnDisable: true,
@@ -1143,6 +1144,9 @@
                         });
                         this.formId = params.row.id;
                         this.isAdjustReadOnly = params.row.is_audit === 3;
+                        if(params.row.is_audit === 3){
+                          this.isDateAdjustReadOnly = false;
+                        }
                         this.isReadOnly = false;
                         this.openErrorAlert = (this.editForm.reason !== '' && this.editForm.is_audit === 2);
                         this.editModal = true;
