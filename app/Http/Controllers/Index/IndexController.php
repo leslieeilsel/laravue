@@ -102,7 +102,7 @@ class IndexController extends Controller
         if(isset($params['username'])){
             $user_data=DB::table('users')->where('username',$params['username'])->first();
             $user_attr = Dict::getOptionsArrByName('用户属性');
-            if($user_data['user_attr']>=0){
+            if(isset($user_data['user_attr'])){
                 $user_data['user_attr']=$user_attr[$user_data['user_attr']];
             }
             if($user_data){
@@ -249,7 +249,7 @@ class IndexController extends Controller
                 $verify_code=rand(0,999999);
                 Mail::raw('你好，您的验证码是'.$verify_code, function ($message) {
                     $to = '1178273431@qq.com';
-                    $message ->to($to)->subject('硬科技忘记密码验证');
+                    $message ->to($to)->subject('【硬科技】忘记密码验证码');
                 });
                 if(count(Mail::failures()) < 1){
                     $result['code']=200;
