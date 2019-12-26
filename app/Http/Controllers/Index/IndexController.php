@@ -222,14 +222,23 @@ class IndexController extends Controller
     {
         $params = $request->input();
         $id=$params['id'];
+        if(isset($params['username'])){
+            $username=$params['username'];
+            unset($params['username']);
+        }
         unset($params['id']);
-        $data = DB::table('application')->where('id',$id)->update($params);
-        if($data){
-            $result['code']=200;
-            $result['message']='提交申请成功';  
+        if($username==="admin"){
+            $data = DB::table('application')->where('id',$id)->update($params);
+            if($data){
+                $result['code']=200;
+                $result['message']='提交申请成功';  
+            }else{
+                $result['code']=300;
+                $result['message']='提交申请失败，请重新提交申请';
+            }
         }else{
             $result['code']=300;
-            $result['message']='提交申请失败，请重新提交申请';
+            $result['message']='您还没有审核权限';
         }
 
         return response()->json($result, 200);
