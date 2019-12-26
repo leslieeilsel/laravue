@@ -15,6 +15,7 @@ class IndexController extends Controller
     public function __construct()
     {
         //完全跨域设置 包括跨域名和端口
+        header('Access-Control-Allow-Origin:*');
         header("Access-Control-Allow-Headers:*"); //跨端口
         header("Access-Control-Allow-Methods:GET, POST, PUT, DELETE, OPTIONS"); //允许的请求类型
         header('Content-Type:text/plain');
