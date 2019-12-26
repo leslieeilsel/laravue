@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Mail;
 
 class IndexController extends Controller
 {
+    public function __construct()
+    {
+        //完全跨域设置 包括跨域名和端口
+        header("Access-Control-Allow-Headers:*"); //跨端口
+        header("Access-Control-Allow-Methods:GET, POST, PUT, DELETE, OPTIONS"); //允许的请求类型
+        header('Content-Type:text/plain');
+    }
     /**
      * 获取项目库表单中的数据字典数据多个
      *
@@ -243,6 +250,7 @@ class IndexController extends Controller
     public function updatePwdMail(Request $request)
     {
         $params = $request->input();
+        
         if(isset($params['email'])){
             $id = DB::table('users')->where('email',$params['email'])->value('id');
             if($id){
@@ -251,6 +259,7 @@ class IndexController extends Controller
                     $to=$request->input('email');
                     $message ->to($to)->subject('【硬科技】忘记密码验证码');
                 });
+                
                 if(count(Mail::failures()) < 1){
                     $result['code']=200;
                     $result['message']='发送邮件成功，请查收！';
