@@ -99,7 +99,7 @@ class DingController extends Controller
         if($ids){
             $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
         }
-        return response()->json(['result' => $arr,'ids'=>$ids?$ids:false], 200);;
+        return response()->json(['result' => $arr,'ids'=>$ids?$ids:false], 200);
     }
     /**
      * 获取项目库表单中的数据字典数据多个
@@ -135,15 +135,20 @@ class DingController extends Controller
         $set_up_meal_1 = Dict::getOptionsArrByName('5G升级包');
         $set_up_meal_2 = Dict::getOptionsArrByName('加第二路宽带');
         $set_up_meal_3 = Dict::getOptionsArrByName('加卡');
-        if($data['is_new_user']===0){
-            $data['project_type']=$project_type_v[$data['project_type']];
-        }else{
-            $data['project_type']=$project_type_d[$data['project_type']];
+        if(isset($data['is_new_user'])&&isset($data['project_type'])){
+            if($data['is_new_user']===0){
+                $data['project_type']=$project_type_v[$data['project_type']];
+            }else{
+                $data['project_type']=$project_type_d[$data['project_type']];
+            }
+            $data['is_new_user'] = $is_new_user[$data['is_new_user']];
         }
-        $data['is_new_user'] = $is_new_user[$data['is_new_user']];
-        $data['business_type'] = $business_type[$data['business_type']];
-        $data['terminal_type'] = $terminal_type[$data['terminal_type']];
-
+        if(isset($data['business_type'])){
+            $data['business_type'] = $business_type[$data['business_type']];
+        }
+        if(isset($data['terminal_type'])){
+            $data['terminal_type'] = $terminal_type[$data['terminal_type']];
+        }
         $set_meal_arr=json_decode($data['set_meal'],true);
         $set_meal_info='';
         if(isset($set_meal_arr['meal']['meal_type'])&&isset($set_meal_arr['meal']['meal'])){
@@ -156,16 +161,18 @@ class DingController extends Controller
             } 
             $set_meal_info='套餐：'.$meal_type;
         }
-        if($set_meal_arr['up_meal']){
+        if(isset($set_meal_arr['up_meal'])){
             foreach($set_meal_arr['up_meal'] as $v){
-                if($v['meal_type']===0){
+                if($v['meal_type']===0&&isset($v['meal'])){
                     $up_meal_type=$set_up_meal_0[$v['meal']];
-                }elseif($v['meal_type']===1){
+                }elseif($v['meal_type']===1&&isset($v['meal'])){
                     $up_meal_type=$set_up_meal_1[$v['meal']];
-                }elseif($v['meal_type']===2){
+                }elseif($v['meal_type']===2&&isset($v['meal'])){
                     $up_meal_type=$set_up_meal_2[$v['meal']];
-                }elseif($v['meal_type']===3){
+                }elseif($v['meal_type']===3&&isset($v['meal'])){
                     $up_meal_type=$set_up_meal_3[$v['meal']];
+                }else{
+                    $up_meal_type="";
                 }
                 $set_meal_info=$set_meal_info.'、'.$up_meal_type;
             }
@@ -239,14 +246,16 @@ class DingController extends Controller
             }
             if(isset($set_meal_arr['up_meal'])){
                 foreach($set_meal_arr['up_meal'] as $v){
-                    if($v['meal_type']===0){
+                    if($v['meal_type']===0&&isset($v['meal'])){
                         $up_meal_type=$set_up_meal_0[$v['meal']];
-                    }elseif($v['meal_type']===1){
+                    }elseif($v['meal_type']===1&&isset($v['meal'])){
                         $up_meal_type=$set_up_meal_1[$v['meal']];
-                    }elseif($v['meal_type']===2){
+                    }elseif($v['meal_type']===2&&isset($v['meal'])){
                         $up_meal_type=$set_up_meal_2[$v['meal']];
-                    }elseif($v['meal_type']===3){
+                    }elseif($v['meal_type' ]===3&&isset($v['meal'])){
                         $up_meal_type=$set_up_meal_3[$v['meal']];
+                    }else{
+                        $up_meal_type="";
                     }
                     $set_meal_info=$set_meal_info.'、'.$up_meal_type;
                 }
