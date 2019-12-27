@@ -177,7 +177,9 @@ class IndexController extends Controller
         $data = DB::table('application');
         if(isset($params['username'])){
             $user_data=DB::table('users')->where('username',$params['username'])->value('id');
-            $data->where('user_id',$user_data);
+            if($params['username']!="admin"){
+                $data->where('user_id',$user_data);
+            }
         }
         $result = $data->get()->toArray();
         $resources = Dict::getOptionsArrByName('申请资源');
@@ -187,7 +189,6 @@ class IndexController extends Controller
         $hart_type = Dict::getOptionsArrByName('硬科技类型');
         $audit_state = Dict::getOptionsArrByName('申请审核状态');
         foreach ($result as $k => $row) {
-            
             if(isset($row['resources'])){
                 $result[$k]['resources'] = $resources[$row['resources']];
             }
@@ -205,6 +206,9 @@ class IndexController extends Controller
             }
             if(isset($row['audit_state'])){
                 $result[$k]['audit_state'] = $audit_state[$row['audit_state']];
+            }
+            if(isset($row['user_id'])){
+                $result[$k]['users'] = DB::table('users')->where('id',$row['user_id'])->first();
             }
         }
         return response()->json($result, 200);
