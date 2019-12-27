@@ -75,7 +75,7 @@ class DingController extends Controller
         curl_close($ch);
         $arr=json_decode($json,true);
         Cache::put('dingAccessToken', $arr['access_token'], 7200);
-        // dd($arr['access_token']);
+        
         dd($arr);
     }
     //获取钉钉用户信息
