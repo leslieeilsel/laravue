@@ -45,6 +45,6 @@ class buildDingTokenJson extends Command
         $arr=json_decode($json,true);
         Cache::put('dingAccessToken', $arr['access_token'], 7200);
         $str=var_export($arr,TRUE);
-        file_put_contents('11.txt',$str."***".Cache("dingAccessToken").date('Y-m-d'));
+        file_put_contents('11.txt',$str."***".Cache("dingAccessToken").date('Y-m-d H:i:s'));
     }
 }
