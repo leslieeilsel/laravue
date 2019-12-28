@@ -102,7 +102,7 @@ class DingController extends Controller
             }
             return response()->json(['result' => $arr,'ids'=>$ids?$ids:false], 200);
         }else{
-            return response()->json(['result' => ['errcode'=>'300','msg'=>'code码错误，请重新获取'],'ids'=>$ids?$ids:false], 200);
+            return response()->json(['result' => ['errcode'=>'300','msg'=>'code码错误，请重新获取']], 200);
         }
     }
     /**
