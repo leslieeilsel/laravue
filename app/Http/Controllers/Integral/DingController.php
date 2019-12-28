@@ -299,7 +299,7 @@ class DingController extends Controller
     {
         $params =  $request->input();
         if(isset($params['mobile'])){
-            $result=User::where('phonea',$params['mobile'])->first();
+            $result=User::where('phone',$params['mobile'])->first();
         }else{
             $result['errcode']=300;
             $result['msg']='没有获取到您的手机号，请重新请求';
