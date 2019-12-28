@@ -91,15 +91,19 @@ class DingController extends Controller
         $user_id_url='https://oapi.dingtalk.com/user/getuserinfo?access_token='.$accessToken.'&code='.$data['code'];
         $user_ids=$this->postCurl($user_id_url,[],'get');
         $user_id=json_decode($user_ids,true);
-        $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid='.$user_id['userid'];
-        $json=$this->postCurl($url,[],'get');
-        $arr=json_decode($json,true);
-        Cache::put('userid', $arr['userid'], 7200);
-        $ids = DB::table('users')->where('phone', $arr['mobile'])->value('id');
-        if($ids){
-            $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
+        if(isset($user_id['userid'])){
+            $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid='.$user_id['userid'];
+            $json=$this->postCurl($url,[],'get');
+            $arr=json_decode($json,true);
+            Cache::put('userid', $arr['userid'], 7200);
+            $ids = DB::table('users')->where('phone', $arr['mobile'])->value('id');
+            if($ids){
+                $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
+            }
+            return response()->json(['result' => $arr,'ids'=>$ids?$ids:false], 200);
+        }else{
+            return response()->json(['result' => ['errcode'=>'300','msg'=>'code码错误，请重新获取'],'ids'=>$ids?$ids:false], 200);
         }
-        return response()->json(['result' => $arr,'ids'=>$ids?$ids:false], 200);
     }
     /**
      * 获取项目库表单中的数据字典数据多个
