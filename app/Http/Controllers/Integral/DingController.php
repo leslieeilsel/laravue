@@ -298,10 +298,12 @@ class DingController extends Controller
     public function userInfo(Request $request)
     {
         $params =  $request->input();
-        $result=[];
-        $result['name']='汪光军';
-        $result['department']='岚皋县翼泽手机销售店';
-        $result['mobile']='17719693261';
+        if(isset($params['mobile'])){
+            $result=User::where('phonea',$params['mobile'])->first();
+        }else{
+            $result['errcode']=300;
+            $result['msg']='没有获取到您的手机号，请重新请求';
+        }
         return response()->json(['result' => $result], 200);
     }
     //统计
