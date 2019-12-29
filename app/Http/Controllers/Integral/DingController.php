@@ -197,6 +197,10 @@ class DingController extends Controller
         if(isset($params['date_time'])){
             $result->where('date_time',$params['date_time']);
         }
+        if(isset($params['mobile'])){
+            $user_id = User::where('phone',$params['mobile'])->value('id');
+            $result->where('applicant',$user_id);
+        }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $result
                 ->limit($params['pageSize'])
@@ -284,11 +288,15 @@ class DingController extends Controller
             $params['set_meal']=json_encode($params['meal_info']);
         }
         unset($params['meal_info']);
-        // $users=$this->user->id;
-        $users=1;
-        // $area=DB::table('iba_system_department')->where('id',$this->department_id)->value('title');
+        
+        if(isset($params['mobile'])){
+            $user_id = User::where('phone',$params['mobile'])->value('id');
+        }else{
+            return response()->json(['result' => ['errcode'=>'300','msg'=>'数据出错，刷新页面']], 200);
+        }
+        unset($params['mobile']);
         $params['area'] = '安康市';
-        $params['applicant'] = $users;
+        $params['applicant'] = $user_id;
         $params['date_time'] = date('Y-m-d');
         $params['created_at']=date('Y-m-d H:i:s');
         $id = DB::table('integral')->insertGetId($params);
