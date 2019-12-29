@@ -325,15 +325,31 @@ class DingController extends Controller
     {
         //
         $params =  $request->input();
+        if(isset($params['date_time'])){
+            $date_time=date('Y-m', strtotime($params['date_time']));
+        }else{
+            $date_time=date('Y-m');
+        }
+        if(isset($params['mobile'])){
+            $department_id=User::where('phone',$params['mobile'])->value('department_id');
+            $department_title=Departments::where('id',$department_id)->value('title');
+        }else{
+            $result['errcode']=300;
+            $result['msg']='没有获取到您的手机号，请重新请求';
+        }
         $development_total=0;
         $value_total=0;
         $development=DB::table('import_development_integral')
                             ->selectRaw('sum(u_single_move) as u_single_move_total,sum(u_single_wifi) as u_single_wifi_total,sum(u_fuse) as u_fuse_total,sum(u_gover_products) as u_gover_products_total,date_time')
+                            ->where('date_time','like',$date_time.'%')
+                            ->where('six_wifi',$department_title)
                             ->groupBy('date_time')
                             ->orderBy('id','desc')
                             ->get()->toArray();
         $value=DB::table('import_value_integral')
                             ->selectRaw('sum(stock_v_up) as stock_v_up_total,sum(stock_contract) as stock_contract_total,sum(stock_tenure) as stock_tenure_total,date_time')
+                            ->where('date_time','like',$date_time.'%')
+                            ->where('six_wifi',$department_title)
                             ->groupBy('date_time')
                             ->orderBy('id','desc')
                             ->get()->toArray();
