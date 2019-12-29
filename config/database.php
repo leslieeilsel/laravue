@@ -51,7 +51,7 @@ return [
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
             'fetch' => PDO::FETCH_ASSOC,
-            'strict' => true,
+            'strict' => false,
             'engine' => null,
         ],
 
