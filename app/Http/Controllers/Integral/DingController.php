@@ -326,7 +326,8 @@ class DingController extends Controller
         //
         $params =  $request->input();
         if(isset($params['date_time'])){
-            $date_time=date('Y-m', strtotime($params['date_time']));
+            // $date_time=date('Y-m', strtotime($params['date_time']));
+            $date_time=$params['date_time'];
         }else{
             $date_time=date('Y-m');
         }
