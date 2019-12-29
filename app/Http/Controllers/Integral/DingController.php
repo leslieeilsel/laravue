@@ -200,6 +200,8 @@ class DingController extends Controller
         if(isset($params['mobile'])){
             $user_id = User::where('phone',$params['mobile'])->value('id');
             $result->where('applicant',$user_id);
+        }else{
+            return response()->json(['result' => ['errcode'=>'300','msg'=>'数据出错，刷新页面']], 200);
         }
         if (isset($params['pageNumber']) && isset($params['pageSize'])) {
             $data = $result
