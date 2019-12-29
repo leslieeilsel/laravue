@@ -162,7 +162,9 @@ class DingController extends Controller
                 $meal_type=$set_meal_1[$set_meal_arr['meal']['meal']];
             }elseif($set_meal_arr['meal']['meal_type']===2){
                 $meal_type=$set_meal_2[$set_meal_arr['meal']['meal']];
-            } 
+            }else{
+                $meal_type="";
+            }
             $set_meal_info='套餐：'.$meal_type;
         }
         if(isset($set_meal_arr['up_meal'])){
