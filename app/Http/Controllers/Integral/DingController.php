@@ -345,14 +345,14 @@ class DingController extends Controller
                             ->where('date_time','like',$date_time.'%')
                             ->where('six_wifi',$department_title)
                             ->groupBy('date_time')
-                            ->orderBy('id','desc')
+                            ->orderBy('date_time','desc')
                             ->get()->toArray();
         $value=DB::table('import_value_integral')
                             ->selectRaw('sum(stock_v_up) as stock_v_up_total,sum(stock_contract) as stock_contract_total,sum(stock_tenure) as stock_tenure_total,date_time')
                             ->where('date_time','like',$date_time.'%')
                             ->where('six_wifi',$department_title)
                             ->groupBy('date_time')
-                            ->orderBy('id','desc')
+                            ->orderBy('date_time','desc')
                             ->get()->toArray();
         foreach($development as $k=>$v){
             $development[$k]['development_date_total']=$v['u_single_move_total'] + $v['u_single_wifi_total'] + $v['u_fuse_total'] + $v['u_gover_products_total'];
