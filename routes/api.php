@@ -33,6 +33,13 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('ding/dictData', 'Integral\DingController@dictData');
     Route::post('ding/userInfo', 'Integral\DingController@userInfo');
     Route::post('ding/importIntegral', 'Integral\DingController@importIntegral');
+    Route::get('ding/getActivityToken', 'Integral\DingController@getActivityToken');
+    Route::post('ding/activityUserId', 'Integral\DingController@activityUserId');
+    Route::post('ding/activityPlan', 'Integral\DingController@activityPlan');
+    Route::post('ding/activityImplement', 'Integral\DingController@activityImplement');
+    Route::post('ding/activityPlanInfo', 'Integral\DingController@activityPlanInfo');
+    Route::post('ding/activityImplementAdd', 'Integral\DingController@activityImplementAdd');
+    
 });
 
 Route::post('user/regist', 'User\RegistController@registUser');

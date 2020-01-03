@@ -293,7 +293,7 @@ class IntegralController extends Controller
             if($row['state']==0&&$row['plan_end_time']<date('Y-m-d')){
                 $activity = DB::table('activity')->where('activity_plan_id',$row['id'])->value('id');
                 if($activity){
-                    $id = DB::table('activity_plan')->where('id',$row['id'])->update(['state'=>1]);
+                    $id = DB::table('activity_plan')->where('id',$row['id'])->update(['state'=>1]);//
                 }else{
                     $id = DB::table('activity_plan')->where('id',$row['id'])->update(['state'=>2]);
                 }

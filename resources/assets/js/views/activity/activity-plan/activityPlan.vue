@@ -207,6 +207,12 @@
             align: "left"
           },
           {
+            title: '活动状态',
+            key: 'state',
+            width: 300,
+            align: "left"
+          },
+          {
             title: '活动文字描述',
             key: 'remark',
             width: 300,

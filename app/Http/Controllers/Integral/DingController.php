@@ -363,5 +363,170 @@ class DingController extends Controller
         $result=['development'=>$development,'value'=>$value,'development_total'=>$development_total,'value_total'=>$value_total];
         return response()->json(['result' => $result], 200);
     }
+    //获取钉钉token
+    public function getActivityToken(){
+        $appKey=env("Ding_activity_App_Key");
+        $appSecret=env("Ding_activity_App_Secret");
+        $url='https://oapi.dingtalk.com/gettoken?appkey='.$appKey.'&appsecret='.$appSecret;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $json =  curl_exec($ch);
+        curl_close($ch);
+        $arr=json_decode($json,true);
+        Cache::put('dingActivityAccessToken', $arr['access_token'], 7200);
+    }
+    //获取钉钉用户信息
+    public function activityUserId(Request $request){
+        $data = $request->all();
+        $appKey=env("Ding_activity_App_Key");
+        $appSecret=env("Ding_activity_App_Secret");
+        $accessToken=Cache::get('dingActivityAccessToken');
+        if(!$accessToken){
+            $this->getToken();
+            $accessToken=Cache::get('dingActivityAccessToken');
+        }
+        $user_id_url='https://oapi.dingtalk.com/user/getuserinfo?access_token='.$accessToken.'&code='.$data['code'];
+        $user_ids=$this->postCurl($user_id_url,[],'get');
+        $user_id=json_decode($user_ids,true);
+        if(isset($user_id['userid'])){
+            $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid='.$user_id['userid'];
+            $json=$this->postCurl($url,[],'get');
+            $arr=json_decode($json,true);
+            Cache::put('userid', $arr['userid'], 7200);
+            $ids = DB::table('users')->where('phone', $arr['mobile'])->value('id');
+            if($ids){
+                $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
+            }
+            return response()->json(['result' => $arr,'ids'=>$ids?$ids:false], 200);
+        }else{
+            return response()->json(['result' => ['errcode'=>'300','msg'=>'code码错误，请重新获取']], 200);
+        }
+    }
+    //活动计划列表
+    public function activityPlan(Request $request)
+    {   
+        $params =  $request->input();
+
+        $data = DB::table('activity_plan');
+        $count = DB::table('activity_plan');
+        // if(isset($params['mobile'])){
+        //     $user_id = User::where('phone',$params['mobile'])->value('id');
+        //     $data->where('applicant',$user_id);
+        // }else{
+        //     return response()->json(['result' => ['errcode'=>'300','msg'=>'数据出错，刷新页面']], 200);
+        // }
+        if(isset($params['plan_start_time'])){
+            $params['plan_start_time'] = date('Y-m-d', strtotime($params['plan_start_time']));
+            $data = $data->where('plan_start_time','>',$params['plan_start_time']);
+            $count = $count->where('plan_start_time','>',$params['plan_start_time']);
+        }
+        if(isset($params['plan_end_time'])){
+            $params['plan_end_time'] = date('Y-m-d', strtotime($params['plan_end_time']));
+            $data = $data->where('plan_end_time','<',$params['plan_end_time']);
+            $count = $count->where('plan_end_time','<',$params['plan_end_time']);
+        }
+        if(isset($params['area'])){
+            $data = $data->where('area','=',json_encode($params['area']));
+            $count = $count->where('area','=',json_encode($params['area']));
+        }
+        if (isset($params['pageNumber']) && isset($params['pageSize'])) {
+            $data = $data
+                ->limit($params['pageSize'])
+                ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
+        }
+        $data=$data->orderBy('id','desc')->get()->toArray();
+        foreach ($data as $k => $row) {
+            $applicant = DB::table('users')->where('id',$row['applicant'])->value('name');
+            $data[$k]['applicant'] = $applicant;
+            $department = DB::table('iba_system_department')->whereIn('id',json_decode($row['area'],true))->pluck('title')->toArray();
+            $data[$k]['area']=implode("/",$department);
+            $data[$k]['area_id']=$row['area'];
+            $data[$k]['state']='未开始';
+            if($row['state']==0&&$row['plan_end_time']<date('Y-m-d')){
+                $activity = DB::table('activity')->where('activity_plan_id',$row['id'])->first();
+                if(isset($activity['id'])&&isset($activity['state'])&&$activity['state']===0){
+                    $id = DB::table('activity_plan')->where('id',$row['id'])->update(['state'=>1]);
+                    $data[$k]['state']='已完结';
+                }else{
+                    $id = DB::table('activity_plan')->where('id',$row['id'])->update(['state'=>2]);
+                    $data[$k]['state']='未完结';
+                }
+            }
+        }
+        $count = $count->count();
+
+        return response()->json(['result' => $data, 'total' => $count], 200);
+    }
+    //活动计划列表
+    public function activityPlanInfo(Request $request)
+    {   
+        $params =  $request->input();
+        if(isset($params['id'])){
+            $data = DB::table('activity_plan')->where('id',$params['id'])->first();
+            $data['applicant'] = DB::table('users')->where('id',$data['applicant'])->value('name');
+            $department = DB::table('iba_system_department')->whereIn('id',json_decode($data['area'],true))->pluck('title')->toArray();
+            $data['area']=implode("/",$department);
+            $data['area_id']=$data['area'];
+            $data['state']='未开始';
+            if($data['state']==1){
+                $data['state']='已完结';
+            }elseif($data['state']==2){
+                $data['state']='未完成';
+            }
+        }else{
+            $data=[];
+        }
+
+        return response()->json(['result' => $data], 200);
+    }
+    //活动执行列表
+    public function activityImplement(Request $request)
+    {   
+        $params =  $request->input();
+        $data = DB::table('activity');
+        if(isset($params['plan_id'])){
+            $data = $data->where('activity_plan_id',$params['plan_id']);
+        }
+        if (isset($params['pageNumber']) && isset($params['pageSize'])) {
+            $data = $data
+                ->limit($params['pageSize'])
+                ->offset(($params['pageNumber'] - 1) * $params['pageSize']);
+        }
+        $data=$data->orderBy('id','desc')->get()->toArray();
+        foreach ($data as $k => $row) {
+            $activity_plan = DB::table('activity_plan')->where('id',$row['activity_plan_id'])->select('title','area','plan_start_time','plan_end_time')->first();
+            $data[$k]['plan_start_time']=$activity_plan['plan_start_time'];
+            $data[$k]['plan_end_time']=$activity_plan['plan_end_time'];
+            $data[$k]['title']=$activity_plan['title'];
+            $users=$this->user->name;
+            $data[$k]['applicant'] = $users;
+            $department = DB::table('iba_system_department')->whereIn('id',json_decode($activity_plan['area'],true))->pluck('title')->toArray();
+            $data[$k]['area']=implode("/",$department);
+        }
+        $count = DB::table('activity')->count();
+
+        return response()->json(['result' => $data, 'total' => $count], 200);
+    }
+    //活动执行填报
+    public function activityImplementAdd(Request $request)
+    {   
+        $params =  $request->input();
+        $params['date_time'] = date('Y-m-d');
+        $params['created_at']=date('Y-m-d H:i:s');
+        if(isset($params['mobile'])){
+            $user_id = User::where('phone',$params['mobile'])->value('id');
+        }else{
+            return response()->json(['result' => ['errcode'=>'300','msg'=>'数据出错，刷新页面']], 200);
+        }
+        $params['applicant'] = $user_id;
+        unset($params['area'],$params['title'],$params['plan_start_time'],$params['plan_end_time'],$params['name'],$params['mobile']);
+        $id = DB::table('activity')->insertGetId($params);
+
+        $result = $id ? true : false;
+
+        return response()->json(['result' => $result], 200);
+    }
 }
                      
