@@ -491,6 +491,9 @@ class DingController extends Controller
     {   
         $params =  $request->input();
         $data = DB::table('activity');
+        if(!isset($params['mobile'])){
+           return response()->json(['errcode'=>'300','msg'=>'没有权限'], 200);
+        }
         if(isset($params['plan_id'])){
             $data = $data->where('activity_plan_id',$params['plan_id']);
         }
@@ -505,7 +508,7 @@ class DingController extends Controller
             $data[$k]['plan_start_time']=$activity_plan['plan_start_time'];
             $data[$k]['plan_end_time']=$activity_plan['plan_end_time'];
             $data[$k]['title']=$activity_plan['title'];
-            $users=DB::table('users')->where('id',$activity_plan['applicant'])->value('name');
+            $users=DB::table('users')->where('phone',$params['mobile'])->value('name');
             $data[$k]['applicant'] = $users;
             $department = DB::table('iba_system_department')->whereIn('id',json_decode($activity_plan['area'],true))->pluck('title')->toArray();
             $data[$k]['area']=implode("/",$department);
