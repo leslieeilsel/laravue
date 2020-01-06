@@ -459,7 +459,7 @@ class DingController extends Controller
 
         return response()->json(['result' => $data, 'total' => $count], 200);
     }
-    //活动计划列表
+    //活动计划详情
     public function activityPlanInfo(Request $request)
     {   
         $params =  $request->input();
@@ -500,7 +500,7 @@ class DingController extends Controller
             $data[$k]['plan_start_time']=$activity_plan['plan_start_time'];
             $data[$k]['plan_end_time']=$activity_plan['plan_end_time'];
             $data[$k]['title']=$activity_plan['title'];
-            $users=$this->user->name;
+            $users=DB::table('users')->where('id',$activity_plan['applicant'])->value('name');
             $data[$k]['applicant'] = $users;
             $department = DB::table('iba_system_department')->whereIn('id',json_decode($activity_plan['area'],true))->pluck('title')->toArray();
             $data[$k]['area']=implode("/",$department);
@@ -508,6 +508,26 @@ class DingController extends Controller
         $count = DB::table('activity')->count();
 
         return response()->json(['result' => $data, 'total' => $count], 200);
+    }
+    //活动执行详情
+    public function activityImplementInfo(Request $request)
+    {   
+        $params =  $request->input();
+        if(isset($params['id'])){
+            $data = DB::table('activity')->where('id',$params['id'])->first();
+            $activity_plan = DB::table('activity_plan')->where('id',$data['activity_plan_id'])->select('title','area','plan_start_time','plan_end_time')->first();
+            $data['plan_start_time']=$activity_plan['plan_start_time'];
+            $data['plan_end_time']=$activity_plan['plan_end_time'];
+            $data['title']=$activity_plan['title'];
+            $users=DB::table('users')->where('id',$data['applicant'])->value('name');
+            $data['applicant'] = $users;
+            $department = DB::table('iba_system_department')->whereIn('id',json_decode($activity_plan['area'],true))->pluck('title')->toArray();
+            $data['area']=implode("/",$department);
+        }else{
+            $data=[];
+        }
+
+        return response()->json(['result' => $data], 200);
     }
     //活动执行填报
     public function activityImplementAdd(Request $request)
