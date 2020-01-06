@@ -39,7 +39,7 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('ding/activityImplement', 'Integral\DingController@activityImplement');
     Route::post('ding/activityPlanInfo', 'Integral\DingController@activityPlanInfo');
     Route::post('ding/activityImplementAdd', 'Integral\DingController@activityImplementAdd');
-    
+    Route::post('ding/uploadPic', 'Integral\DingController@uploadPic');
 });
 
 Route::post('user/regist', 'User\RegistController@registUser');

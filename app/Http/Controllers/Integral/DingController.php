@@ -528,5 +528,24 @@ class DingController extends Controller
 
         return response()->json(['result' => $result], 200);
     }
+    /**
+     * 上传
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function uploadPic(Request $request)
+    {
+        $params = $request->all();
+        $suffix = $params['pic']->getClientOriginalExtension();
+        $path = Storage::putFileAs(
+            'public/value/activity/' . $params['title'],
+            $request->file('pic'),
+            rand(1000000, time()) . '.' . $suffix
+        );
+        $path = 'storage/' . substr($path, 7);
+
+        return response()->json(['result' => $path], 200);
+    }
 }
                      
