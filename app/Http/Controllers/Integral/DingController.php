@@ -536,10 +536,15 @@ class DingController extends Controller
      */
     public function uploadPic(Request $request)
     {
-        $params = $request->all();
+        $params = $request->file();
         $suffix = $params['pic']->getClientOriginalExtension();
+        //. 
+        $title="";
+        if(isset($params['title'])){
+            $title=$params['title'];
+        }
         $path = Storage::putFileAs(
-            'public/value/activity/' . $params['title'],
+            'public/value/activity/'.$title,
             $request->file('pic'),
             rand(1000000, time()) . '.' . $suffix
         );
@@ -548,4 +553,3 @@ class DingController extends Controller
         return response()->json(['result' => $path], 200);
     }
 }
-                     
