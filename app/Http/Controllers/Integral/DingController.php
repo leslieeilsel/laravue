@@ -394,12 +394,16 @@ class DingController extends Controller
             $url='https://oapi.dingtalk.com/user/get?access_token='.$accessToken.'&userid='.$user_id['userid'];
             $json=$this->postCurl($url,[],'get');
             $arr=json_decode($json,true);
-            Cache::put('activityUserId', $arr['userid'], 7200);
-            $ids = DB::table('users')->where('phone', $arr['mobile'])->value('id');
-            if($ids){
-                $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
+            if(isset($arr['userid'])){
+                Cache::put('activityUserId', $arr['userid'], 7200);
+                $ids = DB::table('users')->where('phone', $arr['mobile'])->value('id');
+                if($ids){
+                    $result = DB::table('users')->where('phone', $arr['mobile'])->update(['ding_user_id'=>$arr['userid']]);
+                }
+                return response()->json(['result' => $arr,'ids'=>$ids?$ids:false], 200);
+            }else{
+                return response()->json(['result' =>$arr], 200);
             }
-            return response()->json(['result' => $arr,'ids'=>$ids?$ids:false], 200);
         }else{
             // ['errcode'=>'300','msg'=>'code码错误，请重新获取']
             return response()->json(['result' =>$user_id], 200);
