@@ -536,9 +536,8 @@ class DingController extends Controller
      */
     public function uploadPic(Request $request)
     {
-        $params = $request->file();
+        $params = $request->all();
         $suffix = $params['pic']->getClientOriginalExtension();
-        //. 
         $title="";
         if(isset($params['title'])){
             $title=$params['title'];
