@@ -486,6 +486,11 @@
         this.$refs.upload.clearFiles();
         this.uploadLoading=false;
         this.defaultList=[];
+        this.load = false;
+        this.videoOptions.sources[0].src =''
+        this.$nextTick(() => {
+          this.load = true;
+        });
       },
       beforeUpload(){
         this.uploadLoading=true;
