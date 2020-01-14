@@ -494,6 +494,7 @@
           this.load = true;
         });
         this.videoForm.switchVideo='';
+        this.switchVideoData=[];
         this.$refs.form.resetFields();
         this.$refs.upload.clearFiles();
         this.uploadLoading=false;
