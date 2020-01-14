@@ -437,6 +437,11 @@
       },
       handleReset(name) {
         this.$refs[name].resetFields();
+        this.load = false;
+        this.videoOptions.sources[0].src =''
+        this.$nextTick(() => {
+          this.load = true;
+        });
       },
       submitF(name) {
         this.$refs[name].validate((valid) => {
@@ -482,15 +487,15 @@
         })
       },
       cancel() {
-        this.$refs.form.resetFields();
-        this.$refs.upload.clearFiles();
-        this.uploadLoading=false;
-        this.defaultList=[];
         this.load = false;
         this.videoOptions.sources[0].src =''
         this.$nextTick(() => {
           this.load = true;
         });
+        this.$refs.form.resetFields();
+        this.$refs.upload.clearFiles();
+        this.uploadLoading=false;
+        this.defaultList=[];
       },
       beforeUpload(){
         this.uploadLoading=true;
