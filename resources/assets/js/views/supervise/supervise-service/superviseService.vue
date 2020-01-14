@@ -442,6 +442,7 @@
         this.$nextTick(() => {
           this.load = true;
         });
+        this.videoForm.switchVideo='';
       },
       submitF(name) {
         this.$refs[name].validate((valid) => {
@@ -492,6 +493,7 @@
         this.$nextTick(() => {
           this.load = true;
         });
+        this.videoForm.switchVideo='';
         this.$refs.form.resetFields();
         this.$refs.upload.clearFiles();
         this.uploadLoading=false;
