@@ -1146,6 +1146,10 @@
                         this.isAdjustReadOnly = params.row.is_audit === 3;
                         if(params.row.is_audit === 3){
                           this.isDateAdjustReadOnly = false;
+                          this.isAdjustReadOnly=false;
+                          if(this.editForm.is_gc==1){
+                            this.addNepDisabled=false;
+                          }
                         }
                         this.isReadOnly = false;
                         this.openErrorAlert = (this.editForm.reason !== '' && this.editForm.is_audit === 2);
