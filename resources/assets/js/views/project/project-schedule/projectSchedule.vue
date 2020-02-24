@@ -1131,17 +1131,17 @@
         editButton: false,
         upData: {},
         month_options_0: {
-          disabledDate(date) {
-            let date_at = new Date();
-            let curr_time_0 = (date_at.getMonth() + 1) > 9 ? (date_at.getMonth() + 1) : '0' + (date_at.getMonth() + 1);
-            let curr_time = date_at.getFullYear() + '-' + curr_time_0;
+          // disabledDate(date) {
+          //   let date_at = new Date();
+          //   let curr_time_0 = (date_at.getMonth() + 1) > 9 ? (date_at.getMonth() + 1) : '0' + (date_at.getMonth() + 1);
+          //   let curr_time = date_at.getFullYear() + '-' + curr_time_0;
 
-            let time_0 = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1);
-            let time = date.getFullYear() + '-' + time_0;
-            const disabledMonth = time;
-            return disabledMonth !== curr_time;
-            // return disabledMonth > curr_time;
-          }
+          //   let time_0 = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1);
+          //   let time = date.getFullYear() + '-' + time_0;
+          //   const disabledMonth = time;
+          //   return disabledMonth !== curr_time;
+          //   // return disabledMonth > curr_time;
+          // }
         },
         scheduleMonth: [],
         searchNepDisabled: true,
@@ -1296,6 +1296,9 @@
 
         month_time = month_time.getFullYear() + '-' + month_time_0;
         this.upData = {month: month_time, project_num: this.form.project_num, project_id: this.form.project_id};
+        
+        
+        
         // this.month_img = e + ' 月形象进度';
         // this.month_act = e + ' 月实际完成投资(万元)';
         // this.year_investors = e.substring(0, 4) + '年计划投资(万元)';
