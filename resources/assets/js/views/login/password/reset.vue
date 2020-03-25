@@ -1,25 +1,25 @@
 <template>
   <div>
     <div id="particles-js"></div>
-    <Row type="flex" justify="center" class-name="row">
+    <Row class-name="row" justify="center" type="flex">
       <Col span="6">
         <Card>
           <p slot="title">重置密码</p>
-          <Alert type="success" show-icon closable v-show="showAlert">
+          <Alert closable show-icon type="success" v-show="showAlert">
             密码已经被重置！
           </Alert>
-          <Form ref="form" :model="form" :rules="rules">
-            <FormItem label="邮箱" prop="email" class="bottom">
-              <Input v-model="form.email" disabled></Input>
+          <Form :model="form" :rules="rules" ref="form">
+            <FormItem class="bottom" label="邮箱" prop="email">
+              <Input disabled v-model="form.email"></Input>
             </FormItem>
-            <FormItem label="新密码" prop="password" class="bottom">
+            <FormItem class="bottom" label="新密码" prop="password">
               <Input type="password" v-model="form.password"></Input>
             </FormItem>
             <FormItem label="确认密码" prop="password_confirmation">
               <Input type="password" v-model="form.password_confirmation"></Input>
             </FormItem>
             <FormItem class="bottom">
-              <Button type="primary" @click="submit('form')" long>重置密码</Button>
+              <Button @click="submit('form')" long type="primary">重置密码</Button>
             </FormItem>
           </Form>
         </Card>
@@ -81,15 +81,15 @@
   }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style lang="scss" rel="stylesheet/scss" scoped>
   .row {
     padding-top: 160px;
-    
+
     .bottom {
       margin-bottom: 0;
     }
   }
-  
+
   #particles-js {
     position: absolute;
     width: 100%;

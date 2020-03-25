@@ -1,25 +1,26 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
+import camelCase from 'camelcase';
 
 Vue.use(Vuex);
 
-// load modules dynamically
-const requireContext = require.context('./modules', false, /.*\.js$/)
+// https://webpack.js.org/guides/dependency-management/#requirecontext
+const modulesFiles = require.context('./modules', false, /\.js$/);
 
-const modules = requireContext.keys()
-  .map(file => {
-    // get file name and store config
-    return [file.replace(/(^.\/)|(\.js$)/g, ''), requireContext(file).default]
-  })
-  .reduce((modules, [name, module]) => {
-    // generate name:module object
-    return { ...modules, [name]: module }
-  }, {});
+// you do not need `import app from './modules/app'`
+// it will auto require all vuex module from modules file
+const modules = modulesFiles.keys().reduce((modules, modulePath) => {
+    // set './app.js' => 'app'
+    const moduleName = camelCase(modulePath.replace(/^\.\/(.*)\.\w+$/, '$1'));
+    const value = modulesFiles(modulePath);
+    modules[moduleName] = value.default;
+    return modules;
+}, {});
 
 const store = new Vuex.Store({
-  modules,
-  getters,
+    modules,
+    getters
 });
 
-export default store
+export default store;

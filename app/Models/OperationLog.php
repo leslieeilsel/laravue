@@ -8,8 +8,18 @@ use Illuminate\Support\Facades\Auth;
 class OperationLog extends Model
 {
     public $timestamps = true;
-    
-    protected $table = 'operation_log';
+
+    protected $table = 'sys_operation_logs';
+
+    /**
+     * 类型转化
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
 
     public function eventLog($request, $active)
     {
@@ -19,23 +29,16 @@ class OperationLog extends Model
         }
         if ('GET' != $request->method()) {
             $data = [
-                'title' => $active,
-                'user_id' => $user_id,
-                'method' => $request->method(),
-                'path' => $request->path(),
-                'ip' => $request->ip(),
-                'ip_place' => '',
-                'created_at' => date('Y-m-d H:i:s')
+                'title'      => $active,
+                'user_id'    => $user_id,
+                'method'     => $request->method(),
+                'path'       => $request->path(),
+                'ip'         => $request->ip(),
+                'ip_place'   => '',
+                'created_at' => date('Y-m-d H:i:s'),
             ];
-            $result = self::insert($data);
+
+            self::insert($data);
         }
     }
-    
-    /*把IP传入新浪API返回数据获取ip的真实归属地*/
-    // public function getIpPlace($ip = '')
-    // {
-    //     $res = @file_get_contents('http://ip.taobao.com/service/getIpInfo.php?ip=' . $ip);
-
-    //     return $res;
-    // }
 }

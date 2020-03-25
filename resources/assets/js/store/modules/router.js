@@ -51,9 +51,9 @@ const route = {
       } else {
         accessedRouters = filterAsyncRouter(mainRouter, roles);
       }
-      commit('setRoutes', accessedRouters)
+      commit('setRoutes', accessedRouters);
     }
   }
 }
 
-export default route
+export default route;

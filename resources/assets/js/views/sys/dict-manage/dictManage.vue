@@ -1,10 +1,10 @@
 <template>
   <div class="search">
     <Card>
-      <Row type="flex" justify="space-between" class="code-row-bg">
-        <Col v-if="expand" span="5">
+      <Row class="code-row-bg" justify="space-between" type="flex">
+        <Col span="5" v-if="expand">
           <Row class="operation">
-            <Button @click="addDict" type="primary" icon="md-add">添加字典</Button>
+            <Button @click="addDict" icon="md-add" type="primary">添加字典</Button>
             <Dropdown @on-click="handleDropdown" trigger="click">
               <Button>
                 更多操作
@@ -19,19 +19,19 @@
           </Row>
           <Alert show-icon>
             当前选择： <span class="select-title">{{editTitle}}</span>
-            <a class="select-clear" v-if="editTitle" @click="cancelEdit">取消选择</a>
+            <a @click="cancelEdit" class="select-clear" v-if="editTitle">取消选择</a>
           </Alert>
           <div class="tree-bar">
-            <Tree ref="tree" :data="treeData" @on-select-change="selectTree"></Tree>
+            <Tree :data="treeData" @on-select-change="selectTree" ref="tree"></Tree>
           </div>
-          <Spin size="large" fix v-if="treeLoading"></Spin>
+          <Spin fix size="large" v-if="treeLoading"></Spin>
         </Col>
         <div class="expand">
-          <Icon :type="expandIcon" size="16" class="icon" @click="changeExpand"/>
+          <Icon :type="expandIcon" @click="changeExpand" class="icon" size="16"/>
         </div>
         <Col :span="span">
           <Row class="operation">
-            <Button @click="add" type="primary" icon="md-add">添加数据</Button>
+            <Button @click="add" icon="md-add" type="primary">添加数据</Button>
             <Button @click="delAll" icon="md-trash">批量删除</Button>
             <Button @click="getDataList" icon="md-refresh">刷新数据</Button>
             <circleLoading v-if="operationLoading"/>
@@ -39,66 +39,70 @@
           <Row>
             <Alert show-icon>
               已选择 <span class="select-count">{{selectCount}}</span> 项
-              <a class="select-clear" @click="clearSelectAll">清空</a>
+              <a @click="clearSelectAll" class="select-clear">清空</a>
             </Alert>
           </Row>
           <Row>
-            <Table :loading="loading" border :columns="columns" :data="data" sortable="custom"
-                   @on-sort-change="changeSort" @on-selection-change="showSelect" ref="table"></Table>
+            <Table :columns="columns" :data="nowData" :loading="loading" @on-selection-change="showSelect" @on-sort-change="changeSort"
+                   ref="table" size="small" sortable="custom"></Table>
+          </Row>
+          <Row class="page" justify="end" type="flex">
+            <Page :current="pageCurrent" :page-size="pageSize" :total="dataCount" @on-change="changePage"
+                  @on-page-size-change="_nowPageSize" show-sizer show-total/>
           </Row>
         </Col>
       </Row>
     </Card>
-    
+
     <Modal
-      :title="dictModalTitle"
-      v-model="dictModalVisible"
       :mask-closable='false'
+      :styles="{top: '100px'}"
+      :title="dictModalTitle"
       :width="500"
-      :styles="{top: '100px'}">
-      <Form ref="dictForm" :model="dictForm" :label-width="70" :rules="dictFormValidate">
+      v-model="dictModalVisible">
+      <Form :label-width="70" :model="dictForm" :rules="dictFormValidate" ref="dictForm">
         <FormItem label="字典名称" prop="title">
-          <Input v-model="dictForm.title" placeholder=""/>
+          <Input placeholder="" v-model="dictForm.title"/>
         </FormItem>
         <FormItem label="字典类型" prop="type">
           <!--<Tooltip placement="right" content="建议使用唯一的英文名，非开发人员请谨填写" class="form-tooltip">-->
-          <Input v-model="dictForm.type" placeholder="建议使用唯一的英文名称，非开发人员请谨填写"/>
+          <Input placeholder="建议使用唯一的英文名称，非开发人员请谨填写" v-model="dictForm.type"/>
           <!--</Tooltip>-->
         </FormItem>
         <FormItem label="备注" prop="description">
-          <Input v-model="dictForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="输入内容"/>
+          <Input :autosize="{minRows: 2,maxRows: 5}" placeholder="输入内容" type="textarea" v-model="dictForm.description"/>
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" @click="dictModalVisible=false">取消</Button>
-        <Button type="primary" :loading="submitLoading" @click="handelSubmitDict">提交</Button>
+        <Button @click="dictModalVisible=false" type="text">取消</Button>
+        <Button :loading="submitLoading" @click="handelSubmitDict" type="primary">提交</Button>
       </div>
     </Modal>
-    <Modal :title="modalTitle" v-model="modalVisible" :mask-closable='false' :width="500" :styles="{top: '100px'}">
-      <Form ref="form" :model="form" :label-width="70" :rules="formValidate">
+    <Modal :mask-closable='false' :styles="{top: '100px'}" :title="modalTitle" :width="500" v-model="modalVisible">
+      <Form :label-width="70" :model="form" :rules="formValidate" ref="form">
         <FormItem label="名称" prop="title">
-          <Input v-model="form.title" placeholder=""/>
+          <Input placeholder="" v-model="form.title"/>
         </FormItem>
         <FormItem label="数据值" prop="value">
-          <Input v-model="form.value" placeholder=""/>
+          <Input placeholder="" v-model="form.value"/>
         </FormItem>
         <FormItem label="备注" prop="description">
-          <Input v-model="form.description" placeholder=""/>
+          <Input placeholder="" v-model="form.description"/>
         </FormItem>
         <FormItem label="排序值" prop="sort">
           <InputNumber :max="1000" :min="0" v-model="form.sort"></InputNumber>
           <span style="margin-left:5px">数值越小越靠前</span>
         </FormItem>
         <FormItem label="是否启用" prop="status">
-          <i-switch size="large" v-model="form.status" :true-value="1" :false-value="0">
+          <i-switch :false-value="0" :true-value="1" size="large" v-model="form.status">
             <span slot="open">启用</span>
             <span slot="close">禁用</span>
           </i-switch>
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" @click="modalVisible=false">取消</Button>
-        <Button type="primary" :loading="submitLoading" @click="handelSubmit">提交</Button>
+        <Button @click="modalVisible=false" type="text">取消</Button>
+        <Button :loading="submitLoading" @click="handelSubmit" type="primary">提交</Button>
       </div>
     </Modal>
   </div>
@@ -106,14 +110,14 @@
 
 <script>
   import {
-    getAllDictList,
     addDict,
-    editDict,
-    deleteDict,
-    getAllDictDataList,
     addDictData,
+    deleteDict,
+    deleteDictData,
+    editDict,
     editDictData,
-    deleteDictData
+    getAllDictDataList,
+    getAllDictList
   } from 'api/system';
   import "./dictManage.css";
 
@@ -121,6 +125,11 @@
     name: "dictManage",
     data() {
       return {
+        //分页
+        pageSize: 10,//每页显示多少条
+        dataCount: 0,//总条数
+        pageCurrent: 1,//当前页
+        nowData: [],
         treeData: [],
         loading: false,
         treeLoading: false,
@@ -142,7 +151,8 @@
           title: '',
           status: 1,
           description: "",
-          sort: 0
+          sort: 0,
+          value: ''
         },
         dictFormValidate: {
           // 表单验证规则
@@ -151,8 +161,8 @@
         },
         formValidate: {
           // 表单验证规则
-          title: [{required: true, message: "不能为空", trigger: "blur"}],
-          value: [{required: true, message: "不能为空", trigger: "blur"}]
+          title: [{required: true, message: "名称不能为空", trigger: "blur"}],
+          value: [{required: true, message: "数据值不能为空", trigger: "blur"}]
         },
         selectNode: {},
         selectCount: 0, // 多选计数
@@ -292,7 +302,6 @@
           }
         ],
         data: [],   //表单数据
-        total: 0    // 表单数据总数
       }
     },
     methods: {
@@ -305,8 +314,8 @@
       getAllDict() {
         this.treeLoading = true;
         getAllDictList().then(res => {
-          this.treeLoading = false;
           this.treeData = res.result;
+          this.treeLoading = false;
         });
       },
       addDict() {
@@ -396,15 +405,15 @@
         }
       },
       handleDropdown(name) {
-        if (name == "editDict") {
+        if (name === "editDict") {
           if (!this.selectNode.id) {
             this.$Message.warning("您还未选择要编辑的字典");
             return;
           }
           this.editDict();
-        } else if (name == "delDict") {
+        } else if (name === "delDict") {
           this.delDict();
-        } else if (name == "refreshDict") {
+        } else if (name === "refreshDict") {
           this.refreshDict();
         }
       },
@@ -461,8 +470,17 @@
           this.loading = false;
           if (res.result) {
             this.data = res.result;
-            this.total = res.result.length;
+            //分页显示所有数据总数
+            this.dataCount = this.data.length;
+            //循环展示页面刚加载时需要的数据条数
+            this.nowData = [];
+            for (let i = 0; i < this.pageSize; i++) {
+              if (this.data[i]) {
+                this.nowData.push(this.data[i]);
+              }
+            }
           }
+          this.pageCurrent = 1;
         });
       },
       changeExpand() {
@@ -496,8 +514,7 @@
           }
         }
         let str = JSON.stringify(v);
-        let data = JSON.parse(str);
-        this.form = data;
+        this.form = JSON.parse(str);
         this.modalVisible = true;
       },
       remove(v) {
@@ -559,13 +576,32 @@
         }
         this.getDataList();
       },
+      changePage(index) {
+        //需要显示开始数据的index,(因为数据是从0开始的，页码是从1开始的，需要-1)
+        let _start = (index - 1) * this.pageSize;
+        //需要显示结束数据的index
+        let _end = index * this.pageSize;
+        //截取需要显示的数据
+        this.nowData = this.data.slice(_start, _end);
+        //储存当前页
+        this.pageCurrent = index;
+      },
+      _nowPageSize(index) {
+        //实时获取当前需要显示的条数
+        this.pageSize = index;
+        this.loadingTable = true;
+        this.nowData = [];
+        for (let i = 0; i < this.pageSize; i++) {
+          if (this.data[i]) {
+            this.nowData.push(this.data[i]);
+          }
+        }
+        this.pageCurrent = 1;
+        this.loadingTable = false;
+      },
     },
     mounted() {
       this.init();
     }
   }
 </script>
-
-<style scoped>
-
-</style>

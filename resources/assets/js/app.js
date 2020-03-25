@@ -1,20 +1,22 @@
-//require('./bootstrap');
-
 window.Vue = require('vue');
 
-import App from './app.vue'
-import store from './store'
-import i18n from './lang'
-import { router } from './router'
+import App from './app.vue';
+import store from './store';
+import i18n from './lang';
+import {router} from './router';
+import ViewUI from 'view-design';
+import 'view-design/dist/styles/iview.css';
+import moment from 'moment'
 
-import iView from 'iview'
-import 'iview/dist/styles/iview.css'
+Vue.prototype.$moment = moment;
+moment.locale('zh-cn');
 
-import Antd from 'ant-design-vue'
-import 'ant-design-vue/dist/antd.css'
+Vue.use(ViewUI);
 
-Vue.use(iView);
-Vue.use(Antd);
+Vue.prototype.$Message.config({
+  duration: 5
+});
+
 const app = new Vue({
   el: '#app',
   i18n,

@@ -6,14 +6,14 @@
           <Row>
             <div style="position:relative;">
               <iframe
-                id="iframe"
+                :height="iframeHeight"
                 :src="go"
                 frameborder="0"
-                width="100%"
-                :height="iframeHeight"
+                id="iframe"
                 scrolling="auto"
+                width="100%"
               ></iframe>
-<!--              <Spin fix size="large" v-if="loading"></Spin>-->
+              <!--              <Spin fix size="large" v-if="loading"></Spin>-->
             </div>
           </Row>
         </Card>

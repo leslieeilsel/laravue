@@ -1,6 +1,6 @@
 // 导出路由并配置守卫
 import Vue from 'vue';
-import iView from 'iview';
+import ViewUI from 'view-design';
 import store from '../store'
 import VueRouter from 'vue-router';
 import { getRouter } from 'api/system';
@@ -13,14 +13,18 @@ Vue.use(VueRouter);
 
 // 创建并导出 router 实例，然后传 `routes` 配置
 export const router = new VueRouter({
-  routes: constantRouterMap
+  routes: constantRouterMap,
 });
 
-const whiteList = ['/login', '/password/send', '/password/reset'];
+const whiteList = [
+  '/login',
+  '/password/send',
+  '/password/reset'
+];
 export let getRouters; //用来获取后台拿到的路由
 
 router.beforeEach((to, from, next) => {
-  iView.LoadingBar.start();
+  ViewUI.LoadingBar.start();
 
   if (getToken()) {
     if (to.path === '/login') {
@@ -35,6 +39,7 @@ router.beforeEach((to, from, next) => {
           }).then(() => { // 根据roles权限生成可访问的路由表
             getRouter().then(data => {
               getRouters = data.result; //后台拿到路由
+              localStorage.getrouter=JSON.stringify(data.result);//把结果存进缓存
               routerGo(to, next) //执行路由跳转方法
             });
             next({ ...to,
@@ -52,7 +57,7 @@ router.beforeEach((to, from, next) => {
       next();
     } else {
       next('/login');
-      iView.LoadingBar.finish();
+      ViewUI.LoadingBar.finish();
     }
   }
 });
@@ -84,7 +89,10 @@ function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符
 }
 
 router.afterEach(() => {
-  iView.LoadingBar.finish();
+  ViewUI.LoadingBar.finish();
 });
 
-
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}

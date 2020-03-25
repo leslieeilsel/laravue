@@ -93,7 +93,17 @@ export function loadDepartment(id) {
     data: { id }
   });
 }
-
+/**
+ * 获取分级部门
+ * @returns {*}
+ */
+export function loadClassDepartment(id) {
+  return request({
+    url: `/api/department/getClassDepartment`,
+    method: 'get',
+    data: { id }
+  });
+}
 /**
  * 创建组织机构
  * @returns {*}

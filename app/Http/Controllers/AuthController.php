@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use App\Models\OperationLog;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -22,14 +22,15 @@ class AuthController extends Controller
     /**
      * Get a JWT via given credentials.
      *
-     * @param Request $request
+     * @param  Request  $request
+     *
      * @return JsonResponse
      */
     public function login(Request $request)
     {
         $credentials = request(['username', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => '登录失败，用户名或密码错误！'], 200);
         }
 
@@ -42,6 +43,22 @@ class AuthController extends Controller
         $log->eventLog($request, '用户登录');
 
         return $this->respondWithToken($token);
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string  $token
+     *
+     * @return JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type'   => 'bearer',
+            'expires_in'   => auth()->factory()->getTTL() * 60,
+        ]);
     }
 
     /**
@@ -74,21 +91,5 @@ class AuthController extends Controller
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
-    }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return JsonResponse
-     */
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
     }
 }

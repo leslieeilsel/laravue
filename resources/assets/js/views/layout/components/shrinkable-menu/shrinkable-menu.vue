@@ -12,7 +12,6 @@
 
 <script>
   import sidebarMenu from './components/sidebarMenu.vue';
-  import util from '@/libs/util';
 
   export default {
     name: 'shrinkableMenu',
@@ -49,11 +48,11 @@
   };
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style lang="scss" rel="stylesheet/scss" scoped>
   .menu {
     width: 100%;
     height: 100%;
-    background-color: #fff;
+    background-color: #001529;
   }
 </style>
 

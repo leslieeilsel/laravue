@@ -2,7 +2,7 @@
   <Card>
     <Tabs value="baseInfo">
       <TabPane label="基础信息" name="baseInfo">
-        <Form ref="userForm" :model="userForm" :label-width="100" label-position="right">
+        <Form :label-width="100" :model="userForm" label-position="right" ref="userForm">
           <FormItem label="账号名：">
             <span>{{userForm.username}}</span>
           </FormItem>
@@ -16,7 +16,7 @@
             <span>{{userForm.email}}</span>
           </FormItem>
           <FormItem label="所属部门：">
-            <span>{{userForm.department_id}}</span>
+            <span>{{userForm.department_name}}</span>
           </FormItem>
           <FormItem label="注册时间：">
             <span>{{userForm.created_at}}</span>
@@ -25,31 +25,31 @@
             <span>{{userForm.desc}}</span>
           </FormItem>
         </Form>
-        <Spin size="large" fix v-if="infoLoading"></Spin>
+        <Spin fix size="large" v-if="infoLoading"></Spin>
       </TabPane>
       <TabPane label="安全设置" name="safeSetting">
         <Col span="20">
           <p>账户密码</p>
         </Col>
         <Col span="4">
-          <a class="right" @click="modal1 = true">修改</a>
+          <a @click="modal1 = true" class="right">修改</a>
           <Modal
-            v-model="modal1"
-            title="修改密码">
-            <Form ref="formValidate" :model="formResetPassword" :rules="ruleInline" :label-width="90">
+            title="修改密码"
+            v-model="modal1">
+            <Form :label-width="90" :model="formResetPassword" :rules="ruleInline" ref="formValidate">
               <FormItem label="原密码" prop="oldPassword">
-                <Input type="password" v-model="formResetPassword.oldPassword" placeholder="请输入现在使用的密码"/>
+                <Input placeholder="请输入现在使用的密码" type="password" v-model="formResetPassword.oldPassword"/>
               </FormItem>
               <FormItem label="新密码" prop="newPassword">
-                <Input type="password" v-model="formResetPassword.newPassword" placeholder="请输入新密码"/>
+                <Input placeholder="请输入新密码" type="password" v-model="formResetPassword.newPassword"/>
               </FormItem>
               <FormItem label="确认新密码" prop="confirmNewPassword">
-                <Input type="password" v-model="formResetPassword.confirmNewPassword" placeholder="请再次输入新密码"/>
+                <Input placeholder="请再次输入新密码" type="password" v-model="formResetPassword.confirmNewPassword"/>
               </FormItem>
             </Form>
             <div slot="footer">
               <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
-              <Button type="primary" @click="handleSubmit('formValidate')" :loading="loading">提交</Button>
+              <Button :loading="loading" @click="handleSubmit('formValidate')" type="primary">提交</Button>
             </div>
           </Modal>
         </Col>
@@ -70,9 +70,9 @@
         callback();
       };
       const pwdCheckValidate = (rule, value, callback) => {
-        if (this.formResetPassword.newPassword != '' && value == '') {
+        if (this.formResetPassword.newPassword !== '' && value === '') {
           callback(new Error('确认密码不能为空'));
-        } else if (this.formResetPassword.confirmNewPassword != value) {
+        } else if (this.formResetPassword.confirmNewPassword !== value) {
           callback(new Error('新密码和确认密码应相同'));
         } else {
           callback();
@@ -87,7 +87,7 @@
           name: '',
           phone: '',
           email: '',
-          department_id: '',
+          department_name: '',
           desc: '',
           created_at: '',
         },
@@ -121,7 +121,7 @@
           if (res.result) {
             this.departments = res.result;
             let departmentId = this.$store.getters.user.department_id;
-            this.$store.getters.user.department_id = this.departments[departmentId];
+            this.$store.getters.user.department_name = this.departments[departmentId];
             this.userForm = this.$store.getters.user;
             this.infoLoading = false;
           }

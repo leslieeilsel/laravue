@@ -1,19 +1,19 @@
 <template>
   <div>
     <div id="particles-js"></div>
-    <Row type="flex" justify="center" class-name="row">
+    <Row class-name="row" justify="center" type="flex">
       <Col span="6">
         <Card>
           <p slot="title">{{ $t('login.retrievePassword') }}</p>
-          <Alert type="success" show-icon closable v-show="showAlert">
+          <Alert closable show-icon type="success" v-show="showAlert">
             我们已将重置链接发送到您的邮箱，请注意查收，此链接30分钟内有效。
           </Alert>
-          <Form ref="form" :model="form" :rules="rules" label-position="top">
+          <Form :model="form" :rules="rules" label-position="top" ref="form">
             <FormItem :label="$t('login.email')" prop="email">
               <Input v-model="form.email"></Input>
             </FormItem>
             <FormItem class="bottom">
-              <Button type="primary" @click="submit('form')" long :loading="loading">{{ $t('Next Step') }}</Button>
+              <Button :loading="loading" @click="submit('form')" long type="primary">{{ $t('Next Step') }}</Button>
             </FormItem>
           </Form>
         </Card>
@@ -63,23 +63,23 @@
   }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style lang="scss" rel="stylesheet/scss" scoped>
   .row {
     padding-top: 180px;
-    
+
     .bottom {
       margin-bottom: 14px;
-      
+
       .rememberMe {
         margin-left: 5px;
       }
-      
+
       .forgetPassword {
         float: right;
       }
     }
   }
-  
+
   #particles-js {
     position: absolute;
     width: 100%;

@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import Cookies from 'js-cookie'
-import iviewZhLocale from 'iview/src/locale/lang/zh-CN';
-import iviewEnLocale from 'iview/src/locale/lang/en-US';
+import iviewZhLocale from 'view-design/src/locale/lang/zh-CN';
+import iviewEnLocale from 'view-design/src/locale/lang/en-US';
 import enLocale from './en'
 import zhLocale from './zh'
 

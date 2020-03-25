@@ -1,6 +1,6 @@
 <template>
   <Breadcrumb>
-    <BreadcrumbItem v-for="item in currentPath" :to="item.redirect || item.path" :key="item.name">
+    <BreadcrumbItem :key="item.name" :to="item.redirect || item.path" v-for="item in currentPath">
       {{ item.meta.title }}
     </BreadcrumbItem>
   </Breadcrumb>

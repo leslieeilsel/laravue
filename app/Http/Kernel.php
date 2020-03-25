@@ -8,7 +8,6 @@ class Kernel extends HttpKernel
 {
     /**
      * The application's global HTTP middleware stack.
-     *
      * These middleware are run during every request to your application.
      *
      * @var array
@@ -27,7 +26,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups = [
-        'web' => [
+        'web'      => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -36,26 +35,28 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-
-        'api' => [
-            'throttle:60,1',
+        'throttle' => ['throttle:500,1'], //No idea why, but this works!
+        'api'      => [
+            'throttle:120,1',
             'bindings',
+            'isLogin',
         ],
     ];
 
     /**
      * The application's route middleware.
-     *
      * These middleware may be assigned to groups or used individually.
      *
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth'       => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'bindings'   => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'can'        => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'      => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'cors'       => \App\Http\Middleware\AccessControlAllowOrigin::class,
+        'isLogin'    => \App\Http\Middleware\CheckIsLogin::class,
     ];
 }

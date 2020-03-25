@@ -1,4 +1,4 @@
-import { Message } from 'iview'
+import { Message } from 'view-design'
 import { login, getUserInfo } from 'api/login'
 import { setToken, getToken, removeToken } from "utils/storage";
 

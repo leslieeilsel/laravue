@@ -2,7 +2,7 @@
   <div class="search">
     <Card>
       <Row class="operation">
-        <Button @click="addChildMenu" type="primary" icon="md-add">添加子节点</Button>
+        <Button @click="addChildMenu" icon="md-add" type="primary">添加子节点</Button>
         <Button @click="addRootMenu" icon="md-add">添加一级菜单</Button>
         <Button @click="delAll" icon="md-trash">批量删除</Button>
         <!--<Dropdown @on-click="handleDropdown">-->
@@ -22,58 +22,58 @@
           <Alert show-icon>
             当前选择编辑：
             <span class="select-title">{{editTitle}}</span>
-            <a class="select-clear" v-if="menuForm.id" @click="cancelEdit">取消选择</a>
+            <a @click="cancelEdit" class="select-clear" v-if="menuForm.id">取消选择</a>
           </Alert>
           <div class="tree-bar">
             <Tree
-              ref="tree"
               :data="data"
-              show-checkbox
               @on-check-change="changeSelect"
               @on-select-change="selectTree"
+              ref="tree"
+              show-checkbox
             ></Tree>
           </div>
-          <Spin size="large" fix v-if="loading"></Spin>
+          <Spin fix size="large" v-if="loading"></Spin>
         </Col>
         <Col span="9">
-          <Form ref="menuForm" :model="menuForm" :label-width="100" :rules="menuFormValidate">
+          <Form :label-width="100" :model="menuForm" :rules="menuFormValidate" ref="menuForm">
             <FormItem label="名称" prop="title">
-              <Input v-model="menuForm.title" placeholder=""/>
+              <Input placeholder="" v-model="menuForm.title"/>
             </FormItem>
             <FormItem label="英文名" prop="name">
-              <Input v-model="menuForm.name" placeholder=""/>
+              <Input placeholder="" v-model="menuForm.name"/>
             </FormItem>
             <FormItem label="路径" prop="path">
-              <Input v-model="menuForm.path" placeholder=""/>
+              <Input placeholder="" v-model="menuForm.path"/>
             </FormItem>
             <FormItem label="图标" prop="icon">
-              <Input :icon="menuForm.icon" v-model="menuForm.icon" @on-focus="showEditIcon(0)" placeholder=""/>
+              <Input :icon="menuForm.icon" @on-focus="showEditIcon(0)" placeholder="" v-model="menuForm.icon"/>
             </FormItem>
             <FormItem label="链接类型" prop="link_type">
-              <RadioGroup v-model="menuForm.link_type" @on-change="changeLinkType">
+              <RadioGroup @on-change="changeLinkType" v-model="menuForm.link_type">
                 <Radio :label="0">
-                  <Icon type="md-compass" size="16" style="margin-bottom:3px;"></Icon>
+                  <Icon size="16" style="margin-bottom:3px;" type="md-compass"></Icon>
                   <span>本地链接</span>
                 </Radio>
                 <Radio :label="1">
-                  <Icon type="md-link" size="16" style="margin-bottom:3px;"></Icon>
+                  <Icon size="16" style="margin-bottom:3px;" type="md-link"></Icon>
                   <span>第三方链接</span>
                 </Radio>
               </RadioGroup>
             </FormItem>
             <FormItem label="前端组件" prop="component">
-              <Input v-model="menuForm.component" :disabled="menuFormComponent" placeholder=""/>
+              <Input :disabled="menuFormComponent" placeholder="" v-model="menuForm.component"/>
             </FormItem>
             <FormItem label="链接地址" prop="url" v-if="menuForm.link_type===1">
               <Poptip
-                trigger="focus"
+                content="链接开头必须为 http:// 或 https://"
                 placement="right"
+                title="提示"
+                trigger="focus"
                 width="320"
                 word-wrap
-                title="提示"
-                content="链接开头必须为 http:// 或 https://"
               >
-                <Input v-model="menuForm.url" placeholder=""/>
+                <Input placeholder="" v-model="menuForm.url"/>
               </Poptip>
             </FormItem>
             <FormItem label="排序值" prop="sort">
@@ -81,18 +81,18 @@
               <span style="margin-left:5px">值越小越靠前</span>
             </FormItem>
             <FormItem label="是否启用" prop="status">
-              <i-switch size="large" v-model="menuForm.enabled" :true-value="1" :false-value="0">
+              <i-switch :false-value="0" :true-value="1" size="large" v-model="menuForm.enabled">
                 <span slot="open">启用</span>
                 <span slot="close">禁用</span>
               </i-switch>
             </FormItem>
             <Form-item>
               <Button
-                style="margin-right:5px"
-                @click="submitEdit"
                 :loading="submitLoading"
-                type="primary"
+                @click="submitEdit"
                 icon="ios-create-outline"
+                style="margin-right:5px"
+                type="primary"
               >修改并保存
               </Button>
               <Button @click="handleReset">重置</Button>
@@ -101,55 +101,55 @@
         </Col>
       </Row>
     </Card>
-    
+
     <Modal
-      :title="modalTitle"
-      v-model="menuModalVisible"
       :mask-closable="false"
-      :width="500"
       :styles="{top: '100px'}"
+      :title="modalTitle"
+      :width="500"
+      v-model="menuModalVisible"
     >
-      <Form ref="menuFormAdd" :model="menuFormAdd" :label-width="85" :rules="menuFormValidate">
+      <Form :label-width="85" :model="menuFormAdd" :rules="menuFormValidate" ref="menuFormAdd">
         <div v-if="showParent">
           <FormItem label="上级节点：">{{parentTitle}}</FormItem>
         </div>
         <FormItem label="名称" prop="title">
-          <Input v-model="menuFormAdd.title" placeholder=""/>
+          <Input placeholder="" v-model="menuFormAdd.title"/>
         </FormItem>
         <FormItem label="英文名" prop="name">
-          <Input v-model="menuFormAdd.name" placeholder=""/>
+          <Input placeholder="" v-model="menuFormAdd.name"/>
         </FormItem>
         <FormItem label="路径" prop="path">
-          <Input v-model="menuFormAdd.path" placeholder=""/>
+          <Input placeholder="" v-model="menuFormAdd.path"/>
         </FormItem>
         <FormItem label="图标" prop="icon">
-          <Input :icon="menuFormAdd.icon" v-model="menuFormAdd.icon" @on-focus="showEditIcon(1)" placeholder=""/>
+          <Input :icon="menuFormAdd.icon" @on-focus="showEditIcon(1)" placeholder="" v-model="menuFormAdd.icon"/>
         </FormItem>
         <FormItem label="链接类型" prop="link_type">
-          <RadioGroup v-model="menuFormAdd.link_type" @on-change="changeAddLinkType">
+          <RadioGroup @on-change="changeAddLinkType" v-model="menuFormAdd.link_type">
             <Radio :label="0">
-              <Icon type="md-compass" size="16" style="margin-bottom:3px;"></Icon>
+              <Icon size="16" style="margin-bottom:3px;" type="md-compass"></Icon>
               <span>本地链接</span>
             </Radio>
             <Radio :label="1">
-              <Icon type="md-link" size="16" style="margin-bottom:3px;"></Icon>
+              <Icon size="16" style="margin-bottom:3px;" type="md-link"></Icon>
               <span>第三方链接</span>
             </Radio>
           </RadioGroup>
         </FormItem>
         <FormItem label="前端组件" prop="component">
-          <Input v-model="menuFormAdd.component" :disabled="menuFormAddComponent" placeholder=""/>
+          <Input :disabled="menuFormAddComponent" placeholder="" v-model="menuFormAdd.component"/>
         </FormItem>
         <FormItem label="链接地址" prop="url" v-if="menuFormAdd.link_type===1">
           <Poptip
-            trigger="focus"
+            content="链接开头必须为 http:// 或 https://"
             placement="right"
+            title="提示"
+            trigger="focus"
             width="320"
             word-wrap
-            title="提示"
-            content="链接开头必须为 http:// 或 https://"
           >
-            <Input v-model="menuFormAdd.url" placeholder=""/>
+            <Input placeholder="" v-model="menuFormAdd.url"/>
           </Poptip>
         </FormItem>
         <FormItem label="排序值" prop="sort">
@@ -157,24 +157,24 @@
           <span style="margin-left:5px">值越小越靠前</span>
         </FormItem>
         <FormItem label="是否启用" prop="enabled">
-          <i-switch size="large" v-model="menuFormAdd.enabled" :true-value="1" :false-value="0">
+          <i-switch :false-value="0" :true-value="1" size="large" v-model="menuFormAdd.enabled">
             <span slot="open">启用</span>
             <span slot="close">禁用</span>
           </i-switch>
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" @click="cancelAdd">取消</Button>
-        <Button type="primary" :loading="submitLoading" @click="submitAdd">提交</Button>
+        <Button @click="cancelAdd" type="text">取消</Button>
+        <Button :loading="submitLoading" @click="submitAdd" type="primary">提交</Button>
       </div>
     </Modal>
-    <Modal title="选择图标" v-model="iconModalVisible" :width="800" :styles="{top: '100px'}" footer-hide>
+    <Modal :styles="{top: '100px'}" :width="800" footer-hide title="选择图标" v-model="iconModalVisible">
       <icon-choose @on-select="handleSelectIcon"></icon-choose>
     </Modal>
   </div>
 </template>
 <script>
-  import {getAllMenuList, getmenus, addMenu, editMenu, deleteMenu} from '../../../api/system';
+  import {addMenu, deleteMenu, editMenu, getmenus} from '../../../api/system';
   import IconChoose from "../../my-components/icon-choose";
 
   export default {
@@ -316,7 +316,7 @@
         this.iconModalVisible = true;
       },
       handleSelectIcon(v) {
-        if (this.iconType == 0) {
+        if (this.iconType === 0) {
           this.menuForm.icon = v;
         } else {
           this.menuFormAdd.icon = v;
@@ -338,7 +338,7 @@
         }
       },
       addChildMenu() {
-        if (this.menuForm.id == "" || this.menuForm.id == null) {
+        if (this.menuForm.id === "" || this.menuForm.id == null) {
           this.$Message.warning("请先点击选择一个菜单权限节点");
           return;
         }
@@ -393,7 +393,7 @@
           content: "您确认要删除所选的 " + this.selectCount + " 条数据?",
           onOk: () => {
             let ids = "";
-            this.selectList.forEach(function(e) {
+            this.selectList.forEach(function (e) {
               ids += e.id + ",";
             });
             ids = ids.substring(0, ids.length - 1);

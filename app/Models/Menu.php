@@ -8,7 +8,7 @@ class Menu extends Model
 {
     public $timestamps = true;
 
-    protected $table = 'menus';
+    protected $table = 'sys_menus';
 
     protected $fillable = [
         'title',
@@ -23,6 +23,6 @@ class Menu extends Model
         'target',
         'enabled',
         'sort',
-        'path'
+        'path',
     ];
 }

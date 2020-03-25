@@ -1,5 +1,5 @@
 // 所有路由信息的配置
-
+import layout from 'views/layout'
 /**
  * meta.title : 导航显示的中文名称
  * showParent : 无论子节量，都会显示为二级菜单（默认一个子节点只显示一级菜单）点数
@@ -17,6 +17,7 @@ export const constantRouterMap = [
 // 导出所有的路由配置
 export const routes = [
   ...mainRouter,
-  ...constantRouterMap
+  ...constantRouterMap,
+  // ...singleRouter
 ];
   

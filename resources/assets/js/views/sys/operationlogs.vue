@@ -1,6 +1,15 @@
 <template>
   <Card>
-    <Table border stripe :columns="columns" :data="data" :loading="loading"></Table>
+    <Table :columns="columns" :data="data" :loading="loading" size="small"></Table>
+    <Row class="page" justify="end" type="flex">
+      <Page
+        :current="searchForm.pageNumber"
+        :page-size="searchForm.pageSize"
+        :total="dataCount"
+        @on-change="changePage"
+        @on-page-size-change="changePageSize"
+        show-total/>
+    </Row>
   </Card>
 </template>
 <script>
@@ -9,6 +18,11 @@
   export default {
     data() {
       return {
+        dataCount: 0,   // 总条数
+        searchForm: {
+          pageNumber: 1, // 当前页数
+          pageSize: 10, // 页面大小
+        },
         columns: [
           {
             title: '操作名称',
@@ -41,10 +55,23 @@
     },
     methods: {
       init() {
-        getOperationLogs().then(res => {
+        this.getLogs();
+      },
+      getLogs() {
+        this.loading = true;
+        getOperationLogs(this.searchForm).then(res => {
           this.data = res.result;
+          this.dataCount = res.total;
           this.loading = false;
         });
+      },
+      changePage(v) {
+        this.searchForm.pageNumber = v;
+        this.getLogs();
+      },
+      changePageSize(v) {
+        this.searchForm.pageSize = v;
+        this.getLogs();
       },
     },
     mounted() {

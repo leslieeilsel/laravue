@@ -1,8 +1,8 @@
 <template>
   <div class="search">
     <Card>
-      <Row>
-        <Button @click="add" type="primary" icon="md-add">添加子部门</Button>
+      <Row class="operation">
+        <Button @click="add" icon="md-add" type="primary">添加子部门</Button>
         <Button @click="addRoot" icon="md-add">添加一级部门</Button>
         <!-- <Button @click="delAll" icon="md-trash">批量删除</Button> -->
         <Button @click="init" icon="md-refresh">刷新</Button>
@@ -12,55 +12,55 @@
           <Alert show-icon>
             当前选择编辑：
             <span class="select-title">{{editTitle}}</span>
-            <a class="select-clear" v-if="form.id" @click="cancelEdit">取消选择</a>
+            <a @click="cancelEdit" class="select-clear" v-if="form.id">取消选择</a>
           </Alert>
           <div class="tree-bar">
             <Tree
-              ref="tree"
               :data="treeData"
               :load-data="loadData"
-              empty-text=""
               @on-check-change="changeSelect"
               @on-select-change="selectTree"
+              empty-text="暂无数据"
+              ref="tree"
               show-checkbox
             ></Tree>
           </div>
-          <Spin size="large" fix v-if="loading"></Spin>
+          <Spin fix size="large" v-if="loading"></Spin>
         </Col>
         <Col span="9">
-          <Form ref="form" :model="form" :label-width="85" :rules="menuFormValidate">
+          <Form :label-width="85" :model="form" :rules="menuFormValidate" ref="form">
             <FormItem label="上级部门" prop="parent_title">
-              <Poptip trigger="click" placement="right-start" title="选择上级部门" width="250">
-                <Input v-model="form.parent_title" readonly placeholder=""/>
-                <div slot="content" style="position:relative;min-height:5vh">
-                  <Tree :data="dataEdit" :load-data="loadData" @on-select-change="selectTreeEdit"></Tree>
-                  <Spin size="large" fix v-if="loadingEdit"></Spin>
-                </div>
-              </Poptip>
+              <!--              <Poptip trigger="click" placement="right-start" title="选择上级部门" width="250">-->
+              <Input placeholder="" readonly v-model="form.parent_title"/>
+              <!--                <div slot="content" style="position:relative;min-height:5vh">-->
+              <!--                  <Tree :data="dataEdit" :load-data="loadData" @on-select-change="selectTreeEdit"></Tree>-->
+              <!--                  <Spin size="large" fix v-if="loadingEdit"></Spin>-->
+              <!--                </div>-->
+              <!--              </Poptip>-->
             </FormItem>
             <FormItem label="部门名称" prop="title">
-              <Input v-model="form.title" placeholder=""/>
+              <Input placeholder="" v-model="form.title"/>
             </FormItem>
             <FormItem label="排序值" prop="sort">
               <InputNumber :max="1000" :min="0" v-model="form.sort"></InputNumber>
               <span style="margin-left:5px">数值越小越靠前</span>
             </FormItem>
             <FormItem label="是否启用" prop="status">
-              <i-switch size="large" v-model="form.status" :true-value="1" :false-value="0">
+              <i-switch :false-value="0" :true-value="1" size="large" v-model="form.status">
                 <span slot="open">是</span>
                 <span slot="close">否</span>
               </i-switch>
             </FormItem>
             <FormItem label="备注" prop="description">
-              <Input v-model="form.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="输入内容"/>
+              <Input :autosize="{minRows: 2,maxRows: 5}" placeholder="输入内容" type="textarea" v-model="form.description"/>
             </FormItem>
             <Form-item>
               <Button
-                style="margin-right:5px"
-                @click="submitEdit"
                 :loading="submitLoading"
-                type="primary"
+                @click="submitEdit"
                 icon="ios-create-outline"
+                style="margin-right:5px"
+                type="primary"
               >修改并保存
               </Button>
               <Button @click="handleReset">重置</Button>
@@ -68,35 +68,35 @@
           </Form>
         </Col>
       </Row>
-    
-      <Modal :title="modalTitle" v-model="menuModalVisible" :mask-closable='false' :width="500">
-        <Form ref="formAdd" :model="formAdd" :label-width="85" :rules="menuFormValidate">
+
+      <Modal :mask-closable='false' :title="modalTitle" :width="500" v-model="menuModalVisible">
+        <Form :label-width="85" :model="formAdd" :rules="menuFormValidate" ref="formAdd">
           <div v-if="showParent">
             <FormItem label="上级部门：">
               {{form.title}}
             </FormItem>
           </div>
           <FormItem label="部门名称" prop="title">
-            <Input v-model="formAdd.title" placeholder=""/>
+            <Input placeholder="" v-model="formAdd.title"/>
           </FormItem>
           <FormItem label="排序值" prop="sort">
             <InputNumber :max="1000" :min="0" v-model="formAdd.sort"></InputNumber>
             <span style="margin-left:5px">数值越小越靠前</span>
           </FormItem>
           <FormItem label="是否启用" prop="status">
-            <i-switch size="large" v-model="formAdd.status" :true-value="1" :false-value="0">
+            <i-switch :false-value="0" :true-value="1" size="large" v-model="formAdd.status">
               <span slot="open">是</span>
               <span slot="close">否</span>
             </i-switch>
           </FormItem>
           <FormItem label="备注" prop="description">
-            <Input v-model="formAdd.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-                   placeholder="输入内容"></Input>
+            <Input :autosize="{minRows: 2,maxRows: 5}" placeholder="输入内容" type="textarea"
+                   v-model="formAdd.description"></Input>
           </FormItem>
         </Form>
         <div slot="footer">
-          <Button type="text" @click="cancelAdd">取消</Button>
-          <Button type="primary" :loading="submitLoading" @click="submitAdd">提交</Button>
+          <Button @click="cancelAdd" type="text">取消</Button>
+          <Button :loading="submitLoading" @click="submitAdd" type="primary">提交</Button>
         </div>
       </Modal>
     </Card>
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-  import {initDepartment, loadDepartment, addDepartment, editDepartment} from "api/system";
+  import {addDepartment, editDepartment, initDepartment, loadDepartment} from "../../../api/system";
   import "./departmentManage.css";
 
   export default {
@@ -140,7 +140,7 @@
     methods: {
       init() {
         this.getParentList();
-        this.getParentListEdit();
+        // this.getParentListEdit();
       },
       getParentList() {
         this.loading = true;
@@ -232,7 +232,7 @@
         }
       },
       add() {
-        if (this.form.id == "" || this.form.id == null) {
+        if (this.form.id === "" || this.form.id == null) {
           this.$Message.warning("请先点击选择一个部门");
           return;
         }

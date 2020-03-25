@@ -1,7 +1,7 @@
 <template>
-  <div ref="scrollCon" @DOMMouseScroll="handlescroll" @mousewheel="handlescroll" class="tags-outer-scroll-con">
+  <div @DOMMouseScroll="handlescroll" @mousewheel="handlescroll" class="tags-outer-scroll-con" ref="scrollCon">
     <div class="close-all-tag-con">
-      <Dropdown transfer @on-click="handleTagsOption">
+      <Dropdown @on-click="clearTags" transfer>
         <Button size="small" type="text">
           <Icon :size="18" type="ios-close-circle-outline"/>
         </Button>
@@ -11,24 +11,25 @@
         </DropdownMenu>
       </Dropdown>
     </div>
-    
-    <div ref="scrollBody" class="tags-inner-scroll-body" :style="{left: tagBodyLeft + 'px'}">
+
+    <div :style="{left: tagBodyLeft + 'px'}" class="tags-inner-scroll-body" ref="scrollBody">
       <transition-group name="taglist-moving-animation">
         <Tag
-          type="dot"
-          v-for="(item, index) in tags"
-          ref="tagsPageOpened"
+          :closable="item.name === 'home' ? false : true"
+          :color="color(item)"
           :key="item.name"
           :name="item.name"
           @click.native="linkTo(item)"
-          :closable="item.name === 'home' ? false : true"
-          :color="item.children ? (item.children[0].name === currentPageName ? 'primary' : 'default') : (item.name === currentPageName ? 'primary' : 'default')"
           @on-close="closeTag"
+          ref="tagsPageOpened"
+          style="cursor: pointer"
+          type="dot"
+          v-for="(item, index) in tags"
         >{{ itemTitle(item) }}
         </Tag>
       </transition-group>
     </div>
-  
+
   </div>
 </template>
 
@@ -57,6 +58,7 @@
     watch: {
       $route() {
         this.appendTag();
+        sessionStorage.setItem('tags', JSON.stringify(this.$store.state.app.tags));
       },
     },
     methods: {
@@ -107,16 +109,17 @@
       // 关闭标签
       closeTag(event, name) {
         this.$store.dispatch('closeTag', name);
-        this.$router.push({name: 'home'});
+        this.$router.push({name: this.tags[this.tags.length - 1].name})
+        // this.$store.commit('closeTag',this.tags)
       },
-      handleTagsOption(type) {
+      clearTags(type) {
         if (type === 'clearAll') {
-          this.$store.commit('clearAllTags');
+          this.$store.dispatch('clearAllTags');
           this.$router.push({
             name: 'home'
           });
         } else {
-          this.$store.commit('clearOtherTags', this);
+          this.$store.dispatch('clearOtherTags', this.currentPageName);
         }
         this.tagBodyLeft = 0;
       },

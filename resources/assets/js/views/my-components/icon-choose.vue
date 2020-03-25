@@ -2,16 +2,16 @@
   <div>
     <div class="icon-search">
       <input
+        :placeholder="tip"
+        @blur="handleBlur"
+        @focus="handleFocus"
+        @input="handleInput"
         type="text"
         v-model="key"
-        :placeholder="tip"
-        @input="handleInput"
-        @focus="handleFocus"
-        @blur="handleBlur"
       >
     </div>
     <div class="icon-block icon-bar">
-      <div class="icon-wrap" v-for="(item, i) in icon" :key="i" @click="handleChoose(item)">
+      <div :key="i" @click="handleChoose(item)" class="icon-wrap" v-for="(item, i) in icon">
         <div class="icons-item">
           <Icon :type="item" style="font-size: 32px;"/>
           <p>{{item}}</p>
