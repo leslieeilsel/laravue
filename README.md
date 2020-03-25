@@ -53,16 +53,12 @@ npm run dev、npm run watch(监控文件修改)
 npm run prod
 ```
 
-#### 登录
-
-- [ ] 使用完全前后台分离模式
-- [ ] 前台基于ant-design-pro-vue重构
-- [ ] 后台基于Laravel 6重构
-- [ ] GraphQL实践
-
 #### 更多截图
 
 https://github.com/leslieeilsel/Laravue/tree/master/storage/screenshot
 
 
-#### TODO
+#### TODO- [ ] 使用完全前后台分离模式
+- [ ] 前台基于ant-design-pro-vue重构
+- [ ] 后台基于Laravel 7重构
+- [ ] GraphQL实践
