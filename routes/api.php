@@ -124,3 +124,7 @@ Route::post('overviewmonth', 'Api\ApiController@getOverviewMonthData');
 Route::get('exportoverviewmonth/{startMonth}/{endMonth}/{type}', 'Api\ApiController@exportOverviewMonthData');
 
 Route::get('log/getOperationLogs', 'Logs\LogController@getOperationLogs');
+
+
+Route::post('sendSms', 'Sms\SmsController@send');
+Route::post('savePhone', 'Sms\SmsController@savePhone');

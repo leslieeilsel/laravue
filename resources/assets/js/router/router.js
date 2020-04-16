@@ -10,6 +10,7 @@ export const mainRouter = [];
 // 无权限相关的路由
 export const constantRouterMap = [
   { path: '/login', component: require('views/login/index') },
+  { path: '/phoneLogin', component: require('views/sms/sms') },
   { path: '/password/send', component: require('views/login/password/email') },
   { path: '/password/reset/:token', component: require('views/login/password/reset') },
   { path: '/test', component: require('views/test/index') },

@@ -29,7 +29,9 @@ class CheckIsLogin
             'api/ding/importIntegral',
             'api/ding/uploadPic',
             'api/ding/activityUserId',
-            'api/ding/getActivityToken'
+            'api/ding/getActivityToken',
+            'api/sendSms',
+            'api/savePhone',
         ];
         $uri = $request->route()->uri();
         if (!in_array($uri, $whiteList)) {
