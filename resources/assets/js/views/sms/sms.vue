@@ -5,10 +5,10 @@
         <FormItem label="" prop="phone" style="margin-bottom: 15px;">
           <Input size="small" type="text" v-model="form.phone" placeholder="输入您的手机号"></Input>
         </FormItem>
-        <FormItem label="" prop="code" style="margin-bottom: 15px;">
+        <FormItem label="" prop="code" style="margin-bottom: 28px;">
           <Input @on-search="sendMessage" size="small" type="text" search :enter-button="sendStatus"
                  placeholder="请输入验证码" v-model="form.code"/>
-          <span v-if="show" style="color: #fff;font-size: 12px;">{{count}} 秒后可重新发送</span>
+          <span v-if="show" style="color: #fff;font-size: 12px;position: fixed;">{{count}} 秒后可重新发送</span>
         </FormItem>
         <FormItem style="text-align: center;">
           <Button :disabled="loginBtn" size="small" @click="handleSubmit('form')">点击登录</Button>
@@ -63,7 +63,7 @@
             }
           })
         } else {
-          this.$Message.error('请填写手机号码');
+          this.$Message.error('请倒计时结束之后重新发送');
         }
       },
       getCode() {
@@ -106,7 +106,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background-image: url('/images/background.jpg');
+    background-image: url('/images/background2.jpg');
     background-repeat: no-repeat repeat;
     background-size: 100% 100%;
     background-attachment: fixed;
