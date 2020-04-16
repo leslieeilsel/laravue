@@ -52,11 +52,11 @@ npm run prod
 
 #### 更多截图
 
-https://github.com/leslieeilsel/Laravue/tree/master/storage/screenshot
+https://github.com/leslieeilsel/laravue/tree/master/storage/screenshot
 
 
 #### TODO
 - [ ] 使用完全前后台分离模式
-- [ ] 前台基于ant-design-pro-vue重构
+- [ ] 前台基于 ant-design-pro-vue 重构（正在进行）
 - [x] 后台基于Laravel 7重构
 - [ ] GraphQL实践
