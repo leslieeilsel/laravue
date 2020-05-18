@@ -38,7 +38,7 @@ php artisan jwt:secret
 php artisan migrate
 php artisan db:seed
 
-# 将database/data/laravue.sql导入数据库
+# 将 database/data/laravue.sql 导入数据库
 ```
 
 #### 编译运行
@@ -58,5 +58,5 @@ https://github.com/leslieeilsel/laravue/tree/master/storage/screenshot
 #### TODO
 - [ ] 使用完全前后台分离模式
 - [ ] 前台基于 ant-design-pro-vue 重构（正在进行）
-- [x] 后台基于Laravel 7重构
+- [x] 后台基于Laravel 7 重构
 - [ ] GraphQL 实践
