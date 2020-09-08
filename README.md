@@ -1,4 +1,4 @@
-<h1 align="center">laravue</h1>
+<h1 align="center">laravue（重构中）</h1>
 <div align="center">
 基于 Laravel 和 Vue 实现的后台管理系统
 </div>
